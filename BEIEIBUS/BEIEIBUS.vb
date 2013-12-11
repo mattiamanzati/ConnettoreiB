@@ -4,7 +4,7 @@ Imports System.Text
 Imports System.IO
 
 Imports RestSharp
-Imports Newtonsoft
+'Imports Newtonsoft
 
 'Imports ApexNetLIB
 
@@ -136,6 +136,7 @@ Public Class CLEIEIBUS
   Public Const cIMP_CAMPAGNE As String = "io_campagne.dat"
   Public Const cIMP_CITTA As String = "io_citta.dat"
   Public Const cIMP_CLIENTI_ASSORTIMENTI As String = "io_clienti_assortimenti.dat"
+  Public Const cIMP_CLIFOR_GEN As String = "io_clifor_gen.dat"
   Public Const cIMP_CLIFOR As String = "io_clifor.dat"
   Public Const cIMP_CLIFOR_AGE As String = "io_clifor_age.dat"
   Public Const cIMP_CLIFOR_BLO As String = "io_clifor_blo.dat"
@@ -503,6 +504,7 @@ Public Class CLEIEIBUS
         End If
         'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "40"))
 
+        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
         If Not Elabora_ExportClifor(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR, _
                         oApp.AscDir & "\" + cIMP_CLIFOR_INFO, _
                         oApp.AscDir & "\" + cIMP_CLIFOR_VEN) Then Return False
@@ -510,6 +512,11 @@ Public Class CLEIEIBUS
         arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR)
         arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_INFO)
         arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_VEN)
+
+        ' Elabora clifor gen
+        If Not Elabora_ExportCliforGen(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_GEN) Then Return False
+
+        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_GEN)
 
         ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export blocchi..."))
         If Not Elabora_ExportCliforBlo(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_BLO) Then Return False
@@ -1619,6 +1626,108 @@ Public Class CLEIEIBUS
 
       w1 = New StreamWriter(strFileOutInfo, False, System.Text.Encoding.UTF8)
       w1.Write(sbFileInfo.ToString)
+      w1.Flush()
+      w1.Close()
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      If GestErrorCallThrow() Then
+        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+      Else
+        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+      End If
+      '--------------------------------------------------------------	
+    Finally
+      dttTmp.Clear()
+    End Try
+  End Function
+
+
+  Public Overridable Function Elabora_ExportCliforGen(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
+    'esporta tutti i clienti/fornitori ATTIVI o POTENZIALI con relativi dati associati
+    Dim dttTmp As New DataTable
+    Dim sbFile As New StringBuilder
+    Dim strBlocco As String = ""
+    Try
+      If Not oCldIbus.GetClifor(TipoCliFor, strDittaCorrente, dttTmp, strFiltroCliConAgenti, strCustomWhereGetClifor) Then Return False
+
+      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|" & _
+                  "CODICE_FISCALE|TELEFONO1|TELEFONO2|FAX|CELLULARE|EMAIL|INTERNET|CAP|" & _
+                  "CITTA|PROV|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|PAGAMENTO|BANCA|AGENZIA|" & _
+                  "LISTINO_ANAGRAFICO|LISTINO_ARTICOLI|VALUTA|SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
+                  "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|MACROAREA|DATA_CREAZIONE|AREA|" & _
+                  "ZONA|MACROCATEGORIA|DATA_ULT_DOC_NO_FT|CATEGORIA|SOTTOCATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
+                  "FIDO_AZIENDALE|RAGGR1|RAGGR2|RAGGR3|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|COD_SOTTOCATEGORIA|DAT_ULT_MOD" & vbCrLf)
+
+      For Each dtrT As DataRow In dttTmp.Rows
+        sbFile.Append(
+                    strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
+                    strDittaCorrente & "|" & _
+                    IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                    ConvStr(dtrT!an_conto) & "|" & _
+                    (ConvStr(dtrT!an_descr1) & " " & ConvStr(dtrT!an_descr2)).Trim & "|" & _
+                    ConvStr(dtrT!an_indir).Trim & "|" & _
+                    ConvStr(dtrT!an_pariva) & "|" & _
+                    ConvStr(dtrT!an_codfis) & "|" & _
+                    ConvStr(dtrT!an_telef) & "|" & _
+                    "" & "|" & _
+                    ConvStr(dtrT!an_faxtlx) & "|" & _
+                    ConvStr(dtrT!an_cell) & "|" & _
+                    ConvStr(dtrT!an_email) & "|" & _
+                    ConvStr(dtrT!an_website) & "|" & _
+                    ConvStr(dtrT!an_cap) & "|" & _
+                    ConvStr(dtrT!an_citta) & "|" & _
+                    ConvStr(dtrT!an_prov) & "|" & _
+                    ConvStr(dtrT!an_hhlat_ib) & "|" & _
+                    ConvStr(dtrT!an_hhlon_ib) & "|" & _
+                    dtrT!an_clascon.ToString & "|" & _
+                    "-1" & "|" & _
+                    "-1" & "|" & _
+                    "" & "|" & _
+                    ConvStr(dtrT!tb_desstat) & "|" & _
+                        ConvStr(dtrT!tb_despaga) & "|" & _
+                        ConvStr(dtrT!an_banc1) & "|" & _
+                        ConvStr(dtrT!an_banc2) & "|" & _
+                        (ConvStr(dtrT!an_listino) & " - " & ConvStr(dtrT!tb_deslist)).Trim & "|" & _
+                        "" & "|" & _
+                        ConvStr(dtrT!tb_desvalu) & "|" & _
+                        "0" & "|" & _
+                        "0" & "|" & _
+                        "0" & "|" & _
+                        NTSCDec(dtrT!tb_scopaga).ToString(oApp.FormatSconti) & "|" & _
+                        ConvStr(dtrT!an_listino) & "|" & _
+                        ConvStr(dtrT!an_codpag) & "|" & _
+                    ConvStr(dtrT!tb_descana) & "|" & _
+                    ConvData(dtrT!an_dtaper, False) & "|" & _
+                    "" & "|" & _
+                    ConvStr(dtrT!tb_deszone) & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    ConvStr(dtrT!tb_descate) & "|" & _
+                    "" & "|" & _
+                    ConvData(dtrT!xx_ultfatt, False) & "|" & _
+                    ConvData(dtrT!xx_ultord, False) & "|" & _
+                    NTSCDec(dtrT!an_fido).ToString(oApp.FormatSconti) & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    ConvData(dtrT!an_ultagg, True) & vbCrLf)
+      Next
+
+
+
+      Dim w1 As StreamWriter
+
+      w1 = New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+      w1.Write(sbFile.ToString)
       w1.Flush()
       w1.Close()
 

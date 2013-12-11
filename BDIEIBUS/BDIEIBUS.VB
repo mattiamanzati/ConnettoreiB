@@ -4,6 +4,7 @@ Imports NTSInformatica
 Imports System.IO
 
 
+
 Public Class CLDIEIBUS
   Inherits CLD__BASE
 
