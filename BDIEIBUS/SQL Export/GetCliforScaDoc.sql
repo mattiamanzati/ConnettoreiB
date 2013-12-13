@@ -13,6 +13,7 @@ SELECT
 	sc_numrata,
 	sc_datsca,
 	sc_importo,
+	sc_integr,
 	sc_flsaldato,
 	case sc_flsaldato
 	   when 'S' then 'Chiuso'

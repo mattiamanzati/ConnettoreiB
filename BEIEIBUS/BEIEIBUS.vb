@@ -1653,11 +1653,13 @@ Public Class CLEIEIBUS
     Try
       If Not oCldIbus.GetClifor(TipoCliFor, strDittaCorrente, dttTmp, strFiltroCliConAgenti, strCustomWhereGetClifor) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|" & _
-                  "CODICE_FISCALE|TELEFONO1|TELEFONO2|FAX|CELLULARE|EMAIL|INTERNET|CAP|" & _
-                  "CITTA|PROV|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|PAGAMENTO|BANCA|AGENZIA|" & _
-                  "LISTINO_ANAGRAFICO|LISTINO_ARTICOLI|VALUTA|SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
-                  "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|MACROAREA|DATA_CREAZIONE|AREA|" & _
+      ' LISTINO_ARTICOLI (togliere)
+      sbFile.Append(
+                  "CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|CODICE_FISCALE|TELEFONO1|TELEFONO2|" & _
+                  "FAX|CELLULARE|EMAIL|INTERNET|CAP|CITTA|PROVINCIA|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|" & _
+                  "FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|PAGAMENTO|BANCA|AGENZIA|LISTINO_ANAGRAFICO|VALUTA|" & _
+                  "SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
+                  "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|AREA|" & _
                   "ZONA|MACROCATEGORIA|DATA_ULT_DOC_NO_FT|CATEGORIA|SOTTOCATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
                   "FIDO_AZIENDALE|RAGGR1|RAGGR2|RAGGR3|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|COD_SOTTOCATEGORIA|DAT_ULT_MOD" & vbCrLf)
 
@@ -1691,7 +1693,6 @@ Public Class CLEIEIBUS
                         ConvStr(dtrT!an_banc1) & "|" & _
                         ConvStr(dtrT!an_banc2) & "|" & _
                         (ConvStr(dtrT!an_listino) & " - " & ConvStr(dtrT!tb_deslist)).Trim & "|" & _
-                        "" & "|" & _
                         ConvStr(dtrT!tb_desvalu) & "|" & _
                         "0" & "|" & _
                         "0" & "|" & _
@@ -1699,6 +1700,7 @@ Public Class CLEIEIBUS
                         NTSCDec(dtrT!tb_scopaga).ToString(oApp.FormatSconti) & "|" & _
                         ConvStr(dtrT!an_listino) & "|" & _
                         ConvStr(dtrT!an_codpag) & "|" & _
+                        "" & "|" & _
                     ConvStr(dtrT!tb_descana) & "|" & _
                     ConvData(dtrT!an_dtaper, False) & "|" & _
                     "" & "|" & _
@@ -2133,7 +2135,7 @@ Public Class CLEIEIBUS
 
       'ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
       sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
-                    "SC_1|SC_2|DATA_CONFERMA|TIPO_CLIFOR|COD_CLIFOR|DAT_ULT_MOD" & vbCrLf)
+                    "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|DAT_ULT_MOD" & vbCrLf)
       For Each dtrT As DataRow In dttTmp.Rows
         sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
                       strDittaCorrente & "|" & _
@@ -2148,7 +2150,6 @@ Public Class CLEIEIBUS
                       NTSCDec(dtrT!mm_valore).ToString("0.00") & "|" & _
                       "0" & "|" & _
                       "0" & "|" & _
-                      "" & "|" & _
                       IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                       ConvStr(dtrT!an_conto) & "|" & _
                       ConvData(dtrT!xx_ultagg, True) & vbCrLf)
@@ -2186,7 +2187,7 @@ Public Class CLEIEIBUS
       sbFile.Append("CHIAVE|NUM_REG|COD_RATA|DAT_SCAD|IMPORTO|NETTO_PREV|DES_TIPO|DES_STATO|DES_TIPO_PRES|DES_OPERAZIONE|" & _
                     "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|DATA_DOC|NUM_DOC|DAT_ULT_MOD" & vbCrLf)
       For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
+        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_integr) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
                           ConvStr(dtrT!xx_numreg) & "|" & _
                           ConvStr(dtrT!sc_numrata) & "|" & _
                           ConvData(dtrT!sc_datsca, False) & "|" & _

@@ -164,7 +164,7 @@
     <EmbeddedResource Include="SQL Export\GetCliforNote.sql" />
     <EmbeddedResource Include="SQL Export\GetCliforRighDoc.sql" />
     <EmbeddedResource Include="SQL Export\GetCliforScaDoc.sql" />
-    <EmbeddedResource Include="SQL Generic\GetCliforSenzaCoordinate.sql" />
+    <EmbeddedResource Include="SQL Export\SQL Generic\GetCliforSenzaCoordinate.sql" />
     <EmbeddedResource Include="SQL Export\GetCliforTestDoc.sql" />
     <EmbeddedResource Include="SQL Export\GetCodpaga.sql" />
     <EmbeddedResource Include="SQL Export\GetComuni.sql" />
@@ -176,7 +176,7 @@
     <EmbeddedResource Include="SQL Export\GetLeadRighOff.sql" />
     <EmbeddedResource Include="SQL Export\GetLeads.sql" />
     <EmbeddedResource Include="SQL Export\GetLeadTestOff.sql" />
-    <EmbeddedResource Include="SQL Generic\GetAgentiCliente.sql" />
+    <EmbeddedResource Include="SQL Export\SQL Generic\GetAgentiCliente.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
