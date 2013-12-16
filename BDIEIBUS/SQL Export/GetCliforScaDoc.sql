@@ -8,6 +8,7 @@ SELECT
 	an_tipo,
 	an_conto,
 	sc_annpar,
+	scaden.codditt,
 	sc_alfpar,
 	sc_numpar,
 	sc_numrata,

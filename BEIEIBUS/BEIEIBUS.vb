@@ -2184,10 +2184,11 @@ Public Class CLEIEIBUS
     Try
       If Not oCldIbus.GetCliforScaDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforScaDoc) Then Return False
 
-      sbFile.Append("CHIAVE|NUM_REG|COD_RATA|DAT_SCAD|IMPORTO|NETTO_PREV|DES_TIPO|DES_STATO|DES_TIPO_PRES|DES_OPERAZIONE|" & _
+      sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_RATA|DAT_SCAD|IMPORTO|NETTO_PREV|DES_TIPO|DES_STATO|DES_TIPO_PRES|DES_OPERAZIONE|" & _
                     "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|DATA_DOC|NUM_DOC|DAT_ULT_MOD" & vbCrLf)
       For Each dtrT As DataRow In dttTmp.Rows
         sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_integr) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
+                          strDittaCorrente & "|" & _
                           ConvStr(dtrT!xx_numreg) & "|" & _
                           ConvStr(dtrT!sc_numrata) & "|" & _
                           ConvData(dtrT!sc_datsca, False) & "|" & _
