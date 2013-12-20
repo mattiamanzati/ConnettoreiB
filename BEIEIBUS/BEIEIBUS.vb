@@ -504,18 +504,19 @@ Public Class CLEIEIBUS
         End If
         'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "40"))
 
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
-        If Not Elabora_ExportClifor(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR, _
-                        oApp.AscDir & "\" + cIMP_CLIFOR_INFO, _
-                        oApp.AscDir & "\" + cIMP_CLIFOR_VEN) Then Return False
 
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR)
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_INFO)
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_VEN)
+        'ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
+        'If Not Elabora_ExportClifor(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR, _
+        '                oApp.AscDir & "\" + cIMP_CLIFOR_INFO, _
+        '                oApp.AscDir & "\" + cIMP_CLIFOR_VEN) Then Return False
+
+        'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR)
+        'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_INFO)
+        'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_VEN)
 
         ' Elabora clifor gen
+        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
         If Not Elabora_ExportCliforGen(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_GEN) Then Return False
-
         arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_GEN)
 
         ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export blocchi..."))
