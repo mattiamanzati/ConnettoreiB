@@ -75,4 +75,5 @@ WHERE  1=1
     AND ar_codtagl = 0 
   --AND ( ar_gesvar = 'N' OR ( ar_gesvar = 'S' AND ar_codroot <> '' ) )        
     AND ( ar_gesvar <> 'S' OR ( ar_gesvar = 'S' AND ar_codroot <> '' ))
+	AND ( ar_codart is not null )
 	AND artico.codditt = @ditta

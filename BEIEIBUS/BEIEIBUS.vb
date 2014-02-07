@@ -3752,35 +3752,35 @@ NEXT_FILE:
           End If
 
           ' Ho tutte le informazioni. Valorizzo un datatable con tutti i dati dell'ordine
-          dttFile.Rows.Add(New Object() {strTipoOrdine, _
-                                         NTSCDate(IntSetDate(strRow(posDataOrdine).Substring(0, 2) & "/" & strRow(posDataOrdine).Substring(2, 2) & "/" & strRow(posDataOrdine).Substring(4, 4))), _
-                                         NTSCInt(strRow(posCodClifor)), _
-                                         CodAgente1, _
-                                         NTSCDate(IntSetDate(strRow(posDataConsegna).Substring(0, 2) & "/" & strRow(posDataConsegna).Substring(2, 2) & "/" & strRow(posDataConsegna).Substring(4, 4))), _
-                                         strCodart, _
-                                         nFase, _
-                                         strRow(posDesArticolo).PadRight(40).Substring(0, 40).Trim, _
-                                         DescNote, _
-                                         strUnitaMisura, _
-                                         strUnitaMisuraP, _
-                                         dColli, _
-                                         dQuantita, _
-                                         dPrezzo, _
-                                         NTSCDec(strRow(posSc1)), _
-                                         NTSCDec(strRow(posSc2)), _
-                                         NTSCDec(strRow(posSc3)), _
-                                         NTSCDec(strRow(posSc4)), _
-                                         NTSCDec(strRow(posSc5)), _
-                                         NTSCDec(strRow(posSc6)), _
-                                         strStasino, _
-                                         NTSCInt(strRow(posCodDest)), _
-                                         CodAgente2, _
-                                         strRow(posCodConf), _
-                                         NTSCInt(strRow(posQtaConf)), _
-                                         NTSCInt(strRow(posCodPag)), _
-                                         NTSCInt(strRow(posCodPagDep)), _
-                                         strRow(posCodOperatore) _
-                                        })
+                    dttFile.Rows.Add(New Object() {strTipoOrdine, _
+                                                   NTSCDate(IntSetDate(strRow(posDataOrdine).Substring(0, 2) & "/" & strRow(posDataOrdine).Substring(2, 2) & "/" & strRow(posDataOrdine).Substring(4, 4))), _
+                                                   NTSCInt(strRow(posCodClifor)), _
+                                                   CodAgente1, _
+                                                   NTSCDate(IntSetDate(strRow(posDataConsegna).Substring(0, 2) & "/" & strRow(posDataConsegna).Substring(2, 2) & "/" & strRow(posDataConsegna).Substring(4, 4))), _
+                                                   strCodart, _
+                                                   nFase, _
+                                                   strRow(posDesArticolo).Trim, _
+                                                   DescNote, _
+                                                   strUnitaMisura, _
+                                                   strUnitaMisuraP, _
+                                                   dColli, _
+                                                   dQuantita, _
+                                                   dPrezzo, _
+                                                   NTSCDec(strRow(posSc1)), _
+                                                   NTSCDec(strRow(posSc2)), _
+                                                   NTSCDec(strRow(posSc3)), _
+                                                   NTSCDec(strRow(posSc4)), _
+                                                   NTSCDec(strRow(posSc5)), _
+                                                   NTSCDec(strRow(posSc6)), _
+                                                   strStasino, _
+                                                   NTSCInt(strRow(posCodDest)), _
+                                                   CodAgente2, _
+                                                   strRow(posCodConf), _
+                                                   NTSCInt(strRow(posQtaConf)), _
+                                                   NTSCInt(strRow(posCodPag)), _
+                                                   NTSCInt(strRow(posCodPagDep)), _
+                                                   strRow(posCodOperatore) _
+                                                  })
         End While
         r1.Close()
 
