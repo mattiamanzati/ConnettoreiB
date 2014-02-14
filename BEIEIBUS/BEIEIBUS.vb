@@ -813,77 +813,83 @@ Public Class CLEIEIBUS
 
 
   Public Overridable Function Elabora_ExportCodpaga(ByVal strFileOut As String) As Boolean
-    'esporta tutti i codici pagamento
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCodpaga(dttTmp, strCustomWhereGetCodpaga) Then Return False
+        'esporta tutti i codici pagamento
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCodpaga(dttTmp, strCustomWhereGetCodpaga) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codpaga) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!tb_codpaga) & "|" & _
-                      ConvStr(dtrT!tb_despaga) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codpaga) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codpaga) & "|" & _
+                                ConvStr(dtrT!tb_despaga) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
   Public Overridable Function Elabora_ExportComuni(ByVal strFileOut As String) As Boolean
     'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
 
-    Try
-      If Not oCldIbus.GetComuni(dttTmp, strCustomWhereGetComuni) Then Return False
+        Try
+            If Not oCldIbus.GetComuni(dttTmp, strCustomWhereGetComuni) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE|CAP|PROVINCIA|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!co_codcomu) & "|" & _
-                      ConvStr(dtrT!co_denom) & "|" & _
-                      ConvStr(dtrT!co_cap) & "|" & _
-                      ConvStr(dtrT!co_prov) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE|CAP|PROVINCIA|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!co_codcomu) & "|" & _
+                                ConvStr(dtrT!co_denom) & "|" & _
+                                ConvStr(dtrT!co_cap) & "|" & _
+                                ConvStr(dtrT!co_prov) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportCittaXML(ByVal strFileOut As String) As Boolean
@@ -968,104 +974,110 @@ Public Class CLEIEIBUS
   End Function
 
   Public Overridable Function Elabora_ExportInfo(ByVal strFileOut As String, ByVal BNIEVersion As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetInfo(dttTmp, strReleaseTracciati) Then Return False
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetInfo(dttTmp, strReleaseTracciati) Then Return False
 
-      sbFile.Append("DESCRIZIONE|VALORE" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(ConvStr(dtrT!descr) & "|" & ConvStr(dtrT!val) & vbCrLf)
-      Next
+            sbFile.Append("DESCRIZIONE|VALORE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!descr) & "|" & ConvStr(dtrT!val) & vbCrLf)
+            Next
 
-      sbFile.Append("Assembly|" & BNIEVersion & vbCrLf)
+            sbFile.Append("Assembly|" & BNIEVersion & vbCrLf)
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportLeadDetCon(ByVal strFileOut As String) As Boolean
-    'esporta l'organizzazione di ogni cliente/fornitore ATTIVO o POTENZIALE
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetLeadDetCon(strDittaCorrente, dttTmp, strCustomWhereGetLeadDetCon) Then Return False
+        'esporta l'organizzazione di ogni cliente/fornitore ATTIVO o POTENZIALE
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetLeadDetCon(strDittaCorrente, dttTmp, strCustomWhereGetLeadDetCon) Then Return False
 
-      sbFile.Append(
-          "CHIAVE                |" & _
-          "COD_DITTA             |" & _
-          "COD_LEAD              |" & _
-          "COD_CONTATTO           |" & _
-          "TIPO_CONTATTO         |" & _
-          "COGNOME               |" & _
-          "NOME                  |" & _
-          "INDIRIZZO             |" & _
-          "CAP                   |" & _
-          "CITTA                 |" & _
-          "PROVINCIA             |" & _
-          "TELEFONO              |" & _
-          "CELLULARE             |" & _
-          "FAX                   |" & _
-          "EMAIL                 |" & _
-          "DAT_ULT_MOD            " & _
-          vbCrLf).Replace(" ", "")
+            sbFile.Append(
+                "CHIAVE                |" & _
+                "COD_DITTA             |" & _
+                "COD_LEAD              |" & _
+                "COD_CONTATTO          |" & _
+                "TIPO_CONTATTO         |" & _
+                "COGNOME               |" & _
+                "NOME                  |" & _
+                "INDIRIZZO             |" & _
+                "CAP                   |" & _
+                "CITTA                 |" & _
+                "PROVINCIA             |" & _
+                "TELEFONO              |" & _
+                "CELLULARE             |" & _
+                "FAX                   |" & _
+                "EMAIL                 |" & _
+                "DAT_ULT_MOD            " & _
+                vbCrLf).Replace(" ", "")
 
 
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(
-                      ConvStr(dtrT!xx_chiave) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!og_codlead) & "|" & _
-                      ConvStr(dtrT!og_progr) & "|" & _
-                      ConvStr(dtrT!tb_desruaz) & "|" & _
-                      (ConvStr(dtrT!og_descont)).Trim & "|" & _
-                      (ConvStr(dtrT!og_descont2)).Trim & "|" & _
-                      ConvStr(dtrT!og_indir) & "|" & _
-                      ConvStr(dtrT!og_cap) & "|" & _
-                      ConvStr(dtrT!og_citta) & "|" & _
-                      ConvStr(dtrT!og_prov) & "|" & _
-                      ConvStr(dtrT!og_telef) & "|" & _
-                      ConvStr(dtrT!og_cell) & "|" & _
-                      ConvStr(dtrT!og_fax) & "|" & _
-                      ConvStr(dtrT!og_email) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(
+                                ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!og_codlead) & "|" & _
+                                ConvStr(dtrT!og_progr) & "|" & _
+                                ConvStr(dtrT!tb_desruaz) & "|" & _
+                                (ConvStr(dtrT!og_descont)).Trim & "|" & _
+                                (ConvStr(dtrT!og_descont2)).Trim & "|" & _
+                                ConvStr(dtrT!og_indir) & "|" & _
+                                ConvStr(dtrT!og_cap) & "|" & _
+                                ConvStr(dtrT!og_citta) & "|" & _
+                                ConvStr(dtrT!og_prov) & "|" & _
+                                ConvStr(dtrT!og_telef) & "|" & _
+                                ConvStr(dtrT!og_cell) & "|" & _
+                                ConvStr(dtrT!og_fax) & "|" & _
+                                ConvStr(dtrT!og_email) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportLeads(ByVal strFileOut As String) As Boolean
@@ -1167,10 +1179,12 @@ Public Class CLEIEIBUS
 
       Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
       Return True
 
@@ -1187,1047 +1201,945 @@ Public Class CLEIEIBUS
     End Try
   End Function
   Public Overridable Function Elabora_ExportLeadAccessi(ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetLeadAccessi(strDittaCorrente, dttTmp, strCustomWhereGetLeadAccessi) Then Return False
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetLeadAccessi(strDittaCorrente, dttTmp, strCustomWhereGetLeadAccessi) Then Return False
 
-      sbFile.Append(
-          "CHIAVE           |" & _
-          "COD_DITTA        |" & _
-          "COD_OPERATORE    |" & _
-          "COD_LEAD         |" & _
-          "FLG_VISUALIZZA   |" & _
-          "FLG_MODIFICA     |" & _
-          "DAT_ULT_MOD      |" & _
-          vbCrLf).Replace(" ", "")
+            sbFile.Append(
+                "CHIAVE           |" & _
+                "COD_DITTA        |" & _
+                "COD_OPERATORE    |" & _
+                "COD_LEAD         |" & _
+                "FLG_VISUALIZZA   |" & _
+                "FLG_MODIFICA     |" & _
+                "DAT_ULT_MOD      |" & _
+                vbCrLf).Replace(" ", "")
 
-      For Each dtrT As DataRow In dttTmp.Rows
+            For Each dtrT As DataRow In dttTmp.Rows
 
-        sbFile.Append(
-                   ConvStr(dtrT!xx_chiave) & "|" & _
-                   strDittaCorrente & "|" & _
-                   ConvStr(dtrT!opcr_opnome) & "|" & _
-                   ConvStr(dtrT!opcr_codlead) & "|" & _
-                   ConvStr(dtrT!opcr_crmvis) & "|" & _
-                   ConvStr(dtrT!opcr_crmmod) & "|" & _
-                   ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+                sbFile.Append(
+                            ConvStr(dtrT!xx_chiave) & "|" & _
+                            strDittaCorrente & "|" & _
+                            ConvStr(dtrT!opcr_opnome) & "|" & _
+                            ConvStr(dtrT!opcr_codlead) & "|" & _
+                            ConvStr(dtrT!opcr_crmvis) & "|" & _
+                            ConvStr(dtrT!opcr_crmmod) & "|" & _
+                            ConvData(dtrT!xx_ultagg, True) & vbCrLf)
 
-      Next
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportLeadAccessiCrm(ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetLeadAccessiCrm(strDittaCorrente, dttTmp, strCustomWhereGetLeadAccessiCrm) Then Return False
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetLeadAccessiCrm(strDittaCorrente, dttTmp, strCustomWhereGetLeadAccessiCrm) Then Return False
 
-      sbFile.Append(
-          "CHIAVE               |" & _
-          "COD_DITTA            |" & _
-          "COD_OPERATORE        |" & _
-          "COD_OPERATORE_FIGLIO |" & _
-          "FLG_VISUALIZZA       |" & _
-          "FLG_MODIFICA         |" & _
-          "DAT_ULT_MOD           " & _
-          vbCrLf).Replace(" ", "")
+            sbFile.Append(
+                "CHIAVE               |" & _
+                "COD_DITTA            |" & _
+                "COD_OPERATORE        |" & _
+                "COD_OPERATORE_FIGLIO |" & _
+                "FLG_VISUALIZZA       |" & _
+                "FLG_MODIFICA         |" & _
+                "DAT_ULT_MOD           " & _
+                vbCrLf).Replace(" ", "")
 
-      For Each dtrT As DataRow In dttTmp.Rows
+            For Each dtrT As DataRow In dttTmp.Rows
 
-        sbFile.Append(
-                   ConvStr(dtrT!xx_chiave) & "|" & _
-                   strDittaCorrente & "|" & _
-                   ConvStr(dtrT!opcr_opnome) & "|" & _
-                   ConvStr(dtrT!opcr_alopnome) & "|" & _
-                   ConvStr(dtrT!opcr_crmvis) & "|" & _
-                   ConvStr(dtrT!opcr_crmmod) & "|" & _
-                   ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+                sbFile.Append(
+                            ConvStr(dtrT!xx_chiave) & "|" & _
+                            strDittaCorrente & "|" & _
+                            ConvStr(dtrT!opcr_opnome) & "|" & _
+                            ConvStr(dtrT!opcr_alopnome) & "|" & _
+                            ConvStr(dtrT!opcr_crmvis) & "|" & _
+                            ConvStr(dtrT!opcr_crmmod) & "|" & _
+                            ConvData(dtrT!xx_ultagg, True) & vbCrLf)
 
-      Next
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
   Public Overridable Function Elabora_ExportLeadTestOff(ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetLeadTestOff(strDittaCorrente, dttTmp, strIncludileadClienti, strCustomWhereGetLeadTestOff, _
-                                     strFiltroGiorniOfferte:=strFiltroGGOfferte) Then Return False
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetLeadTestOff(strDittaCorrente, dttTmp, strIncludileadClienti, strCustomWhereGetLeadTestOff, _
+                                            strFiltroGiorniOfferte:=strFiltroGGOfferte) Then Return False
 
-      sbFile.Append(
-          "CHIAVE                  |" & _
-          "COD_DITTA               |" & _
-          "COD_LEAD                |" & _
-          "COD_CLIFOR              |" & _
-          "ANNO                    |" & _
-          "SERIE                   |" & _
-          "NUMERO                  |" & _
-          "REVISIONE               |" & _
-          "DATA                    |" & _
-          "REFERENTE               |" & _
-          "RIFERIMENTO             |" & _
-          "OGGETTO                 |" & _
-          "COD_OPPORTUNITA         |" & _
-          "DES_OPPORTUNITA         |" & _
-          "GG_VALIDITA             |" & _
-          "COD_TIPO_OPERAZIONE     |" & _
-          "DES_TIPO_OPERAZIONE     |" & _
-          "COD_LISTINO             |" & _
-          "DES_LISTINO             |" & _
-          "COD_PAGAMENTO           |" & _
-          "DES_PAGAMENTO           |" & _
-          "DATA_CONSEGNA           |" & _
-          "GG_CONSEGNA             |" & _
-          "DES_CONSEGNA            |" & _
-          "NOTE                    |" & _
-          "RILASCIATO              |" & _
-          "STAMPATO                |" & _
-          "CONFERMATO              |" & _
-          "RIFIUTATO               |" & _
-          "EVASO                   |" & _
-          "ANNULLATO               |" & _
-          "CHIUSO                  |" & _
-          "TOTALE_OFFERTA          |" & _
-          "DAT_ULT_MOD              " & _
-          vbCrLf).Replace(" ", "")
+            sbFile.Append(
+                "CHIAVE                  |" & _
+                "COD_DITTA               |" & _
+                "COD_LEAD                |" & _
+                "COD_CLIFOR              |" & _
+                "ANNO                    |" & _
+                "SERIE                   |" & _
+                "NUMERO                  |" & _
+                "REVISIONE               |" & _
+                "DATA                    |" & _
+                "REFERENTE               |" & _
+                "RIFERIMENTO             |" & _
+                "OGGETTO                 |" & _
+                "COD_OPPORTUNITA         |" & _
+                "DES_OPPORTUNITA         |" & _
+                "GG_VALIDITA             |" & _
+                "COD_TIPO_OPERAZIONE     |" & _
+                "DES_TIPO_OPERAZIONE     |" & _
+                "COD_LISTINO             |" & _
+                "DES_LISTINO             |" & _
+                "COD_PAGAMENTO           |" & _
+                "DES_PAGAMENTO           |" & _
+                "DATA_CONSEGNA           |" & _
+                "GG_CONSEGNA             |" & _
+                "DES_CONSEGNA            |" & _
+                "NOTE                    |" & _
+                "RILASCIATO              |" & _
+                "STAMPATO                |" & _
+                "CONFERMATO              |" & _
+                "RIFIUTATO               |" & _
+                "EVASO                   |" & _
+                "ANNULLATO               |" & _
+                "CHIUSO                  |" & _
+                "TOTALE_OFFERTA          |" & _
+                "DAT_ULT_MOD              " & _
+                vbCrLf).Replace(" ", "")
 
-      For Each dtrT As DataRow In dttTmp.Rows
+            For Each dtrT As DataRow In dttTmp.Rows
 
-        sbFile.Append(
-                   ConvStr(dtrT!xx_chiave) & "|" & _
-                   strDittaCorrente & "|" & _
-                   ConvStr(dtrT!td_codlead) & "|" & _
-                   "" & "|" & _
-                   ConvStr(dtrT!td_anno) & "|" & _
-                   ConvStr(dtrT!td_serie) & "|" & _
-                   ConvStr(dtrT!td_numord) & "|" & _
-                   ConvStr(dtrT!td_vers) & "|" & _
-                   ConvData(dtrT!td_datord) & "|" & _
-                   ConvStr(dtrT!td_ca) & "|" & _
-                   ConvStr(dtrT!td_riferim) & "|" & _
-                   ConvStr(dtrT!td_oggetto) & "|" & _
-                   ConvStr(dtrT!td_codoppo) & "|" & _
-                   ConvStr(dtrT!op_oggetto) & "|" & _
-                   ConvStr(dtrT!td_validgg) & "|" & _
-                   ConvStr(dtrT!td_tipobf) & "|" & _
-                   ConvStr(dtrT!tb_destpbf) & "|" & _
-                   ConvStr(dtrT!td_listino) & "|" & _
-                   ConvStr(dtrT!tb_deslist) & "|" & _
-                   ConvStr(dtrT!td_codpaga) & "|" & _
-                   ConvStr(dtrT!tb_despaga) & "|" & _
-                   ConvData(dtrT!td_datcons) & "|" & _
-                   ConvStr(dtrT!td_consggconf) & "|" & _
-                   ConvStr(dtrT!td_desconsx) & "|" & _
-                   ConvStr(dtrT!td_note, True) & "|" & _
-                   ConvStr(dtrT!td_rilasciato) & "|" & _
-                   ConvStr(dtrT!td_flstam) & "|" & _
-                   ConvStr(dtrT!td_confermato) & "|" & _
-                   ConvStr(dtrT!td_abband) & "|" & _
-                   ConvStr(dtrT!td_flevas) & "|" & _
-                   ConvStr(dtrT!td_annull) & "|" & _
-                   ConvStr(dtrT!td_chiuso) & "|" & _
-                   ConvStr(dtrT!td_totdoc) & "|" & _
-                   ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+                sbFile.Append(
+                            ConvStr(dtrT!xx_chiave) & "|" & _
+                            strDittaCorrente & "|" & _
+                            ConvStr(dtrT!td_codlead) & "|" & _
+                            "" & "|" & _
+                            ConvStr(dtrT!td_anno) & "|" & _
+                            ConvStr(dtrT!td_serie) & "|" & _
+                            ConvStr(dtrT!td_numord) & "|" & _
+                            ConvStr(dtrT!td_vers) & "|" & _
+                            ConvData(dtrT!td_datord) & "|" & _
+                            ConvStr(dtrT!td_ca) & "|" & _
+                            ConvStr(dtrT!td_riferim) & "|" & _
+                            ConvStr(dtrT!td_oggetto) & "|" & _
+                            ConvStr(dtrT!td_codoppo) & "|" & _
+                            ConvStr(dtrT!op_oggetto) & "|" & _
+                            ConvStr(dtrT!td_validgg) & "|" & _
+                            ConvStr(dtrT!td_tipobf) & "|" & _
+                            ConvStr(dtrT!tb_destpbf) & "|" & _
+                            ConvStr(dtrT!td_listino) & "|" & _
+                            ConvStr(dtrT!tb_deslist) & "|" & _
+                            ConvStr(dtrT!td_codpaga) & "|" & _
+                            ConvStr(dtrT!tb_despaga) & "|" & _
+                            ConvData(dtrT!td_datcons) & "|" & _
+                            ConvStr(dtrT!td_consggconf) & "|" & _
+                            ConvStr(dtrT!td_desconsx) & "|" & _
+                            ConvStr(dtrT!td_note, True) & "|" & _
+                            ConvStr(dtrT!td_rilasciato) & "|" & _
+                            ConvStr(dtrT!td_flstam) & "|" & _
+                            ConvStr(dtrT!td_confermato) & "|" & _
+                            ConvStr(dtrT!td_abband) & "|" & _
+                            ConvStr(dtrT!td_flevas) & "|" & _
+                            ConvStr(dtrT!td_annull) & "|" & _
+                            ConvStr(dtrT!td_chiuso) & "|" & _
+                            ConvStr(dtrT!td_totdoc) & "|" & _
+                            ConvData(dtrT!xx_ultagg, True) & vbCrLf)
 
-      Next
+            Next
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            Return True
 
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportLeadNote(ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetLeadNote(strDittaCorrente, dttTmp, strCustomWhereGetLeadNote) Then Return False
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetLeadNote(strDittaCorrente, dttTmp, strCustomWhereGetLeadNote) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|COD_LEAD|PROGRESSIVO|TIPO_NOTA|NOTA|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(
-                      ConvStr(dtrT!xx_chiave) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!le_codlead) & "|" & _
-                      ConvStr(dtrT!xx_progressivo) & "|" & _
-                      ConvStr(dtrT!xx_codnote) & "|" & _
-                      Left(ConvStr(dtrT!xx_desnote, True), 4000) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
-      'Left(ConvStr(dtrT!xx_desnote, True), 4000) & "|" & _
-      'ConvStr(dtrT!xx_desnote, True) & "|" & _
+            sbFile.Append("CHIAVE|COD_DITTA|COD_LEAD|PROGRESSIVO|TIPO_NOTA|NOTA|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(
+                                ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!le_codlead) & "|" & _
+                                ConvStr(dtrT!xx_progressivo) & "|" & _
+                                ConvStr(dtrT!xx_codnote) & "|" & _
+                                Left(ConvStr(dtrT!xx_desnote, True), 4000) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportLeadRighOff(ByVal strFileOut As String) As Boolean
-    'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetLeadRighOff(strDittaCorrente, dttTmp, strIncludileadClienti, strCustomWhereGetLeadRighOff, _
-                                     strFiltroGiorniOfferte:=strFiltroGGOfferte) Then Return False
+        'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetLeadRighOff(strDittaCorrente, dttTmp, strIncludileadClienti, strCustomWhereGetLeadRighOff, _
+                                            strFiltroGiorniOfferte:=strFiltroGGOfferte) Then Return False
 
-      sbFile.Append(
-        "CHIAVE         |" & _
-        "CHIAVE_TESTATA |" & _
-        "COD_DITTA      |" & _
-        "COD_LEAD       |" & _
-        "PRG_RIGA       |" & _
-        "COD_RIGA       |" & _
-        "DES_RIGA       |" & _
-        "COD_UM         |" & _
-        "QTA            |" & _
-        "PRZ_LORDO      |" & _
-        "PRZ_NETTO      |" & _
-        "IMPORTO        |" & _
-         "SC_1          |" & _
-         "SC_2          |" & _
-         "SC_3          |" & _
-         "SC_4          |" & _
-         "SC_5          |" & _
-         "SC_6          |" & _
-         "DATA_CONFERMA |" & _
-         "COD_CLIFOR    |" & _
-         "DAT_ULT_MOD    " & _
-          vbCrLf).Replace(" ", "")
+            sbFile.Append(
+            "CHIAVE         |" & _
+            "CHIAVE_TESTATA |" & _
+            "COD_DITTA      |" & _
+            "COD_LEAD       |" & _
+            "PRG_RIGA       |" & _
+            "COD_RIGA       |" & _
+            "DES_RIGA       |" & _
+            "COD_UM         |" & _
+            "QTA            |" & _
+            "PRZ_LORDO      |" & _
+            "PRZ_NETTO      |" & _
+            "IMPORTO        |" & _
+            "SC_1           |" & _
+            "SC_2           |" & _
+            "SC_3           |" & _
+            "SC_4           |" & _
+            "SC_5           |" & _
+            "SC_6           |" & _
+            "DATA_CONFERMA  |" & _
+            "COD_CLIFOR     |" & _
+            "DAT_ULT_MOD    " & _
+            vbCrLf).Replace(" ", "")
 
-      ' ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
 
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(
-                      ConvStr(dtrT!xx_chiave) & "|" & _
-                      ConvStr(dtrT!xx_chiave_testata) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!td_codlead) & "|" & _
-                      ConvStr(dtrT!mo_riga) & "|" & _
-                      (ConvStr(dtrT!mo_codart) & IIf(NTSCStr(dtrT!mo_fase) <> "0", "." & ConvStr(dtrT!mo_fase), "").ToString).Trim & "|" & _
-                      (ConvStr(dtrT!mo_descr) & " " & ConvStr(dtrT!mo_desint, True).Trim) & "|" & _
-                      ConvStr(dtrT!mo_ump) & "|" & _
-                      NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
-                      "" & "|" & _
-                      NTSCDec(dtrT!xx_prezzo).ToString("0.0000") & "|" & _
-                      NTSCDec(dtrT!mo_valore).ToString("0.00") & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      ConvData(dtrT!td_datconf) & "|" & _
-                      ConvStr(dtrT!td_codlead) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(
+                                ConvStr(dtrT!xx_chiave) & "|" & _
+                                ConvStr(dtrT!xx_chiave_testata) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!td_codlead) & "|" & _
+                                ConvStr(dtrT!mo_riga) & "|" & _
+                                (ConvStr(dtrT!mo_codart) & IIf(NTSCStr(dtrT!mo_fase) <> "0", "." & ConvStr(dtrT!mo_fase), "").ToString).Trim & "|" & _
+                                (ConvStr(dtrT!mo_descr) & " " & ConvStr(dtrT!mo_desint, True).Trim) & "|" & _
+                                ConvStr(dtrT!mo_ump) & "|" & _
+                                NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
+                                "" & "|" & _
+                                NTSCDec(dtrT!xx_prezzo).ToString("0.0000") & "|" & _
+                                NTSCDec(dtrT!mo_valore).ToString("0.00") & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                ConvData(dtrT!td_datconf) & "|" & _
+                                ConvStr(dtrT!td_codlead) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
-
-
-  Public Overridable Function Elabora_ExportClifor(ByVal TipoCliFor As String, ByVal strFileOut As String, ByVal strFileOutInfo As String, ByVal strFileOutVend As String) As Boolean
-    'esporta tutti i clienti/fornitori ATTIVI o POTENZIALI con relativi dati associati
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Dim sbFileInfo As New StringBuilder
-    Dim sbFileVend As New StringBuilder
-    Dim strBlocco As String = ""
-    Try
-      If Not oCldIbus.GetClifor(TipoCliFor, strDittaCorrente, dttTmp, strFiltroCliConAgenti, strCustomWhereGetClifor) Then Return False
-
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|" & _
-                  "CODICE_FISCALE|TELEFONO1|TELEFONO2|FAX|CELLULARE|EMAIL|INTERNET|CAP|" & _
-                  "CITTA|PROV|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|DAT_ULT_MOD" & vbCrLf)
-      'COD_SVILUPPO
-
-      sbFileVend.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|PAGAMENTO|BANCA|AGENZIA|" & _
-              "LISTINO_ANAGRAFICO|LISTINO_ARTICOLI|VALUTA|SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
-              "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|DAT_ULT_MOD" & vbCrLf)
-
-      sbFileInfo.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|MACROAREA|DATA_CREAZIONE|AREA|" & _
-              "ZONA|MACROCATEGORIA|DATA_ULT_DOC_NO_FT|CATEGORIA|SOTTOCATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
-              "FIDO_AZIENDALE|RAGGR1|RAGGR2|RAGGR3|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|COD_SOTTOCATEGORIA|DAT_ULT_MOD" & vbCrLf)
-
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
-                    strDittaCorrente & "|" & _
-                    IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                    ConvStr(dtrT!an_conto) & "|" & _
-                    (ConvStr(dtrT!an_descr1) & " " & ConvStr(dtrT!an_descr2)).Trim & "|" & _
-                    ConvStr(dtrT!an_indir) & "|" & _
-                    ConvStr(dtrT!an_pariva) & "|" & _
-                    ConvStr(dtrT!an_codfis) & "|" & _
-                    ConvStr(dtrT!an_telef) & "|" & _
-                    "" & "|" & _
-                    ConvStr(dtrT!an_faxtlx) & "|" & _
-                    ConvStr(dtrT!an_cell) & "|" & _
-                    ConvStr(dtrT!an_email) & "|" & _
-                    ConvStr(dtrT!an_website) & "|" & _
-                    ConvStr(dtrT!an_cap) & "|" & _
-                    ConvStr(dtrT!an_citta) & "|" & _
-                    ConvStr(dtrT!an_prov) & "|" & _
-                    ConvStr(dtrT!an_hhlat_ib) & "|" & _
-                    ConvStr(dtrT!an_hhlon_ib) & "|" & _
-                    dtrT!an_clascon.ToString & "|" & _
-                    "-1" & "|" & _
-                    "-1" & "|" & _
-                    "" & "|" & _
-                    ConvStr(dtrT!tb_desstat) & "|" & _
-                    ConvData(dtrT!an_ultagg, True) & vbCrLf)
-        '"" & "|" & _
-
-
-        'FILE vend
-        sbFileVend.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrT!an_conto) & "|" & _
-                      ConvStr(dtrT!tb_despaga) & "|" & _
-                      ConvStr(dtrT!an_banc1) & "|" & _
-                      ConvStr(dtrT!an_banc2) & "|" & _
-                      (ConvStr(dtrT!an_listino) & " - " & ConvStr(dtrT!tb_deslist)).Trim & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!tb_desvalu) & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      NTSCDec(dtrT!tb_scopaga).ToString(oApp.FormatSconti) & "|" & _
-                      ConvStr(dtrT!an_listino) & "|" & _
-                      ConvStr(dtrT!an_codpag) & "|" & _
-                      ConvData(dtrT!an_ultagg, True) & vbCrLf)
-
-        'FILE info
-        sbFileInfo.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
-            strDittaCorrente & "|" & _
-            IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-            ConvStr(dtrT!an_conto) & "|" & _
-            ConvStr(dtrT!tb_descana) & "|" & _
-            ConvData(dtrT!an_dtaper, False) & "|" & _
-            "" & "|" & _
-            ConvStr(dtrT!tb_deszone) & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            ConvStr(dtrT!tb_descate) & "|" & _
-            "" & "|" & _
-            ConvData(dtrT!xx_ultfatt, False) & "|" & _
-            ConvData(dtrT!xx_ultord, False) & "|" & _
-            NTSCDec(dtrT!an_fido).ToString(oApp.FormatSconti) & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            "" & "|" & _
-            ConvData(dtrT!an_ultagg, True) & vbCrLf)
-
-
-      Next
-
-
-
-      Dim w1 As StreamWriter
-
-      w1 = New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
-
-      w1 = New StreamWriter(strFileOutVend, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFileVend.ToString)
-      w1.Flush()
-      w1.Close()
-
-      w1 = New StreamWriter(strFileOutInfo, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFileInfo.ToString)
-      w1.Flush()
-      w1.Close()
-
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
-  End Function
-
 
   Public Overridable Function Elabora_ExportCliforGen(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
-    'esporta tutti i clienti/fornitori ATTIVI o POTENZIALI con relativi dati associati
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Dim strBlocco As String = ""
-    Try
-      If Not oCldIbus.GetClifor(TipoCliFor, strDittaCorrente, dttTmp, strFiltroCliConAgenti, strCustomWhereGetClifor) Then Return False
+        'esporta tutti i clienti/fornitori ATTIVI o POTENZIALI con relativi dati associati
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim strBlocco As String = ""
+        Try
+            If Not oCldIbus.GetClifor(TipoCliFor, strDittaCorrente, dttTmp, strFiltroCliConAgenti, strCustomWhereGetClifor) Then Return False
 
-      ' LISTINO_ARTICOLI (togliere)
-      sbFile.Append(
-                  "CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|CODICE_FISCALE|TELEFONO1|TELEFONO2|" & _
-                  "FAX|CELLULARE|EMAIL|INTERNET|CAP|CITTA|PROVINCIA|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|" & _
-                  "FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|PAGAMENTO|BANCA|AGENZIA|LISTINO_ANAGRAFICO|VALUTA|" & _
-                  "SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
-                  "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|AREA|" & _
-                  "ZONA|MACROCATEGORIA|DATA_ULT_DOC_NO_FT|CATEGORIA|SOTTOCATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
-                  "FIDO_AZIENDALE|RAGGR1|RAGGR2|RAGGR3|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|COD_SOTTOCATEGORIA|DAT_ULT_MOD" & vbCrLf)
+            ' LISTINO_ARTICOLI (togliere)
+            sbFile.Append(
+                        "CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|CODICE_FISCALE|TELEFONO1|TELEFONO2|" & _
+                        "FAX|CELLULARE|EMAIL|INTERNET|CAP|CITTA|PROVINCIA|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|" & _
+                        "FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|PAGAMENTO|BANCA|AGENZIA|LISTINO_ANAGRAFICO|VALUTA|" & _
+                        "SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
+                        "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|AREA|" & _
+                        "ZONA|MACROCATEGORIA|DATA_ULT_DOC_NO_FT|CATEGORIA|SOTTOCATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
+                        "FIDO_AZIENDALE|RAGGR1|RAGGR2|RAGGR3|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|COD_SOTTOCATEGORIA|DAT_ULT_MOD" & vbCrLf)
 
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(
-                    strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
-                    strDittaCorrente & "|" & _
-                    IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                    ConvStr(dtrT!an_conto) & "|" & _
-                    (ConvStr(dtrT!an_descr1) & " " & ConvStr(dtrT!an_descr2)).Trim & "|" & _
-                    ConvStr(dtrT!an_indir).Trim & "|" & _
-                    ConvStr(dtrT!an_pariva) & "|" & _
-                    ConvStr(dtrT!an_codfis) & "|" & _
-                    ConvStr(dtrT!an_telef) & "|" & _
-                    "" & "|" & _
-                    ConvStr(dtrT!an_faxtlx) & "|" & _
-                    ConvStr(dtrT!an_cell) & "|" & _
-                    ConvStr(dtrT!an_email) & "|" & _
-                    ConvStr(dtrT!an_website) & "|" & _
-                    ConvStr(dtrT!an_cap) & "|" & _
-                    ConvStr(dtrT!an_citta) & "|" & _
-                    ConvStr(dtrT!an_prov) & "|" & _
-                    ConvStr(dtrT!an_hhlat_ib) & "|" & _
-                    ConvStr(dtrT!an_hhlon_ib) & "|" & _
-                    dtrT!an_clascon.ToString & "|" & _
-                    "-1" & "|" & _
-                    "-1" & "|" & _
-                    "" & "|" & _
-                    ConvStr(dtrT!tb_desstat) & "|" & _
-                        ConvStr(dtrT!tb_despaga) & "|" & _
-                        ConvStr(dtrT!an_banc1) & "|" & _
-                        ConvStr(dtrT!an_banc2) & "|" & _
-                        (ConvStr(dtrT!an_listino) & " - " & ConvStr(dtrT!tb_deslist)).Trim & "|" & _
-                        ConvStr(dtrT!tb_desvalu) & "|" & _
-                        "0" & "|" & _
-                        "0" & "|" & _
-                        "0" & "|" & _
-                        NTSCDec(dtrT!tb_scopaga).ToString(oApp.FormatSconti) & "|" & _
-                        ConvStr(dtrT!an_listino) & "|" & _
-                        ConvStr(dtrT!an_codpag) & "|" & _
-                        "" & "|" & _
-                    ConvStr(dtrT!tb_descana) & "|" & _
-                    ConvData(dtrT!an_dtaper, False) & "|" & _
-                    "" & "|" & _
-                    ConvStr(dtrT!tb_deszone) & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    ConvStr(dtrT!tb_descate) & "|" & _
-                    "" & "|" & _
-                    ConvData(dtrT!xx_ultfatt, False) & "|" & _
-                    ConvData(dtrT!xx_ultord, False) & "|" & _
-                    NTSCDec(dtrT!an_fido).ToString(oApp.FormatSconti) & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    ConvData(dtrT!an_ultagg, True) & vbCrLf)
-      Next
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(
+                            strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
+                            strDittaCorrente & "|" & _
+                            IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                            ConvStr(dtrT!an_conto) & "|" & _
+                            (ConvStr(dtrT!an_descr1) & " " & ConvStr(dtrT!an_descr2)).Trim & "|" & _
+                            ConvStr(dtrT!an_indir).Trim & "|" & _
+                            ConvStr(dtrT!an_pariva) & "|" & _
+                            ConvStr(dtrT!an_codfis) & "|" & _
+                            ConvStr(dtrT!an_telef) & "|" & _
+                            "" & "|" & _
+                            ConvStr(dtrT!an_faxtlx) & "|" & _
+                            ConvStr(dtrT!an_cell) & "|" & _
+                            ConvStr(dtrT!an_email) & "|" & _
+                            ConvStr(dtrT!an_website) & "|" & _
+                            ConvStr(dtrT!an_cap) & "|" & _
+                            ConvStr(dtrT!an_citta) & "|" & _
+                            ConvStr(dtrT!an_prov) & "|" & _
+                            ConvStr(dtrT!an_hhlat_ib) & "|" & _
+                            ConvStr(dtrT!an_hhlon_ib) & "|" & _
+                            dtrT!an_clascon.ToString & "|" & _
+                            "-1" & "|" & _
+                            "-1" & "|" & _
+                            "" & "|" & _
+                            ConvStr(dtrT!tb_desstat) & "|" & _
+                                ConvStr(dtrT!tb_despaga) & "|" & _
+                                ConvStr(dtrT!an_banc1) & "|" & _
+                                ConvStr(dtrT!an_banc2) & "|" & _
+                                (ConvStr(dtrT!an_listino) & " - " & ConvStr(dtrT!tb_deslist)).Trim & "|" & _
+                                ConvStr(dtrT!tb_desvalu) & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                NTSCDec(dtrT!tb_scopaga).ToString(oApp.FormatSconti) & "|" & _
+                                ConvStr(dtrT!an_listino) & "|" & _
+                                ConvStr(dtrT!an_codpag) & "|" & _
+                                "" & "|" & _
+                            ConvStr(dtrT!tb_descana) & "|" & _
+                            ConvData(dtrT!an_dtaper, False) & "|" & _
+                            "" & "|" & _
+                            ConvStr(dtrT!tb_deszone) & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            ConvStr(dtrT!tb_descate) & "|" & _
+                            "" & "|" & _
+                            ConvData(dtrT!xx_ultfatt, False) & "|" & _
+                            ConvData(dtrT!xx_ultord, False) & "|" & _
+                            NTSCDec(dtrT!an_fido).ToString(oApp.FormatSconti) & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            "" & "|" & _
+                            ConvData(dtrT!an_ultagg, True) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As StreamWriter
+
+                w1 = New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
 
 
-      Dim w1 As StreamWriter
+            Return True
 
-      w1 = New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
-
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportCliforBlo(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
 
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
 
-    Dim strBlocco As String = ""
+        Dim strBlocco As String = ""
 
-    Try
-      If Not oCldIbus.GetCliforBlo(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforBlo) Then Return False
+        Try
+            If Not oCldIbus.GetCliforBlo(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforBlo) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_BLOCCO|TIPO_BLOCCO|NOTA_BLOCCO|DATA_BLOCCO|DAT_ULT_MOD" & vbCrLf)
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_BLOCCO|TIPO_BLOCCO|NOTA_BLOCCO|DATA_BLOCCO|DAT_ULT_MOD" & vbCrLf)
 
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
-                        strDittaCorrente & "|" & _
-                        IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                        ConvStr(dtrT!an_conto) & "|" & _
-                        "0" & "|" & _
-                        ConvStr(dtrT!an_blocco) & "|" & _
-                        ConvStr(dtrT!xx_blocco) & "|" & _
-                        "" & "|" & _
-                        ConvData(dtrT!an_ultagg, True) & vbCrLf)
-      Next
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrT!an_conto) & "|" & _
+                                "0" & "|" & _
+                                ConvStr(dtrT!an_blocco) & "|" & _
+                                ConvStr(dtrT!xx_blocco) & "|" & _
+                                "" & "|" & _
+                                ConvData(dtrT!an_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As StreamWriter
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As StreamWriter
 
-      w1 = New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+                w1 = New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportCliforDestdiv(ByVal strFileOut As String) As Boolean
-    'esporta tutte le destinazioni diverse di clienti/fornitori ATTIVI o POTENZIALI 
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCliforDestdiv(strDittaCorrente, dttTmp, strCustomWhereGetCliforDestdiv) Then Return False
+        'esporta tutte le destinazioni diverse di clienti/fornitori ATTIVI o POTENZIALI 
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCliforDestdiv(strDittaCorrente, dttTmp, strCustomWhereGetCliforDestdiv) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|PREFERENZIALE|COD_DEST|RAG_SOC_DEST|" & _
-                    "INDIRIZZO|CAP|CITTA|PROVINCIA|STAMPA_PREF_DOC|TELEFONO|CELLULARE|" & _
-                    "MAIL|FAX|NOTE_DEST|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!dd_conto) & "§" & ConvStr(dtrT!dd_coddest) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrT!dd_conto) & "|" & _
-                      "0" & "|" & _
-                      ConvStr(dtrT!dd_coddest) & "|" & _
-                      ConvStr(dtrT!dd_nomdest) & "|" & _
-                      ConvStr(dtrT!dd_inddest) & "|" & _
-                      ConvStr(dtrT!dd_capdest) & "|" & _
-                      ConvStr(dtrT!dd_locdest) & "|" & _
-                      ConvStr(dtrT!dd_prodest) & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!dd_telef) & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!dd_email) & "|" & _
-                      ConvStr(dtrT!dd_faxtlx) & "|" & _
-                      ConvStr(dtrT!dd_note, True) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|PREFERENZIALE|COD_DEST|RAG_SOC_DEST|" & _
+                        "INDIRIZZO|CAP|CITTA|PROVINCIA|STAMPA_PREF_DOC|TELEFONO|CELLULARE|" & _
+                        "MAIL|FAX|NOTE_DEST|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!dd_conto) & "§" & ConvStr(dtrT!dd_coddest) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrT!dd_conto) & "|" & _
+                                "0" & "|" & _
+                                ConvStr(dtrT!dd_coddest) & "|" & _
+                                ConvStr(dtrT!dd_nomdest) & "|" & _
+                                ConvStr(dtrT!dd_inddest) & "|" & _
+                                ConvStr(dtrT!dd_capdest) & "|" & _
+                                ConvStr(dtrT!dd_locdest) & "|" & _
+                                ConvStr(dtrT!dd_prodest) & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!dd_telef) & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!dd_email) & "|" & _
+                                ConvStr(dtrT!dd_faxtlx) & "|" & _
+                                ConvStr(dtrT!dd_note, True) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
   Public Overridable Function Elabora_ExportCliforAge(ByVal strFileOut As String) As Boolean
-    'esporta gli agenti di ogni cliente/fornitore ATTIVO o POTENZIALE
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCliforAge(strDittaCorrente, dttTmp, strCustomWhereGetCliforAge) Then Return False
+        'esporta gli agenti di ogni cliente/fornitore ATTIVO o POTENZIALE
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCliforAge(strDittaCorrente, dttTmp, strCustomWhereGetCliforAge) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_AGE|RAGSOC_AGE|PREFERENZIALE|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrT!an_conto) & "|" & _
-                      ConvStr(dtrT!xx_agente) & "|" & _
-                      ConvStr(dtrT!tb_descage) & "|" & _
-                      ConvStr(dtrT!xx_prefer) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_AGE|RAGSOC_AGE|PREFERENZIALE|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrT!an_conto) & "|" & _
+                                ConvStr(dtrT!xx_agente) & "|" & _
+                                ConvStr(dtrT!tb_descage) & "|" & _
+                                ConvStr(dtrT!xx_prefer) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
   Public Overridable Function Elabora_ExportCliforDettCon(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
-    'esporta l'organizzazione di ogni cliente/fornitore ATTIVO o POTENZIALE
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCliforDettCon(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforDettCon) Then Return False
+        'esporta l'organizzazione di ogni cliente/fornitore ATTIVO o POTENZIALE
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCliforDettCon(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforDettCon) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ID_CONTATTO|TIPO_CONTATTO|PREF|" & _
-                    "COGNOME_NOME|NOME|INDIRIZZO|CAP|CITTA|PR|ORARIO_LAVORO|TELEFONO1|TELEFONO2|" & _
-                    "CELLULARE1|CELLULARE2|TELEF_CASA|FAX|EMAIL1|EMAIL2|ALTRO_INDIRIZZO1|" & _
-                    "ALTRO_INDIRIZZO2|NOTE|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!og_progr) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrT!an_conto) & "|" & _
-                      ConvStr(dtrT!og_progr) & "|" & _
-                      ConvStr(dtrT!tb_desruaz) & "|" & _
-                      "1" & "|" & _
-                      (ConvStr(dtrT!og_descont)).Trim & "|" & _
-                      (ConvStr(dtrT!og_descont2)).Trim & "|" & _
-                      ConvStr(dtrT!og_indir) & "|" & _
-                      ConvStr(dtrT!og_cap) & "|" & _
-                      ConvStr(dtrT!og_citta) & "|" & _
-                      ConvStr(dtrT!og_prov) & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!og_telef) & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!og_cell) & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!og_fax) & "|" & _
-                      ConvStr(dtrT!og_email) & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ID_CONTATTO|TIPO_CONTATTO|PREF|" & _
+                        "COGNOME_NOME|NOME|INDIRIZZO|CAP|CITTA|PR|ORARIO_LAVORO|TELEFONO1|TELEFONO2|" & _
+                        "CELLULARE1|CELLULARE2|TELEF_CASA|FAX|EMAIL1|EMAIL2|ALTRO_INDIRIZZO1|" & _
+                        "ALTRO_INDIRIZZO2|NOTE|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!og_progr) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrT!an_conto) & "|" & _
+                                ConvStr(dtrT!og_progr) & "|" & _
+                                ConvStr(dtrT!tb_desruaz) & "|" & _
+                                "1" & "|" & _
+                                (ConvStr(dtrT!og_descont)).Trim & "|" & _
+                                (ConvStr(dtrT!og_descont2)).Trim & "|" & _
+                                ConvStr(dtrT!og_indir) & "|" & _
+                                ConvStr(dtrT!og_cap) & "|" & _
+                                ConvStr(dtrT!og_citta) & "|" & _
+                                ConvStr(dtrT!og_prov) & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!og_telef) & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!og_cell) & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!og_fax) & "|" & _
+                                ConvStr(dtrT!og_email) & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            Return True
 
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
   Public Overridable Function Elabora_ExportCliforFatt(ByVal strFileOut As String) As Boolean
-    'restituisco il fatturato degli ultimi 3 anno diviso per mese di ogni cliente/fornitore ATTIVO o POTENZIALE
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCliforFatt(strDittaCorrente, dttTmp, strCustomWhereGetCliforFatt) Then Return False
+        'restituisco il fatturato degli ultimi 3 anno diviso per mese di ogni cliente/fornitore ATTIVO o POTENZIALE
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCliforFatt(strDittaCorrente, dttTmp, strCustomWhereGetCliforFatt) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ANNO|MESE|FATTURATO|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_anno) & "§" & ConvStr(dtrT!xx_mese) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrT!an_conto) & "|" & _
-                      ConvStr(dtrT!xx_anno) & "|" & _
-                      ConvStr(dtrT!xx_mese) & "|" & _
-                      NTSCDec(dtrT!xx_fatturato).ToString(oApp.FormatSconti) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ANNO|MESE|FATTURATO|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_anno) & "§" & ConvStr(dtrT!xx_mese) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrT!an_conto) & "|" & _
+                                ConvStr(dtrT!xx_anno) & "|" & _
+                                ConvStr(dtrT!xx_mese) & "|" & _
+                                NTSCDec(dtrT!xx_fatturato).ToString(oApp.FormatSconti) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
-  Public Overridable Function Elabora_ExportCliforTestDoc(ByVal TipoCliFor As String, ByVal strFileOut As String, ByRef dttTm As DataTable) As Boolean
-    'restituisco le testate dei documenti di magazino/ordini di ogni cliente/fornitore ATTIVO o POTENZIALE
-    Dim sbFile As New StringBuilder
-    Dim strTipoDoc As String = ""
-    Dim strDescEvas As String = ""
-    Try
-      If Not oCldIbus.GetCliforTestDoc(TipoCliFor, strDittaCorrente, dttTm, strCustomWhereGetCliforTestDoc,
-                                       strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
+    Public Overridable Function Elabora_ExportCliforTestDoc(ByVal TipoCliFor As String, ByVal strFileOut As String, ByRef dttTmp As DataTable) As Boolean
+        'restituisco le testate dei documenti di magazino/ordini di ogni cliente/fornitore ATTIVO o POTENZIALE
+        Dim sbFile As New StringBuilder
+        Dim strTipoDoc As String = ""
+        Dim strDescEvas As String = ""
+        Try
+            If Not oCldIbus.GetCliforTestDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforTestDoc,
+                                            strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
-                    "FLGDAEVADERE|DATADOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|DOCORIG|" & _
-                    "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
-                    "NOTE_DOC|DATA_CONFERMA|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTm.Rows
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
+                        "FLGDAEVADERE|DATADOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|DOCORIG|" & _
+                        "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
+                        "NOTE_DOC|DATA_CONFERMA|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
 
-        Select Case ConvStr(dtrT!xx_flevas)
-          Case "0" : strDescEvas = "Da evadere"
-          Case "1" : strDescEvas = "Evaso"
-        End Select
+                Select Case ConvStr(dtrT!xx_flevas)
+                    Case "0" : strDescEvas = "Da evadere"
+                    Case "1" : strDescEvas = "Evaso"
+                End Select
 
-        Select Case NTSCStr(dtrT!tm_tipork)
-          Case "A" : strTipoDoc = "Fatt. Imm. em." '
-          Case "B" : strTipoDoc = "DDT emesso" ' 
-          Case "C" : strTipoDoc = "Corr. emesso"
-          Case "D" : strTipoDoc = "Fatt. Diff. em." '
-          Case "E" : strTipoDoc = "Note di Add. em."
-          Case "F" : strTipoDoc = "Ric.Fisc. em."
-          Case "I" : strTipoDoc = "Riem. Ric.Fisc."
-          Case "J" : strTipoDoc = "Note Accr. ric."
-          Case "(" : strTipoDoc = "Nota accr. diff. ric."
-          Case "K" : strTipoDoc = "Fatt. Diff. ric."
-          Case "L" : strTipoDoc = "Fatt. Imm. ric."
-          Case "M" : strTipoDoc = "DDT ricevuto"
-          Case "N" : strTipoDoc = "Note Accr. em."
-          Case "£" : strTipoDoc = "Nota accr. diff. em."
-          Case "P" : strTipoDoc = "Fatt.Ric.Fisc.Diff."
-          Case "S" : strTipoDoc = "Fatt.Ric.Fisc. em."
-          Case "T" : strTipoDoc = "Carico da prod."
-          Case "U" : strTipoDoc = "Scarico a prod."
-          Case "Z" : strTipoDoc = "Bolle di mov.int."
-          Case "W" : strTipoDoc = "Note di prel."
-          Case "R" : strTipoDoc = "Imp. cliente"
-          Case "O" : strTipoDoc = "Ord. forn."
-          Case "H" : strTipoDoc = "Ord. di prod."
-          Case "X" : strTipoDoc = "Imp. Trasfer."
-          Case "Q" : strTipoDoc = "Prev."
-          Case "#" : strTipoDoc = "Imp. di comm."
-          Case "V" : strTipoDoc = "Imp. cli aperto"
-          Case "$" : strTipoDoc = "Ord. forn aperto"
-          Case "Y" : strTipoDoc = "Imp. di prod."
-        End Select
+                Select Case NTSCStr(dtrT!tm_tipork)
+                    Case "A" : strTipoDoc = "Fatt. Imm. em." '
+                    Case "B" : strTipoDoc = "DDT emesso" ' 
+                    Case "C" : strTipoDoc = "Corr. emesso"
+                    Case "D" : strTipoDoc = "Fatt. Diff. em." '
+                    Case "E" : strTipoDoc = "Note di Add. em."
+                    Case "F" : strTipoDoc = "Ric.Fisc. em."
+                    Case "I" : strTipoDoc = "Riem. Ric.Fisc."
+                    Case "J" : strTipoDoc = "Note Accr. ric."
+                    Case "(" : strTipoDoc = "Nota accr. diff. ric."
+                    Case "K" : strTipoDoc = "Fatt. Diff. ric."
+                    Case "L" : strTipoDoc = "Fatt. Imm. ric."
+                    Case "M" : strTipoDoc = "DDT ricevuto"
+                    Case "N" : strTipoDoc = "Note Accr. em."
+                    Case "£" : strTipoDoc = "Nota accr. diff. em."
+                    Case "P" : strTipoDoc = "Fatt.Ric.Fisc.Diff."
+                    Case "S" : strTipoDoc = "Fatt.Ric.Fisc. em."
+                    Case "T" : strTipoDoc = "Carico da prod."
+                    Case "U" : strTipoDoc = "Scarico a prod."
+                    Case "Z" : strTipoDoc = "Bolle di mov.int."
+                    Case "W" : strTipoDoc = "Note di prel."
+                    Case "R" : strTipoDoc = "Imp. cliente"
+                    Case "O" : strTipoDoc = "Ord. forn."
+                    Case "H" : strTipoDoc = "Ord. di prod."
+                    Case "X" : strTipoDoc = "Imp. Trasfer."
+                    Case "Q" : strTipoDoc = "Prev."
+                    Case "#" : strTipoDoc = "Imp. di comm."
+                    Case "V" : strTipoDoc = "Imp. cli aperto"
+                    Case "$" : strTipoDoc = "Ord. forn aperto"
+                    Case "Y" : strTipoDoc = "Imp. di prod."
+                End Select
 
-        ' ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrT!an_conto) & "|" & _
-                      Asc(strTipoDoc).ToString & "|" & _
-                      ConvStr(dtrT!xx_tipobf) & "|" & _
-                      ConvStr(dtrT!xx_flevas) & "|" & _
-                      ConvData(dtrT!tm_datdoc, False) & "|" & _
-                      ConvStr(dtrT!xx_numreg) & "|" & _
-                      ConvStr(dtrT!tm_tipork) & "|" & _
-                      strTipoDoc.PadRight(20).Substring(0, 20).Trim & "|" & _
-                      ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!tm_serie) & "|" & _
-                      ConvStr(dtrT!tm_numdoc) & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!tm_magaz) & "|" & _
-                      ConvStr(dtrT!tb_desvalu) & "|" & _
-                      NTSCDec(dtrT!tm_totdoc).ToString(oApp.FormatSconti) & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!xx_flevas) & "|" & _
-                      strDescEvas & "|" & _
-                      ConvData(dtrT!tm_datfat, False) & "|" & _
-                      (ConvStr(dtrT!tm_numfat) & IIf(NTSCStr(dtrT!tm_alffat) <> " ", "/" & ConvStr(dtrT!tm_alffat), "").ToString).Trim & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      ConvData(dtrT!tm_ultagg, True) & vbCrLf)
-      Next
+                ' ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrT!an_conto) & "|" & _
+                                Asc(strTipoDoc).ToString & "|" & _
+                                ConvStr(dtrT!xx_tipobf) & "|" & _
+                                ConvStr(dtrT!xx_flevas) & "|" & _
+                                ConvData(dtrT!tm_datdoc, False) & "|" & _
+                                ConvStr(dtrT!xx_numreg) & "|" & _
+                                ConvStr(dtrT!tm_tipork) & "|" & _
+                                strTipoDoc.PadRight(20).Substring(0, 20).Trim & "|" & _
+                                ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!tm_serie) & "|" & _
+                                ConvStr(dtrT!tm_numdoc) & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!tm_magaz) & "|" & _
+                                ConvStr(dtrT!tb_desvalu) & "|" & _
+                                NTSCDec(dtrT!tm_totdoc).ToString(oApp.FormatSconti) & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                ConvStr(dtrT!xx_flevas) & "|" & _
+                                strDescEvas & "|" & _
+                                ConvData(dtrT!tm_datfat, False) & "|" & _
+                                (ConvStr(dtrT!tm_numfat) & IIf(NTSCStr(dtrT!tm_alffat) <> " ", "/" & ConvStr(dtrT!tm_alffat), "").ToString).Trim & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                ConvData(dtrT!tm_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
 
   Public Overridable Function Elabora_ExportCliforNote(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCliforNote(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforNote) Then Return False
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCliforNote(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforNote) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|PROGRESSIVO|TIPO_NOTA|NOTA|DAT_ULT_MOD" & vbCrLf)
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|PROGRESSIVO|TIPO_NOTA|NOTA|DAT_ULT_MOD" & vbCrLf)
 
-      For Each dtrTmp As DataRow In dttTmp.Rows
-        'FILE note
-        sbFile.Append(
-                      ConvStr(dtrTmp!xx_chiave) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrTmp!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrTmp!an_conto) & "|" & _
-                      ConvStr(dtrTmp!xx_progressivo) & "|" & _
-                      Left(ConvStr(dtrTmp!xx_codnote, True).Trim, 3900) & "|" & _
-                      ConvStr(dtrTmp!xx_desnote, True) & "|" & _
-                      ConvData(dtrTmp!xx_ultagg, True) & vbCrLf)
+            For Each dtrTmp As DataRow In dttTmp.Rows
+                'FILE note
+                sbFile.Append(
+                                ConvStr(dtrTmp!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrTmp!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrTmp!an_conto) & "|" & _
+                                ConvStr(dtrTmp!xx_progressivo) & "|" & _
+                                Left(ConvStr(dtrTmp!xx_codnote, True).Trim, 3900) & "|" & _
+                                ConvStr(dtrTmp!xx_desnote, True) & "|" & _
+                                ConvData(dtrTmp!xx_ultagg, True) & vbCrLf)
 
-      Next
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
 
-      Return True
+            End If
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
 
   Public Overridable Function Elabora_ExportCliforRighDoc(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
-    'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCliforRighDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforRighDoc,
-                                       strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
+        'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCliforRighDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforRighDoc,
+                                            strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
-      'ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
-      sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
-                    "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!xx_numreg) & "|" & _
-                      ConvStr(dtrT!mm_riga) & "|" & _
-                      (ConvStr(dtrT!mm_codart) & IIf(NTSCStr(dtrT!mm_fase) <> "0", "." & ConvStr(dtrT!mm_fase), "").ToString).Trim & "|" & _
-                      (ConvStr(dtrT!mm_descr) & " " & ConvStr(dtrT!mm_desint, True)).Trim & "|" & _
-                      ConvStr(dtrT!mm_ump) & "|" & _
-                      NTSCDec(dtrT!mm_quant).ToString("0.00000") & "|" & _
-                      "0" & "|" & _
-                      NTSCDec(dtrT!xx_prezzo).ToString("0.0000") & "|" & _
-                      NTSCDec(dtrT!mm_valore).ToString("0.00") & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                      ConvStr(dtrT!an_conto) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            'ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
+            sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
+                        "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!xx_numreg) & "|" & _
+                                ConvStr(dtrT!mm_riga) & "|" & _
+                                (ConvStr(dtrT!mm_codart) & IIf(NTSCStr(dtrT!mm_fase) <> "0", "." & ConvStr(dtrT!mm_fase), "").ToString).Trim & "|" & _
+                                (ConvStr(dtrT!mm_descr) & " " & ConvStr(dtrT!mm_desint, True)).Trim & "|" & _
+                                ConvStr(dtrT!mm_ump) & "|" & _
+                                NTSCDec(dtrT!mm_quant).ToString("0.00000") & "|" & _
+                                "0" & "|" & _
+                                NTSCDec(dtrT!xx_prezzo).ToString("0.0000") & "|" & _
+                                NTSCDec(dtrT!mm_valore).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mm_scont1).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mm_scont2).ToString("0.00") & "|" & _
+                                IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                ConvStr(dtrT!an_conto) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportCliforScadoc(ByVal TipoCliFor As String, ByVal strFileOut As String, ByRef dttTm As DataTable) As Boolean
-    'restituisco le scadenze di cliente/fornitore ATTIVO o POTENZIALE
-    'per collegare le scadenze ai relativi documenti precedentemente esportati, ...
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
+        'restituisco le scadenze di cliente/fornitore ATTIVO o POTENZIALE
+        'per collegare le scadenze ai relativi documenti precedentemente esportati, ...
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
 
-    Try
-      If Not oCldIbus.GetCliforScaDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforScaDoc) Then Return False
+        Try
+            If Not oCldIbus.GetCliforScaDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforScaDoc) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_RATA|DAT_SCAD|IMPORTO|NETTO_PREV|DES_TIPO|DES_STATO|DES_TIPO_PRES|DES_OPERAZIONE|" & _
-                    "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|DATA_DOC|NUM_DOC|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_integr) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
-                          strDittaCorrente & "|" & _
-                          ConvStr(dtrT!xx_numreg) & "|" & _
-                          ConvStr(dtrT!sc_numrata) & "|" & _
-                          ConvData(dtrT!sc_datsca, False) & "|" & _
-                          NTSCDec(dtrT!sc_importo).ToString(oApp.FormatSconti) & "|" & _
-                          "0" & "|" & _
-                          ConvStr(dtrT!tb_despaga) & "|" & _
-                          ConvStr(dtrT!xx_flsaldato) & "|" & _
-                          "" & "|" & _
-                          ConvStr(IIf(dtrT!sc_insolu.ToString = "S", "Insol.", "").ToString) & "|" & _
-                          "0" & "|" & _
-                          "0" & "|" & _
-                          (ConvStr(dtrT!sc_banc1) & " - " & ConvStr(dtrT!sc_banc2)).Trim & "|" & _
-                          IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
-                          ConvStr(dtrT!an_conto) & "|" & _
-                          ConvData(dtrT!sc_datdoc, False) & "|" & _
-                          dtrT!sc_numdoc.ToString & "|" & _
-                          ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_RATA|DAT_SCAD|IMPORTO|NETTO_PREV|DES_TIPO|DES_STATO|DES_TIPO_PRES|DES_OPERAZIONE|" & _
+                        "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|DATA_DOC|NUM_DOC|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_integr) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
+                                    strDittaCorrente & "|" & _
+                                    ConvStr(dtrT!xx_numreg) & "|" & _
+                                    ConvStr(dtrT!sc_numrata) & "|" & _
+                                    ConvData(dtrT!sc_datsca, False) & "|" & _
+                                    NTSCDec(dtrT!sc_importo).ToString(oApp.FormatSconti) & "|" & _
+                                    "0" & "|" & _
+                                    ConvStr(dtrT!tb_despaga) & "|" & _
+                                    ConvStr(dtrT!xx_flsaldato) & "|" & _
+                                    "" & "|" & _
+                                    ConvStr(IIf(dtrT!sc_insolu.ToString = "S", "Insol.", "").ToString) & "|" & _
+                                    "0" & "|" & _
+                                    "0" & "|" & _
+                                    (ConvStr(dtrT!sc_banc1) & " - " & ConvStr(dtrT!sc_banc2)).Trim & "|" & _
+                                    IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
+                                    ConvStr(dtrT!an_conto) & "|" & _
+                                    ConvData(dtrT!sc_datdoc, False) & "|" & _
+                                    dtrT!sc_numdoc.ToString & "|" & _
+                                    ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportArt(ByVal strFileOut As String, ByVal strFileOutConf As String, ByVal strFileUM As String, ByVal strCustomQuery As String) As Boolean
@@ -2241,14 +2153,6 @@ Public Class CLEIEIBUS
 
     Try
       If Not oCldIbus.GetArt(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArt, strScontoMax:=strScontoMaxPercentuale) Then Return False
-
-      'IB_ART.DAT
-      '       "        ar_unmis,                                                                                                " & _
-      '       "          ar_confez2,                                                                                              " & _
-      '       "          ar_qtacon2,                                                                                              " & _
-      '       "        ar_unmis2,                                                                                               " & _
-      '       "        ar_conver,                                                                                               " & _
-
 
       sbFile.Append("CHIAVE|COD_DITTA|COD_ART|DES_ART|COD_FAM|DES_FAM|COD_SFAM|DES_SFAM|COD_GRUPPO1|DES_GRUPPO1|" & _
                     "COD_GRUPPO2|DES_GRUPPO2|UM1|UM2|FATTORE_CONVERSIONE|DES_GR_STAT1|DES_GR_STAT2|QTA_MIN_VEND|" & _
@@ -2378,316 +2282,319 @@ Public Class CLEIEIBUS
     End Try
   End Function
   Public Overridable Function Elabora_ExportArtGiacenze(ByVal strFileOut As String) As Boolean
-    'esporta le giacenze divise per magazzino degli articoli (e relative fasi) 
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetArtGiacenze(strDittaCorrente, dttTmp, strCustomWhereGetArtGiacenze) Then Return False
+        'esporta le giacenze divise per magazzino degli articoli (e relative fasi) 
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetArtGiacenze(strDittaCorrente, dttTmp, strCustomWhereGetArtGiacenze) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|COD_ARTICOLO|COD_DEPOSITO|DES_DEPOSITO|GIACENZA|DISPONIBILITA|UM1|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!ap_magaz) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!ar_codart) & "|" & _
-                      ConvStr(dtrT!ap_magaz) & "|" & _
-                      ConvStr(dtrT!tb_desmaga) & "|" & _
-                      NTSCDec(dtrT!ap_esist).ToString("0.0000") & "|" & _
-                      NTSCDec(NTSCDec(dtrT!ap_esist) + NTSCDec(dtrT!ap_ordin) - NTSCDec(dtrT!ap_impeg)).ToString("0.0000") & "|" & _
-                      ConvStr(dtrT!ar_unmis) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ARTICOLO|COD_DEPOSITO|DES_DEPOSITO|GIACENZA|DISPONIBILITA|UM1|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!ap_magaz) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!ar_codart) & "|" & _
+                                ConvStr(dtrT!ap_magaz) & "|" & _
+                                ConvStr(dtrT!tb_desmaga) & "|" & _
+                                NTSCDec(dtrT!ap_esist).ToString("0.0000") & "|" & _
+                                NTSCDec(NTSCDec(dtrT!ap_esist) + NTSCDec(dtrT!ap_ordin) - NTSCDec(dtrT!ap_impeg)).ToString("0.0000") & "|" & _
+                                ConvStr(dtrT!ar_unmis) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportArtUltVen(ByVal strFileOutVen As String) As Boolean
-    'esporta l'ultima vendita e l'ultimo acquisto degli articoli (e relative fasi) 
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Dim sbFileA As New StringBuilder
-    Dim i As Integer = 0
-    Dim dPrezzo As Decimal = 0
-    Dim lClifor As Integer = 0
-    Dim strT() As String = Nothing
-    Dim strDtdoc As String = ""
-    Dim lNumdoc As Integer = 0
-    Dim strTipork As String = ""
-    Dim RotturaConto As String = ""
-    Dim bRottura As Boolean = False
-    Dim ContaRighe As Integer = 1
+        'esporta l'ultima vendita e l'ultimo acquisto degli articoli (e relative fasi) 
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim sbFileA As New StringBuilder
+        Dim i As Integer = 0
+        Dim dPrezzo As Decimal = 0
+        Dim lClifor As Integer = 0
+        Dim strT() As String = Nothing
+        Dim strDtdoc As String = ""
+        Dim lNumdoc As Integer = 0
+        Dim strTipork As String = ""
+        Dim RotturaConto As String = ""
+        Dim bRottura As Boolean = False
+        Dim ContaRighe As Integer = 1
 
 
-    Try
-      If Not oCldIbus.GetArtUltVen(strDittaCorrente, dttTmp, strCustomWhereGetArtUltVen, _
-                                   strGiorniUltVen:=strFiltroGGUltAcqVen) Then Return False
+        Try
+            If Not oCldIbus.GetArtUltVen(strDittaCorrente, dttTmp, strCustomWhereGetArtUltVen, _
+                                        strGiorniUltVen:=strFiltroGGUltAcqVen) Then Return False
 
-      'IB_ART_ULTVEN.DAT
-      sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|VALUTA|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
+            'IB_ART_ULTVEN.DAT
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|VALUTA|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
 
-        ' Per ogni coppia client/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
-        ' Ho implementato la "distinct" da codice per non complicare la leggibilita' della query e per problemi di prestazioni
-        'If RotturaConto <> ConvStr(dtrT!km_conto) Then
-        ' RotturaConto = ConvStr(dtrT!km_conto)
-        ' bRottura = True
-        ' Else
-        ' bRottura = False
-        ' End If
-        '
-        '  If bRottura Then
-        'ContaRighe = 1
-        'Else
-        'ContaRighe = +1
-        'End If
+                ' Per ogni coppia client/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
+                ' Ho implementato la "distinct" da codice per non complicare la leggibilita' della query e per problemi di prestazioni
+                'If RotturaConto <> ConvStr(dtrT!km_conto) Then
+                ' RotturaConto = ConvStr(dtrT!km_conto)
+                ' bRottura = True
+                ' Else
+                ' bRottura = False
+                ' End If
+                '
+                '  If bRottura Then
+                'ContaRighe = 1
+                'Else
+                'ContaRighe = +1
+                'End If
 
 
-        'lClifor = NTSCInt(strT(2))                         km_conto
-        'dPrezzo = NTSCDec(strT(1).Replace(".", ","))       mm_val
-        'strDtdoc = strT(0).Substring(0, 10)                km_aammgg
-        'lNumdoc = NTSCInt(strT(0).Substring(11, 9))        km_numdoc
-        i += 1
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!km_numdoc) & "§" & ConvStr(i) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!ar_codart) & "|" & _
-                      ConvStr(i) & "|" & _
-                      "" & "|" & _
-                      NTSCDec(dtrT!mm_val).ToString("0.0000") & "|" & _
-                      ConvData(dtrT!km_aammgg, False) & "|" & _
-                      ConvStr(dtrT!km_numdoc) & "|" & _
-                      ConvStr(dtrT!km_conto) & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+                'lClifor = NTSCInt(strT(2))                         km_conto
+                'dPrezzo = NTSCDec(strT(1).Replace(".", ","))       mm_val
+                'strDtdoc = strT(0).Substring(0, 10)                km_aammgg
+                'lNumdoc = NTSCInt(strT(0).Substring(11, 9))        km_numdoc
+                i += 1
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!km_numdoc) & "§" & ConvStr(i) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!ar_codart) & "|" & _
+                                ConvStr(i) & "|" & _
+                                "" & "|" & _
+                                NTSCDec(dtrT!mm_val).ToString("0.0000") & "|" & _
+                                ConvData(dtrT!km_aammgg, False) & "|" & _
+                                ConvStr(dtrT!km_numdoc) & "|" & _
+                                ConvStr(dtrT!km_conto) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOutVen, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOutVen, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportArtUltAcq(ByVal strFileOutAcq As String) As Boolean
-    'esporta l'ultima vendita e l'ultimo acquisto degli articoli (e relative fasi) 
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Dim sbFileA As New StringBuilder
-    Dim i As Integer = 0
-    Dim dPrezzo As Decimal = 0
-    Dim lClifor As Integer = 0
-    Dim strT() As String = Nothing
-    Dim strDtdoc As String = ""
-    Dim lNumdoc As Integer = 0
-    Dim strTipork As String = ""
+        'esporta l'ultima vendita e l'ultimo acquisto degli articoli (e relative fasi) 
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim sbFileA As New StringBuilder
+        Dim i As Integer = 0
+        Dim dPrezzo As Decimal = 0
+        Dim lClifor As Integer = 0
+        Dim strT() As String = Nothing
+        Dim strDtdoc As String = ""
+        Dim lNumdoc As Integer = 0
+        Dim strTipork As String = ""
 
 
-    Try
-      If Not oCldIbus.GetArtUltAcq(strDittaCorrente, dttTmp, strCustomWhereGetArtUltAcq, _
-                                   strGiorniUltAcq:=strFiltroGGUltAcqVen) Then Return False
+        Try
+            If Not oCldIbus.GetArtUltAcq(strDittaCorrente, dttTmp, strCustomWhereGetArtUltAcq, _
+                                        strGiorniUltAcq:=strFiltroGGUltAcqVen) Then Return False
 
-      'IB_ART_ULTACQ.DAT
-      sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|VALUTA|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|TIPO_DOC|DAT_ULT_MOD" & vbCrLf)
-      i = 0
-      For Each dtrT As DataRow In dttTmp.Rows
-        i += 1
+            'IB_ART_ULTACQ.DAT
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|VALUTA|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|TIPO_DOC|DAT_ULT_MOD" & vbCrLf)
+            i = 0
+            For Each dtrT As DataRow In dttTmp.Rows
+                i += 1
 
-        'lClifor = NTSCInt(strT(2))                         km_conto
-        'dPrezzo = NTSCDec(strT(1).Replace(".", ","))       mm_val
-        'strDtdoc = strT(0).Substring(0, 10)                km_aammgg
-        'lNumdoc = NTSCInt(strT(0).Substring(11, 9))        km_numdoc
+                'lClifor = NTSCInt(strT(2))                         km_conto
+                'dPrezzo = NTSCDec(strT(1).Replace(".", ","))       mm_val
+                'strDtdoc = strT(0).Substring(0, 10)                km_aammgg
+                'lNumdoc = NTSCInt(strT(0).Substring(11, 9))        km_numdoc
 
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!km_numdoc) & "§" & ConvStr(i) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!ar_codart) & "|" & _
-                      ConvStr(i) & "|" & _
-                      "" & "|" & _
-                      NTSCDec(dtrT!mm_val).ToString("0.0000") & "|" & _
-                      ConvData(dtrT!km_aammgg, False) & "|" & _
-                      ConvStr(dtrT!km_numdoc) & "|" & _
-                      ConvStr(dtrT!km_conto) & "|" & _
-                      "" & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!km_numdoc) & "§" & ConvStr(i) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!ar_codart) & "|" & _
+                                ConvStr(i) & "|" & _
+                                "" & "|" & _
+                                NTSCDec(dtrT!mm_val).ToString("0.0000") & "|" & _
+                                ConvData(dtrT!km_aammgg, False) & "|" & _
+                                ConvStr(dtrT!km_numdoc) & "|" & _
+                                ConvStr(dtrT!km_conto) & "|" & _
+                                "" & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOutAcq, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
 
-      Dim w1 As New StreamWriter(strFileOutAcq, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
 
   Public Overridable Function Elabora_ExportArtStoart(ByVal strFileOut As String) As Boolean
-    'esporta l'ultimo documento veduto per ogni cliente  
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Dim dPrezzo As Decimal = 0
-    Dim dQuant As Decimal = 0
-    Dim strT() As String = Nothing
-    Dim strDesart As String = ""
-    Dim strData As String = ""
+        'esporta l'ultimo documento veduto per ogni cliente  
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim dPrezzo As Decimal = 0
+        Dim dQuant As Decimal = 0
+        Dim strT() As String = Nothing
+        Dim strDesart As String = ""
+        Dim strData As String = ""
 
-    Dim RotturaConto As String = ""
-    Dim RotturaArticolo As String = ""
-    Dim bRottura As Boolean = False
+        Dim RotturaConto As String = ""
+        Dim RotturaArticolo As String = ""
+        Dim bRottura As Boolean = False
 
-    Try
-      If Not oCldIbus.GetArtStoart(strDittaCorrente, dttTmp, strCustomWhereGetArtStoart, _
-                                   strFiltroGiorniStoArt:=strFiltroGGStoArt) Then Return False
+        Try
+            If Not oCldIbus.GetArtStoart(strDittaCorrente, dttTmp, strCustomWhereGetArtStoart, _
+                                        strFiltroGiorniStoArt:=strFiltroGGStoArt) Then Return False
 
-      ' sbFile.Append("CHIAVE|COD_DITTA|COD_CLIFOR|COD_ART|DESC_ARTICOLO|NUM_RIGHE|ULT_NUM_REG|ULT_PROG_RIGA|" & _
-      '               "ULT_QTA|ULT_PRZ|UM1|ULT_QTA2|ULT_PRZ2|UM2|COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
-      '              "ULT_SC_PER5|ULT_SC_PER6|ULT_SC_IMPORTO|ULT_MAG_PER1|ULT_MAG_PER2|" & _
-      '             "ULT_MAG_IMPORTO|ULT_DATA|DAT_ULT_MOD" & vbCrLf)
+            sbFile.Append("CHIAVE|COD_DITTA|COD_CLIFOR|COD_ART|DESC_ARTICOLO|NUM_RIGHE|ULT_NUM_REG|ULT_PROG_RIGA|" & _
+                            "ULT_QTA|ULT_PRZ|ULT_UM|ULT_QTA2|ULT_PRZ2|ULT_UM2|COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
+                            "ULT_SC_PER5|ULT_SC_PER6|ULT_SC_IMPORTO|ULT_MAG_PER1|ULT_MAG_PER2|" & _
+                            "ULT_MAG_IMPORTO|ULT_DATA|DAT_ULT_MOD" & vbCrLf)
 
+            For Each dtrT As DataRow In dttTmp.Select("", "ar_codart, td_conto, td_datord DESC")
+                ' Per ogni coppia client/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
+                ' Ho implementato la "distinct" da codice per non complicare la leggibilita' della query e per problemi di prestazioni
+                If RotturaConto <> ConvStr(dtrT!td_conto) Or RotturaArticolo <> ConvStr(dtrT!ar_codart) Then
+                    RotturaConto = ConvStr(dtrT!td_conto)
+                    RotturaArticolo = ConvStr(dtrT!ar_codart)
+                    bRottura = True
+                Else
+                    bRottura = False
+                End If
 
-      sbFile.Append("CHIAVE|COD_DITTA|COD_CLIFOR|COD_ART|DESC_ARTICOLO|NUM_RIGHE|ULT_NUM_REG|ULT_PROG_RIGA|" & _
-                     "ULT_QTA|ULT_PRZ|ULT_UM|ULT_QTA2|ULT_PRZ2|ULT_UM2|COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
-                     "ULT_SC_PER5|ULT_SC_PER6|ULT_SC_IMPORTO|ULT_MAG_PER1|ULT_MAG_PER2|" & _
-                     "ULT_MAG_IMPORTO|ULT_DATA|DAT_ULT_MOD" & vbCrLf)
+                If bRottura Then
+                    sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!xx_code) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!td_conto) & "|" & _
+                                ConvStr(dtrT!ar_codart) & "|" & _
+                                ConvStr(dtrT!mo_descr) & "|" & _
+                                "1" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
+                                NTSCDec(dtrT!mo_prezzo).ToString("0.00000") & "|" & _
+                                ConvStr(dtrT!mo_ump) & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                IIf(ConvStr(dtrT!td_coddest) = "0", "", ConvStr(dtrT!td_coddest)).ToString & "|" & _
+                                NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont2).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont3).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont4).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont5).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont6).ToString("0.00") & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                "0" & "|" & _
+                                ConvData(dtrT!td_datord, False) & "|" & _
+                                ConvData(dtrT!mo_ultagg, True) & vbCrLf)
+                End If
+            Next
 
-      '.Select("", "tipork, datord, conto, agente")
-      ' For Each dtrT As DataRow In dttIn.Select("", "tipork, datord, conto, agente")
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
 
-      For Each dtrT As DataRow In dttTmp.Select("", "ar_codart, td_conto, td_datord DESC")
-        ' Per ogni coppia client/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
-        ' Ho implementato la "distinct" da codice per non complicare la leggibilita' della query e per problemi di prestazioni
-        If RotturaConto <> ConvStr(dtrT!td_conto) Or RotturaArticolo <> ConvStr(dtrT!ar_codart) Then
-          RotturaConto = ConvStr(dtrT!td_conto)
-          RotturaArticolo = ConvStr(dtrT!ar_codart)
-          bRottura = True
-        Else
-          bRottura = False
-        End If
-
-        If bRottura Then
-          sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!xx_code) & "|" & _
-                        strDittaCorrente & "|" & _
-                        ConvStr(dtrT!td_conto) & "|" & _
-                        ConvStr(dtrT!ar_codart) & "|" & _
-                        ConvStr(dtrT!mo_descr) & "|" & _
-                        "1" & "|" & _
-                        "0" & "|" & _
-                        "0" & "|" & _
-                        NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
-                        NTSCDec(dtrT!mo_prezzo).ToString("0.00000") & "|" & _
-                        ConvStr(dtrT!mo_ump) & "|" & _
-                        "" & "|" & _
-                        "" & "|" & _
-                        "" & "|" & _
-                        IIf(ConvStr(dtrT!td_coddest) = "0", "", ConvStr(dtrT!td_coddest)).ToString & "|" & _
-                        NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
-                        NTSCDec(dtrT!mo_scont2).ToString("0.00") & "|" & _
-                        NTSCDec(dtrT!mo_scont3).ToString("0.00") & "|" & _
-                        NTSCDec(dtrT!mo_scont4).ToString("0.00") & "|" & _
-                        NTSCDec(dtrT!mo_scont5).ToString("0.00") & "|" & _
-                        NTSCDec(dtrT!mo_scont6).ToString("0.00") & "|" & _
-                        "0" & "|" & _
-                        "0" & "|" & _
-                        "0" & "|" & _
-                        "0" & "|" & _
-                        ConvData(dtrT!td_datord, False) & "|" & _
-                        ConvData(dtrT!mo_ultagg, True) & vbCrLf)
-        End If
-      Next
-
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportCampagne(ByVal strFileOut As String) As Boolean
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetCampagne(strDittaCorrente, dttTmp, strCustomWhereGetCampagne) Then Return False
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetCampagne(strDittaCorrente, dttTmp, strCustomWhereGetCampagne) Then Return False
 
-      sbFile.Append("CHIAVE|COD_DITTA|COD_CAMPAGNA|DES_CAMPAGNA|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!tb_codcamp) & "|" & _
-                      ConvStr(dtrT!tb_descamp) & "|" & _
-                     ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-      Next
+            sbFile.Append("CHIAVE|COD_DITTA|COD_CAMPAGNA|DES_CAMPAGNA|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codcamp) & "|" & _
+                                ConvStr(dtrT!tb_descamp) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            Return True
 
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
 
@@ -2737,197 +2644,189 @@ Public Class CLEIEIBUS
 
 
   Public Overridable Function Elabora_ExportListini(ByVal strFileOut As String) As Boolean
-    'esporta i listini in vigore alla data odierna
-    'no listini in valuta
-    'no listini per lavorazioni
-    'no listini per unità di misura diversa dalla ump
+        'esporta i listini in vigore alla data odierna
+        'no listini in valuta
+        'no listini per lavorazioni
+        'no listini per unità di misura diversa dalla ump
 
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetArtListini(strDittaCorrente, dttTmp, strCustomWhereGetArtListini) Then Return False
-      '53
-      sbFile.Append("CHIAVE|COD_DITTA|TIPO_LISTINO|COD_ART|TIPO_CLIFOR|COD_CLIFOR|" & _
-                    "COD_DEPOSITO|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|" & _
-                    "COD_SOTTOCATEGORIA|COD_FAM_INIZIO|COD_FAM_FINE|COD_SFAM_INIZIO|COD_SFAM_FINE|" & _
-                    "COD_GRUPPO_INIZIO|COD_GRUPPO_FINE|COD_SGRUPPO_INIZIO|COD_SGRUPPO_FINE|" & _
-                    "COD_LISTINO|COD_CAMPAGNA|COD_DESTINAZIONE|COD_CLASSE|QUANTITA_INIZIO|QUANTITA_FINE|DATA_INIZIO|DATA_FINE|" & _
-                    "PREZZO|PRIORITA|" & _
-                    "SCONTO1|SCONTO2|SCONTO3|SCONTO4|SCONTO5|SCONTO6|" & _
-                    "SCONTO_IMP|MAG_PERC1|MAG_PERC2|MAG_IMP|" & _
-                    "IND_GES_PREZZO|IND_GES_SC1_PER|IND_GES_SC2_PER|IND_GES_SC3_PER|IND_GES_SC4_PER|IND_GES_SC5_PER|IND_GES_SC6_PER|" & _
-                    "IND_GES_SC_IMP|IND_GES_MAG1_PER|IND_GES_MAG2_PER|IND_GES_MAG_IMP|FLG_ESCLUDI_SCONTI|COD_COMBINAZIONE|DAT_ULT_MOD" & vbCrLf)
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetArtListini(strDittaCorrente, dttTmp, strCustomWhereGetArtListini) Then Return False
+            '53
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_LISTINO|COD_ART|TIPO_CLIFOR|COD_CLIFOR|" & _
+                        "COD_DEPOSITO|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|" & _
+                        "COD_SOTTOCATEGORIA|COD_FAM_INIZIO|COD_FAM_FINE|COD_SFAM_INIZIO|COD_SFAM_FINE|" & _
+                        "COD_GRUPPO_INIZIO|COD_GRUPPO_FINE|COD_SGRUPPO_INIZIO|COD_SGRUPPO_FINE|" & _
+                        "COD_LISTINO|COD_CAMPAGNA|COD_DESTINAZIONE|COD_CLASSE|QUANTITA_INIZIO|QUANTITA_FINE|DATA_INIZIO|DATA_FINE|" & _
+                        "PREZZO|PRIORITA|" & _
+                        "SCONTO1|SCONTO2|SCONTO3|SCONTO4|SCONTO5|SCONTO6|" & _
+                        "SCONTO_IMP|MAG_PERC1|MAG_PERC2|MAG_IMP|" & _
+                        "IND_GES_PREZZO|IND_GES_SC1_PER|IND_GES_SC2_PER|IND_GES_SC3_PER|IND_GES_SC4_PER|IND_GES_SC5_PER|IND_GES_SC6_PER|" & _
+                        "IND_GES_SC_IMP|IND_GES_MAG1_PER|IND_GES_MAG2_PER|IND_GES_MAG_IMP|FLG_ESCLUDI_SCONTI|COD_COMBINAZIONE|DAT_ULT_MOD" & vbCrLf)
 
-      'COD_COMBINAZIONE|
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!lc_listino) & "§" & ConvStr(dtrT!lc_progr) & "|" & _
-                      strDittaCorrente & "|" & _
-                      "0" & "|" & _
-                      ConvStr(dtrT!ar_codart) & "|" & _
-                      "0" & "|" & _
-                       ConvStr(dtrT!lc_conto) & "|" & _
- _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
- _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
- _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
- _
-                      ConvStr(dtrT!lc_listino) & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      NTSCDec(dtrT!lc_daquant).ToString("0.00") & "|" & _
-                      NTSCDec(dtrT!lc_aquant).ToString("0.00") & "|" & _
-                      ConvData(dtrT!lc_datagg, False) & "|" & _
-                      ConvData(dtrT!lc_datscad, False) & "|" & _
- _
-                      (NTSCDec(dtrT!lc_prezzo) / NTSCDec(dtrT!lc_perqta)).ToString("0.00000000") & "|" & _
-                      dtrT!xx_prior.ToString & "|" & _
- _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
- _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
- _
-                      "4" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
- _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      "0" & "|" & _
-                      ConvStr(dtrT!lc_netto) & "|" & _
-                      "" & "|" & _
-                      ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-        '"" & "|" & _
+            'COD_COMBINAZIONE|
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!lc_listino) & "§" & ConvStr(dtrT!lc_progr) & "|" & _
+                    strDittaCorrente & "|" & _
+                    "0" & "|" & _
+                    ConvStr(dtrT!ar_codart) & "|" & _
+                    "0" & "|" & _
+                    ConvStr(dtrT!lc_conto) & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    ConvStr(dtrT!lc_listino) & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    "" & "|" & _
+                    NTSCDec(dtrT!lc_daquant).ToString("0.00") & "|" & _
+                    NTSCDec(dtrT!lc_aquant).ToString("0.00") & "|" & _
+                    ConvData(dtrT!lc_datagg, False) & "|" & _
+                    ConvData(dtrT!lc_datscad, False) & "|" & _
+                    (NTSCDec(dtrT!lc_prezzo) / NTSCDec(dtrT!lc_perqta)).ToString("0.00000000") & "|" & _
+                    dtrT!xx_prior.ToString & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "4" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    "0" & "|" & _
+                    ConvStr(dtrT!lc_netto) & "|" & _
+                    "" & "|" & _
+                    ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
 
-        '                      ConvStr(dtrT!ar_unmis) & "|" & _
-        '                     dtrT!lc_codtpro.ToString & "|" & _
-        '             
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ExportSconti(ByVal strFileOut As String) As Boolean
-    'esporta gli sconti in vigore alla data odierna
+        'esporta gli sconti in vigore alla data odierna
 
-    Dim strTrattaSc1 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc1", "S", " ", "S")
-    Dim strTrattaSc2 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc2", "S", " ", "S")
-    Dim strTrattaSc3 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc3", "S", " ", "S")
-    Dim strTrattaSc4 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc4", "S", " ", "S")
-    Dim strTrattaSc5 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc5", "S", " ", "S")
-    Dim strTrattaSc6 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc6", "S", " ", "S")
+        Dim strTrattaSc1 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc1", "S", " ", "S")
+        Dim strTrattaSc2 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc2", "S", " ", "S")
+        Dim strTrattaSc3 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc3", "S", " ", "S")
+        Dim strTrattaSc4 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc4", "S", " ", "S")
+        Dim strTrattaSc5 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc5", "S", " ", "S")
+        Dim strTrattaSc6 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc6", "S", " ", "S")
 
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Dim strPrior As String = ""
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim strPrior As String = ""
 
-    Try
-      If Not oCldIbus.GetArtSconti(strDittaCorrente, dttTmp, strCustomWhereGetArtSconti) Then Return False
+        Try
+            If Not oCldIbus.GetArtSconti(strDittaCorrente, dttTmp, strCustomWhereGetArtSconti) Then Return False
 
 
-      sbFile.Append("CHIAVE|COD_DITTA|COD_ART|TIPO_CLIFOR|COD_CLIFOR|CLASSE_ARTICOLO|DES_CLASSE_ARTICOLO|CLASSE_CLIENTE|DES_CLASSE_CLIENTE|COD_PROMO|" & _
-              "QUANTITA_INIZIO|QUANTITA_FINE|DATA_INIZIO|DATA_FINE|PRIORITA|SCONTO1|SCONTO2|SCONTO3|SCONTO4|" & _
-              "SCONTO5|SCONTO6|TIPO_SCONTO1|TIPO_SCONTO2|TIPO_SCONTO3|TIPO_SCONTO4|TIPO_SCONTO5|TIPO_SCONTO6|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Rows
-        If oApp.oGvar.strPriorSconti <> "ACBDFE" Then
-          strPrior = dtrT!xx_prior1.ToString
-        Else
-          strPrior = dtrT!xx_prior2.ToString
-        End If
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|TIPO_CLIFOR|COD_CLIFOR|CLASSE_ARTICOLO|DES_CLASSE_ARTICOLO|CLASSE_CLIENTE|DES_CLASSE_CLIENTE|COD_PROMO|" & _
+                    "QUANTITA_INIZIO|QUANTITA_FINE|DATA_INIZIO|DATA_FINE|PRIORITA|SCONTO1|SCONTO2|SCONTO3|SCONTO4|" & _
+                    "SCONTO5|SCONTO6|TIPO_SCONTO1|TIPO_SCONTO2|TIPO_SCONTO3|TIPO_SCONTO4|TIPO_SCONTO5|TIPO_SCONTO6|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                If oApp.oGvar.strPriorSconti <> "ACBDFE" Then
+                    strPrior = dtrT!xx_prior1.ToString
+                Else
+                    strPrior = dtrT!xx_prior2.ToString
+                End If
 
-        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!so_conto) & "§" & ConvStr(dtrT!so_clscan) & "§" & ConvStr(dtrT!so_clscar) & "§" & ConvStr(dtrT!so_codtpro) & "§" & ConvStr(dtrT!so_daquant) & "§" & ConvData(dtrT!so_datagg, False) & "|" & _
-                      strDittaCorrente & "|" & _
-                      IIf(ConvStr(dtrT!ar_codart) = "0", "", ConvStr(dtrT!ar_codart)).ToString & "|" & _
-                      "0" & "|" & _
-                      IIf(ConvStr(dtrT!so_conto) = "0", "", ConvStr(dtrT!so_conto)).ToString & "|" & _
-                      IIf(ConvStr(dtrT!so_clscar) = "0", "", ConvStr(dtrT!so_clscar)).ToString & "|" & _
-                      ConvStr(dtrT!tb_descsar) & "|" & _
-                      IIf(ConvStr(dtrT!so_clscan) = "0", "", ConvStr(dtrT!so_clscan)).ToString & "|" & _
-                      ConvStr(dtrT!tb_descscl) & "|" & _
-                      IIf(ConvStr(dtrT!so_codtpro) = "0", "", ConvStr(dtrT!so_codtpro)).ToString & "|" & _
-                      NTSCDec(dtrT!so_daquant).ToString("0.00") & "|" & _
-                      NTSCDec(dtrT!so_aquant).ToString("0.00") & "|" & _
-                      ConvData(dtrT!so_datagg, False) & "|" & _
-                      ConvData(dtrT!so_datscad, False) & "|" & _
-                      strPrior & "|" & _
-                      NTSCDec(dtrT!so_scont1).ToString("0.00") & "|" & _
-                      NTSCDec(dtrT!so_scont2).ToString("0.00") & "|" & _
-                      NTSCDec(dtrT!so_scont3).ToString("0.00") & "|" & _
-                      NTSCDec(dtrT!so_scont4).ToString("0.00") & "|" & _
-                      NTSCDec(dtrT!so_scont5).ToString("0.00") & "|" & _
-                      NTSCDec(dtrT!so_scont6).ToString("0.00") & "|" & _
-                      strTrattaSc1 & "|" & _
-                      strTrattaSc2 & "|" & _
-                      strTrattaSc3 & "|" & _
-                      strTrattaSc4 & "|" & _
-                      strTrattaSc5 & "|" & _
-                      strTrattaSc5 & "|" & _
-                      ConvData(dtrT!so_ultagg, True) & vbCrLf)
-      Next
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!so_conto) & "§" & ConvStr(dtrT!so_clscan) & "§" & ConvStr(dtrT!so_clscar) & "§" & ConvStr(dtrT!so_codtpro) & "§" & ConvStr(dtrT!so_daquant) & "§" & ConvData(dtrT!so_datagg, False) & "|" & _
+                                strDittaCorrente & "|" & _
+                                IIf(ConvStr(dtrT!ar_codart) = "0", "", ConvStr(dtrT!ar_codart)).ToString & "|" & _
+                                "0" & "|" & _
+                                IIf(ConvStr(dtrT!so_conto) = "0", "", ConvStr(dtrT!so_conto)).ToString & "|" & _
+                                IIf(ConvStr(dtrT!so_clscar) = "0", "", ConvStr(dtrT!so_clscar)).ToString & "|" & _
+                                ConvStr(dtrT!tb_descsar) & "|" & _
+                                IIf(ConvStr(dtrT!so_clscan) = "0", "", ConvStr(dtrT!so_clscan)).ToString & "|" & _
+                                ConvStr(dtrT!tb_descscl) & "|" & _
+                                IIf(ConvStr(dtrT!so_codtpro) = "0", "", ConvStr(dtrT!so_codtpro)).ToString & "|" & _
+                                NTSCDec(dtrT!so_daquant).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!so_aquant).ToString("0.00") & "|" & _
+                                ConvData(dtrT!so_datagg, False) & "|" & _
+                                ConvData(dtrT!so_datscad, False) & "|" & _
+                                strPrior & "|" & _
+                                NTSCDec(dtrT!so_scont1).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!so_scont2).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!so_scont3).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!so_scont4).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!so_scont5).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!so_scont6).ToString("0.00") & "|" & _
+                                strTrattaSc1 & "|" & _
+                                strTrattaSc2 & "|" & _
+                                strTrattaSc3 & "|" & _
+                                strTrattaSc4 & "|" & _
+                                strTrattaSc5 & "|" & _
+                                strTrattaSc5 & "|" & _
+                                ConvData(dtrT!so_ultagg, True) & vbCrLf)
+            Next
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
-      Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
   End Function
 
   Public Overridable Function Elabora_ImportCliforNote() As Boolean

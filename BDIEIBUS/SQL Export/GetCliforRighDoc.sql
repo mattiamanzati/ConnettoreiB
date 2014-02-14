@@ -32,6 +32,9 @@ SELECT
         mm_quant,                                                         
         mm_colli,                                                         
         mm_valore,
+		mm_scont1,
+		mm_scont2,
+		mm_scont3,
         CASE                                                              
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
@@ -72,7 +75,10 @@ UNION ALL
         mm_ump,                                                           
         mm_quant,                                                         
         mm_colli,                                                         
-        mm_valore, 
+        mm_valore,
+		mm_scont1,
+		mm_scont2,
+		mm_scont3,
         CASE                                                              
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
@@ -116,6 +122,9 @@ UNION ALL
         mm_quant,                                                         
         mm_colli,                                                         
         mm_valore,
+		mm_scont1,
+		mm_scont2,
+		mm_scont3,
         CASE                                                              
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
@@ -157,6 +166,9 @@ UNION ALL
 		mm_quant,                                                         
 		mm_colli,                                                         
 		mm_valore,
+		mm_scont1,
+		mm_scont2,
+		mm_scont3,
 		CASE                                                              
 			WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
 			ELSE 0                                                          
@@ -203,7 +215,10 @@ UNION ALL
         mm_ump,                                                           
         mm_quant,                                                         
         mm_colli,                                                         
-        mm_valore, 
+        mm_valore,
+		mm_scont1,
+		mm_scont2,
+		mm_scont3,
         CASE                                                              
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
@@ -252,7 +267,10 @@ UNION ALL
             mo_ump,                                                          
             mo_quant,                                                        
             mo_colli,                                                        
-            mo_valoremm, 
+            mo_valoremm,
+			mo_scont1,
+			mo_scont2,
+			mo_scont3, 
             CASE                                                             
             WHEN mo_quant <> 0 THEN Round(mo_valoremm / mo_quant, 4)       
             ELSE 0                                                         

@@ -58,7 +58,8 @@ SELECT
 					AND artico.ar_codmarc = tabmarc.tb_codmarc
     WHERE  1=1                                                                                                     
             AND artico.codditt =  @ditta
-            AND ( ar_stainv = 'S' OR ar_codart = 'D' )                                                              
+			AND ( artico.ar_codart <> 'D') 
+            AND ( ar_stainv = 'S')                                                              
             AND ar_codtagl = 0                                                                                      
             AND td_tipork IN ('Q', 'R', 'O' )                                                             
             --AND ( ar_gesvar = 'N'  OR ( ar_gesvar = 'S'  AND ar_codroot <> '' ) )
@@ -120,7 +121,8 @@ SELECT
 					AND artico.ar_codmarc = tabmarc.tb_codmarc
     WHERE  1=1                                                                                                     
             AND artico.codditt =  @ditta
-            AND ( ar_stainv = 'S' OR ar_codart = 'D' )                                                              
+			AND ( artico.ar_codart <> 'D') 
+            AND ( ar_stainv = 'S' )                                                              
             AND ar_codtagl = 0       
 		    AND an_tipo <> 'S'                                                
             AND an_status = 'A'                                                                                   
