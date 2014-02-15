@@ -3938,7 +3938,7 @@ NEXT_FILE:
         With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
           If NTSCStr(dtrT!desart).Trim <> "" Then !ec_descr = NTSCStr(dtrT!desart).PadRight(40).Substring(0, 40)
           If NTSCStr(dtrT!desart).Length > 40 Then
-            !ec_note = NTSCStr(dtrT!desart).PadRight(40).Substring(40, 40)
+                        !ec_note = NTSCStr(dtrT!desart).PadRight(200).Substring(40, 40)
           End If
           !ec_note = NTSCStr(!ec_note) & " " & NTSCStr(dtrT!note)
           !ec_unmis = NTSCStr(dtrT!um)
