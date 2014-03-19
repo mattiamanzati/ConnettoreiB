@@ -80,739 +80,743 @@ Public Class CLEIEIBUS
   Public strFiltroGGOfferte As String = ""
   Public strFiltroGGUltAcqVen As String = ""
   Public strFiltroCliConAgenti As String = ""
-  Public strIncludileadClienti As String = ""
-  Public strScontoMaxPercentuale As String = ""
-  Public strAttivaAlert As String = ""
-  Public strContiEsclusi As String = "0"  'conto NS stabilimento
+    Public strIncludileadClienti As String = ""
 
-  ' Variabili per la sostituzione della query
-  Public strCustomQueryGetArt As String = ""
-  Public strCustomQueryGetArtCatalogo As String = ""
-  Public strCustomQueryGetArtUM_EstraiTutte As String = ""
+    Public strScontoMaxPercentuale As String = ""
+    Public strPercentualeSuPrezzoMinimoVendita As String = ""
 
-  ' Variabili per la personalizzazione del filtro di where delle query
-  Public strCustomWhereGetAgentiCliente As String = ""
-  Public strCustomWhereGetArt As String = ""
-  Public strCustomWhereGetArtCatalogo As String = ""
-  Public strCustomWhereGetArtGiacenze As String = ""
-  Public strCustomWhereGetArtListini As String = ""
-  Public strCustomWhereGetArtSconti As String = ""
-  Public strCustomWhereGetArtStoart As String = ""
-  Public strCustomWhereGetArtUltAcq As String = ""
-  Public strCustomWhereGetArtUltVen As String = ""
-  Public strCustomWhereGetCampagne As String = ""
-  Public strCustomWhereGetClifor As String = ""
-  Public strCustomWhereGetCliforAge As String = ""
-  Public strCustomWhereGetCliforBlo As String = ""
-  Public strCustomWhereGetCliforDestdiv As String = ""
-  Public strCustomWhereGetCliforDettCon As String = ""
-  Public strCustomWhereGetCliforFatt As String = ""
-  Public strCustomWhereGetCliforNote As String = ""
-  Public strCustomWhereGetCliforRighDoc As String = ""
-  Public strCustomWhereGetCliforScaDoc As String = ""
-  Public strCustomWhereGetCliforSenzaCoordinate As String = ""
-  Public strCustomWhereGetCliforTestDoc As String = ""
-  Public strCustomWhereGetCodpaga As String = ""
-  Public strCustomWhereGetComuni As String = ""
-  Public strCustomWhereGetLeadAccessi As String = ""
-  Public strCustomWhereGetLeadAccessiCrm As String = ""
-  Public strCustomWhereGetLeadDetCon As String = ""
-  Public strCustomWhereGetLeadNote As String = ""
-  Public strCustomWhereGetLeadRighOff As String = ""
-  Public strCustomWhereGetLeads As String = ""
-  Public strCustomWhereGetLeadTestOff As String = ""
+    Public strAttivaAlert As String = ""
+    Public strContiEsclusi As String = "0"  'conto NS stabilimento
 
-  Public arFileGen As New ArrayList       'elenco di file generatici che andranno copiati dalla dir TMP alla dir di dropbox
-  Public strTipork As String = ""         'elenco operazioni da compiere in import/export
+    ' Variabili per la sostituzione della query
+    Public strCustomQueryGetArt As String = ""
+    Public strCustomQueryGetArtCatalogo As String = ""
+    Public strCustomQueryGetArtUM_EstraiTutte As String = ""
 
-  Public Const FilePrefix As String = "io_"
-  Public Const cIMP_ART As String = "io_art.dat"
-  Public Const cIMP_ART_LANG As String = "io_art_lang.dat"
-  Public Const cIMP_ARTICOLI_ASSORTIMENTI As String = "io_articoli_assortimenti.dat"
-  Public Const cIMP_ART_CONF As String = "io_art_conf.dat"
-  Public Const cIMP_ART_ULTACQ As String = "io_art_ultacq.dat"
-  Public Const cIMP_ART_ULTVEN As String = "io_art_ultven.dat"
-  Public Const cIMP_ART_UM As String = "io_art_um.dat"
-  Public Const cIMP_ASSORTIMENTI As String = "io_assortimenti.dat"
-  Public Const cIMP_CAMPAGNE As String = "io_campagne.dat"
-  Public Const cIMP_CITTA As String = "io_citta.dat"
-  Public Const cIMP_CLIENTI_ASSORTIMENTI As String = "io_clienti_assortimenti.dat"
-  Public Const cIMP_CLIFOR_GEN As String = "io_clifor_gen.dat"
-  Public Const cIMP_CLIFOR As String = "io_clifor.dat"
-  Public Const cIMP_CLIFOR_AGE As String = "io_clifor_age.dat"
-  Public Const cIMP_CLIFOR_BLO As String = "io_clifor_blo.dat"
-  Public Const cIMP_CLIFOR_DEST As String = "io_clifor_dest.dat"
-  Public Const cIMP_CLIFOR_DETCON As String = "io_clifor_detcon.dat"
-  Public Const cIMP_CLIFOR_FATT As String = "io_clifor_fatt.dat"
-  Public Const cIMP_CLIFOR_GIROVISITA As String = "io_clifor_girovisita.dat"
-  Public Const cIMP_CLIFOR_INFO As String = "io_clifor_info.dat"
-  Public Const cIMP_CLIFOR_NOTE As String = "io_clifor_note.dat"
-  Public Const cIMP_CLIFOR_RIGHDOC As String = "io_clifor_righdoc.dat"
-  Public Const cIMP_CLIFOR_SCADOC As String = "io_clifor_scadoc.dat"
-  Public Const cIMP_CLIFOR_TESTDOC As String = "io_clifor_testdoc.dat"
-  Public Const cIMP_CLIFOR_VEN As String = "io_clifor_ven.dat"
-  Public Const cIMP_CONDPAG As String = "io_condpag.dat"
-  Public Const cIMP_CONDPAG_LANG As String = "io_condpag_lang.dat"
-  Public Const cIMP_CUSTOM_FIELDS As String = "io_custom_fields.dat"
-  Public Const cIMP_GIACENZE As String = "io_giacenze.dat"
-  Public Const cIMP_INFO As String = "io_info.dat"
-  Public Const cIMP_LEADS As String = "io_leads.dat"
-  Public Const cIMP_LEAD_ACCCRM As String = "io_lead_acccrm.dat"
-  Public Const cIMP_LEAD_ACCESSI As String = "io_lead_accessi.dat"
-  Public Const cIMP_LEAD_NOTE As String = "io_lead_note.dat"
-  Public Const cIMP_LEAD_RIGHOFF As String = "io_lead_righoff.dat"
-  Public Const cIMP_LEAD_SCONTI As String = "io_lead_sconti.dat"
-  Public Const cIMP_LEAD_TESTOFF As String = "io_lead_testoff.dat"
-  Public Const cIMP_LEAD_DETCON As String = "io_lead_detcon.dat"
-  Public Const cIMP_LISTINI_FULL As String = "io_listini_full.dat"
-  Public Const cIMP_STOART As String = "io_stoart.dat"
-  Public Const cIMP_SCONTI As String = "io_sconti.dat"
-  Public Const cIMP_VALUTE As String = "io_valute.dat"
-  Public Const cIMP_TAGLIE_ASSORTIMENTI As String = "io_taglie_assortimenti.dat"
-  Public Const cIMP_TAGLIE_CATALOGHI As String = "io_taglie_cataloghi.dat"
-  Public Const cIMP_TAGLIE_CATALOGHI_ART As String = "io_taglie_cataloghi_art.dat"
-  Public Const cIMP_TAGLIE_ESTENSIONI As String = "io_taglie_estensioni.dat"
-  Public Const cIMP_TAGLIE_SVILUPPI As String = "io_taglie_sviluppi.dat"
-  Public Const cIMP_TAGLIE_SVILUPPI_ART As String = "io_taglie_sviluppi_art.dat"
-  Public Const cIMP_VAR_COMBINAZIONI As String = "io_var_combinazioni.dat"
-  Public Const cIMP_CATALOGO As String = "io_catalogo.dat"
-  Public Const cIMP_REPORT As String = "io_reports.dat"
+    ' Variabili per la personalizzazione del filtro di where delle query
+    Public strCustomWhereGetAgentiCliente As String = ""
+    Public strCustomWhereGetArt As String = ""
+    Public strCustomWhereGetArtCatalogo As String = ""
+    Public strCustomWhereGetArtGiacenze As String = ""
+    Public strCustomWhereGetArtListini As String = ""
+    Public strCustomWhereGetArtSconti As String = ""
+    Public strCustomWhereGetArtStoart As String = ""
+    Public strCustomWhereGetArtUltAcq As String = ""
+    Public strCustomWhereGetArtUltVen As String = ""
+    Public strCustomWhereGetCampagne As String = ""
+    Public strCustomWhereGetClifor As String = ""
+    Public strCustomWhereGetCliforAge As String = ""
+    Public strCustomWhereGetCliforBlo As String = ""
+    Public strCustomWhereGetCliforDestdiv As String = ""
+    Public strCustomWhereGetCliforDettCon As String = ""
+    Public strCustomWhereGetCliforFatt As String = ""
+    Public strCustomWhereGetCliforNote As String = ""
+    Public strCustomWhereGetCliforRighDoc As String = ""
+    Public strCustomWhereGetCliforScaDoc As String = ""
+    Public strCustomWhereGetCliforSenzaCoordinate As String = ""
+    Public strCustomWhereGetCliforTestDoc As String = ""
+    Public strCustomWhereGetCodpaga As String = ""
+    Public strCustomWhereGetComuni As String = ""
+    Public strCustomWhereGetLeadAccessi As String = ""
+    Public strCustomWhereGetLeadAccessiCrm As String = ""
+    Public strCustomWhereGetLeadDetCon As String = ""
+    Public strCustomWhereGetLeadNote As String = ""
+    Public strCustomWhereGetLeadRighOff As String = ""
+    Public strCustomWhereGetLeads As String = ""
+    Public strCustomWhereGetLeadTestOff As String = ""
 
-  'Public Const cEXP_CLIFOR As String = "AM_CF_ANA.DAT"
-  'Public Const cEXP_ORDERS As String = "AM_ORD_{0}_{1}.DAT"
-  'Public Const cEXP_LEADS As String = "leads_data_{0}_{1}.xml"
+    Public arFileGen As New ArrayList       'elenco di file generatici che andranno copiati dalla dir TMP alla dir di dropbox
+    Public strTipork As String = ""         'elenco operazioni da compiere in import/export
 
-  
+    Public Const FilePrefix As String = "io_"
+    Public Const cIMP_ART As String = "io_art.dat"
+    Public Const cIMP_ART_LANG As String = "io_art_lang.dat"
+    Public Const cIMP_ARTICOLI_ASSORTIMENTI As String = "io_articoli_assortimenti.dat"
+    Public Const cIMP_ART_CONF As String = "io_art_conf.dat"
+    Public Const cIMP_ART_ULTACQ As String = "io_art_ultacq.dat"
+    Public Const cIMP_ART_ULTVEN As String = "io_art_ultven.dat"
+    Public Const cIMP_ART_UM As String = "io_art_um.dat"
+    Public Const cIMP_ASSORTIMENTI As String = "io_assortimenti.dat"
+    Public Const cIMP_CAMPAGNE As String = "io_campagne.dat"
+    Public Const cIMP_CITTA As String = "io_citta.dat"
+    Public Const cIMP_CLIENTI_ASSORTIMENTI As String = "io_clienti_assortimenti.dat"
+    Public Const cIMP_CLIFOR_GEN As String = "io_clifor_gen.dat"
+    Public Const cIMP_CLIFOR As String = "io_clifor.dat"
+    Public Const cIMP_CLIFOR_AGE As String = "io_clifor_age.dat"
+    Public Const cIMP_CLIFOR_BLO As String = "io_clifor_blo.dat"
+    Public Const cIMP_CLIFOR_DEST As String = "io_clifor_dest.dat"
+    Public Const cIMP_CLIFOR_DETCON As String = "io_clifor_detcon.dat"
+    Public Const cIMP_CLIFOR_FATT As String = "io_clifor_fatt.dat"
+    Public Const cIMP_CLIFOR_GIROVISITA As String = "io_clifor_girovisita.dat"
+    Public Const cIMP_CLIFOR_INFO As String = "io_clifor_info.dat"
+    Public Const cIMP_CLIFOR_NOTE As String = "io_clifor_note.dat"
+    Public Const cIMP_CLIFOR_RIGHDOC As String = "io_clifor_righdoc.dat"
+    Public Const cIMP_CLIFOR_SCADOC As String = "io_clifor_scadoc.dat"
+    Public Const cIMP_CLIFOR_TESTDOC As String = "io_clifor_testdoc.dat"
+    Public Const cIMP_CLIFOR_VEN As String = "io_clifor_ven.dat"
+    Public Const cIMP_CONDPAG As String = "io_condpag.dat"
+    Public Const cIMP_CONDPAG_LANG As String = "io_condpag_lang.dat"
+    Public Const cIMP_CUSTOM_FIELDS As String = "io_custom_fields.dat"
+    Public Const cIMP_GIACENZE As String = "io_giacenze.dat"
+    Public Const cIMP_INFO As String = "io_info.dat"
+    Public Const cIMP_LEADS As String = "io_leads.dat"
+    Public Const cIMP_LEAD_ACCCRM As String = "io_lead_acccrm.dat"
+    Public Const cIMP_LEAD_ACCESSI As String = "io_lead_accessi.dat"
+    Public Const cIMP_LEAD_NOTE As String = "io_lead_note.dat"
+    Public Const cIMP_LEAD_RIGHOFF As String = "io_lead_righoff.dat"
+    Public Const cIMP_LEAD_SCONTI As String = "io_lead_sconti.dat"
+    Public Const cIMP_LEAD_TESTOFF As String = "io_lead_testoff.dat"
+    Public Const cIMP_LEAD_DETCON As String = "io_lead_detcon.dat"
+    Public Const cIMP_LISTINI_FULL As String = "io_listini_full.dat"
+    Public Const cIMP_STOART As String = "io_stoart.dat"
+    Public Const cIMP_SCONTI As String = "io_sconti.dat"
+    Public Const cIMP_VALUTE As String = "io_valute.dat"
+    Public Const cIMP_TAGLIE_ASSORTIMENTI As String = "io_taglie_assortimenti.dat"
+    Public Const cIMP_TAGLIE_CATALOGHI As String = "io_taglie_cataloghi.dat"
+    Public Const cIMP_TAGLIE_CATALOGHI_ART As String = "io_taglie_cataloghi_art.dat"
+    Public Const cIMP_TAGLIE_ESTENSIONI As String = "io_taglie_estensioni.dat"
+    Public Const cIMP_TAGLIE_SVILUPPI As String = "io_taglie_sviluppi.dat"
+    Public Const cIMP_TAGLIE_SVILUPPI_ART As String = "io_taglie_sviluppi_art.dat"
+    Public Const cIMP_VAR_COMBINAZIONI As String = "io_var_combinazioni.dat"
+    Public Const cIMP_CATALOGO As String = "io_catalogo.dat"
+    Public Const cIMP_REPORT As String = "io_reports.dat"
+
+    'Public Const cEXP_CLIFOR As String = "AM_CF_ANA.DAT"
+    'Public Const cEXP_ORDERS As String = "AM_ORD_{0}_{1}.DAT"
+    'Public Const cEXP_LEADS As String = "leads_data_{0}_{1}.xml"
 
 
 
-  Public Overrides Function Init(ByRef App As CLE__APP, _
-                              ByRef oScriptEngine As INT__SCRIPT, ByRef oCleLbmenu As Object, ByVal strTabella As String, _
-                              ByVal bRemoting As Boolean, ByVal strRemoteServer As String, _
-                              ByVal strRemotePort As String) As Boolean
-    If MyBase.strNomeDal = "BD__BASE" Then MyBase.strNomeDal = "BDIEIBUS"
-    MyBase.Init(App, oScriptEngine, oCleLbmenu, strTabella, bRemoting, strRemoteServer, strRemotePort)
-    oCldIbus = CType(MyBase.ocldBase, CLDIEIBUS)
-    oCldIbus.Init(oApp)
 
-    Return True
-  End Function
 
-  Public Overridable Function CopyIfDifferent(ByVal Origine As String, ByVal Destinazione As String) As Boolean
-    ' Da testare
-    Dim infoOr As FileInfo
-    Dim infoDest As FileInfo
-    infoOr = New FileInfo(Origine)
+    Public Overrides Function Init(ByRef App As CLE__APP, _
+                                ByRef oScriptEngine As INT__SCRIPT, ByRef oCleLbmenu As Object, ByVal strTabella As String, _
+                                ByVal bRemoting As Boolean, ByVal strRemoteServer As String, _
+                                ByVal strRemotePort As String) As Boolean
+        If MyBase.strNomeDal = "BD__BASE" Then MyBase.strNomeDal = "BDIEIBUS"
+        MyBase.Init(App, oScriptEngine, oCleLbmenu, strTabella, bRemoting, strRemoteServer, strRemotePort)
+        oCldIbus = CType(MyBase.ocldBase, CLDIEIBUS)
+        oCldIbus.Init(oApp)
 
-    infoDest = New FileInfo(Destinazione)
-    If infoDest.LastWriteTime <> infoOr.LastWriteTime Then
-      File.Copy(Origine, Destinazione, True)
-    End If
+        Return True
+    End Function
 
-    Return True
-  End Function
-  Public Overridable Function ConvTracciato(ByVal oIn As Object, Optional ByVal bUltAgg As Boolean = False) As String
-    ' Da Testare
-    Dim retVal As String = ""
-    Dim TipoDato As String = oIn.GetType.Name
+    Public Overridable Function CopyIfDifferent(ByVal Origine As String, ByVal Destinazione As String) As Boolean
+        ' Da testare
+        Dim infoOr As FileInfo
+        Dim infoDest As FileInfo
+        infoOr = New FileInfo(Origine)
 
-    Try
+        infoDest = New FileInfo(Destinazione)
+        If infoDest.LastWriteTime <> infoOr.LastWriteTime Then
+            File.Copy(Origine, Destinazione, True)
+        End If
 
-      If NTSCStr(oIn) <> "" Then
+        Return True
+    End Function
+    Public Overridable Function ConvTracciato(ByVal oIn As Object, Optional ByVal bUltAgg As Boolean = False) As String
+        ' Da Testare
+        Dim retVal As String = ""
+        Dim TipoDato As String = oIn.GetType.Name
 
-        Select Case TipoDato
-          Case "Int32"
-            retVal = NTSCStr(oIn)
+        Try
 
-          Case "String"
-            retVal = NTSCStr(oIn).Replace(vbCrLf, " ").Replace("|", "_").Replace(vbLf, " ").Replace(vbCr, " ")
+            If NTSCStr(oIn) <> "" Then
 
-          Case "DateTime"
-            If bUltAgg Then
-              retVal = NTSCDate(oIn).ToString("ddMMyyyyHHmmss")
+                Select Case TipoDato
+                    Case "Int32"
+                        retVal = NTSCStr(oIn)
+
+                    Case "String"
+                        retVal = NTSCStr(oIn).Replace(vbCrLf, " ").Replace("|", "_").Replace(vbLf, " ").Replace(vbCr, " ")
+
+                    Case "DateTime"
+                        If bUltAgg Then
+                            retVal = NTSCDate(oIn).ToString("ddMMyyyyHHmmss")
+                        Else
+                            retVal = NTSCDate(oIn).ToString("ddMMyyyy")
+                        End If
+                    Case Else
+                        ' di che tipo e?
+                        retVal = NTSCStr(oIn)
+                End Select
+
             Else
-              retVal = NTSCDate(oIn).ToString("ddMMyyyy")
+                retVal = ""
             End If
-          Case Else
-            ' di che tipo e?
-            retVal = NTSCStr(oIn)
-        End Select
-
-      Else
-        retVal = ""
-      End If
 
 
-      Return retVal
+            Return retVal
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
-
-
-  Public Overridable Function ConvStr(ByVal oIn As Object, Optional ConvNewLine As Boolean = False) As String
-    ConvStr = NTSCStr(oIn)
-    Dim junk As String
-    Dim RetValue As String = ""
-
-    Try
-      If ConvNewLine Then
-
-        If InStr(ConvStr, vbNewLine) > 0 Then
-          junk = ""
-        End If
-
-        'Char(13) + CHAR(10), CHAR(10))
-        RetValue = NTSCStr(oIn).Replace("|", "_")
-
-        RetValue = RetValue.Replace(Chr(13) + Chr(10), Chr(10))
-        RetValue = RetValue.Replace(Chr(10), Chr(13))
-        RetValue = RetValue.Replace(Chr(13), CLDIEIBUS.iBNewline)
-
-        Return RetValue
-      Else
-        Return NTSCStr(oIn).Replace(vbCrLf, " ").Replace("|", "_").Replace(vbLf, " ").Replace(vbCr, " ")
-      End If
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
 
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
+    Public Overridable Function ConvStr(ByVal oIn As Object, Optional ConvNewLine As Boolean = False) As String
+        ConvStr = NTSCStr(oIn)
+        Dim junk As String
+        Dim RetValue As String = ""
 
-  Public Overridable Function ConvData(ByVal oIn As Object, Optional ByVal bUltAgg As Boolean = False) As String
-    ConvData = ""
+        Try
+            If ConvNewLine Then
 
-    If bUltAgg Then
-      Return "01011900000000"
-    End If
+                If InStr(ConvStr, vbNewLine) > 0 Then
+                    junk = ""
+                End If
 
-    Try
-      If NTSCStr(oIn) <> "" Then
+                'Char(13) + CHAR(10), CHAR(10))
+                RetValue = NTSCStr(oIn).Replace("|", "_")
+
+                RetValue = RetValue.Replace(Chr(13) + Chr(10), Chr(10))
+                RetValue = RetValue.Replace(Chr(10), Chr(13))
+                RetValue = RetValue.Replace(Chr(13), CLDIEIBUS.iBNewline)
+
+                Return RetValue
+            Else
+                Return NTSCStr(oIn).Replace(vbCrLf, " ").Replace("|", "_").Replace(vbLf, " ").Replace(vbCr, " ")
+            End If
+
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+    Public Overridable Function ConvData(ByVal oIn As Object, Optional ByVal bUltAgg As Boolean = False) As String
+        ConvData = ""
+
         If bUltAgg Then
-          Return NTSCDate(oIn).ToString("ddMMyyyyHHmmss")
-        Else
-          Return NTSCDate(oIn).ToString("ddMMyyyy")
+            Return "01011900000000"
         End If
-      Else
-        Return ""
-      End If
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
-
-  Public Overridable Function Elabora() As Boolean
-    Dim strMsg As String = ""
-    Dim i As Integer = 0
-    Dim dttTm As New DataTable      'testate documenti di magazzino/ordini
-    Dim dttCat As New DataTable     'articoli con immagine catalogo
-    Dim strFileCat As String = ""
-    Dim TipoCF As String = "CF"
-
-
-    Try
-
-      'content = content.Replace("|1", "307")
-      'content = content.Replace("|2", "ib.appstore")
-      'content = content.Replace("|3", "Buona giornata dal team iB")
-
-
-      ' Ricordati di aggiornare http://doc.apexnet.it/iB.connettore_IB.ashx
-      strDropBoxDir = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DropBoxDir", "", " ", "")
-      strContiEsclusi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ContiEsclusi", "0", " ", "0").Trim
-      strFiltroCliConAgenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroCliConAgenti", "0", " ", "0").Trim
-      strFiltroGGOfferte = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGOfferte", "365", " ", "365").Trim
-      strFiltroGGStoArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGStoArt", "180", " ", "180").Trim
-      strFiltroGGDocumenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGDocumenti", "365", " ", "365").Trim
-      strFiltroGGUltAcqVen = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGUltAcqVen", "180", " ", "180").Trim
-      strIncludileadClienti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "IncludiLeadClienti", "0", " ", "0").Trim
-      strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "0", " ", "0").Trim
-
-      strAttivaAlert = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Abilita_Alert", "0", " ", "0").Trim
-
-
-      ' Sostituzione query
-      ' ------------------
-      strCustomQueryGetArtUM_EstraiTutte = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArtUM_EstraiTutte", "0", " ", "0").Trim
-      strCustomQueryGetArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArt", "", " ", "").Trim
-      strCustomQueryGetArtCatalogo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArtCatalogo", "", " ", "").Trim
-
-      ' Filtri di Where
-      ' ----------------
-
-      ' Clienti
-      strCustomWhereGetClifor = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetClifor", "", " ", "").Trim
-      strCustomWhereGetCliforAge = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforAge", "", " ", "").Trim
-      strCustomWhereGetCliforBlo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforBlo", "", " ", "").Trim
-      strCustomWhereGetCliforDestdiv = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforDestdiv", "", " ", "").Trim
-      strCustomWhereGetCliforDettCon = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforDettCon", "", " ", "").Trim
-      strCustomWhereGetCliforSenzaCoordinate = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforSenzaCoordinate", "", " ", "").Trim
-      strCustomWhereGetCliforNote = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforNote", "", " ", "").Trim
-
-      ' Articoli
-      strCustomWhereGetArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArt", "", " ", "").Trim
-      strCustomWhereGetArtCatalogo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtCatalogo", "", " ", "").Trim
-      strCustomWhereGetArtGiacenze = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtGiacenze", "", " ", "").Trim
-      strCustomWhereGetArtListini = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtListini", "", " ", "").Trim
-      strCustomWhereGetArtSconti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtSconti", "", " ", "").Trim
-      strCustomWhereGetArtStoart = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtStoart", "", " ", "").Trim
-      strCustomWhereGetArtUltAcq = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtUltAcq", "", " ", "").Trim
-      strCustomWhereGetArtUltVen = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtUltVen", "", " ", "").Trim
-
-      ' Documenti
-      strCustomWhereGetCliforFatt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforFatt", "", " ", "").Trim
-      strCustomWhereGetCliforRighDoc = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforRighDoc", "", " ", "").Trim
-      strCustomWhereGetCliforScaDoc = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforScaDoc", "", " ", "").Trim
-      strCustomWhereGetCliforTestDoc = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforTestDoc", "", " ", "").Trim
-
-      ' Leads
-      strCustomWhereGetLeadAccessi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadAccessi", "", " ", "").Trim
-      strCustomWhereGetLeadAccessiCrm = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadAccessiCrm", "", " ", "").Trim
-      strCustomWhereGetLeadDetCon = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadDetCon", "", " ", "").Trim
-      strCustomWhereGetLeadNote = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadNote", "", " ", "").Trim
-      strCustomWhereGetLeadRighOff = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadRighOff", "", " ", "").Trim
-      strCustomWhereGetLeads = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeads", "", " ", "").Trim
-      strCustomWhereGetLeadTestOff = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadTestOff", "", " ", "").Trim
-      strCustomWhereGetCampagne = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCampagne", "", " ", "").Trim
-
-      ' Altro
-      strCustomWhereGetCodpaga = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCodpaga", "", " ", "").Trim
-      strCustomWhereGetComuni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetComuni", "", " ", "").Trim
-      strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
-
-      arFileGen.Clear()
-
-      'InviaAlert(1, "PIPPO")
-
-      'avvio il file di log della procedura di import/export
-      '--------------------
-      If oApp.Batch Then
-        If Not LogStart("BNIEIBUS_BATCH", "Import/export Vs IBUS" & vbCrLf, True) Then Return False
-        LogWrite(oApp.Tr(Me, 128768492996465000, "Per dettagli sull'avvio in modalità BATCH consultare il file '|BusNetBatch_" & System.Diagnostics.Process.GetCurrentProcess.Id.ToString & ".log|'"), False)
-      Else
-        If Not LogStart("BNIEIBUS", "Import/export Vs IBUS" & vbCrLf) Then Return False
-      End If
-      strMsg = oApp.Tr(Me, 129877602933085931, "INIZIO ELABORAZIONE")
-      LogWrite(strMsg, False)
-
-
-      'controlli pre-elaborazione
-      '--------------------
-      If strDropBoxDir.Trim = "" Then
-        LogWrite(oApp.Tr(Me, 129877622189278434, String.Format("Directory DropBox non settata per la ditta [{0}]. Impostarla con l'opzione di registro |'Bsieibus/Opzioni/DropBoxDir'|. Elaborazione interrotta.", strDittaCorrente)), True)
-        Return False
-      End If
-      If System.IO.Directory.Exists(strDropBoxDir) = False Then
-        LogWrite(oApp.Tr(Me, 129877623144826060, String.Format("Directory DropBox |{0}| Inesistente. Elaborazione interrotta.", strDropBoxDir)), True)
-        Return False
-      End If
-
-      ' Applico le personalizzazioni alla base dati
-      If Not oCldIbus.AggiungiPersonalizzazioniDB() Then Return False
-
-
-      If strTipork.EndsWith(";") = False Then strTipork += ";"
-      strTipork = strTipork.ToUpper
-
-      ' SI INZIA
-      ' --------
-
-
-      ' Aggiorno la versione sul license
-      Dim CodProgetto As String = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(strDropBoxDir + "\"))
-      Dim Versione As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
-      If CodProgetto.Contains(".") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Invio versione..."))
-        ApexNetLIB.UpdateRelease.SendVersion(CodProgetto, Versione)
-      End If
-
-
-      ' Solo se effettuo un export devo creare il file INFO.
-      If strTipork <> "ORD;" Then
-        '--------------------
-        'Export info
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export info..."))
-        If Not Elabora_ExportInfo(oApp.AscDir & "\" + cIMP_INFO, Versione) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_INFO)
-      End If
-
-      ' Aggiorno i dati della Geolocalizzazione
-      If strTipork.Contains("COO;") Then
-        '--------------------
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Identificazione coordinate da Google..."))
-        AggiornaCoordinate()
-      End If
-
-      '--------------------
-      'Export causali
-      If strTipork.Contains("PAG;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export causali..."))
-        If Not Elabora_ExportCodpaga(oApp.AscDir & "\" + cIMP_CONDPAG) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CONDPAG)
-      End If
-      ' ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "20"))
-
-      '--------------------
-      'Export comuni
-      If strTipork.Contains("CIT;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export comuni..."))
-        If Not Elabora_ExportComuni(oApp.AscDir & "\" + cIMP_CITTA) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CITTA)
-      End If
-      'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "30"))
-
-
-      ' If strTipork.Contains("CIT;") Then
-      ' If Not Elabora_ExportCittaXML(oApp.AscDir & "\citta.xml") Then Return False
-      ' CompressFile(oApp.AscDir & "\citta.xml", oApp.AscDir)
-      'arFileGen.Add(oApp.AscDir & "\citta.zip")
-      'End If
-
-      '--------------------
-      'Export clienti/fornitori e tabelle relative
-      TipoCF = "CF"
-      If strTipork.Contains("CLI;") Or strTipork.Contains("FOR;") Then
-        If strTipork.Contains("CLI;") And strTipork.Contains("FOR;") Then
-          TipoCF = "CF"
-        Else
-          If strTipork.Contains("CLI;") Then
-            TipoCF = "C"
-          End If
-          If strTipork.Contains("FOR;") Then
-            TipoCF = "F"
-          End If
-        End If
-        'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "40"))
-
-
-        'ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
-        'If Not Elabora_ExportClifor(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR, _
-        '                oApp.AscDir & "\" + cIMP_CLIFOR_INFO, _
-        '                oApp.AscDir & "\" + cIMP_CLIFOR_VEN) Then Return False
-
-        'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR)
-        'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_INFO)
-        'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_VEN)
-
-        ' Elabora clifor gen
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
-        If Not Elabora_ExportCliforGen(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_GEN) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_GEN)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export blocchi..."))
-        If Not Elabora_ExportCliforBlo(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_BLO) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_BLO)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export destinazioni..."))
-        If Not Elabora_ExportCliforDestdiv(oApp.AscDir & "\" + cIMP_CLIFOR_DEST) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_DEST)
-        'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "45"))
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export agenti..."))
-        If Not Elabora_ExportCliforAge(oApp.AscDir & "\" + cIMP_CLIFOR_AGE) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_AGE)
-        'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "50"))
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Clienti Note..."))
-        If Not Elabora_ExportCliforNote(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_NOTE) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_NOTE)
-
-        'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "50"))
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export dettagli contatti..."))
-        If Not Elabora_ExportCliforDettCon(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_DETCON) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_DETCON)
-        'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "55"))
-
-
-      End If
-      'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "70"))
-
-      If strTipork.Contains("LEA;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Leads..."))
-        If Not Elabora_ExportLeads(oApp.AscDir & "\" + cIMP_LEADS) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LEADS)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Note..."))
-        If Not Elabora_ExportLeadNote(oApp.AscDir & "\" + cIMP_LEAD_NOTE) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_NOTE)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Contatti..."))
-        If Not Elabora_ExportLeadDetCon(oApp.AscDir & "\" + cIMP_LEAD_DETCON) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_DETCON)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Operatori..."))
-        If Not Elabora_ExportLeadAccessi(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Accessi CRM..."))
-        If Not Elabora_ExportLeadAccessiCrm(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Campagne..."))
-        If Not Elabora_ExportCampagne(oApp.AscDir & "\" + cIMP_CAMPAGNE) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CAMPAGNE)
-
-      End If
-
-      If strTipork.Contains("OFF;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Offerte (testate)..."))
-        If Not Elabora_ExportLeadTestOff(oApp.AscDir & "\" + cIMP_LEAD_TESTOFF) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_TESTOFF)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Offerte (righe)..."))
-        If Not Elabora_ExportLeadRighOff(oApp.AscDir & "\" + cIMP_LEAD_RIGHOFF) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_RIGHOFF)
-
-      End If
-
-      If strTipork.Contains("DOC;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export documenti (testate)..."))
-        If Not Elabora_ExportCliforTestDoc(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_TESTDOC, dttTm) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_TESTDOC)
-        'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "65"))
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export documenti (righe)..."))
-        If Not Elabora_ExportCliforRighDoc(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_RIGHDOC) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_RIGHDOC)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export documenti (scadenze)..."))
-        If Not Elabora_ExportCliforScadoc(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_SCADOC, dttTm) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_SCADOC)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export fatturati..."))
-        If Not Elabora_ExportCliforFatt(oApp.AscDir & "\" + cIMP_CLIFOR_FATT) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_FATT)
-        'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "60"))
-      End If
-
-
-      '--------------------
-      'Export articoli e tabelle relative
-      If strTipork.Contains("ART;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export articoli..."))
-        If Not Elabora_ExportArt(oApp.AscDir & "\" + cIMP_ART, _
-                                 oApp.AscDir & "\" + cIMP_ART_CONF, _
-                                 oApp.AscDir & "\" + cIMP_ART_UM, _
-                                 strCustomQueryGetArt _
-                                 ) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_ART)
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_CONF)
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_UM)
-      End If
-      'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "75"))
-
-
-      '--------------------
-      'Export giacenze articoli
-      If strTipork.Contains("MAG;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export giacenze..."))
-        If Not Elabora_ExportArtGiacenze(oApp.AscDir & "\" + cIMP_GIACENZE) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_GIACENZE)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export ultimi venduti..."))
-        If Not Elabora_ExportArtUltVen(oApp.AscDir & "\" + cIMP_ART_ULTVEN) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_ULTVEN)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export ultimi acquisti..."))
-        If Not Elabora_ExportArtUltAcq(oApp.AscDir & "\" + cIMP_ART_ULTACQ) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_ULTACQ)
-
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export storico articoli..."))
-        If Not Elabora_ExportArtStoart(oApp.AscDir & "\" + cIMP_STOART) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_STOART)
-      End If
-
-      '--------------------
-      'Export listini articoli
-      If strTipork.Contains("LIS;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export listini..."))
-        If Not Elabora_ExportListini(oApp.AscDir & "\" + cIMP_LISTINI_FULL) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_LISTINI_FULL)
-      End If
-
-      '--------------------
-      'Export sconti articoli
-      If strTipork.Contains("SCO;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export sconti..."))
-        If Not Elabora_ExportSconti(oApp.AscDir & "\" + cIMP_SCONTI) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_SCONTI)
-      End If
-
-
-      ' Funzione vuota per personalizzazioni
-      If Not Elabora_Child() Then Return False
-
-
-      '--------------------
-      'Export catalogo articoli
-      If strTipork.Contains("CAT;") Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export catalogo..."))
-        If Not Elabora_ExportCatalogo(oApp.AscDir & "\" + cIMP_CATALOGO, dttCat, strCustomQueryGetArtCatalogo) Then Return False
-        arFileGen.Add(oApp.AscDir & "\" + cIMP_CATALOGO)
-      End If
-
-
-      '--------------------
-      'copio i files dei tracciati nella dir di dropbox
-      ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia tracciati in " & strDropBoxDir))
-      For i = 0 To arFileGen.Count - 1
-        ' Mi occupo dei dati del catalogo
-        If arFileGen(i).ToString.ToLower.EndsWith(cIMP_CATALOGO) Then
-          File.Delete(strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
-          If File.Exists(arFileGen(i).ToString) Then
-            System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
-          End If
-        Else
-          ' Mi occupo dei dati gestionale
-          File.Delete(strDropBoxDir & "\gestionale\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
-          If File.Exists(arFileGen(i).ToString) Then
-            System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\gestionale\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
-          End If
-          File.Delete(arFileGen(i).ToString)
-        End If
-      Next
-
-      '--------------------
-      'se devo esportare anche il catalogo, copio le immagini
-      If dttCat.Rows.Count > 0 Then
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia immagini in " & strDropBoxDir & "\multimedia"))
-        If Not Directory.Exists(strDropBoxDir & "\multimedia") Then
-          Directory.CreateDirectory(strDropBoxDir & "\multimedia")
-        End If
-        For Each dtrT As DataRow In dttCat.Rows
-          'tolgo l'eventale attributo di sola lettura
-          'strFileCat = strDropBoxDir & "\multimedia\" & NTSCStr(dtrT!ar_codart) & Path.GetExtension(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1))
-          strFileCat = strDropBoxDir & "\multimedia\" & ConvStr(dtrT!ar_gif1)
-          If File.Exists(strFileCat) Then
-            File.SetAttributes(strFileCat, FileAttributes.Normal)
-          End If
-          ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia di " & oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1)))
-          Try
-            System.IO.File.Copy(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1), strFileCat, True)
-          Catch ex As Exception
-            ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Salto read only" & oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1)))
-          End Try
-
-        Next
-      End If
-
-      '--------------------
-      'Import Ordini
-      If strTipork.Contains("ORD;") Then
-        'meglio importare i dati dei clienti e note modificati o aggiunti
-        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import anagrafiche, note, ordini..."))
-        If Not Elabora_ImportAnagra() Then Return False
-        If Not Elabora_ImportLead() Then Return False
-
-        If Not Elabora_ImportLeadNote() Then Return False
-        If Not Elabora_ImportCliforNote() Then Return False
-
-        If Not Elabora_ImportOrdini() Then Return False
-        'If Not Elabora_ImportOrdiniNew() Then Return False
-
-      End If
-
-
-      ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------
-    Finally
-      dttTm.Clear()
-      dttCat.Clear()
-      LogStop()
-    End Try
-  End Function
-  Public Overridable Function AggiornaCoordinate() As Boolean
-    Dim dttTmp As New DataTable
-    Dim strQuerystring As String = ""
-    Dim strConto As String = ""
-    Dim retValue As Boolean
-    Dim dLat As Double
-    Dim dLon As Double
-    Dim retCoord As Boolean
-    Try
-
-
-      If Not oCldIbus.GetCliforSenzaCoordinate(strDittaCorrente, dttTmp, strCustomWhereGetCliforSenzaCoordinate) Then Return False
-
-      For Each dtrT As DataRow In dttTmp.Rows
-        strQuerystring = ConvStr(dtrT!an_indir) & ", " & ConvStr(dtrT!an_citta) & ", " & ConvStr(dtrT!an_prov) & ", " & ConvStr(dtrT!xx_desstato)
-        strConto = ConvStr(dtrT!an_conto)
-
-        retValue = ApexNetLIB.Geocoding.GetCoordinate(strQuerystring, dLat, dLon)
-
-        If retValue Then
-          If dLat > 0 Or dLon > 0 Then
-            retCoord = oCldIbus.UpdateCliforCoordinate(strDittaCorrente, strConto, dLat, dLon)
-          End If
-
-        End If
-      Next
-
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
-
-  End Function
-
-  Public Overridable Function Elabora_Child() As Boolean
-    Try
-
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-
-  End Function
-
-
-  Public Overridable Function Elabora_ExportCodpaga(ByVal strFileOut As String) As Boolean
+
+        Try
+            If NTSCStr(oIn) <> "" Then
+                If bUltAgg Then
+                    Return NTSCDate(oIn).ToString("ddMMyyyyHHmmss")
+                Else
+                    Return NTSCDate(oIn).ToString("ddMMyyyy")
+                End If
+            Else
+                Return ""
+            End If
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+    Public Overridable Function Elabora() As Boolean
+        Dim strMsg As String = ""
+        Dim i As Integer = 0
+        Dim dttTm As New DataTable      'testate documenti di magazzino/ordini
+        Dim dttCat As New DataTable     'articoli con immagine catalogo
+        Dim strFileCat As String = ""
+        Dim TipoCF As String = "CF"
+
+
+        Try
+
+            'content = content.Replace("|1", "307")
+            'content = content.Replace("|2", "ib.appstore")
+            'content = content.Replace("|3", "Buona giornata dal team iB")
+
+
+            ' Ricordati di aggiornare http://doc.apexnet.it/iB.connettore_IB.ashx
+            strDropBoxDir = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DropBoxDir", "", " ", "")
+            strContiEsclusi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ContiEsclusi", "0", " ", "0").Trim
+            strFiltroCliConAgenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroCliConAgenti", "0", " ", "0").Trim
+            strFiltroGGOfferte = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGOfferte", "365", " ", "365").Trim
+            strFiltroGGStoArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGStoArt", "180", " ", "180").Trim
+            strFiltroGGDocumenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGDocumenti", "365", " ", "365").Trim
+            strFiltroGGUltAcqVen = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGUltAcqVen", "180", " ", "180").Trim
+            strIncludileadClienti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "IncludiLeadClienti", "0", " ", "0").Trim
+            strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "0", " ", "0").Trim
+            strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
+
+            strAttivaAlert = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Abilita_Alert", "0", " ", "0").Trim
+
+
+            ' Sostituzione query
+            ' ------------------
+            strCustomQueryGetArtUM_EstraiTutte = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArtUM_EstraiTutte", "0", " ", "0").Trim
+            strCustomQueryGetArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArt", "", " ", "").Trim
+            strCustomQueryGetArtCatalogo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArtCatalogo", "", " ", "").Trim
+
+            ' Filtri di Where
+            ' ----------------
+
+            ' Clienti
+            strCustomWhereGetClifor = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetClifor", "", " ", "").Trim
+            strCustomWhereGetCliforAge = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforAge", "", " ", "").Trim
+            strCustomWhereGetCliforBlo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforBlo", "", " ", "").Trim
+            strCustomWhereGetCliforDestdiv = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforDestdiv", "", " ", "").Trim
+            strCustomWhereGetCliforDettCon = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforDettCon", "", " ", "").Trim
+            strCustomWhereGetCliforSenzaCoordinate = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforSenzaCoordinate", "", " ", "").Trim
+            strCustomWhereGetCliforNote = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforNote", "", " ", "").Trim
+
+            ' Articoli
+            strCustomWhereGetArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArt", "", " ", "").Trim
+            strCustomWhereGetArtCatalogo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtCatalogo", "", " ", "").Trim
+            strCustomWhereGetArtGiacenze = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtGiacenze", "", " ", "").Trim
+            strCustomWhereGetArtListini = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtListini", "", " ", "").Trim
+            strCustomWhereGetArtSconti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtSconti", "", " ", "").Trim
+            strCustomWhereGetArtStoart = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtStoart", "", " ", "").Trim
+            strCustomWhereGetArtUltAcq = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtUltAcq", "", " ", "").Trim
+            strCustomWhereGetArtUltVen = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtUltVen", "", " ", "").Trim
+
+            ' Documenti
+            strCustomWhereGetCliforFatt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforFatt", "", " ", "").Trim
+            strCustomWhereGetCliforRighDoc = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforRighDoc", "", " ", "").Trim
+            strCustomWhereGetCliforScaDoc = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforScaDoc", "", " ", "").Trim
+            strCustomWhereGetCliforTestDoc = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCliforTestDoc", "", " ", "").Trim
+
+            ' Leads
+            strCustomWhereGetLeadAccessi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadAccessi", "", " ", "").Trim
+            strCustomWhereGetLeadAccessiCrm = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadAccessiCrm", "", " ", "").Trim
+            strCustomWhereGetLeadDetCon = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadDetCon", "", " ", "").Trim
+            strCustomWhereGetLeadNote = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadNote", "", " ", "").Trim
+            strCustomWhereGetLeadRighOff = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadRighOff", "", " ", "").Trim
+            strCustomWhereGetLeads = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeads", "", " ", "").Trim
+            strCustomWhereGetLeadTestOff = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadTestOff", "", " ", "").Trim
+            strCustomWhereGetCampagne = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCampagne", "", " ", "").Trim
+
+            ' Altro
+            strCustomWhereGetCodpaga = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCodpaga", "", " ", "").Trim
+            strCustomWhereGetComuni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetComuni", "", " ", "").Trim
+            strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
+
+            arFileGen.Clear()
+
+            'InviaAlert(1, "PIPPO")
+
+            'avvio il file di log della procedura di import/export
+            '--------------------
+            If oApp.Batch Then
+                If Not LogStart("BNIEIBUS_BATCH", "Import/export Vs IBUS" & vbCrLf, True) Then Return False
+                LogWrite(oApp.Tr(Me, 128768492996465000, "Per dettagli sull'avvio in modalità BATCH consultare il file '|BusNetBatch_" & System.Diagnostics.Process.GetCurrentProcess.Id.ToString & ".log|'"), False)
+            Else
+                If Not LogStart("BNIEIBUS", "Import/export Vs IBUS" & vbCrLf) Then Return False
+            End If
+            strMsg = oApp.Tr(Me, 129877602933085931, "INIZIO ELABORAZIONE")
+            LogWrite(strMsg, False)
+
+
+            'controlli pre-elaborazione
+            '--------------------
+            If strDropBoxDir.Trim = "" Then
+                LogWrite(oApp.Tr(Me, 129877622189278434, String.Format("Directory DropBox non settata per la ditta [{0}]. Impostarla con l'opzione di registro |'Bsieibus/Opzioni/DropBoxDir'|. Elaborazione interrotta.", strDittaCorrente)), True)
+                Return False
+            End If
+            If System.IO.Directory.Exists(strDropBoxDir) = False Then
+                LogWrite(oApp.Tr(Me, 129877623144826060, String.Format("Directory DropBox |{0}| Inesistente. Elaborazione interrotta.", strDropBoxDir)), True)
+                Return False
+            End If
+
+            ' Applico le personalizzazioni alla base dati
+            If Not oCldIbus.AggiungiPersonalizzazioniDB() Then Return False
+
+
+            If strTipork.EndsWith(";") = False Then strTipork += ";"
+            strTipork = strTipork.ToUpper
+
+            ' SI INZIA
+            ' --------
+
+
+            ' Aggiorno la versione sul license
+            Dim CodProgetto As String = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(strDropBoxDir + "\"))
+            Dim Versione As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
+            If CodProgetto.Contains(".") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Invio versione..."))
+                ApexNetLIB.UpdateRelease.SendVersion(CodProgetto, Versione)
+            End If
+
+
+            ' Solo se effettuo un export devo creare il file INFO.
+            If strTipork <> "ORD;" Then
+                '--------------------
+                'Export info
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export info..."))
+                If Not Elabora_ExportInfo(oApp.AscDir & "\" + cIMP_INFO, Versione) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_INFO)
+            End If
+
+            ' Aggiorno i dati della Geolocalizzazione
+            If strTipork.Contains("COO;") Then
+                '--------------------
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Identificazione coordinate da Google..."))
+                AggiornaCoordinate()
+            End If
+
+            '--------------------
+            'Export causali
+            If strTipork.Contains("PAG;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export causali..."))
+                If Not Elabora_ExportCodpaga(oApp.AscDir & "\" + cIMP_CONDPAG) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CONDPAG)
+            End If
+            ' ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "20"))
+
+            '--------------------
+            'Export comuni
+            If strTipork.Contains("CIT;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export comuni..."))
+                If Not Elabora_ExportComuni(oApp.AscDir & "\" + cIMP_CITTA) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CITTA)
+            End If
+            'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "30"))
+
+
+            ' If strTipork.Contains("CIT;") Then
+            ' If Not Elabora_ExportCittaXML(oApp.AscDir & "\citta.xml") Then Return False
+            ' CompressFile(oApp.AscDir & "\citta.xml", oApp.AscDir)
+            'arFileGen.Add(oApp.AscDir & "\citta.zip")
+            'End If
+
+            '--------------------
+            'Export clienti/fornitori e tabelle relative
+            TipoCF = "CF"
+            If strTipork.Contains("CLI;") Or strTipork.Contains("FOR;") Then
+                If strTipork.Contains("CLI;") And strTipork.Contains("FOR;") Then
+                    TipoCF = "CF"
+                Else
+                    If strTipork.Contains("CLI;") Then
+                        TipoCF = "C"
+                    End If
+                    If strTipork.Contains("FOR;") Then
+                        TipoCF = "F"
+                    End If
+                End If
+                'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "40"))
+
+
+                'ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
+                'If Not Elabora_ExportClifor(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR, _
+                '                oApp.AscDir & "\" + cIMP_CLIFOR_INFO, _
+                '                oApp.AscDir & "\" + cIMP_CLIFOR_VEN) Then Return False
+
+                'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR)
+                'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_INFO)
+                'arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_VEN)
+
+                ' Elabora clifor gen
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export clienti/fornitori..."))
+                If Not Elabora_ExportCliforGen(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_GEN) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_GEN)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export blocchi..."))
+                If Not Elabora_ExportCliforBlo(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_BLO) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_BLO)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export destinazioni..."))
+                If Not Elabora_ExportCliforDestdiv(oApp.AscDir & "\" + cIMP_CLIFOR_DEST) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_DEST)
+                'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "45"))
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export agenti..."))
+                If Not Elabora_ExportCliforAge(oApp.AscDir & "\" + cIMP_CLIFOR_AGE) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_AGE)
+                'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "50"))
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Clienti Note..."))
+                If Not Elabora_ExportCliforNote(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_NOTE) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_NOTE)
+
+                'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "50"))
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export dettagli contatti..."))
+                If Not Elabora_ExportCliforDettCon(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_DETCON) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_DETCON)
+                'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "55"))
+
+
+            End If
+            'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "70"))
+
+            If strTipork.Contains("LEA;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Leads..."))
+                If Not Elabora_ExportLeads(oApp.AscDir & "\" + cIMP_LEADS) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEADS)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Note..."))
+                If Not Elabora_ExportLeadNote(oApp.AscDir & "\" + cIMP_LEAD_NOTE) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_NOTE)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Contatti..."))
+                If Not Elabora_ExportLeadDetCon(oApp.AscDir & "\" + cIMP_LEAD_DETCON) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_DETCON)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Operatori..."))
+                If Not Elabora_ExportLeadAccessi(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Accessi CRM..."))
+                If Not Elabora_ExportLeadAccessiCrm(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Campagne..."))
+                If Not Elabora_ExportCampagne(oApp.AscDir & "\" + cIMP_CAMPAGNE) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CAMPAGNE)
+
+            End If
+
+            If strTipork.Contains("OFF;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Offerte (testate)..."))
+                If Not Elabora_ExportLeadTestOff(oApp.AscDir & "\" + cIMP_LEAD_TESTOFF) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_TESTOFF)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Offerte (righe)..."))
+                If Not Elabora_ExportLeadRighOff(oApp.AscDir & "\" + cIMP_LEAD_RIGHOFF) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_RIGHOFF)
+
+            End If
+
+            If strTipork.Contains("DOC;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export documenti (testate)..."))
+                If Not Elabora_ExportCliforTestDoc(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_TESTDOC, dttTm) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_TESTDOC)
+                'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "65"))
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export documenti (righe)..."))
+                If Not Elabora_ExportCliforRighDoc(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_RIGHDOC) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_RIGHDOC)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export documenti (scadenze)..."))
+                If Not Elabora_ExportCliforScadoc(TipoCF, oApp.AscDir & "\" + cIMP_CLIFOR_SCADOC, dttTm) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_SCADOC)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export fatturati..."))
+                If Not Elabora_ExportCliforFatt(oApp.AscDir & "\" + cIMP_CLIFOR_FATT) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLIFOR_FATT)
+                'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "60"))
+            End If
+
+
+            '--------------------
+            'Export articoli e tabelle relative
+            If strTipork.Contains("ART;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export articoli..."))
+                If Not Elabora_ExportArt(oApp.AscDir & "\" + cIMP_ART, _
+                                         oApp.AscDir & "\" + cIMP_ART_CONF, _
+                                         oApp.AscDir & "\" + cIMP_ART_UM, _
+                                         strCustomQueryGetArt _
+                                         ) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_ART)
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_CONF)
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_UM)
+            End If
+            'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "75"))
+
+
+            '--------------------
+            'Export giacenze articoli
+            If strTipork.Contains("MAG;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export giacenze..."))
+                If Not Elabora_ExportArtGiacenze(oApp.AscDir & "\" + cIMP_GIACENZE) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_GIACENZE)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export ultimi venduti..."))
+                If Not Elabora_ExportArtUltVen(oApp.AscDir & "\" + cIMP_ART_ULTVEN) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_ULTVEN)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export ultimi acquisti..."))
+                If Not Elabora_ExportArtUltAcq(oApp.AscDir & "\" + cIMP_ART_ULTACQ) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_ULTACQ)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export storico articoli..."))
+                If Not Elabora_ExportArtStoart(oApp.AscDir & "\" + cIMP_STOART) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_STOART)
+            End If
+
+            '--------------------
+            'Export listini articoli
+            If strTipork.Contains("LIS;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export listini..."))
+                If Not Elabora_ExportListini(oApp.AscDir & "\" + cIMP_LISTINI_FULL) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LISTINI_FULL)
+            End If
+
+            '--------------------
+            'Export sconti articoli
+            If strTipork.Contains("SCO;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export sconti..."))
+                If Not Elabora_ExportSconti(oApp.AscDir & "\" + cIMP_SCONTI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_SCONTI)
+            End If
+
+
+            ' Funzione vuota per personalizzazioni
+            If Not Elabora_Child() Then Return False
+
+
+            '--------------------
+            'Export catalogo articoli
+            If strTipork.Contains("CAT;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export catalogo..."))
+                If Not Elabora_ExportCatalogo(oApp.AscDir & "\" + cIMP_CATALOGO, dttCat, strCustomQueryGetArtCatalogo) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CATALOGO)
+            End If
+
+
+            '--------------------
+            'copio i files dei tracciati nella dir di dropbox
+            ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia tracciati in " & strDropBoxDir))
+            For i = 0 To arFileGen.Count - 1
+                ' Mi occupo dei dati del catalogo
+                If arFileGen(i).ToString.ToLower.EndsWith(cIMP_CATALOGO) Then
+                    File.Delete(strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
+                    If File.Exists(arFileGen(i).ToString) Then
+                        System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
+                    End If
+                Else
+                    ' Mi occupo dei dati gestionale
+                    File.Delete(strDropBoxDir & "\gestionale\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
+                    If File.Exists(arFileGen(i).ToString) Then
+                        System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\gestionale\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
+                    End If
+                    File.Delete(arFileGen(i).ToString)
+                End If
+            Next
+
+            '--------------------
+            'se devo esportare anche il catalogo, copio le immagini
+            If dttCat.Rows.Count > 0 Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia immagini in " & strDropBoxDir & "\multimedia"))
+                If Not Directory.Exists(strDropBoxDir & "\multimedia") Then
+                    Directory.CreateDirectory(strDropBoxDir & "\multimedia")
+                End If
+                For Each dtrT As DataRow In dttCat.Rows
+                    'tolgo l'eventale attributo di sola lettura
+                    'strFileCat = strDropBoxDir & "\multimedia\" & NTSCStr(dtrT!ar_codart) & Path.GetExtension(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1))
+                    strFileCat = strDropBoxDir & "\multimedia\" & ConvStr(dtrT!ar_gif1)
+                    If File.Exists(strFileCat) Then
+                        File.SetAttributes(strFileCat, FileAttributes.Normal)
+                    End If
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia di " & oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1)))
+                    Try
+                        System.IO.File.Copy(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1), strFileCat, True)
+                    Catch ex As Exception
+                        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Salto read only" & oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1)))
+                    End Try
+
+                Next
+            End If
+
+            '--------------------
+            'Import Ordini
+            If strTipork.Contains("ORD;") Then
+                'meglio importare i dati dei clienti e note modificati o aggiunti
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import anagrafiche, note, ordini..."))
+                If Not Elabora_ImportAnagra() Then Return False
+                If Not Elabora_ImportLead() Then Return False
+
+                If Not Elabora_ImportLeadNote() Then Return False
+                If Not Elabora_ImportCliforNote() Then Return False
+
+                If Not Elabora_ImportOrdini() Then Return False
+                'If Not Elabora_ImportOrdiniNew() Then Return False
+
+            End If
+
+
+            ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------
+        Finally
+            dttTm.Clear()
+            dttCat.Clear()
+            LogStop()
+        End Try
+    End Function
+    Public Overridable Function AggiornaCoordinate() As Boolean
+        Dim dttTmp As New DataTable
+        Dim strQuerystring As String = ""
+        Dim strConto As String = ""
+        Dim retValue As Boolean
+        Dim dLat As Double
+        Dim dLon As Double
+        Dim retCoord As Boolean
+        Try
+
+
+            If Not oCldIbus.GetCliforSenzaCoordinate(strDittaCorrente, dttTmp, strCustomWhereGetCliforSenzaCoordinate) Then Return False
+
+            For Each dtrT As DataRow In dttTmp.Rows
+                strQuerystring = ConvStr(dtrT!an_indir) & ", " & ConvStr(dtrT!an_citta) & ", " & ConvStr(dtrT!an_prov) & ", " & ConvStr(dtrT!xx_desstato)
+                strConto = ConvStr(dtrT!an_conto)
+
+                retValue = ApexNetLIB.Geocoding.GetCoordinate(strQuerystring, dLat, dLon)
+
+                If retValue Then
+                    If dLat > 0 Or dLon > 0 Then
+                        retCoord = oCldIbus.UpdateCliforCoordinate(strDittaCorrente, strConto, dLat, dLon)
+                    End If
+
+                End If
+            Next
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+
+    End Function
+
+    Public Overridable Function Elabora_Child() As Boolean
+        Try
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+    End Function
+
+
+    Public Overridable Function Elabora_ExportCodpaga(ByVal strFileOut As String) As Boolean
         'esporta tutti i codici pagamento
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -849,9 +853,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
-  Public Overridable Function Elabora_ExportComuni(ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
+    End Function
+    Public Overridable Function Elabora_ExportComuni(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
 
@@ -890,90 +894,90 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportCittaXML(ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-
-
-    Try
-      If Not oCldIbus.GetComuni(dttTmp, strCustomWhereGetComuni) Then Return False
-
-      Dim XMLobj As Xml.XmlTextWriter
-      Dim enc As New System.[Text].UnicodeEncoding()
-      XMLobj = New Xml.XmlTextWriter(strFileOut.Replace("txt", "xml"), enc)
-
-      XMLobj.Formatting = Xml.Formatting.Indented
-      XMLobj.Indentation = 3
-      XMLobj.WriteStartDocument()
-
-      XMLobj.WriteStartElement("comuni")
-      For Each dtrT As DataRow In dttTmp.Rows
-
-        XMLobj.WriteStartElement("comune")
-
-        'XMLobj.WriteAttributeString("chiave", strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu))
-        'XMLobj.WriteAttributeString("cod_ditta", strDittaCorrente)
-        'XMLobj.WriteAttributeString("codice", ConvStr(dtrT!co_codcomu))
-        'XMLobj.WriteAttributeString("descrizione", ConvStr(dtrT!co_denom))
-        'XMLobj.WriteAttributeString("cap", ConvStr(dtrT!co_cap))
-        'XMLobj.WriteAttributeString("provincia", ConvStr(dtrT!co_prov))
-        'XMLobj.WriteAttributeString("dat_last_change", "")
-
-        XMLobj.WriteStartElement("k")
-        XMLobj.WriteString(strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu))
-        XMLobj.WriteEndElement()
-
-        XMLobj.WriteStartElement("ditta")
-        XMLobj.WriteString(strDittaCorrente)
-        XMLobj.WriteEndElement()
-
-        XMLobj.WriteStartElement("cod")
-        XMLobj.WriteString(ConvStr(dtrT!co_codcomu))
-        XMLobj.WriteEndElement()
-
-        XMLobj.WriteStartElement("desc")
-        XMLobj.WriteString(ConvStr(dtrT!co_denom))
-        XMLobj.WriteEndElement()
-
-        XMLobj.WriteStartElement("cap")
-        XMLobj.WriteString(ConvStr(dtrT!co_cap))
-        XMLobj.WriteEndElement()
-
-        XMLobj.WriteStartElement("prov")
-        XMLobj.WriteString(ConvStr(dtrT!co_prov))
-        XMLobj.WriteEndElement()
-
-        XMLobj.WriteStartElement("dlc")
-        XMLobj.WriteString("")
-        XMLobj.WriteEndElement()
+    Public Overridable Function Elabora_ExportCittaXML(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
 
 
-        XMLobj.WriteEndElement()
+        Try
+            If Not oCldIbus.GetComuni(dttTmp, strCustomWhereGetComuni) Then Return False
 
-      Next
-      XMLobj.WriteEndElement()
+            Dim XMLobj As Xml.XmlTextWriter
+            Dim enc As New System.[Text].UnicodeEncoding()
+            XMLobj = New Xml.XmlTextWriter(strFileOut.Replace("txt", "xml"), enc)
 
-      XMLobj.Close()
+            XMLobj.Formatting = Xml.Formatting.Indented
+            XMLobj.Indentation = 3
+            XMLobj.WriteStartDocument()
 
-      Return True
+            XMLobj.WriteStartElement("comuni")
+            For Each dtrT As DataRow In dttTmp.Rows
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
-  End Function
+                XMLobj.WriteStartElement("comune")
 
-  Public Overridable Function Elabora_ExportInfo(ByVal strFileOut As String, ByVal BNIEVersion As String) As Boolean
+                'XMLobj.WriteAttributeString("chiave", strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu))
+                'XMLobj.WriteAttributeString("cod_ditta", strDittaCorrente)
+                'XMLobj.WriteAttributeString("codice", ConvStr(dtrT!co_codcomu))
+                'XMLobj.WriteAttributeString("descrizione", ConvStr(dtrT!co_denom))
+                'XMLobj.WriteAttributeString("cap", ConvStr(dtrT!co_cap))
+                'XMLobj.WriteAttributeString("provincia", ConvStr(dtrT!co_prov))
+                'XMLobj.WriteAttributeString("dat_last_change", "")
+
+                XMLobj.WriteStartElement("k")
+                XMLobj.WriteString(strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu))
+                XMLobj.WriteEndElement()
+
+                XMLobj.WriteStartElement("ditta")
+                XMLobj.WriteString(strDittaCorrente)
+                XMLobj.WriteEndElement()
+
+                XMLobj.WriteStartElement("cod")
+                XMLobj.WriteString(ConvStr(dtrT!co_codcomu))
+                XMLobj.WriteEndElement()
+
+                XMLobj.WriteStartElement("desc")
+                XMLobj.WriteString(ConvStr(dtrT!co_denom))
+                XMLobj.WriteEndElement()
+
+                XMLobj.WriteStartElement("cap")
+                XMLobj.WriteString(ConvStr(dtrT!co_cap))
+                XMLobj.WriteEndElement()
+
+                XMLobj.WriteStartElement("prov")
+                XMLobj.WriteString(ConvStr(dtrT!co_prov))
+                XMLobj.WriteEndElement()
+
+                XMLobj.WriteStartElement("dlc")
+                XMLobj.WriteString("")
+                XMLobj.WriteEndElement()
+
+
+                XMLobj.WriteEndElement()
+
+            Next
+            XMLobj.WriteEndElement()
+
+            XMLobj.Close()
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportInfo(ByVal strFileOut As String, ByVal BNIEVersion As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1008,9 +1012,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportLeadDetCon(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportLeadDetCon(ByVal strFileOut As String) As Boolean
         'esporta l'organizzazione di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1078,106 +1082,106 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportLeads(ByVal strFileOut As String) As Boolean
-    'esporta tutti i comuni
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Try
-      If Not oCldIbus.GetLeads(strDittaCorrente, dttTmp, strCustomWhereGetLeads, _
-                               strIncludiLeadConClienti:=strIncludileadClienti) Then Return False
+    Public Overridable Function Elabora_ExportLeads(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetLeads(strDittaCorrente, dttTmp, strCustomWhereGetLeads, _
+                                     strIncludiLeadConClienti:=strIncludileadClienti) Then Return False
 
-      sbFile.Append(
-          "CHIAVE               |" & _
-          "COD_DITTA            |" & _
-          "COD_LEAD             |" & _
-          "COD_CLIFOR           |" & _
-          "DESCRIZIONE1         |" & _
-          "DESCRIZIONE2         |" & _
-          "INDIRIZZO            |" & _
-          "CITTA                |" & _
-          "CAP                  |" & _
-          "PROVINCIA            |" & _
-          "DES_NOTE             |" & _
-          "PARTITA_IVA          |" & _
-          "CODICE_FISCALE       |" & _
-          "TELEFONO             |" & _
-          "FAX                  |" & _
-          "CELLULARE            |" & _
-          "EMAIL                |" & _
-          "INTERNET             |" & _
-          "LATITUDINE           |" & _
-          "LONGITUDINE          |" & _
-          "FLG_MOD_NEL_DISP     |" & _
-          "COD_CATEGORIA        |" & _
-          "CATEGORIA            |" & _
-          "COD_ZONA             |" & _
-          "ZONA                 |" & _
-          "DATA_ULT_OFFERTA     |" & _
-          "DATA_CREAZIONE       |" & _
-          "BANCA1               |" & _
-          "BANCA2               |" & _
-          "COD_LISTINO          |" & _
-          "LISTINO              |" & _
-          "COD_PRIVACY          |" & _
-          "DES_PRIVACY          |" & _
-          "COD_CONTATTATO       |" & _
-          "DES_CONTATTATO       |" & _
-          "COD_NON_INTERESSATO  |" & _
-          "DES_NON_INTERESSATO  |" & _
-          "NAZIONE              |" & _
-          "COD_STATUS           |" & _
-          "STATUS               |" & _
-          "DAT_ULT_MOD           " & _
-          vbCrLf).Replace(" ", "")
+            sbFile.Append(
+                "CHIAVE               |" & _
+                "COD_DITTA            |" & _
+                "COD_LEAD             |" & _
+                "COD_CLIFOR           |" & _
+                "DESCRIZIONE1         |" & _
+                "DESCRIZIONE2         |" & _
+                "INDIRIZZO            |" & _
+                "CITTA                |" & _
+                "CAP                  |" & _
+                "PROVINCIA            |" & _
+                "DES_NOTE             |" & _
+                "PARTITA_IVA          |" & _
+                "CODICE_FISCALE       |" & _
+                "TELEFONO             |" & _
+                "FAX                  |" & _
+                "CELLULARE            |" & _
+                "EMAIL                |" & _
+                "INTERNET             |" & _
+                "LATITUDINE           |" & _
+                "LONGITUDINE          |" & _
+                "FLG_MOD_NEL_DISP     |" & _
+                "COD_CATEGORIA        |" & _
+                "CATEGORIA            |" & _
+                "COD_ZONA             |" & _
+                "ZONA                 |" & _
+                "DATA_ULT_OFFERTA     |" & _
+                "DATA_CREAZIONE       |" & _
+                "BANCA1               |" & _
+                "BANCA2               |" & _
+                "COD_LISTINO          |" & _
+                "LISTINO              |" & _
+                "COD_PRIVACY          |" & _
+                "DES_PRIVACY          |" & _
+                "COD_CONTATTATO       |" & _
+                "DES_CONTATTATO       |" & _
+                "COD_NON_INTERESSATO  |" & _
+                "DES_NON_INTERESSATO  |" & _
+                "NAZIONE              |" & _
+                "COD_STATUS           |" & _
+                "STATUS               |" & _
+                "DAT_ULT_MOD           " & _
+                vbCrLf).Replace(" ", "")
 
-      For Each dtrT As DataRow In dttTmp.Rows
+            For Each dtrT As DataRow In dttTmp.Rows
 
-        sbFile.Append(
-                   ConvStr(dtrT!xx_chiave) & "|" & _
-                   strDittaCorrente & "|" & _
-                   ConvStr(dtrT!le_codlead) & "|" & _
-                   ConvStr(dtrT!le_conto) & "|" & _
-                   ConvStr(dtrT!le_descr1).Trim & "|" & _
-                   ConvStr(dtrT!le_descr2).Trim & "|" & _
-                   ConvStr(dtrT!le_indir).Trim & "|" & _
-                   ConvStr(dtrT!le_citta).Trim & "|" & _
-                   ConvStr(dtrT!le_cap).Trim & "|" & _
-                   ConvStr(dtrT!le_prov).Trim & "|" & _
-                   ConvStr(dtrT!le_note).Trim & "|" & _
-                   ConvStr(dtrT!le_pariva) & "|" & _
-                   ConvStr(dtrT!le_codfis) & "|" & _
-                   ConvStr(dtrT!le_telef).Trim & "|" & _
-                   ConvStr(dtrT!le_faxtlx).Trim & "|" & _
-                   ConvStr(dtrT!le_cell).Trim & "|" & _
-                   ConvStr(dtrT!le_email).Trim & "|" & _
-                   ConvStr(dtrT!le_website).Trim & "|" & _
-                   "|" & _
-                   "|" & _
-                   "0|" & _
-                   ConvStr(dtrT!tb_codcate) & "|" & _
-                   ConvStr(dtrT!tb_descate).Trim & "|" & _
-                   ConvStr(dtrT!tb_codzone) & "|" & _
-                   ConvStr(dtrT!tb_deszone).Trim & "|" & _
-                   ConvData(dtrT!xx_ultoff, False) & "|" & _
-                   "|" & _
-                   ConvStr(dtrT!le_banc1) & "|" & _
-                   ConvStr(dtrT!le_banc2) & "|" & _
-                   ConvStr(dtrT!le_listino) & "|" & _
-                   ConvStr(dtrT!tb_deslist) & "|" & _
-                   ConvStr(dtrT!le_privacy) & "|" & _
-                   ConvStr(dtrT!xx_des_privacy) & "|" & _
-                   ConvStr(dtrT!le_contattato) & "|" & _
-                   ConvStr(dtrT!xx_des_contattato) & "|" & _
-                   ConvStr(dtrT!le_nonint) & "|" & _
-                   ConvStr(dtrT!xx_des_nonint) & "|" & _
-                   ConvStr(dtrT!tb_desstat) & "|" & _
-                   ConvStr(dtrT!le_status) & "|" & _
-                   ConvStr(dtrT!xx_des_status) & "|" & _
-                   ConvData(dtrT!le_ultagg, True) & vbCrLf)
+                sbFile.Append(
+                           ConvStr(dtrT!xx_chiave) & "|" & _
+                           strDittaCorrente & "|" & _
+                           ConvStr(dtrT!le_codlead) & "|" & _
+                           ConvStr(dtrT!le_conto) & "|" & _
+                           ConvStr(dtrT!le_descr1).Trim & "|" & _
+                           ConvStr(dtrT!le_descr2).Trim & "|" & _
+                           ConvStr(dtrT!le_indir).Trim & "|" & _
+                           ConvStr(dtrT!le_citta).Trim & "|" & _
+                           ConvStr(dtrT!le_cap).Trim & "|" & _
+                           ConvStr(dtrT!le_prov).Trim & "|" & _
+                           ConvStr(dtrT!le_note).Trim & "|" & _
+                           ConvStr(dtrT!le_pariva) & "|" & _
+                           ConvStr(dtrT!le_codfis) & "|" & _
+                           ConvStr(dtrT!le_telef).Trim & "|" & _
+                           ConvStr(dtrT!le_faxtlx).Trim & "|" & _
+                           ConvStr(dtrT!le_cell).Trim & "|" & _
+                           ConvStr(dtrT!le_email).Trim & "|" & _
+                           ConvStr(dtrT!le_website).Trim & "|" & _
+                           "|" & _
+                           "|" & _
+                           "0|" & _
+                           ConvStr(dtrT!tb_codcate) & "|" & _
+                           ConvStr(dtrT!tb_descate).Trim & "|" & _
+                           ConvStr(dtrT!tb_codzone) & "|" & _
+                           ConvStr(dtrT!tb_deszone).Trim & "|" & _
+                           ConvData(dtrT!xx_ultoff, False) & "|" & _
+                           "|" & _
+                           ConvStr(dtrT!le_banc1) & "|" & _
+                           ConvStr(dtrT!le_banc2) & "|" & _
+                           ConvStr(dtrT!le_listino) & "|" & _
+                           ConvStr(dtrT!tb_deslist) & "|" & _
+                           ConvStr(dtrT!le_privacy) & "|" & _
+                           ConvStr(dtrT!xx_des_privacy) & "|" & _
+                           ConvStr(dtrT!le_contattato) & "|" & _
+                           ConvStr(dtrT!xx_des_contattato) & "|" & _
+                           ConvStr(dtrT!le_nonint) & "|" & _
+                           ConvStr(dtrT!xx_des_nonint) & "|" & _
+                           ConvStr(dtrT!tb_desstat) & "|" & _
+                           ConvStr(dtrT!le_status) & "|" & _
+                           ConvStr(dtrT!xx_des_status) & "|" & _
+                           ConvData(dtrT!le_ultagg, True) & vbCrLf)
 
-      Next
+            Next
 
             If dttTmp.Rows.Count > 0 Then
                 Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
@@ -1186,21 +1190,21 @@ Public Class CLEIEIBUS
                 w1.Close()
             End If
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
-  End Function
-  Public Overridable Function Elabora_ExportLeadAccessi(ByVal strFileOut As String) As Boolean
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+    Public Overridable Function Elabora_ExportLeadAccessi(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1251,9 +1255,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportLeadAccessiCrm(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportLeadAccessiCrm(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1304,8 +1308,8 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
-  Public Overridable Function Elabora_ExportLeadTestOff(ByVal strFileOut As String) As Boolean
+    End Function
+    Public Overridable Function Elabora_ExportLeadTestOff(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1409,9 +1413,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportLeadNote(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportLeadNote(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1451,9 +1455,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportLeadRighOff(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportLeadRighOff(ByVal strFileOut As String) As Boolean
         'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1532,9 +1536,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportCliforGen(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportCliforGen(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
         'esporta tutti i clienti/fornitori ATTIVI o POTENZIALI con relativi dati associati
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1637,9 +1641,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportCliforBlo(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportCliforBlo(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
 
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1686,9 +1690,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportCliforDestdiv(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportCliforDestdiv(ByVal strFileOut As String) As Boolean
         'esporta tutte le destinazioni diverse di clienti/fornitori ATTIVI o POTENZIALI 
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1739,8 +1743,8 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
-  Public Overridable Function Elabora_ExportCliforAge(ByVal strFileOut As String) As Boolean
+    End Function
+    Public Overridable Function Elabora_ExportCliforAge(ByVal strFileOut As String) As Boolean
         'esporta gli agenti di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1780,8 +1784,8 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
-  Public Overridable Function Elabora_ExportCliforDettCon(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
+    End Function
+    Public Overridable Function Elabora_ExportCliforDettCon(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
         'esporta l'organizzazione di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1840,8 +1844,8 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
-  Public Overridable Function Elabora_ExportCliforFatt(ByVal strFileOut As String) As Boolean
+    End Function
+    Public Overridable Function Elabora_ExportCliforFatt(ByVal strFileOut As String) As Boolean
         'restituisco il fatturato degli ultimi 3 anno diviso per mese di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -1880,7 +1884,7 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
     Public Overridable Function Elabora_ExportCliforTestDoc(ByVal TipoCliFor As String, ByVal strFileOut As String, ByRef dttTmp As DataTable) As Boolean
         'restituisco le testate dei documenti di magazino/ordini di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim sbFile As New StringBuilder
@@ -1986,7 +1990,7 @@ Public Class CLEIEIBUS
         End Try
     End Function
 
-  Public Overridable Function Elabora_ExportCliforNote(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportCliforNote(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -2031,10 +2035,10 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
 
-  Public Overridable Function Elabora_ExportCliforRighDoc(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportCliforRighDoc(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
         'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -2085,9 +2089,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportCliforScadoc(ByVal TipoCliFor As String, ByVal strFileOut As String, ByRef dttTm As DataTable) As Boolean
+    Public Overridable Function Elabora_ExportCliforScadoc(ByVal TipoCliFor As String, ByVal strFileOut As String, ByRef dttTm As DataTable) As Boolean
         'restituisco le scadenze di cliente/fornitore ATTIVO o POTENZIALE
         'per collegare le scadenze ai relativi documenti precedentemente esportati, ...
         Dim dttTmp As New DataTable
@@ -2140,147 +2144,165 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportArt(ByVal strFileOut As String, ByVal strFileOutConf As String, ByVal strFileUM As String, ByVal strCustomQuery As String) As Boolean
-    'esporta gli articoli (e relative fasi) NO articoli TCO
-    Dim dttTmp As New DataTable
-    Dim sbFile As New StringBuilder
-    Dim sbFileConf As New StringBuilder
-    Dim sbFileUM As New StringBuilder
-    Dim my_ar_conver As String
-    Dim my_ar_qtaconf2 As String
+    Public Overridable Function Elabora_ExportArt(ByVal strFileOut As String, ByVal strFileOutConf As String, ByVal strFileUM As String, ByVal strCustomQuery As String) As Boolean
 
-    Try
-      If Not oCldIbus.GetArt(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArt, strScontoMax:=strScontoMaxPercentuale) Then Return False
+        'esporta gli articoli (e relative fasi) NO articoli TCO
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim sbFileConf As New StringBuilder
+        Dim sbFileUM As New StringBuilder
+        Dim my_ar_conver As String
+        Dim my_ar_qtaconf2 As String
+        Dim PrezzoMinimoDiVendita As Decimal
+        Dim UltimoCosto As Decimal
+        Dim TrovatoPrezzo As Boolean
 
-      sbFile.Append("CHIAVE|COD_DITTA|COD_ART|DES_ART|COD_FAM|DES_FAM|COD_SFAM|DES_SFAM|COD_GRUPPO1|DES_GRUPPO1|" & _
-                    "COD_GRUPPO2|DES_GRUPPO2|UM1|UM2|FATTORE_CONVERSIONE|DES_GR_STAT1|DES_GR_STAT2|QTA_MIN_VEND|" & _
-                    "COD_CLASSE_SCONTO|COD_DEPERIBILITA|PREZZO_MIN_VEN|SCONTO_MAX_VEN|MAX_EXTRA_SCONTO|DAT_ULT_MOD" & vbCrLf)
 
-      For Each dtrT As DataRow In dttTmp.Rows
-        sbFile.Append(strDittaCorrente & "§" & NTSCStr(dtrT!ar_codart) & "|" & _
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!ar_codart) & "|" & _
-                      (ConvStr(dtrT!ar_descr) & " " & ConvStr(dtrT!ar_desint) & " " & ConvStr(dtrT!af_descr)).Trim & "|" & _
-                      ConvStr(dtrT!ar_gruppo) & "|" & _
-                      ConvStr(dtrT!tb_desgmer) & "|" & _
-                      ConvStr(dtrT!ar_sotgru) & "|" & _
-                      ConvStr(dtrT!tb_dessgme) & "|" & _
-                      ConvStr(dtrT!ar_famprod) & "|" & _
-                      ConvStr(dtrT!tb_descfam) & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      ConvStr(dtrT!ar_unmis) & "|" & _
-                      ConvStr(dtrT!ar_unmis2) & "|" & _
-                      NTSCDec(dtrT!ar_conver).ToString("0.0000") & "|" & _
-                      "" & "|" & _
-                      "" & "|" & _
-                      "0" & "|" & _
-                      dtrT!ar_clascon.ToString & "|" & _
-                      ConvStr(dtrT!ar_tipo) & "|" & _
-                      NTSCDec(dtrT!xx_prz_min_ven).ToString("0.0000") & "|" & _
-                      NTSCDec(dtrT!xx_sconto_max_ven).ToString("0.0000") & "|" & _
-                      "0,000000" & "|" & _
-                      ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-      Next
+        Try
+            If Not oCldIbus.GetArt(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArt, strScontoMax:=strScontoMaxPercentuale) Then Return False
 
-      'IB_ART_CONF.DAT
-      sbFileConf.Append("CHIAVE|COD_ART|COD_DITTA|COD_CONF|PZ_CONF|FLG_PREF|DAT_ULT_MOD" & vbCrLf)
-      For Each dtrT As DataRow In dttTmp.Select("ar_qtacon2 <> 0", "ar_codart")
-        sbFileConf.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "|" & _
-                          ConvStr(dtrT!ar_codart) & "|" & _
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|DES_ART|COD_FAM|DES_FAM|COD_SFAM|DES_SFAM|COD_GRUPPO1|DES_GRUPPO1|" & _
+                          "COD_GRUPPO2|DES_GRUPPO2|UM1|UM2|FATTORE_CONVERSIONE|DES_GR_STAT1|DES_GR_STAT2|QTA_MIN_VEND|" & _
+                          "COD_CLASSE_SCONTO|COD_DEPERIBILITA|PREZZO_MIN_VEN|SCONTO_MAX_VEN|MAX_EXTRA_SCONTO|DAT_ULT_MOD" & vbCrLf)
+
+            For Each dtrT As DataRow In dttTmp.Rows
+
+                ' PrezzoMinimoDiVendita
+                PrezzoMinimoDiVendita = 0
+
+
+                If strPercentualeSuPrezzoMinimoVendita <> "0" And Integer.TryParse(strPercentualeSuPrezzoMinimoVendita, Nothing) Then
+                    TrovatoPrezzo = oCldIbus.FindArtUltCost(strDittaCorrente, ConvStr(dtrT!ar_codart), UltimoCosto)
+
+                    If TrovatoPrezzo Then
+                        PrezzoMinimoDiVendita = UltimoCosto + ((UltimoCosto / 100) * CInt(strPercentualeSuPrezzoMinimoVendita))
+                    End If
+                End If
+
+                sbFile.Append(strDittaCorrente & "§" & NTSCStr(dtrT!ar_codart) & "|" & _
+                              strDittaCorrente & "|" & _
+                              ConvStr(dtrT!ar_codart) & "|" & _
+                              (ConvStr(dtrT!ar_descr) & " " & ConvStr(dtrT!ar_desint) & " " & ConvStr(dtrT!af_descr)).Trim & "|" & _
+                              ConvStr(dtrT!ar_gruppo) & "|" & _
+                              ConvStr(dtrT!tb_desgmer) & "|" & _
+                              ConvStr(dtrT!ar_sotgru) & "|" & _
+                              ConvStr(dtrT!tb_dessgme) & "|" & _
+                              ConvStr(dtrT!ar_famprod) & "|" & _
+                              ConvStr(dtrT!tb_descfam) & "|" & _
+                              "" & "|" & _
+                              "" & "|" & _
+                              ConvStr(dtrT!ar_unmis) & "|" & _
+                              ConvStr(dtrT!ar_unmis2) & "|" & _
+                              NTSCDec(dtrT!ar_conver).ToString("0.0000") & "|" & _
+                              "" & "|" & _
+                              "" & "|" & _
+                              "0" & "|" & _
+                              dtrT!ar_clascon.ToString & "|" & _
+                              ConvStr(dtrT!ar_tipo) & "|" & _
+                              NTSCDec(PrezzoMinimoDiVendita).ToString("0.0000") & "|" & _
+                              NTSCDec(dtrT!xx_sconto_max_ven).ToString("0.0000") & "|" & _
+                              "0,000000" & "|" & _
+                              ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+            Next
+
+            'IB_ART_CONF.DAT
+            sbFileConf.Append("CHIAVE|COD_ART|COD_DITTA|COD_CONF|PZ_CONF|FLG_PREF|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Select("ar_qtacon2 <> 0", "ar_codart")
+                sbFileConf.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "|" & _
+                                  ConvStr(dtrT!ar_codart) & "|" & _
+                                  strDittaCorrente & "|" & _
+                                  ConvStr(dtrT!ar_confez2) & "|" & _
+                                  NTSCDec(dtrT!ar_qtacon2).ToString("0.0000") & "|" & _
+                                  "1" & "|" & _
+                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+            Next
+
+            'IB_ART_UM.DAT
+            sbFileUM.Append("CHIAVE|COD_DITTA|COD_ART|UM|DESC_UM|FAT_CONV|TIPO_UM|DAT_ULT_MOD" & vbCrLf)
+
+            For Each dtrT As DataRow In dttTmp.Select("1=1", "ar_codart")
+                sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§1" & "|" & _
                           strDittaCorrente & "|" & _
-                          ConvStr(dtrT!ar_confez2) & "|" & _
-                          NTSCDec(dtrT!ar_qtacon2).ToString("0.0000") & "|" & _
+                          ConvStr(dtrT!ar_codart) & "|" & _
+                          ConvStr(dtrT!ar_unmis) & "|" & _
+                          ConvStr(dtrT!tb_desunmis) & "|" & _
+                          "" & "|" & _
                           "1" & "|" & _
                           ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-      Next
 
-      'IB_ART_UM.DAT
-      sbFileUM.Append("CHIAVE|COD_DITTA|COD_ART|UM|DESC_UM|FAT_CONV|TIPO_UM|DAT_ULT_MOD" & vbCrLf)
+                If ConvStr(dtrT!ar_unmis2) <> "" Then
+                    If (NTSCDec(dtrT!ar_conver) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
 
-      For Each dtrT As DataRow In dttTmp.Select("1=1", "ar_codart")
-        sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§1" & "|" & _
-                  strDittaCorrente & "|" & _
-                  ConvStr(dtrT!ar_codart) & "|" & _
-                  ConvStr(dtrT!ar_unmis) & "|" & _
-                  ConvStr(dtrT!tb_desunmis) & "|" & _
-                  "" & "|" & _
-                  "1" & "|" & _
-                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+                        If ConvStr(dtrT!ar_conver) = "0" Then
+                            my_ar_conver = "1"
+                        Else
+                            my_ar_conver = (1 / NTSCDec(dtrT!ar_conver)).ToString("0.00000000")
+                        End If
 
-        If ConvStr(dtrT!ar_unmis2) <> "" Then
-          If (NTSCDec(dtrT!ar_conver) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+                        sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§2" & "|" &
+                                  strDittaCorrente & "|" & _
+                                  ConvStr(dtrT!ar_codart) & "|" & _
+                                  ConvStr(dtrT!ar_unmis2) & "|" & _
+                                  ConvStr(dtrT!tb_desunmis2) & " (" & ConvStr(dtrT!ar_conver) & ")" & "|" & _
+                                  my_ar_conver & "|" & _
+                                  "2" & "|" & _
+                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+                    End If
+                End If
 
-            If ConvStr(dtrT!ar_conver) = "0" Then
-              my_ar_conver = "1"
+                If ConvStr(dtrT!ar_confez2) <> "" Then
+                    If (NTSCDec(dtrT!ar_qtacon2) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+
+                        If ConvStr(dtrT!ar_qtacon2) = "0" Then
+                            my_ar_qtaconf2 = "1"
+                        Else
+                            my_ar_qtaconf2 = NTSCDec(dtrT!ar_qtacon2).ToString("0.0000")
+                        End If
+
+
+                        sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§3" & "|" &
+                                  strDittaCorrente & "|" & _
+                                  ConvStr(dtrT!ar_codart) & "|" & _
+                                  ConvStr(dtrT!ar_confez2) & "|" & _
+                                  ConvStr(dtrT!tb_desconfez2) & " (" & ConvStr(dtrT!ar_qtacon2) & ")" & "|" & _
+                                  my_ar_qtaconf2 & "|" & _
+                                  "3" & "|" & _
+                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+                    End If
+                End If
+            Next
+
+            Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+            w1.Write(sbFile.ToString)
+            w1.Flush()
+            w1.Close()
+
+            w1 = New StreamWriter(strFileOutConf, False, System.Text.Encoding.UTF8)
+            w1.Write(sbFileConf.ToString)
+            w1.Flush()
+            w1.Close()
+
+            w1 = New StreamWriter(strFileUM, False, System.Text.Encoding.UTF8)
+            w1.Write(sbFileUM.ToString)
+            w1.Flush()
+            w1.Close()
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
             Else
-              my_ar_conver = (1 / NTSCDec(dtrT!ar_conver)).ToString("0.00000000")
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
             End If
-
-            sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§2" & "|" &
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!ar_codart) & "|" & _
-                      ConvStr(dtrT!ar_unmis2) & "|" & _
-                      ConvStr(dtrT!tb_desunmis2) & " (" & ConvStr(dtrT!ar_conver) & ")" & "|" & _
-                      my_ar_conver & "|" & _
-                      "2" & "|" & _
-                      ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-          End If
-        End If
-
-        If ConvStr(dtrT!ar_confez2) <> "" Then
-          If (NTSCDec(dtrT!ar_qtacon2) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
-
-            If ConvStr(dtrT!ar_qtacon2) = "0" Then
-              my_ar_qtaconf2 = "1"
-            Else
-              my_ar_qtaconf2 = NTSCDec(dtrT!ar_qtacon2).ToString("0.0000")
-            End If
-
-
-            sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§3" & "|" &
-                      strDittaCorrente & "|" & _
-                      ConvStr(dtrT!ar_codart) & "|" & _
-                      ConvStr(dtrT!ar_confez2) & "|" & _
-                      ConvStr(dtrT!tb_desconfez2) & " (" & ConvStr(dtrT!ar_qtacon2) & ")" & "|" & _
-                      my_ar_qtaconf2 & "|" & _
-                      "3" & "|" & _
-                      ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-          End If
-        End If
-      Next
-
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
-
-      w1 = New StreamWriter(strFileOutConf, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFileConf.ToString)
-      w1.Flush()
-      w1.Close()
-
-      w1 = New StreamWriter(strFileUM, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFileUM.ToString)
-      w1.Flush()
-      w1.Close()
-
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    Finally
-      dttTmp.Clear()
-    End Try
-  End Function
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
   Public Overridable Function Elabora_ExportArtGiacenze(ByVal strFileOut As String) As Boolean
         'esporta le giacenze divise per magazzino degli articoli (e relative fasi) 
         Dim dttTmp As New DataTable

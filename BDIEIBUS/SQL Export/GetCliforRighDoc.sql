@@ -1,6 +1,6 @@
 ﻿-- Da usare per il debug in management studio
 -- DECLARE @ditta varchar(200), @tipocf varchar(2), @conti_esclusi varchar(10), @gg_documenti varchar(10)
--- SELECT @ditta = 'CMATIC', @tipocf ='CF', @conti_esclusi= '0', @gg_documenti ='180'
+-- SELECT @ditta = 'PROVA', @tipocf ='CF', @conti_esclusi= '0', @gg_documenti ='180'
 -- CAST(testmag.tm_conto AS VARCHAR) + '§' + CAST(testmag.tm_numdoc AS VARCHAR) + '§' + testmag.codditt as xx_numreg,                                                    
 -- CAST(testmag.tm_conto AS VARCHAR) + '§' + CAST(testmag.tm_numdoc AS VARCHAR) + '§' + testmag.codditt as xx_numreg,                                                                                                         
 -- CAST(testord.td_conto AS VARCHAR) + '§' + CAST(testord.td_numord AS VARCHAR) + '§' + testord.codditt as xx_numreg,                                                                                                 
@@ -13,15 +13,18 @@
 -- fatture differite PASSIVE (vado su movmag)
 -- Estraggo le righe ordine (vado su movord)
 
-SELECT   
+SELECT  
+        1 AS query,
         an_tipo,                                                          
         an_conto,     
 		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_numpar as varchar) as xx_numreg,
         testmag.tm_tipork,                                                
         testmag.tm_anno,                                                  
         testmag.tm_serie,                                                 
-        testmag.tm_numdoc,                                                
-            0 as tm_numdoc1,                                                  
+        testmag.tm_numdoc AS tm_numdoc,
+ 		'0' as tm_tipork1,  
+		0 as tm_serie1,                                                   
+        0 as tm_numdoc1,                                                
         mm_riga,                                                          
         mm_codart,                                                        
         mm_fase,                                                          
@@ -57,7 +60,8 @@ SELECT
 		AND    cast((GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)   
 		AND tm_tipork in ('A','N')  
 UNION ALL
-	SELECT   
+	SELECT 
+	    2,  
         an_tipo,                                                          
         an_conto,     
 		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar) + '§' + CAST(testmag.tm_numpar as varchar) as xx_numreg,
@@ -65,7 +69,9 @@ UNION ALL
         testmag.tm_anno,                                                  
         testmag.tm_serie,                                                 
         testmag.tm_numdoc,                                                
-            0 as tm_numdoc1,                                                  
+		    '0' as tm_tipork1,   
+	        0 as tm_serie1,                                                 
+            0 as tm_numdoc1,                                                   
         mm_riga,                                                          
         mm_codart,                                                        
         mm_fase,                                                          
@@ -103,14 +109,17 @@ UNION ALL
 		AND an_tipo = 'F' 
 	    AND testmag.tm_annpar > 0 AND testmag.tm_numpar > 0
 UNION ALL
-	SELECT   
+	SELECT 
+	    3,  
         an_tipo,                                                          
         an_conto,     
 		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_tipork as varchar) as xx_numreg,
         testmag.tm_tipork,                                                
         testmag.tm_anno,                                                  
         testmag.tm_serie,                                                 
-        testmag.tm_numdoc,                                                
+        testmag.tm_numdoc, 
+		    '0' as tm_tipork1,  
+		    0 as tm_serie1,                                                 
             0 as tm_numdoc1,                                                  
         mm_riga,                                                          
         mm_codart,                                                        
@@ -147,7 +156,8 @@ UNION ALL
 		AND    cast((GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)   
 		AND tm_tipork not in ('L','K','J','A','D','N','Z','T','U')
 UNION ALL        
-	SELECT                                                                
+	SELECT 
+	    4,                                                               
 		an_tipo,                                                          
 		an_conto,    
 		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_anno as varchar) + '§' + testmag.tm_serie + '§' + CAST(testmag.tm_numdoc as varchar) + '§' + CAST(testmag.tm_numpar as varchar)  as xx_numreg, 
@@ -155,8 +165,10 @@ UNION ALL
 		testmag.tm_anno,                                                  
 		testmag.tm_serie,                                                 
 		testmag.tm_numdoc,                                                
-		testmag_1.tm_numdoc as tm_numdoc1,                                
-		mm_riga,                                                          
+		testmag_1.tm_tipork as tm_tipork1, 
+		testmag_1.tm_serie as tm_serie1,                                                  
+		testmag_1.tm_numdoc as tm_numdoc1,                            
+	    CAST(testmag_1.tm_numdoc AS NVARCHAR(50))  + right('0000000' + CAST(mm_riga AS NVARCHAR(50)), 6),                                                              
 		mm_codart,                                                        
 		mm_fase,                                                          
 		mm_descr,                                                         
@@ -197,7 +209,8 @@ UNION ALL
 		AND   cast( (GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)    
 		AND testmag.tm_tipork = 'D'   
 UNION ALL
-    SELECT                                                                
+    SELECT 
+	    5,                                                               
         an_tipo,                                                          
         an_conto,    
 		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar)+ '§' + CAST(testmag.tm_numpar as varchar)  +  '§' + testmag.tm_tipork as xx_numreg,
@@ -205,8 +218,10 @@ UNION ALL
         testmag.tm_anno,                                                  
         testmag.tm_serie,                                                 
         testmag.tm_numdoc,                                                
-        testmag_1.tm_numdoc as tm_numdoc1,                                
-        mm_riga,                                                          
+		testmag_1.tm_tipork as tm_tipork1,  
+	    testmag_1.tm_serie as tm_serie1,                                                     
+        testmag_1.tm_numdoc as tm_numdoc1,                            
+	    CAST(testmag_1.tm_numdoc AS NVARCHAR(50))  + right('0000000' + CAST(mm_riga AS NVARCHAR(50)), 6),                                                      
         mm_codart,                                                        
         mm_fase,                                                          
         mm_descr,                                                         
@@ -249,7 +264,8 @@ UNION ALL
 		AND anagra.an_tipo = 'F' 
 	    AND testmag.tm_annpar > 0 AND testmag.tm_numpar > 0                       
 UNION ALL 
-    SELECT                                                                  
+    SELECT
+	        6,                                                                  
             an_tipo,                                                         
             an_conto,  
 			testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar) + '§' + td_tipork as xx_numreg,
@@ -257,7 +273,9 @@ UNION ALL
             testord.td_anno,                                                 
             testord.td_serie,                                                
             testord.td_numord,                                               
-           	0 as tm_numdoc1,                                                 
+			'0' as tm_tipork1,   
+			0 as tm_serie1,                                              
+           	0 as tm_numdoc1,                                                
             mo_riga,                                                         
             mo_codart,                                                       
             mo_fase,                                                         

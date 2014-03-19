@@ -97,6 +97,31 @@ Public Class CLDIEIBUS
     End Try
   End Function
 
+
+    Public Overridable Function FindArtUltCost(ByVal strDitta As String, ByVal codArticolo As String, ByRef UltCost As Decimal) As Boolean
+        Dim strSQL As String = ""
+        Dim dttOut As New DataTable
+        Try
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "FindArtUltCost.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+            strSQL = strSQL.Replace("@codart", CStrSQL(codArticolo))
+
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            If dttOut.Rows.Count = 0 Then
+                Return False
+            Else
+                UltCost = NTSCDec(dttOut.Rows(0)!ultcos)
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
   Public Overridable Function UpdateCliforTabNote(ByVal strDitta As String, ByVal strConto As String, ByVal strProgressivo As String, _
                                             ByVal strTitolo As String, ByVal strNote As String) As Boolean
     Dim strSQL As String = ""

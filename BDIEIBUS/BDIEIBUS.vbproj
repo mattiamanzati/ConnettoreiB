@@ -178,6 +178,9 @@
     <EmbeddedResource Include="SQL Export\GetLeadTestOff.sql" />
     <EmbeddedResource Include="SQL Export\SQL Generic\GetAgentiCliente.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\FindArtUltCost.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
