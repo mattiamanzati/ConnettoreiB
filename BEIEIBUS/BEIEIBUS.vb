@@ -117,6 +117,7 @@ Public Class CLEIEIBUS
     Public strCustomWhereGetCliforTestDoc As String = ""
     Public strCustomWhereGetCodpaga As String = ""
     Public strCustomWhereGetComuni As String = ""
+    Public strCustomWhereGetNazioni As String = ""
     Public strCustomWhereGetLeadAccessi As String = ""
     Public strCustomWhereGetLeadAccessiCrm As String = ""
     Public strCustomWhereGetLeadDetCon As String = ""
@@ -139,6 +140,7 @@ Public Class CLEIEIBUS
     Public Const cIMP_ASSORTIMENTI As String = "io_assortimenti.dat"
     Public Const cIMP_CAMPAGNE As String = "io_campagne.dat"
     Public Const cIMP_CITTA As String = "io_citta.dat"
+    Public Const cIMP_NAZIONI As String = "io_nazioni.dat"
     Public Const cIMP_CLIENTI_ASSORTIMENTI As String = "io_clienti_assortimenti.dat"
     Public Const cIMP_CLIFOR_GEN As String = "io_clifor_gen.dat"
     Public Const cIMP_CLIFOR As String = "io_clifor.dat"
@@ -403,6 +405,7 @@ Public Class CLEIEIBUS
             ' Altro
             strCustomWhereGetCodpaga = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCodpaga", "", " ", "").Trim
             strCustomWhereGetComuni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetComuni", "", " ", "").Trim
+            strCustomWhereGetNazioni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetNazioni", "", " ", "").Trim
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
 
             arFileGen.Clear()
@@ -483,6 +486,10 @@ Public Class CLEIEIBUS
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export comuni..."))
                 If Not Elabora_ExportComuni(oApp.AscDir & "\" + cIMP_CITTA) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_CITTA)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export nazioni..."))
+                If Not Elabora_ExportNazioni(oApp.AscDir & "\" + cIMP_NAZIONI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_NAZIONI)
             End If
             'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "30"))
 
@@ -871,6 +878,45 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!co_cap) & "|" & _
                                 ConvStr(dtrT!co_prov) & "|" & _
                                 ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportNazioni(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetNazioni(dttTmp, strCustomWhereGetNazioni) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codstat) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codstat) & "|" & _
+                                ConvStr(dtrT!tb_desstat) & vbCrLf)
             Next
 
             If dttTmp.Rows.Count > 0 Then
@@ -1552,9 +1598,9 @@ Public Class CLEIEIBUS
                         "FAX|CELLULARE|EMAIL|INTERNET|CAP|CITTA|PROVINCIA|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|" & _
                         "FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|PAGAMENTO|BANCA|AGENZIA|LISTINO_ANAGRAFICO|VALUTA|" & _
                         "SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
-                        "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|AREA|" & _
-                        "ZONA|MACROCATEGORIA|DATA_ULT_DOC_NO_FT|CATEGORIA|SOTTOCATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
-                        "FIDO_AZIENDALE|RAGGR1|RAGGR2|RAGGR3|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|COD_SOTTOCATEGORIA|DAT_ULT_MOD" & vbCrLf)
+                        "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|" & _
+                        "ZONA|CATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
+                        "FIDO_AZIENDALE|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(
@@ -1562,7 +1608,7 @@ Public Class CLEIEIBUS
                             strDittaCorrente & "|" & _
                             IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                             ConvStr(dtrT!an_conto) & "|" & _
-                            (ConvStr(dtrT!an_descr1) & " " & ConvStr(dtrT!an_descr2)).Trim & "|" & _
+                            (ConvStr(dtrT!an_descr1).Trim & " " & ConvStr(dtrT!an_descr2)).Trim & "|" & _
                             ConvStr(dtrT!an_indir).Trim & "|" & _
                             ConvStr(dtrT!an_pariva) & "|" & _
                             ConvStr(dtrT!an_codfis) & "|" & _
@@ -1593,27 +1639,14 @@ Public Class CLEIEIBUS
                                 NTSCDec(dtrT!tb_scopaga).ToString(oApp.FormatSconti) & "|" & _
                                 ConvStr(dtrT!an_listino) & "|" & _
                                 ConvStr(dtrT!an_codpag) & "|" & _
-                                "" & "|" & _
+                                ConvStr(dtrT!an_valuta) & "|" & _
                             ConvStr(dtrT!tb_descana) & "|" & _
                             ConvData(dtrT!an_dtaper, False) & "|" & _
-                            "" & "|" & _
                             ConvStr(dtrT!tb_deszone) & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
                             ConvStr(dtrT!tb_descate) & "|" & _
-                            "" & "|" & _
                             ConvData(dtrT!xx_ultfatt, False) & "|" & _
                             ConvData(dtrT!xx_ultord, False) & "|" & _
                             NTSCDec(dtrT!an_fido).ToString(oApp.FormatSconti) & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
-                            "" & "|" & _
                             ConvData(dtrT!an_ultagg, True) & vbCrLf)
             Next
 
@@ -2101,7 +2134,7 @@ Public Class CLEIEIBUS
             If Not oCldIbus.GetCliforScaDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforScaDoc) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_RATA|DAT_SCAD|IMPORTO|NETTO_PREV|DES_TIPO|DES_STATO|DES_TIPO_PRES|DES_OPERAZIONE|" & _
-                        "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|DATA_DOC|NUM_DOC|DAT_ULT_MOD" & vbCrLf)
+                        "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|COD_VALUTA|DATA_DOC|NUM_DOC|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_integr) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
                                     strDittaCorrente & "|" & _
@@ -2119,6 +2152,7 @@ Public Class CLEIEIBUS
                                     (ConvStr(dtrT!sc_banc1) & " - " & ConvStr(dtrT!sc_banc2)).Trim & "|" & _
                                     IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                     ConvStr(dtrT!an_conto) & "|" & _
+                                    ConvStr(dtrT!sc_codvalu) & "|" & _
                                     ConvData(dtrT!sc_datdoc, False) & "|" & _
                                     dtrT!sc_numdoc.ToString & "|" & _
                                     ConvData(dtrT!xx_ultagg, True) & vbCrLf)
@@ -2677,15 +2711,12 @@ Public Class CLEIEIBUS
             If Not oCldIbus.GetArtListini(strDittaCorrente, dttTmp, strCustomWhereGetArtListini) Then Return False
             '53
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_LISTINO|COD_ART|TIPO_CLIFOR|COD_CLIFOR|" & _
-                        "COD_DEPOSITO|COD_MACROAREA|COD_AREA|COD_ZONA|COD_MACROCATEGORIA|COD_CATEGORIA|" & _
-                        "COD_SOTTOCATEGORIA|COD_FAM_INIZIO|COD_FAM_FINE|COD_SFAM_INIZIO|COD_SFAM_FINE|" & _
-                        "COD_GRUPPO_INIZIO|COD_GRUPPO_FINE|COD_SGRUPPO_INIZIO|COD_SGRUPPO_FINE|" & _
-                        "COD_LISTINO|COD_CAMPAGNA|COD_DESTINAZIONE|COD_CLASSE|QUANTITA_INIZIO|QUANTITA_FINE|DATA_INIZIO|DATA_FINE|" & _
+                        "COD_LISTINO|QUANTITA_INIZIO|QUANTITA_FINE|DATA_INIZIO|DATA_FINE|" & _
                         "PREZZO|PRIORITA|" & _
                         "SCONTO1|SCONTO2|SCONTO3|SCONTO4|SCONTO5|SCONTO6|" & _
                         "SCONTO_IMP|MAG_PERC1|MAG_PERC2|MAG_IMP|" & _
                         "IND_GES_PREZZO|IND_GES_SC1_PER|IND_GES_SC2_PER|IND_GES_SC3_PER|IND_GES_SC4_PER|IND_GES_SC5_PER|IND_GES_SC6_PER|" & _
-                        "IND_GES_SC_IMP|IND_GES_MAG1_PER|IND_GES_MAG2_PER|IND_GES_MAG_IMP|FLG_ESCLUDI_SCONTI|COD_COMBINAZIONE|DAT_ULT_MOD" & vbCrLf)
+                        "IND_GES_SC_IMP|IND_GES_MAG1_PER|IND_GES_MAG2_PER|IND_GES_MAG_IMP|FLG_ESCLUDI_SCONTI|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
 
             'COD_COMBINAZIONE|
             For Each dtrT As DataRow In dttTmp.Rows
@@ -2695,25 +2726,7 @@ Public Class CLEIEIBUS
                     ConvStr(dtrT!ar_codart) & "|" & _
                     "0" & "|" & _
                     ConvStr(dtrT!lc_conto) & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
                     ConvStr(dtrT!lc_listino) & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
-                    "" & "|" & _
                     NTSCDec(dtrT!lc_daquant).ToString("0.00") & "|" & _
                     NTSCDec(dtrT!lc_aquant).ToString("0.00") & "|" & _
                     ConvData(dtrT!lc_datagg, False) & "|" & _
@@ -2742,7 +2755,7 @@ Public Class CLEIEIBUS
                     "0" & "|" & _
                     "0" & "|" & _
                     ConvStr(dtrT!lc_netto) & "|" & _
-                    "" & "|" & _
+                    ConvStr(dtrT!lc_codvalu) & "|" & _
                     ConvData(dtrT!xx_ultagg, True) & vbCrLf)
             Next
 

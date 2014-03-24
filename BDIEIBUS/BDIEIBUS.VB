@@ -526,7 +526,27 @@ Public Class CLDIEIBUS
       Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
       '--------------------------------------------------------------
     End Try
-  End Function
+    End Function
+
+    Public Overridable Function GetNazioni(ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetNazioni.sql")
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
 
   Public Overridable Function GetInfo(ByRef dttOut As DataTable, ByVal strRelease As String) As Boolean
     Dim strSQL As String = ""

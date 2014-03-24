@@ -53,541 +53,541 @@ Public Class FRMIEIBUS
   Private components As System.ComponentModel.IContainer
 
   Private Sub InitializeComponent()
-    Me.components = New System.ComponentModel.Container()
-    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FRMIEIBUS))
-    Me.NtsBarManager1 = New NTSInformatica.NTSBarManager()
-    Me.tlbMain = New NTSInformatica.NTSBar()
-    Me.tlbElabora = New NTSInformatica.NTSBarButtonItem()
-    Me.tlbLog = New NTSInformatica.NTSBarButtonItem()
-    Me.tlbStrumenti = New NTSInformatica.NTSBarSubItem()
-    Me.tlbCambioDitta = New NTSInformatica.NTSBarMenuItem()
-    Me.tlbEsci = New NTSInformatica.NTSBarButtonItem()
-    Me.barDockControlTop = New DevExpress.XtraBars.BarDockControl()
-    Me.barDockControlBottom = New DevExpress.XtraBars.BarDockControl()
-    Me.barDockControlLeft = New DevExpress.XtraBars.BarDockControl()
-    Me.barDockControlRight = New DevExpress.XtraBars.BarDockControl()
-    Me.tlbStampa = New NTSInformatica.NTSBarButtonItem()
-    Me.tlbStampaVideo = New NTSInformatica.NTSBarButtonItem()
-    Me.tlbGuida = New NTSInformatica.NTSBarButtonItem()
-    Me.tlbImpostaStampante = New NTSInformatica.NTSBarButtonItem()
-    Me.tlbCancella = New NTSInformatica.NTSBarMenuItem()
-    Me.lbExport = New NTSInformatica.NTSLabel()
-    Me.lbImport = New NTSInformatica.NTSLabel()
-    Me.ckCli = New NTSInformatica.NTSCheckBox()
-    Me.ckOrdini = New NTSInformatica.NTSCheckBox()
-    Me.ckArti = New NTSInformatica.NTSCheckBox()
-    Me.ckListini = New NTSInformatica.NTSCheckBox()
-    Me.ckMagaz = New NTSInformatica.NTSCheckBox()
-    Me.ckCatalogo = New NTSInformatica.NTSCheckBox()
-    Me.ckCodpaga = New NTSInformatica.NTSCheckBox()
-    Me.ckCitta = New NTSInformatica.NTSCheckBox()
-    Me.lbStatus = New NTSInformatica.NTSLabel()
-    Me.ckSconti = New NTSInformatica.NTSCheckBox()
-    Me.ckFor = New NTSInformatica.NTSCheckBox()
-    Me.NtsProgressBar1 = New NTSInformatica.NTSProgressBar()
-    Me.ckDoc = New NTSInformatica.NTSCheckBox()
-    Me.lblRelease = New NTSInformatica.NTSLabel()
-    Me.ckLeads = New NTSInformatica.NTSCheckBox()
-    Me.ckOff = New NTSInformatica.NTSCheckBox()
-    Me.ckCoordinate = New NTSInformatica.NTSCheckBox()
-    Me.NtsLabel1 = New NTSInformatica.NTSLabel()
-    Me.lblCustomRelease = New NTSInformatica.NTSLabel()
-    CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckArti.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckListini.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckMagaz.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckCatalogo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckCodpaga.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckCitta.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckSconti.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckFor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.NtsProgressBar1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckDoc.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckLeads.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckOff.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    CType(Me.ckCoordinate.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-    Me.SuspendLayout()
-    '
-    'frmPopup
-    '
-    Me.frmPopup.Appearance.BackColor = System.Drawing.Color.Red
-    Me.frmPopup.Appearance.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical
-    Me.frmPopup.Appearance.Options.UseBackColor = True
-    Me.frmPopup.Appearance.Options.UseImage = True
-    '
-    'frmAuto
-    '
-    Me.frmAuto.Appearance.BackColor = System.Drawing.Color.Black
-    Me.frmAuto.Appearance.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical
-    Me.frmAuto.Appearance.Options.UseBackColor = True
-    Me.frmAuto.Appearance.Options.UseImage = True
-    '
-    'NtsBarManager1
-    '
-    Me.NtsBarManager1.AllowCustomization = False
-    Me.NtsBarManager1.Bars.AddRange(New DevExpress.XtraBars.Bar() {Me.tlbMain})
-    Me.NtsBarManager1.DockControls.Add(Me.barDockControlTop)
-    Me.NtsBarManager1.DockControls.Add(Me.barDockControlBottom)
-    Me.NtsBarManager1.DockControls.Add(Me.barDockControlLeft)
-    Me.NtsBarManager1.DockControls.Add(Me.barDockControlRight)
-    Me.NtsBarManager1.Form = Me
-    Me.NtsBarManager1.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.tlbStampa, Me.tlbStampaVideo, Me.tlbGuida, Me.tlbEsci, Me.tlbStrumenti, Me.tlbImpostaStampante, Me.tlbCambioDitta, Me.tlbCancella, Me.tlbElabora, Me.tlbLog})
-    Me.NtsBarManager1.MaxItemId = 22
-    '
-    'tlbMain
-    '
-    Me.tlbMain.BarName = "tlbMain"
-    Me.tlbMain.DockCol = 0
-    Me.tlbMain.DockRow = 0
-    Me.tlbMain.DockStyle = DevExpress.XtraBars.BarDockStyle.Top
-    Me.tlbMain.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.tlbElabora, True), New DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.None, False, Me.tlbLog, False), New DevExpress.XtraBars.LinkPersistInfo(Me.tlbStrumenti, True), New DevExpress.XtraBars.LinkPersistInfo(Me.tlbEsci)})
-    Me.tlbMain.OptionsBar.AllowQuickCustomization = False
-    Me.tlbMain.OptionsBar.DisableClose = True
-    Me.tlbMain.OptionsBar.DrawDragBorder = False
-    Me.tlbMain.OptionsBar.UseWholeRow = True
-    Me.tlbMain.Text = "tlbMain"
-    '
-    'tlbElabora
-    '
-    Me.tlbElabora.Caption = "Elabora"
-    Me.tlbElabora.Glyph = CType(resources.GetObject("tlbElabora.Glyph"), System.Drawing.Image)
-    Me.tlbElabora.Id = 19
-    Me.tlbElabora.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
-    Me.tlbElabora.Name = "tlbElabora"
-    Me.tlbElabora.Visible = True
-    '
-    'tlbLog
-    '
-    Me.tlbLog.Caption = "Log"
-    Me.tlbLog.Glyph = CType(resources.GetObject("tlbLog.Glyph"), System.Drawing.Image)
-    Me.tlbLog.Id = 99
-    Me.tlbLog.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
-    Me.tlbLog.Name = "tlbLog"
-    Me.tlbLog.Visible = False
-    '
-    'tlbStrumenti
-    '
-    Me.tlbStrumenti.Caption = "Strumenti"
-    Me.tlbStrumenti.Glyph = CType(resources.GetObject("tlbStrumenti.Glyph"), System.Drawing.Image)
-    Me.tlbStrumenti.Id = 15
-    Me.tlbStrumenti.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.tlbCambioDitta)})
-    Me.tlbStrumenti.Name = "tlbStrumenti"
-    Me.tlbStrumenti.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionInMenu
-    Me.tlbStrumenti.Visible = True
-    '
-    'tlbCambioDitta
-    '
-    Me.tlbCambioDitta.Caption = "Cambio ditta"
-    Me.tlbCambioDitta.Id = 17
-    Me.tlbCambioDitta.ItemShortcut = New DevExpress.XtraBars.BarShortcut((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.D))
-    Me.tlbCambioDitta.Name = "tlbCambioDitta"
-    Me.tlbCambioDitta.NTSIsCheckBox = False
-    Me.tlbCambioDitta.Visible = True
-    '
-    'tlbEsci
-    '
-    Me.tlbEsci.Caption = "Esci"
-    Me.tlbEsci.Glyph = CType(resources.GetObject("tlbEsci.Glyph"), System.Drawing.Image)
-    Me.tlbEsci.Id = 12
-    Me.tlbEsci.Name = "tlbEsci"
-    Me.tlbEsci.Visible = True
-    '
-    'tlbStampa
-    '
-    Me.tlbStampa.Caption = "Stampa"
-    Me.tlbStampa.Glyph = CType(resources.GetObject("tlbStampa.Glyph"), System.Drawing.Image)
-    Me.tlbStampa.Id = 4
-    Me.tlbStampa.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F6)
-    Me.tlbStampa.Name = "tlbStampa"
-    Me.tlbStampa.Visible = True
-    '
-    'tlbStampaVideo
-    '
-    Me.tlbStampaVideo.Caption = "Stampa video"
-    Me.tlbStampaVideo.Glyph = CType(resources.GetObject("tlbStampaVideo.Glyph"), System.Drawing.Image)
-    Me.tlbStampaVideo.Id = 5
-    Me.tlbStampaVideo.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F12)
-    Me.tlbStampaVideo.Name = "tlbStampaVideo"
-    Me.tlbStampaVideo.Visible = True
-    '
-    'tlbGuida
-    '
-    Me.tlbGuida.Caption = "Guida"
-    Me.tlbGuida.Glyph = CType(resources.GetObject("tlbGuida.Glyph"), System.Drawing.Image)
-    Me.tlbGuida.Id = 11
-    Me.tlbGuida.Name = "tlbGuida"
-    Me.tlbGuida.Visible = True
-    '
-    'tlbImpostaStampante
-    '
-    Me.tlbImpostaStampante.Caption = "Imposta Stampante"
-    Me.tlbImpostaStampante.Id = 16
-    Me.tlbImpostaStampante.Name = "tlbImpostaStampante"
-    Me.tlbImpostaStampante.Visible = True
-    '
-    'tlbCancella
-    '
-    Me.tlbCancella.Caption = "Cancella"
-    Me.tlbCancella.Id = 18
-    Me.tlbCancella.Name = "tlbCancella"
-    Me.tlbCancella.NTSIsCheckBox = False
-    Me.tlbCancella.Visible = True
-    '
-    'lbExport
-    '
-    Me.lbExport.AutoSize = True
-    Me.lbExport.BackColor = System.Drawing.Color.Transparent
-    Me.lbExport.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.lbExport.Location = New System.Drawing.Point(12, 41)
-    Me.lbExport.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
-    Me.lbExport.Name = "lbExport"
-    Me.lbExport.NTSDbField = ""
-    Me.lbExport.Size = New System.Drawing.Size(44, 13)
-    Me.lbExport.TabIndex = 10
-    Me.lbExport.Text = "Export"
-    Me.lbExport.Tooltip = ""
-    Me.lbExport.UseMnemonic = False
-    '
-    'lbImport
-    '
-    Me.lbImport.AutoSize = True
-    Me.lbImport.BackColor = System.Drawing.Color.Transparent
-    Me.lbImport.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.lbImport.Location = New System.Drawing.Point(12, 210)
-    Me.lbImport.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
-    Me.lbImport.Name = "lbImport"
-    Me.lbImport.NTSDbField = ""
-    Me.lbImport.Size = New System.Drawing.Size(47, 13)
-    Me.lbImport.TabIndex = 11
-    Me.lbImport.Text = "Import"
-    Me.lbImport.Tooltip = ""
-    Me.lbImport.UseMnemonic = False
-    '
-    'ckCli
-    '
-    Me.ckCli.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckCli.Location = New System.Drawing.Point(25, 81)
-    Me.ckCli.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckCli.Name = "ckCli"
-    Me.ckCli.NTSCheckValue = "S"
-    Me.ckCli.NTSUnCheckValue = "N"
-    Me.ckCli.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckCli.Properties.Appearance.Options.UseBackColor = True
-    Me.ckCli.Properties.Caption = "Clienti"
-    Me.ckCli.Size = New System.Drawing.Size(107, 19)
-    Me.ckCli.TabIndex = 14
-    '
-    'ckOrdini
-    '
-    Me.ckOrdini.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckOrdini.Location = New System.Drawing.Point(25, 227)
-    Me.ckOrdini.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckOrdini.Name = "ckOrdini"
-    Me.ckOrdini.NTSCheckValue = "S"
-    Me.ckOrdini.NTSUnCheckValue = "N"
-    Me.ckOrdini.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckOrdini.Properties.Appearance.Options.UseBackColor = True
-    Me.ckOrdini.Properties.Caption = "Ordini,  preventivi, note, anagr. clienti, leads, ecc"
-    Me.ckOrdini.Size = New System.Drawing.Size(337, 19)
-    Me.ckOrdini.TabIndex = 15
-    '
-    'ckArti
-    '
-    Me.ckArti.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckArti.Location = New System.Drawing.Point(261, 81)
-    Me.ckArti.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckArti.Name = "ckArti"
-    Me.ckArti.NTSCheckValue = "S"
-    Me.ckArti.NTSUnCheckValue = "N"
-    Me.ckArti.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckArti.Properties.Appearance.Options.UseBackColor = True
-    Me.ckArti.Properties.Caption = "Articoli"
-    Me.ckArti.Size = New System.Drawing.Size(65, 19)
-    Me.ckArti.TabIndex = 16
-    '
-    'ckListini
-    '
-    Me.ckListini.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckListini.Location = New System.Drawing.Point(261, 127)
-    Me.ckListini.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckListini.Name = "ckListini"
-    Me.ckListini.NTSCheckValue = "S"
-    Me.ckListini.NTSUnCheckValue = "N"
-    Me.ckListini.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckListini.Properties.Appearance.Options.UseBackColor = True
-    Me.ckListini.Properties.Caption = "Listini"
-    Me.ckListini.Size = New System.Drawing.Size(56, 19)
-    Me.ckListini.TabIndex = 17
-    '
-    'ckMagaz
-    '
-    Me.ckMagaz.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckMagaz.Location = New System.Drawing.Point(261, 104)
-    Me.ckMagaz.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckMagaz.Name = "ckMagaz"
-    Me.ckMagaz.NTSCheckValue = "S"
-    Me.ckMagaz.NTSUnCheckValue = "N"
-    Me.ckMagaz.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckMagaz.Properties.Appearance.Options.UseBackColor = True
-    Me.ckMagaz.Properties.Caption = "Giacenze di magazzino"
-    Me.ckMagaz.Size = New System.Drawing.Size(138, 19)
-    Me.ckMagaz.TabIndex = 18
-    '
-    'ckCatalogo
-    '
-    Me.ckCatalogo.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckCatalogo.Location = New System.Drawing.Point(25, 173)
-    Me.ckCatalogo.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckCatalogo.Name = "ckCatalogo"
-    Me.ckCatalogo.NTSCheckValue = "S"
-    Me.ckCatalogo.NTSUnCheckValue = "N"
-    Me.ckCatalogo.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckCatalogo.Properties.Appearance.Options.UseBackColor = True
-    Me.ckCatalogo.Properties.Caption = "Catalogo"
-    Me.ckCatalogo.Size = New System.Drawing.Size(71, 19)
-    Me.ckCatalogo.TabIndex = 19
-    '
-    'ckCodpaga
-    '
-    Me.ckCodpaga.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckCodpaga.Location = New System.Drawing.Point(261, 173)
-    Me.ckCodpaga.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckCodpaga.Name = "ckCodpaga"
-    Me.ckCodpaga.NTSCheckValue = "S"
-    Me.ckCodpaga.NTSUnCheckValue = "N"
-    Me.ckCodpaga.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckCodpaga.Properties.Appearance.Options.UseBackColor = True
-    Me.ckCodpaga.Properties.Caption = "Condizioni di pagamento"
-    Me.ckCodpaga.Size = New System.Drawing.Size(149, 19)
-    Me.ckCodpaga.TabIndex = 20
-    '
-    'ckCitta
-    '
-    Me.ckCitta.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckCitta.Location = New System.Drawing.Point(25, 150)
-    Me.ckCitta.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckCitta.Name = "ckCitta"
-    Me.ckCitta.NTSCheckValue = "S"
-    Me.ckCitta.NTSUnCheckValue = "N"
-    Me.ckCitta.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckCitta.Properties.Appearance.Options.UseBackColor = True
-    Me.ckCitta.Properties.Caption = "Città / Comuni"
-    Me.ckCitta.Size = New System.Drawing.Size(104, 19)
-    Me.ckCitta.TabIndex = 21
-    '
-    'lbStatus
-    '
-    Me.lbStatus.AutoSize = True
-    Me.lbStatus.BackColor = System.Drawing.Color.Transparent
-    Me.lbStatus.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.lbStatus.Location = New System.Drawing.Point(9, 332)
-    Me.lbStatus.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
-    Me.lbStatus.Name = "lbStatus"
-    Me.lbStatus.NTSDbField = ""
-    Me.lbStatus.Size = New System.Drawing.Size(43, 13)
-    Me.lbStatus.TabIndex = 23
-    Me.lbStatus.Text = "Pronto."
-    Me.lbStatus.Tooltip = ""
-    Me.lbStatus.UseMnemonic = False
-    '
-    'ckSconti
-    '
-    Me.ckSconti.Cursor = System.Windows.Forms.Cursors.SizeNWSE
-    Me.ckSconti.Location = New System.Drawing.Point(261, 150)
-    Me.ckSconti.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckSconti.Name = "ckSconti"
-    Me.ckSconti.NTSCheckValue = "S"
-    Me.ckSconti.NTSUnCheckValue = "N"
-    Me.ckSconti.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckSconti.Properties.Appearance.Options.UseBackColor = True
-    Me.ckSconti.Properties.Caption = "Sconti"
-    Me.ckSconti.Size = New System.Drawing.Size(56, 19)
-    Me.ckSconti.TabIndex = 24
-    '
-    'ckFor
-    '
-    Me.ckFor.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckFor.Location = New System.Drawing.Point(25, 104)
-    Me.ckFor.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckFor.Name = "ckFor"
-    Me.ckFor.NTSCheckValue = "S"
-    Me.ckFor.NTSUnCheckValue = "N"
-    Me.ckFor.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckFor.Properties.Appearance.Options.UseBackColor = True
-    Me.ckFor.Properties.Caption = "Fornitori"
-    Me.ckFor.Size = New System.Drawing.Size(107, 19)
-    Me.ckFor.TabIndex = 25
-    '
-    'NtsProgressBar1
-    '
-    Me.NtsProgressBar1.Cursor = System.Windows.Forms.Cursors.Default
-    Me.NtsProgressBar1.Dock = System.Windows.Forms.DockStyle.Bottom
-    Me.NtsProgressBar1.Location = New System.Drawing.Point(0, 351)
-    Me.NtsProgressBar1.Name = "NtsProgressBar1"
-    Me.NtsProgressBar1.Size = New System.Drawing.Size(467, 16)
-    Me.NtsProgressBar1.TabIndex = 27
-    Me.NtsProgressBar1.TabStop = False
-    Me.NtsProgressBar1.Visible = False
-    '
-    'ckDoc
-    '
-    Me.ckDoc.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckDoc.Location = New System.Drawing.Point(25, 127)
-    Me.ckDoc.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckDoc.Name = "ckDoc"
-    Me.ckDoc.NTSCheckValue = "S"
-    Me.ckDoc.NTSUnCheckValue = "N"
-    Me.ckDoc.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckDoc.Properties.Appearance.Options.UseBackColor = True
-    Me.ckDoc.Properties.Caption = "Documenti e Scadenze"
-    Me.ckDoc.Size = New System.Drawing.Size(148, 19)
-    Me.ckDoc.TabIndex = 28
-    '
-    'lblRelease
-    '
-    Me.lblRelease.AutoSize = True
-    Me.lblRelease.BackColor = System.Drawing.Color.Transparent
-    Me.lblRelease.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.lblRelease.Location = New System.Drawing.Point(398, 332)
-    Me.lblRelease.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
-    Me.lblRelease.Name = "lblRelease"
-    Me.lblRelease.NTSDbField = ""
-    Me.lblRelease.Size = New System.Drawing.Size(49, 13)
-    Me.lblRelease.TabIndex = 29
-    Me.lblRelease.Text = "99.9.9.9"
-    Me.lblRelease.Tooltip = ""
-    Me.lblRelease.UseMnemonic = False
-    '
-    'ckLeads
-    '
-    Me.ckLeads.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckLeads.Location = New System.Drawing.Point(25, 58)
-    Me.ckLeads.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckLeads.Name = "ckLeads"
-    Me.ckLeads.NTSCheckValue = "S"
-    Me.ckLeads.NTSUnCheckValue = "N"
-    Me.ckLeads.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckLeads.Properties.Appearance.Options.UseBackColor = True
-    Me.ckLeads.Properties.Caption = "Leads"
-    Me.ckLeads.Size = New System.Drawing.Size(107, 19)
-    Me.ckLeads.TabIndex = 30
-    '
-    'ckOff
-    '
-    Me.ckOff.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckOff.Location = New System.Drawing.Point(261, 58)
-    Me.ckOff.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckOff.Name = "ckOff"
-    Me.ckOff.NTSCheckValue = "S"
-    Me.ckOff.NTSUnCheckValue = "N"
-    Me.ckOff.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckOff.Properties.Appearance.Options.UseBackColor = True
-    Me.ckOff.Properties.Caption = "Offerte"
-    Me.ckOff.Size = New System.Drawing.Size(65, 19)
-    Me.ckOff.TabIndex = 31
-    '
-    'ckCoordinate
-    '
-    Me.ckCoordinate.Cursor = System.Windows.Forms.Cursors.Default
-    Me.ckCoordinate.Location = New System.Drawing.Point(25, 282)
-    Me.ckCoordinate.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
-    Me.ckCoordinate.Name = "ckCoordinate"
-    Me.ckCoordinate.NTSCheckValue = "S"
-    Me.ckCoordinate.NTSUnCheckValue = "N"
-    Me.ckCoordinate.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
-    Me.ckCoordinate.Properties.Appearance.Options.UseBackColor = True
-    Me.ckCoordinate.Properties.Caption = "Identificazione delle coordinate geografiche dei clienti"
-    Me.ckCoordinate.Size = New System.Drawing.Size(321, 19)
-    Me.ckCoordinate.TabIndex = 32
-    Me.ckCoordinate.ToolTip = "Identifica le coordinate geografiche del cliente in base all'indirizzo inserito i" & _
+        Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FRMIEIBUS))
+        Me.NtsBarManager1 = New NTSInformatica.NTSBarManager()
+        Me.tlbMain = New NTSInformatica.NTSBar()
+        Me.tlbElabora = New NTSInformatica.NTSBarButtonItem()
+        Me.tlbLog = New NTSInformatica.NTSBarButtonItem()
+        Me.tlbStrumenti = New NTSInformatica.NTSBarSubItem()
+        Me.tlbCambioDitta = New NTSInformatica.NTSBarMenuItem()
+        Me.tlbEsci = New NTSInformatica.NTSBarButtonItem()
+        Me.barDockControlTop = New DevExpress.XtraBars.BarDockControl()
+        Me.barDockControlBottom = New DevExpress.XtraBars.BarDockControl()
+        Me.barDockControlLeft = New DevExpress.XtraBars.BarDockControl()
+        Me.barDockControlRight = New DevExpress.XtraBars.BarDockControl()
+        Me.tlbStampa = New NTSInformatica.NTSBarButtonItem()
+        Me.tlbStampaVideo = New NTSInformatica.NTSBarButtonItem()
+        Me.tlbGuida = New NTSInformatica.NTSBarButtonItem()
+        Me.tlbImpostaStampante = New NTSInformatica.NTSBarButtonItem()
+        Me.tlbCancella = New NTSInformatica.NTSBarMenuItem()
+        Me.lbExport = New NTSInformatica.NTSLabel()
+        Me.lbImport = New NTSInformatica.NTSLabel()
+        Me.ckCli = New NTSInformatica.NTSCheckBox()
+        Me.ckOrdini = New NTSInformatica.NTSCheckBox()
+        Me.ckArti = New NTSInformatica.NTSCheckBox()
+        Me.ckListini = New NTSInformatica.NTSCheckBox()
+        Me.ckMagaz = New NTSInformatica.NTSCheckBox()
+        Me.ckCatalogo = New NTSInformatica.NTSCheckBox()
+        Me.ckCodpaga = New NTSInformatica.NTSCheckBox()
+        Me.ckCitta = New NTSInformatica.NTSCheckBox()
+        Me.lbStatus = New NTSInformatica.NTSLabel()
+        Me.ckSconti = New NTSInformatica.NTSCheckBox()
+        Me.ckFor = New NTSInformatica.NTSCheckBox()
+        Me.NtsProgressBar1 = New NTSInformatica.NTSProgressBar()
+        Me.ckDoc = New NTSInformatica.NTSCheckBox()
+        Me.lblRelease = New NTSInformatica.NTSLabel()
+        Me.ckLeads = New NTSInformatica.NTSCheckBox()
+        Me.ckOff = New NTSInformatica.NTSCheckBox()
+        Me.ckCoordinate = New NTSInformatica.NTSCheckBox()
+        Me.NtsLabel1 = New NTSInformatica.NTSLabel()
+        Me.lblCustomRelease = New NTSInformatica.NTSLabel()
+        CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckArti.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckListini.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckMagaz.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckCatalogo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckCodpaga.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckCitta.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckSconti.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckFor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.NtsProgressBar1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckDoc.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckLeads.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckOff.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckCoordinate.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'frmPopup
+        '
+        Me.frmPopup.Appearance.BackColor = System.Drawing.Color.Red
+        Me.frmPopup.Appearance.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical
+        Me.frmPopup.Appearance.Options.UseBackColor = True
+        Me.frmPopup.Appearance.Options.UseImage = True
+        '
+        'frmAuto
+        '
+        Me.frmAuto.Appearance.BackColor = System.Drawing.Color.Black
+        Me.frmAuto.Appearance.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical
+        Me.frmAuto.Appearance.Options.UseBackColor = True
+        Me.frmAuto.Appearance.Options.UseImage = True
+        '
+        'NtsBarManager1
+        '
+        Me.NtsBarManager1.AllowCustomization = False
+        Me.NtsBarManager1.Bars.AddRange(New DevExpress.XtraBars.Bar() {Me.tlbMain})
+        Me.NtsBarManager1.DockControls.Add(Me.barDockControlTop)
+        Me.NtsBarManager1.DockControls.Add(Me.barDockControlBottom)
+        Me.NtsBarManager1.DockControls.Add(Me.barDockControlLeft)
+        Me.NtsBarManager1.DockControls.Add(Me.barDockControlRight)
+        Me.NtsBarManager1.Form = Me
+        Me.NtsBarManager1.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.tlbStampa, Me.tlbStampaVideo, Me.tlbGuida, Me.tlbEsci, Me.tlbStrumenti, Me.tlbImpostaStampante, Me.tlbCambioDitta, Me.tlbCancella, Me.tlbElabora, Me.tlbLog})
+        Me.NtsBarManager1.MaxItemId = 22
+        '
+        'tlbMain
+        '
+        Me.tlbMain.BarName = "tlbMain"
+        Me.tlbMain.DockCol = 0
+        Me.tlbMain.DockRow = 0
+        Me.tlbMain.DockStyle = DevExpress.XtraBars.BarDockStyle.Top
+        Me.tlbMain.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.tlbElabora, True), New DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.None, False, Me.tlbLog, False), New DevExpress.XtraBars.LinkPersistInfo(Me.tlbStrumenti, True), New DevExpress.XtraBars.LinkPersistInfo(Me.tlbEsci)})
+        Me.tlbMain.OptionsBar.AllowQuickCustomization = False
+        Me.tlbMain.OptionsBar.DisableClose = True
+        Me.tlbMain.OptionsBar.DrawDragBorder = False
+        Me.tlbMain.OptionsBar.UseWholeRow = True
+        Me.tlbMain.Text = "tlbMain"
+        '
+        'tlbElabora
+        '
+        Me.tlbElabora.Caption = "Elabora"
+        Me.tlbElabora.Glyph = CType(resources.GetObject("tlbElabora.Glyph"), System.Drawing.Image)
+        Me.tlbElabora.Id = 19
+        Me.tlbElabora.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
+        Me.tlbElabora.Name = "tlbElabora"
+        Me.tlbElabora.Visible = True
+        '
+        'tlbLog
+        '
+        Me.tlbLog.Caption = "Log"
+        Me.tlbLog.Glyph = CType(resources.GetObject("tlbLog.Glyph"), System.Drawing.Image)
+        Me.tlbLog.Id = 99
+        Me.tlbLog.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
+        Me.tlbLog.Name = "tlbLog"
+        Me.tlbLog.Visible = False
+        '
+        'tlbStrumenti
+        '
+        Me.tlbStrumenti.Caption = "Strumenti"
+        Me.tlbStrumenti.Glyph = CType(resources.GetObject("tlbStrumenti.Glyph"), System.Drawing.Image)
+        Me.tlbStrumenti.Id = 15
+        Me.tlbStrumenti.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.tlbCambioDitta)})
+        Me.tlbStrumenti.Name = "tlbStrumenti"
+        Me.tlbStrumenti.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionInMenu
+        Me.tlbStrumenti.Visible = True
+        '
+        'tlbCambioDitta
+        '
+        Me.tlbCambioDitta.Caption = "Cambio ditta"
+        Me.tlbCambioDitta.Id = 17
+        Me.tlbCambioDitta.ItemShortcut = New DevExpress.XtraBars.BarShortcut((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.D))
+        Me.tlbCambioDitta.Name = "tlbCambioDitta"
+        Me.tlbCambioDitta.NTSIsCheckBox = False
+        Me.tlbCambioDitta.Visible = True
+        '
+        'tlbEsci
+        '
+        Me.tlbEsci.Caption = "Esci"
+        Me.tlbEsci.Glyph = CType(resources.GetObject("tlbEsci.Glyph"), System.Drawing.Image)
+        Me.tlbEsci.Id = 12
+        Me.tlbEsci.Name = "tlbEsci"
+        Me.tlbEsci.Visible = True
+        '
+        'tlbStampa
+        '
+        Me.tlbStampa.Caption = "Stampa"
+        Me.tlbStampa.Glyph = CType(resources.GetObject("tlbStampa.Glyph"), System.Drawing.Image)
+        Me.tlbStampa.Id = 4
+        Me.tlbStampa.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F6)
+        Me.tlbStampa.Name = "tlbStampa"
+        Me.tlbStampa.Visible = True
+        '
+        'tlbStampaVideo
+        '
+        Me.tlbStampaVideo.Caption = "Stampa video"
+        Me.tlbStampaVideo.Glyph = CType(resources.GetObject("tlbStampaVideo.Glyph"), System.Drawing.Image)
+        Me.tlbStampaVideo.Id = 5
+        Me.tlbStampaVideo.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F12)
+        Me.tlbStampaVideo.Name = "tlbStampaVideo"
+        Me.tlbStampaVideo.Visible = True
+        '
+        'tlbGuida
+        '
+        Me.tlbGuida.Caption = "Guida"
+        Me.tlbGuida.Glyph = CType(resources.GetObject("tlbGuida.Glyph"), System.Drawing.Image)
+        Me.tlbGuida.Id = 11
+        Me.tlbGuida.Name = "tlbGuida"
+        Me.tlbGuida.Visible = True
+        '
+        'tlbImpostaStampante
+        '
+        Me.tlbImpostaStampante.Caption = "Imposta Stampante"
+        Me.tlbImpostaStampante.Id = 16
+        Me.tlbImpostaStampante.Name = "tlbImpostaStampante"
+        Me.tlbImpostaStampante.Visible = True
+        '
+        'tlbCancella
+        '
+        Me.tlbCancella.Caption = "Cancella"
+        Me.tlbCancella.Id = 18
+        Me.tlbCancella.Name = "tlbCancella"
+        Me.tlbCancella.NTSIsCheckBox = False
+        Me.tlbCancella.Visible = True
+        '
+        'lbExport
+        '
+        Me.lbExport.AutoSize = True
+        Me.lbExport.BackColor = System.Drawing.Color.Transparent
+        Me.lbExport.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbExport.Location = New System.Drawing.Point(12, 41)
+        Me.lbExport.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
+        Me.lbExport.Name = "lbExport"
+        Me.lbExport.NTSDbField = ""
+        Me.lbExport.Size = New System.Drawing.Size(44, 13)
+        Me.lbExport.TabIndex = 10
+        Me.lbExport.Text = "Export"
+        Me.lbExport.Tooltip = ""
+        Me.lbExport.UseMnemonic = False
+        '
+        'lbImport
+        '
+        Me.lbImport.AutoSize = True
+        Me.lbImport.BackColor = System.Drawing.Color.Transparent
+        Me.lbImport.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbImport.Location = New System.Drawing.Point(12, 210)
+        Me.lbImport.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
+        Me.lbImport.Name = "lbImport"
+        Me.lbImport.NTSDbField = ""
+        Me.lbImport.Size = New System.Drawing.Size(47, 13)
+        Me.lbImport.TabIndex = 11
+        Me.lbImport.Text = "Import"
+        Me.lbImport.Tooltip = ""
+        Me.lbImport.UseMnemonic = False
+        '
+        'ckCli
+        '
+        Me.ckCli.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckCli.Location = New System.Drawing.Point(25, 81)
+        Me.ckCli.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckCli.Name = "ckCli"
+        Me.ckCli.NTSCheckValue = "S"
+        Me.ckCli.NTSUnCheckValue = "N"
+        Me.ckCli.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckCli.Properties.Appearance.Options.UseBackColor = True
+        Me.ckCli.Properties.Caption = "Clienti"
+        Me.ckCli.Size = New System.Drawing.Size(107, 19)
+        Me.ckCli.TabIndex = 14
+        '
+        'ckOrdini
+        '
+        Me.ckOrdini.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckOrdini.Location = New System.Drawing.Point(25, 227)
+        Me.ckOrdini.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckOrdini.Name = "ckOrdini"
+        Me.ckOrdini.NTSCheckValue = "S"
+        Me.ckOrdini.NTSUnCheckValue = "N"
+        Me.ckOrdini.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckOrdini.Properties.Appearance.Options.UseBackColor = True
+        Me.ckOrdini.Properties.Caption = "Ordini,  preventivi, note, anagr. clienti, leads, ecc"
+        Me.ckOrdini.Size = New System.Drawing.Size(337, 19)
+        Me.ckOrdini.TabIndex = 15
+        '
+        'ckArti
+        '
+        Me.ckArti.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckArti.Location = New System.Drawing.Point(261, 81)
+        Me.ckArti.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckArti.Name = "ckArti"
+        Me.ckArti.NTSCheckValue = "S"
+        Me.ckArti.NTSUnCheckValue = "N"
+        Me.ckArti.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckArti.Properties.Appearance.Options.UseBackColor = True
+        Me.ckArti.Properties.Caption = "Articoli"
+        Me.ckArti.Size = New System.Drawing.Size(65, 19)
+        Me.ckArti.TabIndex = 16
+        '
+        'ckListini
+        '
+        Me.ckListini.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckListini.Location = New System.Drawing.Point(261, 127)
+        Me.ckListini.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckListini.Name = "ckListini"
+        Me.ckListini.NTSCheckValue = "S"
+        Me.ckListini.NTSUnCheckValue = "N"
+        Me.ckListini.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckListini.Properties.Appearance.Options.UseBackColor = True
+        Me.ckListini.Properties.Caption = "Listini"
+        Me.ckListini.Size = New System.Drawing.Size(56, 19)
+        Me.ckListini.TabIndex = 17
+        '
+        'ckMagaz
+        '
+        Me.ckMagaz.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckMagaz.Location = New System.Drawing.Point(261, 104)
+        Me.ckMagaz.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckMagaz.Name = "ckMagaz"
+        Me.ckMagaz.NTSCheckValue = "S"
+        Me.ckMagaz.NTSUnCheckValue = "N"
+        Me.ckMagaz.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckMagaz.Properties.Appearance.Options.UseBackColor = True
+        Me.ckMagaz.Properties.Caption = "Giacenze di magazzino"
+        Me.ckMagaz.Size = New System.Drawing.Size(138, 19)
+        Me.ckMagaz.TabIndex = 18
+        '
+        'ckCatalogo
+        '
+        Me.ckCatalogo.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckCatalogo.Location = New System.Drawing.Point(25, 173)
+        Me.ckCatalogo.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckCatalogo.Name = "ckCatalogo"
+        Me.ckCatalogo.NTSCheckValue = "S"
+        Me.ckCatalogo.NTSUnCheckValue = "N"
+        Me.ckCatalogo.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckCatalogo.Properties.Appearance.Options.UseBackColor = True
+        Me.ckCatalogo.Properties.Caption = "Catalogo"
+        Me.ckCatalogo.Size = New System.Drawing.Size(71, 19)
+        Me.ckCatalogo.TabIndex = 19
+        '
+        'ckCodpaga
+        '
+        Me.ckCodpaga.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckCodpaga.Location = New System.Drawing.Point(261, 173)
+        Me.ckCodpaga.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckCodpaga.Name = "ckCodpaga"
+        Me.ckCodpaga.NTSCheckValue = "S"
+        Me.ckCodpaga.NTSUnCheckValue = "N"
+        Me.ckCodpaga.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckCodpaga.Properties.Appearance.Options.UseBackColor = True
+        Me.ckCodpaga.Properties.Caption = "Condizioni di pagamento"
+        Me.ckCodpaga.Size = New System.Drawing.Size(149, 19)
+        Me.ckCodpaga.TabIndex = 20
+        '
+        'ckCitta
+        '
+        Me.ckCitta.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckCitta.Location = New System.Drawing.Point(25, 150)
+        Me.ckCitta.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckCitta.Name = "ckCitta"
+        Me.ckCitta.NTSCheckValue = "S"
+        Me.ckCitta.NTSUnCheckValue = "N"
+        Me.ckCitta.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckCitta.Properties.Appearance.Options.UseBackColor = True
+        Me.ckCitta.Properties.Caption = "Città / Comuni, Nazioni"
+        Me.ckCitta.Size = New System.Drawing.Size(148, 19)
+        Me.ckCitta.TabIndex = 21
+        '
+        'lbStatus
+        '
+        Me.lbStatus.AutoSize = True
+        Me.lbStatus.BackColor = System.Drawing.Color.Transparent
+        Me.lbStatus.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbStatus.Location = New System.Drawing.Point(9, 332)
+        Me.lbStatus.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
+        Me.lbStatus.Name = "lbStatus"
+        Me.lbStatus.NTSDbField = ""
+        Me.lbStatus.Size = New System.Drawing.Size(43, 13)
+        Me.lbStatus.TabIndex = 23
+        Me.lbStatus.Text = "Pronto."
+        Me.lbStatus.Tooltip = ""
+        Me.lbStatus.UseMnemonic = False
+        '
+        'ckSconti
+        '
+        Me.ckSconti.Cursor = System.Windows.Forms.Cursors.SizeNWSE
+        Me.ckSconti.Location = New System.Drawing.Point(261, 150)
+        Me.ckSconti.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckSconti.Name = "ckSconti"
+        Me.ckSconti.NTSCheckValue = "S"
+        Me.ckSconti.NTSUnCheckValue = "N"
+        Me.ckSconti.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckSconti.Properties.Appearance.Options.UseBackColor = True
+        Me.ckSconti.Properties.Caption = "Sconti"
+        Me.ckSconti.Size = New System.Drawing.Size(56, 19)
+        Me.ckSconti.TabIndex = 24
+        '
+        'ckFor
+        '
+        Me.ckFor.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckFor.Location = New System.Drawing.Point(25, 104)
+        Me.ckFor.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckFor.Name = "ckFor"
+        Me.ckFor.NTSCheckValue = "S"
+        Me.ckFor.NTSUnCheckValue = "N"
+        Me.ckFor.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckFor.Properties.Appearance.Options.UseBackColor = True
+        Me.ckFor.Properties.Caption = "Fornitori"
+        Me.ckFor.Size = New System.Drawing.Size(107, 19)
+        Me.ckFor.TabIndex = 25
+        '
+        'NtsProgressBar1
+        '
+        Me.NtsProgressBar1.Cursor = System.Windows.Forms.Cursors.Default
+        Me.NtsProgressBar1.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.NtsProgressBar1.Location = New System.Drawing.Point(0, 351)
+        Me.NtsProgressBar1.Name = "NtsProgressBar1"
+        Me.NtsProgressBar1.Size = New System.Drawing.Size(467, 16)
+        Me.NtsProgressBar1.TabIndex = 27
+        Me.NtsProgressBar1.TabStop = False
+        Me.NtsProgressBar1.Visible = False
+        '
+        'ckDoc
+        '
+        Me.ckDoc.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckDoc.Location = New System.Drawing.Point(25, 127)
+        Me.ckDoc.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckDoc.Name = "ckDoc"
+        Me.ckDoc.NTSCheckValue = "S"
+        Me.ckDoc.NTSUnCheckValue = "N"
+        Me.ckDoc.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckDoc.Properties.Appearance.Options.UseBackColor = True
+        Me.ckDoc.Properties.Caption = "Documenti e Scadenze"
+        Me.ckDoc.Size = New System.Drawing.Size(148, 19)
+        Me.ckDoc.TabIndex = 28
+        '
+        'lblRelease
+        '
+        Me.lblRelease.AutoSize = True
+        Me.lblRelease.BackColor = System.Drawing.Color.Transparent
+        Me.lblRelease.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblRelease.Location = New System.Drawing.Point(398, 332)
+        Me.lblRelease.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
+        Me.lblRelease.Name = "lblRelease"
+        Me.lblRelease.NTSDbField = ""
+        Me.lblRelease.Size = New System.Drawing.Size(49, 13)
+        Me.lblRelease.TabIndex = 29
+        Me.lblRelease.Text = "99.9.9.9"
+        Me.lblRelease.Tooltip = ""
+        Me.lblRelease.UseMnemonic = False
+        '
+        'ckLeads
+        '
+        Me.ckLeads.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckLeads.Location = New System.Drawing.Point(25, 58)
+        Me.ckLeads.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckLeads.Name = "ckLeads"
+        Me.ckLeads.NTSCheckValue = "S"
+        Me.ckLeads.NTSUnCheckValue = "N"
+        Me.ckLeads.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckLeads.Properties.Appearance.Options.UseBackColor = True
+        Me.ckLeads.Properties.Caption = "Leads"
+        Me.ckLeads.Size = New System.Drawing.Size(107, 19)
+        Me.ckLeads.TabIndex = 30
+        '
+        'ckOff
+        '
+        Me.ckOff.Cursor = System.Windows.Forms.Cursors.SizeNWSE
+        Me.ckOff.Location = New System.Drawing.Point(261, 58)
+        Me.ckOff.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckOff.Name = "ckOff"
+        Me.ckOff.NTSCheckValue = "S"
+        Me.ckOff.NTSUnCheckValue = "N"
+        Me.ckOff.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckOff.Properties.Appearance.Options.UseBackColor = True
+        Me.ckOff.Properties.Caption = "Offerte"
+        Me.ckOff.Size = New System.Drawing.Size(65, 19)
+        Me.ckOff.TabIndex = 31
+        '
+        'ckCoordinate
+        '
+        Me.ckCoordinate.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckCoordinate.Location = New System.Drawing.Point(25, 282)
+        Me.ckCoordinate.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckCoordinate.Name = "ckCoordinate"
+        Me.ckCoordinate.NTSCheckValue = "S"
+        Me.ckCoordinate.NTSUnCheckValue = "N"
+        Me.ckCoordinate.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckCoordinate.Properties.Appearance.Options.UseBackColor = True
+        Me.ckCoordinate.Properties.Caption = "Identificazione delle coordinate geografiche dei clienti"
+        Me.ckCoordinate.Size = New System.Drawing.Size(321, 19)
+        Me.ckCoordinate.TabIndex = 32
+        Me.ckCoordinate.ToolTip = "Identifica le coordinate geografiche del cliente in base all'indirizzo inserito i" & _
     "n anagrafica.  La localizzazione si basa sui servizi di Google."
-    '
-    'NtsLabel1
-    '
-    Me.NtsLabel1.AutoSize = True
-    Me.NtsLabel1.BackColor = System.Drawing.Color.Transparent
-    Me.NtsLabel1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.NtsLabel1.Location = New System.Drawing.Point(12, 265)
-    Me.NtsLabel1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
-    Me.NtsLabel1.Name = "NtsLabel1"
-    Me.NtsLabel1.NTSDbField = ""
-    Me.NtsLabel1.Size = New System.Drawing.Size(48, 13)
-    Me.NtsLabel1.TabIndex = 33
-    Me.NtsLabel1.Text = "Opzioni"
-    Me.NtsLabel1.Tooltip = ""
-    Me.NtsLabel1.UseMnemonic = False
-    '
-    'lblCustomRelease
-    '
-    Me.lblCustomRelease.AutoSize = True
-    Me.lblCustomRelease.BackColor = System.Drawing.Color.Transparent
-    Me.lblCustomRelease.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.lblCustomRelease.Location = New System.Drawing.Point(339, 35)
-    Me.lblCustomRelease.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
-    Me.lblCustomRelease.Name = "lblCustomRelease"
-    Me.lblCustomRelease.NTSDbField = ""
-    Me.lblCustomRelease.Size = New System.Drawing.Size(98, 13)
-    Me.lblCustomRelease.TabIndex = 34
-    Me.lblCustomRelease.Text = "CMATIC / 10.1.1.0"
-    Me.lblCustomRelease.Tooltip = ""
-    Me.lblCustomRelease.UseMnemonic = False
-    '
-    'FRMIEIBUS
-    '
-    Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-    Me.ClientSize = New System.Drawing.Size(467, 367)
-    Me.Controls.Add(Me.lblCustomRelease)
-    Me.Controls.Add(Me.NtsLabel1)
-    Me.Controls.Add(Me.ckCoordinate)
-    Me.Controls.Add(Me.ckOff)
-    Me.Controls.Add(Me.ckLeads)
-    Me.Controls.Add(Me.lblRelease)
-    Me.Controls.Add(Me.ckDoc)
-    Me.Controls.Add(Me.NtsProgressBar1)
-    Me.Controls.Add(Me.ckFor)
-    Me.Controls.Add(Me.ckSconti)
-    Me.Controls.Add(Me.lbStatus)
-    Me.Controls.Add(Me.ckCitta)
-    Me.Controls.Add(Me.ckCodpaga)
-    Me.Controls.Add(Me.ckCatalogo)
-    Me.Controls.Add(Me.ckMagaz)
-    Me.Controls.Add(Me.ckListini)
-    Me.Controls.Add(Me.ckArti)
-    Me.Controls.Add(Me.ckOrdini)
-    Me.Controls.Add(Me.ckCli)
-    Me.Controls.Add(Me.lbImport)
-    Me.Controls.Add(Me.lbExport)
-    Me.Controls.Add(Me.barDockControlLeft)
-    Me.Controls.Add(Me.barDockControlRight)
-    Me.Controls.Add(Me.barDockControlBottom)
-    Me.Controls.Add(Me.barDockControlTop)
-    Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-    Me.HelpButton = True
-    Me.MaximizeBox = False
-    Me.Name = "FRMIEIBUS"
-    Me.Text = "IMPORT / EXPORT VS IBUS"
-    CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckArti.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckListini.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckMagaz.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckCatalogo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckCodpaga.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckCitta.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckSconti.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckFor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.NtsProgressBar1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckDoc.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckLeads.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckOff.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    CType(Me.ckCoordinate.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-    Me.ResumeLayout(False)
-    Me.PerformLayout()
+        '
+        'NtsLabel1
+        '
+        Me.NtsLabel1.AutoSize = True
+        Me.NtsLabel1.BackColor = System.Drawing.Color.Transparent
+        Me.NtsLabel1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.NtsLabel1.Location = New System.Drawing.Point(12, 265)
+        Me.NtsLabel1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
+        Me.NtsLabel1.Name = "NtsLabel1"
+        Me.NtsLabel1.NTSDbField = ""
+        Me.NtsLabel1.Size = New System.Drawing.Size(48, 13)
+        Me.NtsLabel1.TabIndex = 33
+        Me.NtsLabel1.Text = "Opzioni"
+        Me.NtsLabel1.Tooltip = ""
+        Me.NtsLabel1.UseMnemonic = False
+        '
+        'lblCustomRelease
+        '
+        Me.lblCustomRelease.AutoSize = True
+        Me.lblCustomRelease.BackColor = System.Drawing.Color.Transparent
+        Me.lblCustomRelease.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCustomRelease.Location = New System.Drawing.Point(339, 35)
+        Me.lblCustomRelease.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
+        Me.lblCustomRelease.Name = "lblCustomRelease"
+        Me.lblCustomRelease.NTSDbField = ""
+        Me.lblCustomRelease.Size = New System.Drawing.Size(98, 13)
+        Me.lblCustomRelease.TabIndex = 34
+        Me.lblCustomRelease.Text = "CMATIC / 10.1.1.0"
+        Me.lblCustomRelease.Tooltip = ""
+        Me.lblCustomRelease.UseMnemonic = False
+        '
+        'FRMIEIBUS
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.ClientSize = New System.Drawing.Size(467, 367)
+        Me.Controls.Add(Me.lblCustomRelease)
+        Me.Controls.Add(Me.NtsLabel1)
+        Me.Controls.Add(Me.ckCoordinate)
+        Me.Controls.Add(Me.ckOff)
+        Me.Controls.Add(Me.ckLeads)
+        Me.Controls.Add(Me.lblRelease)
+        Me.Controls.Add(Me.ckDoc)
+        Me.Controls.Add(Me.NtsProgressBar1)
+        Me.Controls.Add(Me.ckFor)
+        Me.Controls.Add(Me.ckSconti)
+        Me.Controls.Add(Me.lbStatus)
+        Me.Controls.Add(Me.ckCitta)
+        Me.Controls.Add(Me.ckCodpaga)
+        Me.Controls.Add(Me.ckCatalogo)
+        Me.Controls.Add(Me.ckMagaz)
+        Me.Controls.Add(Me.ckListini)
+        Me.Controls.Add(Me.ckArti)
+        Me.Controls.Add(Me.ckOrdini)
+        Me.Controls.Add(Me.ckCli)
+        Me.Controls.Add(Me.lbImport)
+        Me.Controls.Add(Me.lbExport)
+        Me.Controls.Add(Me.barDockControlLeft)
+        Me.Controls.Add(Me.barDockControlRight)
+        Me.Controls.Add(Me.barDockControlBottom)
+        Me.Controls.Add(Me.barDockControlTop)
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.HelpButton = True
+        Me.MaximizeBox = False
+        Me.Name = "FRMIEIBUS"
+        Me.Text = "IMPORT / EXPORT VS IBUS"
+        CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckArti.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckListini.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckMagaz.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckCatalogo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckCodpaga.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckCitta.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckSconti.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckFor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.NtsProgressBar1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckDoc.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckLeads.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckOff.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckCoordinate.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
 
-  End Sub
+    End Sub
 
   Public Overloads Overrides Sub GestisciEventiEntity(ByVal sender As Object, ByRef e As NTSEventArgs)
     Try
