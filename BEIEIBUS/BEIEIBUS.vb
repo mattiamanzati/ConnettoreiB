@@ -3820,7 +3820,7 @@ NEXT_FILE:
   End Function
 
   Public Overridable Function GeneraOrdini(ByRef dttIn As DataTable, ByRef NumOrd As Integer) As Boolean
-    'nel datatabae vengono passati gli ordini della ditta corrente
+        'nel datatabase vengono passati gli ordini della ditta corrente
     'devo generare più ordini, raggruppando per cliente/data ordine
     Dim strKey As String = ""
     Dim strLastKey As String = ""

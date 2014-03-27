@@ -35,6 +35,7 @@ SELECT
 	sc_datdoc,
 	sc_numdoc,
 	sc_annpar,
+	sc_codvalu,
 	sc_alfpar,
 	sc_numpar,
 	getdate() as xx_ultagg

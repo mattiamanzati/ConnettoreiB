@@ -20,7 +20,8 @@ SELECT artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + Cast(af_f
        lc_netto, 
        lc_datagg, 
        lc_datscad, 
-       lc_progr, 
+       lc_progr,
+	   lc_codvalu,
        CASE 
          WHEN Isnull(lc_perqta, 0) = 0 THEN 1 
          ELSE lc_perqta 
