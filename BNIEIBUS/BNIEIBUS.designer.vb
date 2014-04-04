@@ -31,8 +31,7 @@ Partial Public Class FRMIEIBUS
   Public WithEvents tlbCancella As NTSInformatica.NTSBarMenuItem
   Public WithEvents lbImport As NTSInformatica.NTSLabel
   Public WithEvents lbExport As NTSInformatica.NTSLabel
-  Public WithEvents ckCitta As NTSInformatica.NTSCheckBox
-  Public WithEvents ckCodpaga As NTSInformatica.NTSCheckBox
+    Public WithEvents ckCodpaga As NTSInformatica.NTSCheckBox
   Public WithEvents ckCatalogo As NTSInformatica.NTSCheckBox
   Public WithEvents ckMagaz As NTSInformatica.NTSCheckBox
   Public WithEvents ckListini As NTSInformatica.NTSCheckBox
@@ -51,5 +50,6 @@ Partial Public Class FRMIEIBUS
   Public WithEvents ckOff As NTSInformatica.NTSCheckBox
   Public WithEvents ckCoordinate As NTSInformatica.NTSCheckBox
   Public WithEvents NtsLabel1 As NTSInformatica.NTSLabel
-  Public WithEvents lblCustomRelease As NTSInformatica.NTSLabel
+    Public WithEvents lblCustomRelease As NTSInformatica.NTSLabel
+    Public WithEvents ckTabBase As NTSInformatica.NTSCheckBox
 End Class

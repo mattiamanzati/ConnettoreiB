@@ -105,6 +105,8 @@ Public Class CLEIEIBUS
     Public strCustomWhereGetArtUltVen As String = ""
     Public strCustomWhereGetCampagne As String = ""
     Public strCustomWhereGetClifor As String = ""
+    Public strCustomWhereGetClassiSconto As String = ""
+    Public strCustomWhereGetCanaliVendita As String = ""
     Public strCustomWhereGetCliforAge As String = ""
     Public strCustomWhereGetCliforBlo As String = ""
     Public strCustomWhereGetCliforDestdiv As String = ""
@@ -141,6 +143,8 @@ Public Class CLEIEIBUS
     Public Const cIMP_CAMPAGNE As String = "io_campagne.dat"
     Public Const cIMP_CITTA As String = "io_citta.dat"
     Public Const cIMP_NAZIONI As String = "io_nazioni.dat"
+    Public Const cIMP_CLASSI_SCONTO As String = "io_classi_sconto.dat"
+    Public Const cIMP_CANALI_VENDITA As String = "io_canali_vendita.dat"
     Public Const cIMP_CLIENTI_ASSORTIMENTI As String = "io_clienti_assortimenti.dat"
     Public Const cIMP_CLIFOR_GEN As String = "io_clifor_gen.dat"
     Public Const cIMP_CLIFOR As String = "io_clifor.dat"
@@ -404,6 +408,8 @@ Public Class CLEIEIBUS
 
             ' Altro
             strCustomWhereGetCodpaga = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCodpaga", "", " ", "").Trim
+            strCustomWhereGetClassiSconto = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetClassiSconto", "", " ", "").Trim
+            strCustomWhereGetCanaliVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCanaliVendita", "", " ", "").Trim
             strCustomWhereGetComuni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetComuni", "", " ", "").Trim
             strCustomWhereGetNazioni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetNazioni", "", " ", "").Trim
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
@@ -481,8 +487,9 @@ Public Class CLEIEIBUS
             ' ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "20"))
 
             '--------------------
-            'Export comuni
-            If strTipork.Contains("CIT;") Then
+            'Export tabelle di base
+            If strTipork.Contains("TBS;") Then
+
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export comuni..."))
                 If Not Elabora_ExportComuni(oApp.AscDir & "\" + cIMP_CITTA) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_CITTA)
@@ -490,6 +497,15 @@ Public Class CLEIEIBUS
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export nazioni..."))
                 If Not Elabora_ExportNazioni(oApp.AscDir & "\" + cIMP_NAZIONI) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_NAZIONI)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export classi sconto..."))
+                If Not Elabora_ExportClassiSconto(oApp.AscDir & "\" + cIMP_CLASSI_SCONTO) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CLASSI_SCONTO)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export canali di vendita..."))
+                If Not Elabora_ExportCanaliVendita(oApp.AscDir & "\" + cIMP_CANALI_VENDITA) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_CANALI_VENDITA)
+
             End If
             'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "30"))
 
@@ -917,6 +933,83 @@ Public Class CLEIEIBUS
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codstat) & "|" & _
                                 ConvStr(dtrT!tb_desstat) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+    Public Overridable Function Elabora_ExportClassiSconto(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetClassiSconto(strDittaCorrente, dttTmp, strCustomWhereGetClassiSconto) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codcscl) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codcscl) & "|" & _
+                                ConvStr(dtrT!tb_descscl) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportCanaliVendita(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetCanaliVendita(strDittaCorrente, dttTmp, strCustomWhereGetCanaliVendita) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codcana) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codcana) & "|" & _
+                                ConvStr(dtrT!tb_descana) & vbCrLf)
             Next
 
             If dttTmp.Rows.Count > 0 Then
