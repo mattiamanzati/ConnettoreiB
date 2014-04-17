@@ -792,7 +792,7 @@ Riprova:
             If CheckboxAttivi.Contains("MAG;") Then
                 ckMagaz.Checked = True
             End If
-            If CheckboxAttivi.Contains("TBS;") Then
+            If CheckboxAttivi.Contains("TBS;") Or CheckboxAttivi.Contains("CIT;") Then
                 ckTabBase.Checked = True
             End If
             If CheckboxAttivi.Contains("PAG;") Then
@@ -916,7 +916,7 @@ Riprova:
                                 If strT1(i) = "SCO" Then ckSconti.Checked = True
                                 If strT1(i) = "CAT" Then ckCatalogo.Checked = True
                                 If strT1(i) = "MAG" Then ckMagaz.Checked = True
-                                If strT1(i) = "TBS" Then ckTabBase.Checked = True
+                                If strT1(i) = "TBS" Or strT1(i) = "CIT" Then ckTabBase.Checked = True
                                 If strT1(i) = "PAG" Then ckCodpaga.Checked = True
                                 If strT1(i) = "ORD" Then ckOrdini.Checked = True
                                 If strT1(i) = "LEA" Then ckLeads.Checked = True
