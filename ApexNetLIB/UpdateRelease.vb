@@ -7,6 +7,7 @@ Imports NTSInformatica.CLN__STD
 
 
 
+
 Public Class UpdateRelease
 
   Public Shared Sub SendVersion(ByVal CodProgetto As String, ByVal Versione As String)
@@ -30,5 +31,6 @@ Public Class UpdateRelease
     Dim response1 As IRestResponse = client.Execute(request1)
 
   End Sub
+
 
 End Class

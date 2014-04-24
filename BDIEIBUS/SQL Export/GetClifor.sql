@@ -43,6 +43,10 @@ SELECT an_tipo,
        tb_deszone,
 	   tb_desstat, 
        tb_descana,
+       CASE 
+         WHEN an_pariva = '99999999999' THEN '-1' 
+         ELSE null 
+       END                        AS xx_flg_new, 
        an_hhlat_ib, 
        an_hhlon_ib,
 	   (select max(tm_datdoc) from testmag where testmag.codditt = anagra.codditt and testmag.tm_conto = anagra.an_conto and tm_tipork in ( 'A', 'D','L','K') ) AS xx_ultfatt, 

@@ -2,84 +2,82 @@ Imports System.Data
 Imports NTSInformatica.CLN__STD
 Imports System.Text
 Imports System.IO
-
+Imports AMHelper.WS
 Imports RestSharp
+Imports ApexNetLIB
 
-'Imports Newtonsoft
-
-'Imports ApexNetLIB
 
 Public Class CLEIEIBUS
-  Inherits CLE__BASN
+    Inherits CLE__BASN
 
 
-  Private Moduli_P As Integer = bsModAll
-  Private ModuliExt_P As Integer = 0
-  Private ModuliSup_P As Integer = 0
-  Private ModuliSupExt_P As Integer = 0
-  Private ModuliPtn_P As Integer = 0
-  Private ModuliPtnExt_P As Integer = 0
+    Private Moduli_P As Integer = bsModAll
+    Private ModuliExt_P As Integer = 0
+    Private ModuliSup_P As Integer = 0
+    Private ModuliSupExt_P As Integer = 0
+    Private ModuliPtn_P As Integer = 0
+    Private ModuliPtnExt_P As Integer = 0
 
-  Public ReadOnly Property Moduli() As Integer
-    Get
-      Return Moduli_P
-    End Get
-  End Property
-  Public ReadOnly Property ModuliExt() As Integer
-    Get
-      Return ModuliExt_P
-    End Get
-  End Property
-  Public ReadOnly Property ModuliSup() As Integer
-    Get
-      Return ModuliSup_P
-    End Get
-  End Property
-  Public ReadOnly Property ModuliSupExt() As Integer
-    Get
-      Return ModuliSupExt_P
-    End Get
-  End Property
-  Public ReadOnly Property ModuliPtn() As Integer
-    Get
-      Return ModuliPtn_P
-    End Get
-  End Property
-  Public ReadOnly Property ModuliPtnExt() As Integer
-    Get
-      Return ModuliPtnExt_P
-    End Get
-  End Property
+    Public ReadOnly Property Moduli() As Integer
+        Get
+            Return Moduli_P
+        End Get
+    End Property
+    Public ReadOnly Property ModuliExt() As Integer
+        Get
+            Return ModuliExt_P
+        End Get
+    End Property
+    Public ReadOnly Property ModuliSup() As Integer
+        Get
+            Return ModuliSup_P
+        End Get
+    End Property
+    Public ReadOnly Property ModuliSupExt() As Integer
+        Get
+            Return ModuliSupExt_P
+        End Get
+    End Property
+    Public ReadOnly Property ModuliPtn() As Integer
+        Get
+            Return ModuliPtn_P
+        End Get
+    End Property
+    Public ReadOnly Property ModuliPtnExt() As Integer
+        Get
+            Return ModuliPtnExt_P
+        End Get
+    End Property
 
-  Public oCldIbus As CLDIEIBUS
-
-
-  'Public Const kClienti As String = "CLI"
-  'Public Const kFornitori As String = "FOR"
-  'Public Const kDocumenti As String = "DOC"
-  'Public Const kArticoli As String = "ART"
-  'Public Const kListini As String = "LIS"
-  'Public Const kSconti As String = "SCO"
-  'Public Const kCatalogo As String = "CAT"
-  'Public Const kMagazzino As String = "MAG"
-  'Public Const kCitta As String = "CIT"
-  'Public Const kPagamenti As String = "PAG"
-  'Public Const kOrdini As String = "ORD"
-  'Public Const kLeads As String = "LEA"
-  'Public Const kOfferte As String = "OFF"
-  'Public Const kCoordinate As String = "COO"
+    Public oCldIbus As CLDIEIBUS
 
 
-  Const defRelracciati As String = "1.9"
-  Public strReleaseTracciati As String = defRelracciati
+    'Public Const kClienti As String = "CLI"
+    'Public Const kFornitori As String = "FOR"
+    'Public Const kDocumenti As String = "DOC"
+    'Public Const kArticoli As String = "ART"
+    'Public Const kListini As String = "LIS"
+    'Public Const kSconti As String = "SCO"
+    'Public Const kCatalogo As String = "CAT"
+    'Public Const kMagazzino As String = "MAG"
+    'Public Const kCitta As String = "CIT"
+    'Public Const kPagamenti As String = "PAG"
+    'Public Const kOrdini As String = "ORD"
+    'Public Const kLeads As String = "LEA"
+    'Public Const kOfferte As String = "OFF"
+    'Public Const kCoordinate As String = "COO"
 
-  ' Chiavi di registro varie
-  Public strDropBoxDir As String = ""
-  Public strFiltroGGStoArt As String = ""
-  Public strFiltroGGDocumenti As String = ""
-  Public strFiltroGGOfferte As String = ""
-  Public strFiltroGGUltAcqVen As String = ""
-  Public strFiltroCliConAgenti As String = ""
+
+    Const defRelracciati As String = "1.9"
+    Public strReleaseTracciati As String = defRelracciati
+
+    ' Chiavi di registro varie
+    Public strDropBoxDir As String = ""
+    Public strFiltroGGStoArt As String = ""
+    Public strFiltroGGDocumenti As String = ""
+    Public strFiltroGGOfferte As String = ""
+    Public strFiltroGGUltAcqVen As String = ""
+    Public strFiltroCliConAgenti As String = ""
     Public strIncludileadClienti As String = ""
 
     Public strScontoMaxPercentuale As String = ""
@@ -448,7 +446,7 @@ Public Class CLEIEIBUS
             End If
 
             ' Applico le personalizzazioni alla base dati
-            If Not oCldIbus.AggiungiPersonalizzazioniDB() Then Return False
+            If Not oCldIbus.AggiungiPersonalizzazioniDb() Then Return False
 
 
             If strTipork.EndsWith(";") = False Then strTipork += ";"
@@ -769,7 +767,8 @@ Public Class CLEIEIBUS
                 If Not Elabora_ImportLeadNote() Then Return False
                 If Not Elabora_ImportCliforNote() Then Return False
 
-                If Not Elabora_ImportOrdini() Then Return False
+                'If Not Elabora_ImportOrdini() Then Return False
+                If Not Elabora_ImportOrdiniWS() Then Return False
                 'If Not Elabora_ImportOrdiniNew() Then Return False
 
             End If
@@ -1784,7 +1783,7 @@ Public Class CLEIEIBUS
                         "SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
                         "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|" & _
                         "ZONA|CATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
-                        "FIDO_AZIENDALE|DAT_ULT_MOD" & vbCrLf)
+                        "FIDO_AZIENDALE|FLG_NEW_CLIFOR|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(
@@ -1831,6 +1830,7 @@ Public Class CLEIEIBUS
                             ConvData(dtrT!xx_ultfatt, False) & "|" & _
                             ConvData(dtrT!xx_ultord, False) & "|" & _
                             NTSCDec(dtrT!an_fido).ToString(oApp.FormatSconti) & "|" & _
+                            ConvStr(dtrT!xx_flg_new) & "|" & _
                             ConvData(dtrT!an_ultagg, True) & vbCrLf)
             Next
 
@@ -2521,7 +2521,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
-  Public Overridable Function Elabora_ExportArtGiacenze(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportArtGiacenze(ByVal strFileOut As String) As Boolean
         'esporta le giacenze divise per magazzino degli articoli (e relative fasi) 
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -2562,9 +2562,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportArtUltVen(ByVal strFileOutVen As String) As Boolean
+    Public Overridable Function Elabora_ExportArtUltVen(ByVal strFileOutVen As String) As Boolean
         'esporta l'ultima vendita e l'ultimo acquisto degli articoli (e relative fasi) 
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -2643,9 +2643,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportArtUltAcq(ByVal strFileOutAcq As String) As Boolean
+    Public Overridable Function Elabora_ExportArtUltAcq(ByVal strFileOutAcq As String) As Boolean
         'esporta l'ultima vendita e l'ultimo acquisto degli articoli (e relative fasi) 
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -2709,10 +2709,10 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
 
-  Public Overridable Function Elabora_ExportArtStoart(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportArtStoart(ByVal strFileOut As String) As Boolean
         'esporta l'ultimo documento veduto per ogni cliente  
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -2799,9 +2799,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportCampagne(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportCampagne(ByVal strFileOut As String) As Boolean
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
         Try
@@ -2835,55 +2835,55 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
 
-  Public Overridable Function Elabora_ExportCatalogo(ByVal strFileOut As String, ByRef dttCat As DataTable, ByVal strCustomQuery As String) As Boolean
-    'esporta il catalogo degli articoli  
-    Dim sbFile As New StringBuilder
+    Public Overridable Function Elabora_ExportCatalogo(ByVal strFileOut As String, ByRef dttCat As DataTable, ByVal strCustomQuery As String) As Boolean
+        'esporta il catalogo degli articoli  
+        Dim sbFile As New StringBuilder
 
-    Try
-      If Not oCldIbus.GetArtCatalogo(strDittaCorrente, dttCat, strCustomQuery, strCustomWhereGetArtCatalogo) Then Return False
+        Try
+            If Not oCldIbus.GetArtCatalogo(strDittaCorrente, dttCat, strCustomQuery, strCustomWhereGetArtCatalogo) Then Return False
 
-      sbFile.Append("NOMEFILE|TITOLO|COD_ART|L1|L2|L3|L4|DAT_ULT_MOD" & vbCrLf)
+            sbFile.Append("NOMEFILE|TITOLO|COD_ART|L1|L2|L3|L4|DAT_ULT_MOD" & vbCrLf)
 
-      For Each dtrT As DataRow In dttCat.Rows
-        If File.Exists(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1)) Then
+            For Each dtrT As DataRow In dttCat.Rows
+                If File.Exists(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1)) Then
 
-          sbFile.Append(ConvStr(dtrT!ar_gif1) & "|" & _
-                        (ConvStr(dtrT!ar_descr) & " " & ConvStr(dtrT!ar_desint) & " " & ConvStr(dtrT!af_descr)).Trim & "|" & _
-                        ConvStr(dtrT!ar_codart) & "|" & _
-                        ConvStr(dtrT!xx_l1) & "|" & _
-                        ConvStr(dtrT!xx_l2) & "|" & _
-                        ConvStr(dtrT!xx_l3) & "|" & _
-                        ConvStr(dtrT!xx_l4) & "|" & _
-                        ConvData(dtrT!xx_ultagg, True) & vbCrLf)
-        Else
-          dtrT.Delete()
-        End If
-      Next
-      dttCat.AcceptChanges()
+                    sbFile.Append(ConvStr(dtrT!ar_gif1) & "|" & _
+                                  (ConvStr(dtrT!ar_descr) & " " & ConvStr(dtrT!ar_desint) & " " & ConvStr(dtrT!af_descr)).Trim & "|" & _
+                                  ConvStr(dtrT!ar_codart) & "|" & _
+                                  ConvStr(dtrT!xx_l1) & "|" & _
+                                  ConvStr(dtrT!xx_l2) & "|" & _
+                                  ConvStr(dtrT!xx_l3) & "|" & _
+                                  ConvStr(dtrT!xx_l4) & "|" & _
+                                  ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+                Else
+                    dtrT.Delete()
+                End If
+            Next
+            dttCat.AcceptChanges()
 
-      Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-      w1.Write(sbFile.ToString)
-      w1.Flush()
-      w1.Close()
+            Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+            w1.Write(sbFile.ToString)
+            w1.Flush()
+            w1.Close()
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
 
 
-  Public Overridable Function Elabora_ExportListini(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportListini(ByVal strFileOut As String) As Boolean
         'esporta i listini in vigore alla data odierna
         'no listini in valuta
         'no listini per lavorazioni
@@ -2965,9 +2965,9 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ExportSconti(ByVal strFileOut As String) As Boolean
+    Public Overridable Function Elabora_ExportSconti(ByVal strFileOut As String) As Boolean
         'esporta gli sconti in vigore alla data odierna
 
         Dim strTrattaSc1 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc1", "S", " ", "S")
@@ -3046,830 +3046,942 @@ Public Class CLEIEIBUS
         Finally
             dttTmp.Clear()
         End Try
-  End Function
+    End Function
 
-  Public Overridable Function Elabora_ImportCliforNote() As Boolean
-    Dim strF() As String = Nothing  'elenco di ordini da importare
-    Dim nF As Integer = 0
-    Dim r1 As StreamReader = Nothing
-    Dim strRow() As String = Nothing
+    Public Overridable Function Elabora_ImportCliforNote() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+        Dim r1 As StreamReader = Nothing
+        Dim strRow() As String = Nothing
 
-    Const posDitta As Integer = 0
-    Const posConto As Integer = 1
-    'Const posTipoConto As Integer = 2
-    Const posProgressivo As Integer = 3
-    Const posTitolo As Integer = 4
-    Const posNota As Integer = 5
+        Const posDitta As Integer = 0
+        Const posConto As Integer = 1
+        'Const posTipoConto As Integer = 2
+        Const posProgressivo As Integer = 3
+        Const posTitolo As Integer = 4
+        Const posNota As Integer = 5
 
-    Dim msg As String = ""
+        Dim msg As String = ""
 
 
-    Try
-      'verifico se ci sono preventivi/ordini da importare
-      'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
-      'una volta letto il file, lo cancello
-      strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_NOTE*.DAT")
+        Try
+            'verifico se ci sono preventivi/ordini da importare
+            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'una volta letto il file, lo cancello
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_NOTE*.DAT")
 
-      For nF = 0 To strF.Length - 1
+            For nF = 0 To strF.Length - 1
 
-        r1 = New StreamReader(strF(nF))
+                r1 = New StreamReader(strF(nF))
 
-        'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
-        While Not r1.EndOfStream
-          strRow = r1.ReadLine.Split("|"c)
+                'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
+                While Not r1.EndOfStream
+                    strRow = r1.ReadLine.Split("|"c)
 
-          ' Se il file non è della mia ditta lo scarto e passo a quello successivo
-          If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
-            r1.Close()
-            GoTo NEXT_FILE
-          End If
-
-          Dim strConto As String = strRow(posConto)
-          Dim dttAnagra As New DataTable
-          If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
-            If dttAnagra.Rows.Count > 0 Then
-              Select Case NTSCStr(strRow(posProgressivo)).Trim
-                Case "0"
-                  oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
-                  msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
-                  LogWrite(msg, True)
-                  InviaAlert(2, msg)
-                Case ""
-                  'se non trovo la nota su tabnote la devo creare
-                  'pero' prima provo a vedere se sull'anagrafica cliente
-                  'le note generiche sono vuote
-                  'Se lo sono compilo quelle
-                  If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
-                    oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
-                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
-                    LogWrite(msg, True)
-                    InviaAlert(2, msg)
-                  Else
-                    'insert tabnote
-                    oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
-                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
-                    LogWrite(msg, True)
-                    InviaAlert(2, msg)
-                  End If
-                Case Else
-                  If oCldIbus.CheckTabNote(strDittaCorrente, strConto, strRow(posProgressivo)) Then
-                    'update tabnote
-                    oCldIbus.UpdateCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
-                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota tabnote per cliente {0}", strConto))
-                    LogWrite(msg, True)
-                    InviaAlert(2, msg)
-                  Else
-                    'se non trovo la nota su tabnote la devo creare
-                    'pero' prima provo a vedere se sull'anagrafica cliente
-                    'le note generiche sono vuote
-                    'Se lo sono compilo quelle
-                    If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
-                      oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
-                      msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
-                      LogWrite(msg, True)
-                      InviaAlert(2, msg)
-                    Else
-                      'insert tabnote
-                      oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
-                      msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
-                      LogWrite(msg, True)
-                      InviaAlert(2, msg)
+                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
+                        r1.Close()
+                        GoTo NEXT_FILE
                     End If
-                  End If
-              End Select
-            End If
-          End If
 
-        End While
-        r1.Close()
+                    Dim strConto As String = strRow(posConto)
+                    Dim dttAnagra As New DataTable
+                    If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
+                        If dttAnagra.Rows.Count > 0 Then
+                            Select Case NTSCStr(strRow(posProgressivo)).Trim
+                                Case "0"
+                                    oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
+                                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                    LogWrite(msg, True)
+                                    InviaAlert(2, msg)
+                                Case ""
+                                    'se non trovo la nota su tabnote la devo creare
+                                    'pero' prima provo a vedere se sull'anagrafica cliente
+                                    'le note generiche sono vuote
+                                    'Se lo sono compilo quelle
+                                    If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
+                                        oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                        LogWrite(msg, True)
+                                        InviaAlert(2, msg)
+                                    Else
+                                        'insert tabnote
+                                        oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
+                                        LogWrite(msg, True)
+                                        InviaAlert(2, msg)
+                                    End If
+                                Case Else
+                                    If oCldIbus.CheckTabNote(strDittaCorrente, strConto, strRow(posProgressivo)) Then
+                                        'update tabnote
+                                        oCldIbus.UpdateCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota tabnote per cliente {0}", strConto))
+                                        LogWrite(msg, True)
+                                        InviaAlert(2, msg)
+                                    Else
+                                        'se non trovo la nota su tabnote la devo creare
+                                        'pero' prima provo a vedere se sull'anagrafica cliente
+                                        'le note generiche sono vuote
+                                        'Se lo sono compilo quelle
+                                        If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
+                                            oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
+                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                            LogWrite(msg, True)
+                                            InviaAlert(2, msg)
+                                        Else
+                                            'insert tabnote
+                                            oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
+                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
+                                            LogWrite(msg, True)
+                                            InviaAlert(2, msg)
+                                        End If
+                                    End If
+                            End Select
+                        End If
+                    End If
 
-        System.IO.File.Delete(strF(nF))
+                End While
+                r1.Close()
+
+                System.IO.File.Delete(strF(nF))
 
 NEXT_FILE:
-      Next    'For nF = 0 To strF.Length - 1
+            Next    'For nF = 0 To strF.Length - 1
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
-
-  Public Overridable Function Elabora_ImportLead_WS() As Boolean
-    Dim strF() As String = Nothing  'elenco di ordini da importare
-    Dim nF As Integer = 0
-    Dim msg As String = ""
-    Dim dsLeads As New DataSet
-    Dim CodLead As Integer
-
-    Try
-
-
-      ' Leggo l'ID dell'ultimo ordine recuperato dal WS
-      Dim LastStoredID As String = GetValue(strDittaCorrente, "LastLeadsID")
-
-      ' url del web service di test
-      Dim wsUrl As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test3/exportPaginazione/leads"
-
-
-      Dim client As RestClient = New RestClient(wsUrl)
-
-      ' Prima chiamata. Verifica quanti record ci sono da elaborare (count=1)
-      ' ------------------------------------------------------------------
-      Dim request1 As RestRequest = New RestRequest(Method.[GET])
-
-      request1.AddParameter("format", "json")
-      request1.AddParameter("lastID", LastStoredID)
-      request1.AddParameter("count", 1)
-
-      Dim response1 As IRestResponse(Of Orders) = client.Execute(Of Orders)(request1)
-
-      ' Gestisco eventuali eccezioni
-      If response1.ErrorException IsNot Nothing Then
-        Throw New NTSException("Error retrieving response.  Check inner details for more info.")
-        'Console.WriteLine("Error retrieving response.  Check inner details for more info.")
-        Return False
-      End If
-
-      ' Se total_count = 0 vuol dire che non ci sono Ordini nuovi
-      If response1.Data.meta.total_count = 0 Then
-        Return False
-      End If
-
-      ' Seconda chiamata. Estraggo tutto gli ordini (niente paginazione)
-      ' Se non desidero paginare fra i risultati pongo limit al numero di record che voglio che vengano ritornati
-      ' Se desidero paginare fra i record devo impostare limit per dire quanti record voglio ogni volta e offset per cambiare le pagina
-      ' ---------------------------------------------------------------
-      Dim request2 As RestRequest = New RestRequest(Method.[GET])
-      request2.AddParameter("format", "json")
-      request2.AddParameter("offset", 0)
-      request2.AddParameter("limit", response1.Data.meta.total_count)
-      request2.AddParameter("count", 0)
-      request2.AddParameter("lastID", LastStoredID)
-      'request.AddParameter("lastDateImport", ""); 
-
-      ' RestSharp deserializza automaticamente il risultato del ws e lo mette nella classe Orders
-      Dim response2 As IRestResponse(Of Orders) = client.Execute(Of Orders)(request2)
-
-      ' Gestisco eventuali eccezioni
-      If response2.ErrorException IsNot Nothing Then
-        Throw New NTSException("Error retrieving response.  Check inner details for more info.")
-        Return False
-      End If
-
-
-
-      ' ciclo per ogni testata
-      For Each t As TestataOrdineExport In response2.Data.testate
-        ' Ogni volta che elaboro un ordini memorizzo il suo ID 
-
-        LastStoredID = t.id.ToString()
-
-        Console.WriteLine(vbLf)
-        Console.WriteLine("Order ID:" & Convert.ToString(t.id))
-        Console.WriteLine("Customer code:" & Convert.ToString(t.cod_clifor))
-        '.... ecc..
-
-        ' Ciclo per ogni riga
-        For Each r As RigaOrdineExport In t.righe
-          Console.WriteLine("rows")
-          Console.WriteLine("...product code:" & Convert.ToString(r.codice_articolo))
-          Console.WriteLine("...product name:" & Convert.ToString(r.descrizione_riga))
-          Console.WriteLine("...quantity:" & Convert.ToString(r.qta))
-          ' .... ecc....
-          Console.WriteLine("...price:" & Convert.ToString(r.prezzo))
-        Next
-      Next
-
-      Return True
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ' Leggo la lista dei files
-      strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_data_*.xml")
-
-      ' Mi passo un file alla volta
-      For nF = 0 To strF.Length - 1
-
-        ' Carico l'xml
-        dsLeads.ReadXml(strF(nF))
-
-        ' Lo valuto solo se contiene delle righe
-        If dsLeads.Tables(0).Rows.Count > 0 Then
-
-          ' Mi passo una riga alla volta
-          For Each dR As DataRow In dsLeads.Tables(0).Rows
-
-            ' Il cod ditta che e' corretto ?
-            If dR("COD_DITTA").ToString = strDittaCorrente Then
-              If dR("COD_LEAD").ToString = "" Then
-                oCldIbus.InsertLead(strDittaCorrente, dR, CodLead)
-                LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
-
-                msg = oApp.Tr(Me, 129919999269031600, String.Format("Import nuovo lead codice: {0}", CodLead))
-                InviaAlert(2, msg)
-              Else
-                oCldIbus.UpdateLead(strDittaCorrente, dR, CodLead)
-                LogWrite(oApp.Tr(Me, 129919999269031600, "Modifica lead codice " & CodLead), True)
-                msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica anagrafica lead: {0}", CodLead))
-                InviaAlert(2, msg)
-              End If
-            End If
-          Next
-        End If
-
-        System.IO.File.Delete(strF(nF))
-
-      Next
-
-
-
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
-
-
-  Public Overridable Function Elabora_ImportLead() As Boolean
-    Dim strF() As String = Nothing  'elenco di ordini da importare
-    Dim nF As Integer = 0
-    Dim msg As String = ""
-    Dim dsLeads As New DataSet
-    Dim CodLead As Integer
-
-    Try
-      ' Leggo la lista dei files
-      strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_data_*.xml")
-
-      ' Mi passo un file alla volta
-      For nF = 0 To strF.Length - 1
-
-        ' Carico l'xml
-        dsLeads.ReadXml(strF(nF))
-
-        ' Lo valuto solo se contiene delle righe
-        If dsLeads.Tables(0).Rows.Count > 0 Then
-
-          ' Mi passo una riga alla volta
-          For Each dR As DataRow In dsLeads.Tables(0).Rows
-
-            ' Il cod ditta che e' corretto ?
-            If dR("COD_DITTA").ToString = strDittaCorrente Then
-              If dR("COD_LEAD").ToString = "" Then
-                oCldIbus.InsertLead(strDittaCorrente, dR, CodLead)
-                LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
-
-                msg = oApp.Tr(Me, 129919999269031600, String.Format("Import nuovo lead codice: {0}", CodLead))
-                InviaAlert(2, msg)
-              Else
-                oCldIbus.UpdateLead(strDittaCorrente, dR, CodLead)
-                LogWrite(oApp.Tr(Me, 129919999269031600, "Modifica lead codice " & CodLead), True)
-                msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica anagrafica lead: {0}", CodLead))
-                InviaAlert(2, msg)
-              End If
-            End If
-          Next
-        End If
-
-        System.IO.File.Delete(strF(nF))
-
-      Next
-
-
-
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
-  Public Overridable Function Elabora_ImportLeadNote() As Boolean
-    Dim strF() As String = Nothing  'elenco di ordini da importare
-    Dim nF As Integer = 0
-
-    Dim dsLeads As New DataSet
-    Dim CodLead As Integer
-    Dim msg As String = ""
-
-
-    Try
-      ' Leggo la lista dei files
-      strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_note_*.xml")
-
-      ' Mi passo un file alla volta
-      For nF = 0 To strF.Length - 1
-
-        ' Carico l'xml
-        dsLeads.ReadXml(strF(nF))
-
-        ' Lo valuto solo se contiene delle righe
-        If dsLeads.Tables(0).Rows.Count > 0 Then
-
-          ' Mi passo una riga alla volta
-          For Each dR As DataRow In dsLeads.Tables(0).Rows
-
-            ' Il cod ditta che e' corretto ?
-            If dR("COD_DITTA").ToString = strDittaCorrente Then
-              oCldIbus.InsertLeadNote(strDittaCorrente, dR, CodLead)
-              msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota sul lead {0}", CodLead))
-              LogWrite(msg, True)
-              InviaAlert(2, msg)
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
             Else
-              msg = oApp.Tr(Me, 129919999269031600, String.Format("Attenzione: Nel file trovata riga con codice ditta '{0}' invece di '{1}'", dR("cod_ditta").ToString, strDittaCorrente))
-              LogWrite(msg, True)
-              InviaAlert(99, msg)
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
             End If
-          Next
-        End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
 
-        System.IO.File.Delete(strF(nF))
+    Public Overridable Function Elabora_ImportLead() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+        Dim msg As String = ""
+        Dim dsLeads As New DataSet
+        Dim CodLead As Integer
 
-      Next
+        Try
+            ' Leggo la lista dei files
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_data_*.xml")
 
-      Return True
+            ' Mi passo un file alla volta
+            For nF = 0 To strF.Length - 1
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
+                ' Carico l'xml
+                dsLeads.ReadXml(strF(nF))
 
-  Public Overridable Function Elabora_ImportAnagra() As Boolean
-    Dim strF() As String = Nothing  'elenco di ordini da importare
-    Dim nF As Integer = 0
-    Dim r1 As StreamReader = Nothing
-    Dim strRow() As String = Nothing
+                ' Lo valuto solo se contiene delle righe
+                If dsLeads.Tables(0).Rows.Count > 0 Then
 
-    Const posDitta As Integer = 0
-    Const posConto As Integer = 1
-    Const posTipoConto As Integer = 2
-    Const posTelefono1 As Integer = 3
-    Const posTelefono2 As Integer = 4
-    Const posFax As Integer = 5
-    Const posCell As Integer = 6
-    Const posEmail As Integer = 7
-    Const posPIVA As Integer = 8
-    Const posRagioneSociale As Integer = 9
-    Const posAddress As Integer = 10
-    Const posCAP As Integer = 11
-    Const posCity As Integer = 12
-    Const posProvincia As Integer = 13
-    Const posCodicePagamento As Integer = 14
-    Const posCodiceFiscale As Integer = 15
+                    ' Mi passo una riga alla volta
+                    For Each dR As DataRow In dsLeads.Tables(0).Rows
 
-    Dim msg As String = ""
+                        ' Il cod ditta che e' corretto ?
+                        If dR("COD_DITTA").ToString = strDittaCorrente Then
+                            If dR("COD_LEAD").ToString = "" Then
+                                oCldIbus.InsertLead(strDittaCorrente, dR, CodLead)
+                                LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
 
-    Try
-      'verifico se ci sono preventivi/ordini da importare
-      'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
-      'una volta letto il file, lo cancello
-      strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_ANA*.DAT")
+                                msg = oApp.Tr(Me, 129919999269031600, String.Format("Import nuovo lead codice: {0}", CodLead))
+                                InviaAlert(2, msg)
+                            Else
+                                oCldIbus.UpdateLead(strDittaCorrente, dR, CodLead)
+                                LogWrite(oApp.Tr(Me, 129919999269031600, "Modifica lead codice " & CodLead), True)
+                                msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica anagrafica lead: {0}", CodLead))
+                                InviaAlert(2, msg)
+                            End If
+                        End If
+                    Next
+                End If
+
+                System.IO.File.Delete(strF(nF))
+
+            Next
 
 
 
-      For nF = 0 To strF.Length - 1
+            Return True
 
-        r1 = New StreamReader(strF(nF))
-
-        'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
-        While Not r1.EndOfStream
-          strRow = r1.ReadLine.Split("|"c)
-
-          ' Se il file non è della mia ditta lo scarto e passo a quello successivo
-          If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
-            r1.Close()
-            GoTo NEXT_FILE
-          End If
-
-          Dim strConto As String = strRow(posConto)
-          Dim dttAnagra As New DataTable
-          If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
-            If dttAnagra.Rows.Count > 0 Then
-              oCldIbus.UpdateClifor(strDittaCorrente, strConto, strRow)
-              msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica dati anagrafici cliente {0}", strRow(posConto)))
-              LogWrite(msg, True)
-              InviaAlert(2, msg)
-
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
             End If
-          End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+    Public Overridable Function Elabora_ImportLeadNote() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
 
-        End While
-        r1.Close()
+        Dim dsLeads As New DataSet
+        Dim CodLead As Integer
+        Dim msg As String = ""
 
-        System.IO.File.Delete(strF(nF))
+
+        Try
+            ' Leggo la lista dei files
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_note_*.xml")
+
+            ' Mi passo un file alla volta
+            For nF = 0 To strF.Length - 1
+
+                ' Carico l'xml
+                dsLeads.ReadXml(strF(nF))
+
+                ' Lo valuto solo se contiene delle righe
+                If dsLeads.Tables(0).Rows.Count > 0 Then
+
+                    ' Mi passo una riga alla volta
+                    For Each dR As DataRow In dsLeads.Tables(0).Rows
+
+                        ' Il cod ditta che e' corretto ?
+                        If dR("COD_DITTA").ToString = strDittaCorrente Then
+                            oCldIbus.InsertLeadNote(strDittaCorrente, dR, CodLead)
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota sul lead {0}", CodLead))
+                            LogWrite(msg, True)
+                            InviaAlert(2, msg)
+                        Else
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Attenzione: Nel file trovata riga con codice ditta '{0}' invece di '{1}'", dR("cod_ditta").ToString, strDittaCorrente))
+                            LogWrite(msg, True)
+                            InviaAlert(99, msg)
+                        End If
+                    Next
+                End If
+
+                System.IO.File.Delete(strF(nF))
+
+            Next
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ImportAnagra() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+        Dim r1 As StreamReader = Nothing
+        Dim strRow() As String = Nothing
+
+        Const posDitta As Integer = 0
+        Const posConto As Integer = 1
+        Const posTipoConto As Integer = 2
+        Const posTelefono1 As Integer = 3
+        Const posTelefono2 As Integer = 4
+        Const posFax As Integer = 5
+        Const posCell As Integer = 6
+        Const posEmail As Integer = 7
+        Const posPIVA As Integer = 8
+        Const posRagioneSociale As Integer = 9
+        Const posAddress As Integer = 10
+        Const posCAP As Integer = 11
+        Const posCity As Integer = 12
+        Const posProvincia As Integer = 13
+        Const posCodicePagamento As Integer = 14
+        Const posCodiceFiscale As Integer = 15
+
+        Dim msg As String = ""
+
+        Try
+            'verifico se ci sono preventivi/ordini da importare
+            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'una volta letto il file, lo cancello
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_ANA*.DAT")
+
+
+
+            For nF = 0 To strF.Length - 1
+
+                r1 = New StreamReader(strF(nF))
+
+                'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
+                While Not r1.EndOfStream
+                    strRow = r1.ReadLine.Split("|"c)
+
+                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
+                        r1.Close()
+                        GoTo NEXT_FILE
+                    End If
+
+                    Dim strConto As String = strRow(posConto)
+                    Dim dttAnagra As New DataTable
+                    If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
+                        If dttAnagra.Rows.Count > 0 Then
+                            oCldIbus.UpdateClifor(strDittaCorrente, strConto, strRow)
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica dati anagrafici cliente {0}", strRow(posConto)))
+                            LogWrite(msg, True)
+                            InviaAlert(2, msg)
+
+                        End If
+                    End If
+
+                End While
+                r1.Close()
+
+                System.IO.File.Delete(strF(nF))
 
 NEXT_FILE:
-      Next    'For nF = 0 To strF.Length - 1
+            Next    'For nF = 0 To strF.Length - 1
 
 
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
-
-
- 
-  Public Overridable Function Elabora_ImportOrdiniNew() As Boolean
-
-    ' Leggo l'ID dell'ultimo ordine recuperato dal WS
-    Dim LastStoredOrderID As String = "10"
-
-
-    ' url del web service di test
-    Dim wsUrl As String = "http://am.apexnet.it/api_appstore_ic/v1/progetti/ic.appstore/exportPaginazione/ordini"
-
-
-    Dim client As RestClient = New RestClient(wsUrl)
-
-    ' Prima chiamata. Verifica quanti record ci sono da elaborare (count=1)
-    ' ------------------------------------------------------------------
-    Dim request1 As RestRequest = New RestRequest(Method.[GET])
-
-    request1.AddParameter("format", "json")
-    request1.AddParameter("lastID", LastStoredOrderID)
-    request1.AddParameter("count", 1)
-
-    Dim response1 As IRestResponse(Of Orders) = client.Execute(Of Orders)(request1)
-
-
-
-    ' Gestisco eventuali eccezioni
-    If response1.ErrorException IsNot Nothing Then
-      Console.WriteLine("Error retrieving response.  Check inner details for more info.")
-      Return False
-    End If
-
-    ' Se total_count = 0 vuol dire che non ci sono Ordini nuovi
-    If response1.Data.meta.total_count = 0 Then
-      Console.WriteLine("Orders not found!")
-      Return False
-    End If
-
-    ' Seconda chiamata. Estraggo tutto gli ordini (niente paginazione)
-    ' Se non desidero paginare fra i risultati pongo limit al numero di record che voglio che vengano ritornati
-    ' Se desidero paginare fra i record devo impostare limit per dire quanti record voglio ogni volta e offset per cambiare le pagina
-    ' ---------------------------------------------------------------
-    Dim request2 As RestRequest = New RestRequest(Method.[GET])
-    request2.AddParameter("format", "json")
-    request2.AddParameter("offset", 0)
-    request2.AddParameter("limit", response1.Data.meta.total_count)
-    request2.AddParameter("count", 0)
-    request2.AddParameter("lastID", LastStoredOrderID)
-    'request.AddParameter("lastDateImport", ""); 
-
-    ' RestSharp deserializza automaticamente il risultato del ws e lo mette nella classe Orders
-    Dim response2 As IRestResponse(Of Orders) = client.Execute(Of Orders)(request2)
-
-    ' Gestisco eventuali eccezioni
-    If response2.ErrorException IsNot Nothing Then
-      Console.WriteLine("Error retrieving response.  Check inner details for more info.")
-      Return False
-    End If
-
-
-
-    ' ciclo per ogni testata
-    For Each t As TestataOrdineExport In response2.Data.testate
-      ' Ogni volta che elaboro un ordini memorizzo il suo ID 
-
-      LastStoredOrderID = t.id.ToString()
-
-      Console.WriteLine(vbLf)
-      Console.WriteLine("Order ID:" & Convert.ToString(t.id))
-      Console.WriteLine("Customer code:" & Convert.ToString(t.cod_clifor))
-      '.... ecc..
-
-      ' Ciclo per ogni riga
-      For Each r As RigaOrdineExport In t.righe
-        Console.WriteLine("rows")
-        Console.WriteLine("...product code:" & Convert.ToString(r.codice_articolo))
-        Console.WriteLine("...product name:" & Convert.ToString(r.descrizione_riga))
-        Console.WriteLine("...quantity:" & Convert.ToString(r.qta))
-        ' .... ecc....
-        Console.WriteLine("...price:" & Convert.ToString(r.prezzo))
-      Next
-    Next
-
-    Return True
-    
-
-  End Function
-
-
-  Public Overridable Function Elabora_ImportOrdini() As Boolean
-    Dim strF() As String = Nothing  'elenco di ordini da importare
-    Dim nF As Integer = 0
-    Dim r1 As StreamReader = Nothing
-    Dim dttFile As New DataTable
-    Dim strRow() As String = Nothing
-    Dim strCodart As String = ""
-    Dim nFase As Integer = 0
-    Dim i As Integer = 0
-    Dim strStasino As String = ""
-    Dim strTipoOrdine As String = ""
-    Dim msg As String = ""
-    Dim NumOrd As Integer = 0
-
-
-
-    ' Mandare una notifica push
-
-    'ApexNetLIB.PushNotification.Send("307", "ib.appstore", "Buona giornata dal team iB" + " - " + strDittaCorrente)
-
-    ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unità di misura
-    Dim strUnitaMisuraP As String = ""
-    Dim strUnitaMisura As String = ""
-    Dim dQuantita As Decimal
-    Dim dPrezzo As Decimal
-    Dim dColli As Decimal
-    Dim dTipoUM As Decimal
-
-    Dim DBCodAgente1 As Integer = 0
-    Dim DBCodAgente2 As Integer = 0
-
-    Dim CodAgente1 As Integer = 0
-    Dim CodAgente2 As Integer = 0
-
-    Dim DescNote As String = ""
-
-    Const posDitta As Integer = 0
-    Const posCodExtOrdine As Integer = 1 ' Preventivo = Q, Impegno cliente (ordine) = R
-    Const posDataOrdine As Integer = 2
-    ' Const posNumOrdOri As Integer = 3 NON USATO
-    Const posCodClifor As Integer = 4
-    Const posCodAgente As Integer = 5
-    Const posDataConsegna As Integer = 6
-    Const posDesNote As Integer = 7
-    Const posCodDest As Integer = 8
-    Const posTipoRiga As Integer = 9 ' (Articolo o Descrittivo)
-    Const posCodArt As Integer = 10
-    Const posDesArticolo As Integer = 11
-    Const posUM1 As Integer = 12
-    Const posUM2 As Integer = 13
-    Const posQta1 As Integer = 14
-    Const posQta2 As Integer = 15
-    Const posPrezzo1 As Integer = 16
-    Const posPrezzo2 As Integer = 17
-    Const posTipoUM As Integer = 18
-    Const posTipoOmaggio As Integer = 19
-    Const posSc1 As Integer = 20
-    Const posSc2 As Integer = 21
-    Const posSc3 As Integer = 22
-    Const posSc4 As Integer = 23
-    Const posSc5 As Integer = 24
-    Const posSc6 As Integer = 25
-    Const posScImporto As Integer = 26
-    Const posMagPerc1 As Integer = 27
-    Const posMagPerc2 As Integer = 28
-    Const posMagImporto As Integer = 29
-    Const posCodConf As Integer = 30
-    Const posQtaConf As Integer = 31
-    Const posCodPag As Integer = 32
-    Const posCodPagDep As Integer = 33
-    Const posCodOperatore As Integer = 34
-
-
-
-    Try
-      'verifico se ci sono preventivi/ordini da importare
-      'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
-      'una volta letto il file, lo cancello
-      strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_ORD*.DAT")
-
-      dttFile.Columns.Add("tipork", GetType(String))
-      dttFile.Columns.Add("datord", GetType(DateTime))
-      dttFile.Columns.Add("conto", GetType(Integer))
-      dttFile.Columns.Add("agente", GetType(Integer))
-      dttFile.Columns.Add("datcons", GetType(DateTime))
-      dttFile.Columns.Add("codart", GetType(String))
-      dttFile.Columns.Add("fase", GetType(Integer))
-      dttFile.Columns.Add("desart", GetType(String))
-      dttFile.Columns.Add("note", GetType(String))
-      dttFile.Columns.Add("um", GetType(String))
-      dttFile.Columns.Add("ump", GetType(String))
-      dttFile.Columns.Add("colli", GetType(Decimal))
-      dttFile.Columns.Add("quant", GetType(Decimal))
-      dttFile.Columns.Add("prezzo", GetType(Decimal))
-      dttFile.Columns.Add("scont1", GetType(Decimal))
-      dttFile.Columns.Add("scont2", GetType(Decimal))
-      dttFile.Columns.Add("scont3", GetType(Decimal))
-      dttFile.Columns.Add("scont4", GetType(Decimal))
-      dttFile.Columns.Add("scont5", GetType(Decimal))
-      dttFile.Columns.Add("scont6", GetType(Decimal))
-      dttFile.Columns.Add("stasino", GetType(String))
-      dttFile.Columns.Add("coddest", GetType(String))
-      dttFile.Columns.Add("agente2", GetType(Integer))
-      dttFile.Columns.Add("codconf", GetType(String))
-      dttFile.Columns.Add("qtaconf", GetType(Integer))
-
-      dttFile.Columns.Add("codpag", GetType(Integer))
-      dttFile.Columns.Add("codpagdep", GetType(Integer))
-      dttFile.Columns.Add("codoperatore", GetType(String))
-
-      'If ocldBase.get Then
-      'per prova
-      'dttFile.Rows.Add(New Object() {"R", CDate("05/08/2012"), 4010001, 1, CDate("13/08/2012"), "mp1", 0, "Descr. art. 1", "note mp1", "CT", "NR", 1.5, 45, 1.555, 10, 5, 0, 0, 0, 0, "N"})
-      'dttFile.Rows.Add(New Object() {"R", CDate("05/08/2012"), 4010001, 1, CDate("13/08/2012"), "ARTFASI", 2, "Descr. art. 1", "note mp1", "NR", "NR", 10, 10, 1.555, 10, 5, 0, 0, 0, 0, "N"})
-      'dttFile.Rows.Add(New Object() {"R", CDate("05/08/2012"), 4010002, 1, CDate("13/08/2012"), "mp1", 0, "Descr. art. 1", "note mp1", "CT", "NR", 1.5, 45, 1.555, 0, 0, 0, 0, 0, 0, "1"})
-      'dttFile.Rows.Add(New Object() {"Q", CDate("05/08/2012"), 4010001, 2, CDate("13/08/2012"), "mp1", 0, "Descr. art. 1", "note mp1", "CT", "NR", 1.5, 45, 1.555, 0, 0, 0, 0, 0, 0, "2"})
-
-      ' Ciclo per tutti i files
-      For nF = 0 To strF.Length - 1
-        dttFile.Clear()
-        r1 = New StreamReader(strF(nF))
-
-        'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
-
-        ' Ciclo per tutte le righe del file in esame
-        While Not r1.EndOfStream
-          strRow = r1.ReadLine.Split("|"c)
-
-          ' Se il file non è della mia ditta lo scarto e passo a quello successivo
-          If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
-            r1.Close()
-            GoTo NEXT_FILE
-          End If
-
-
-          ' Il codice articolo potrebbe contenere il codice della fase.
-          ' Cerco di splittarlo basandomi sul punto come separatore
-          Dim strArt As String = strRow(posCodArt).Trim
-          Dim dttTmp As New DataTable
-          If oCldIbus.ValCodiceDb(strArt, strDittaCorrente, "ARTICO", "S", "", dttTmp) AndAlso dttTmp.Rows.Count > 0 Then
-            strCodart = strRow(posCodArt).Trim
-            nFase = 0
-          Else
-            If strArt.Contains(".") Then
-              Dim nPosition As Integer = strArt.LastIndexOf("."c)
-              If nPosition > -1 Then
-                strCodart = strRow(posCodArt).Substring(0, nPosition)
-                nFase = NTSCInt(strRow(posCodArt).Substring(nPosition + 1))
-              Else
-                'si dovrebbe loggare (potrebbe essere riga descrittiva)
-              End If
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
             Else
-              ' si dovrebbe loggare (potrebbe essere riga descrittiva)
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
             End If
-          End If
-          ' Gestico il tipo riga ordine: 0 = Articolo (valorizzato sopra), 2 = Descrittiva
-          Select Case strRow(posTipoRiga)
-            Case "2"
-              strCodart = "D"
-              nFase = 0
-          End Select
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+    Public Overridable Function GeneraOrdineWS(ByVal Ordine As TestataOrdineExport, ByRef NumOrd As Integer) As Boolean
+
+        Dim strSerie As String = " "
+        Dim nTipoBF As Integer = 0
+        Dim nMagaz As Integer = 0
+        Dim oCleGsor As CLEORGSOR
+        Dim lNumord As Integer = 0
+        Dim ds As New DataSet
+        Dim strTipoOrdine As String = ""
+        Dim strStasino As String = ""
+
+        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unità di misura
+        Dim strUnitaMisuraP As String = ""
+        Dim strUnitaMisura As String = ""
+        Dim dQuantita As Decimal
+        Dim dPrezzo As Decimal
+        Dim dColli As Decimal
+        Dim dTipoUM As Decimal
+        Dim DescNote As String = ""
+
+        Dim DBCodAgente1 As Integer = 0
+        Dim DBCodAgente2 As Integer = 0
+        Dim CodAgente1 As Integer = 0
+        Dim CodAgente2 As Integer = 0
 
 
-          ' Gestisco il tipo omaggio
-          strStasino = "S"
-          Select Case strRow(posTipoOmaggio)
-            Case "0" : strStasino = "S"   'riga normale
-            Case "1" : strStasino = "O"   'omaggio con rivalsa
-            Case "2" : strStasino = "P"   'omaggio senza rivalsa
-            Case "3" : strStasino = "M"   'sconto merce
-          End Select
+        Try
+            ' Esegui trascodifiche di testata AM / Business
+            ' ==============================================
 
-          ' Gestisco il tipo ordine: R = Ordine, Q = Preventivo
-          strTipoOrdine = "R"
-          Select Case strRow(posCodExtOrdine)
-            Case "CLI-MOBORD", "CLI-IGAMMAORD", "R" : strTipoOrdine = "R"
-            Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P" : strTipoOrdine = "Q"
-          End Select
-
-
-          Select Case strRow(posTipoUM)
-            Case "1" : dTipoUM = 1 ' Unità di misura principale
-            Case "2" : dTipoUM = 2 ' Unità di misura secondaria
-            Case "3" : dTipoUM = 3 ' Codice confezione
-          End Select
-
-          ' Se la UM2 è valorizzata significa che ho inserito l'ordine con la seconda unità di misura
-          ' Esempio di tracciato: 
-          ' UM1 | UM2 | QTA1 | QTA2 | PRZ1  | PRZ2     Intestazione tracciato
-          ' PZ  |     | 3,0  |      | 11,29 |          Caso 1 (utilizzo prima unità di misura. Pezzi) 3 pezzi a 11,29 € cad.
-          '     | SC  |      | 16   |       | 11,29    Caso 2 (utilizzo seconda unità di misura. Scatole) 2 scatole per 16 pezzi totali a € 11,28 cad. (2 da dove lo prendo?)
-          'If strRow(posUM2) <> "" Then
-          ' strUnitaMisuraP = strRow(posUM2) ' UM che deve essere presa da articoli CALCOLARE - per ora non usata
-          ' strUnitaMisura = strRow(posUM2) ' UM che arriva dall'ipad
-          ' dQuantita = NTSCDec(strRow(posQta2)) ' contiene la qta in UM1.
-          ' dPrezzo = NTSCDec(strRow(posPrezzo2))
-          ' dColli = NTSCDec(strRow(posQta2)) ' da calcolare sul db CALCOLARE - per ora metto uguale a quantita'
-          ' Else
-          ' ' Se sto usando la prima unità di misura, tutto quello che mi arriva dall'iPad è giusto
-          ' ' perchè la prima UM è sempre quella del valore minimo (pz., kg, lt, mt., ecc)
-          ' strUnitaMisuraP = strRow(posUM1)
-          ' strUnitaMisura = strRow(posUM1)
-          ' dQuantita = NTSCDec(strRow(posQta1))
-          ' dPrezzo = NTSCDec(strRow(posPrezzo1))
-          ' dColli = NTSCDec(strRow(posQta1))
-          ' End If
-
-          ' Nuova gestione unita' di misura. Ora arrivano le info nel seguente modo
-          ' Esempio di tracciato: 
-          ' UM1 | UM2 | QTA1 | QTA2 | PRZ1  | PRZ2     Intestazione tracciato
-          ' PZ  |     | 3,0  |      | 11,29 |          Tipo UM 1 UMP  (utilizzo prima unità di misura. Pezzi) 3 pezzi a 11,29 € cad.
-          ' PZ  | NR  | 3,0  | 16   | 11,29 | 11,29    Tipo UM 2 UM2  (utilizzo seconda unità di misura. NR)
-          ' PZ  | SC  | 3,0  |  5   | 11,29 |   30     Tipo UM 3 CONF (utilizzo confezioni)
-
-
-          Select Case dTipoUM
-            Case 1
-              strUnitaMisuraP = strRow(posUM1)
-              dColli = NTSCDec(strRow(posQta1))
-              strUnitaMisura = strRow(posUM1)
-              dQuantita = NTSCDec(strRow(posQta1))
-              dPrezzo = NTSCDec(strRow(posPrezzo1))
-            Case 2 Or 3
-              strUnitaMisuraP = strRow(posUM1)
-              dColli = NTSCDec(strRow(posQta2))
-              strUnitaMisura = strRow(posUM2)
-              dQuantita = NTSCDec(strRow(posQta1))
-              dPrezzo = NTSCDec(strRow(posPrezzo1))
-          End Select
-
-          ' Verifico se l'ordine e' stato inserito da un agente o da un subagente
-          If oCldIbus.GetAgentiCliente(strDittaCorrente, strRow(posCodClifor), DBCodAgente1, DBCodAgente2, strCustomWhereGetAgentiCliente) Then
-            Select Case NTSCInt(strRow(posCodAgente))
-              Case DBCodAgente1
-                CodAgente1 = DBCodAgente1
-                CodAgente2 = DBCodAgente2
-              Case DBCodAgente2
-                CodAgente1 = DBCodAgente1
-                CodAgente2 = DBCodAgente2
-              Case Else
-                CodAgente1 = NTSCInt(strRow(posCodAgente))
-                CodAgente2 = 0
+            ' Gestisco il tipo ordine: R = Ordine, Q = Preventivo
+            strTipoOrdine = "R"
+            Select Case Ordine.ext_cod_tipo_ord
+                Case "CLI-MOBORD", "CLI-IGAMMAORD", "R" : strTipoOrdine = "R"
+                Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P" : strTipoOrdine = "Q"
             End Select
 
-          Else
-            CodAgente1 = NTSCInt(strRow(posCodAgente))
-            CodAgente2 = 0
-          End If
 
-          ' Aggiungo i newline
-          If String.IsNullOrEmpty(strRow(posDesNote)) Then
-            DescNote = strRow(posDesNote)
-          Else
-            DescNote = strRow(posDesNote).Replace(CLDIEIBUS.iBNewline, vbNewLine)
-          End If
+            ' Verifico se l'ordine e' stato inserito da un agente o da un subagente
+            If oCldIbus.GetAgentiCliente(strDittaCorrente, Ordine.cod_clifor, DBCodAgente1, DBCodAgente2, strCustomWhereGetAgentiCliente) Then
+                Select Case NTSCInt(Ordine.cod_agente)
+                    Case DBCodAgente1
+                        CodAgente1 = DBCodAgente1
+                        CodAgente2 = DBCodAgente2
+                    Case DBCodAgente2
+                        CodAgente1 = DBCodAgente1
+                        CodAgente2 = DBCodAgente2
+                    Case Else
+                        CodAgente1 = NTSCInt(Ordine.cod_agente)
+                        CodAgente2 = 0
+                End Select
 
-          ' Ho tutte le informazioni. Valorizzo un datatable con tutti i dati dell'ordine
+            Else
+                CodAgente1 = NTSCInt(Ordine.cod_agente)
+                CodAgente2 = 0
+            End If
+            ' -----------------------------
+
+
+            'inizializzo BEORGSOR
+            '----------------------------------------------------------------
+            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
+            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
+            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
+
+            Dim strErr As String = ""
+            Dim oTmp As Object = Nothing
+            If CLN__STD.NTSIstanziaDll(oApp.ServerDir, oApp.NetDir, "BETVTRAS", "BEORGSOR", oTmp, strErr, False, "", "") = False Then
+                Throw New NTSException(oApp.Tr(Me, 128895477321672967, "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"))
+                Return False
+            End If
+            oCleGsor = CType(oTmp, CLEORGSOR)
+
+            AddHandler oCleGsor.RemoteEvent, AddressOf GestisciEventiEntityGsor
+            'AddHandler oCleGsor.RemoteEvent, AddressOf GestisciEventiEntityPERS
+
+            If oCleGsor.Init(oApp, oScript, oCleComm, "", False, "", "") = False Then Return False
+            If Not oCleGsor.InitExt() Then Return False
+            oCleGsor.bModuloCRM = False
+            oCleGsor.bIsCRMUser = False
+
+            If Not oCleGsor.ApriOrdine(strDittaCorrente, False, "Q", 1900, " ", -1, ds) Then Return False
+            oCleGsor.bInApriDocSilent = True
+            oCleGsor.ResetVar()
+
+            ' Inizio la creazione dell'ordine. La numerazione e' attiva ?
+            lNumord = oCldIbus.LegNuma(strDittaCorrente, strTipoOrdine, strSerie, NTSCDate(Ordine.data_ordine).Year, False)
+            If lNumord = 0 Then
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente è necessario attivare la numerazione")))
+                Return False
+            End If
+
+            ' Creo un nuovo ordine
+            LogWrite(String.Format("Elaboro dati cliente {0}", Ordine.cod_clifor), False)
+            If Not oCleGsor.NuovoOrdine(strDittaCorrente, strTipoOrdine, NTSCDate(Ordine.data_ordine).Year, strSerie, lNumord) Then
+                Return False
+            End If
+
+            ' Cerco la data di consegna piu' alta presente nelle righe.
+            ' Mi serve per valorizzare la data di consegna nelle testate
+            Dim dateMaxCons As Date = NTSCDate(Ordine.data_consegna)
+            For Each r2 As RigaOrdineExport In Ordine.righe
+                If dateMaxCons < NTSCDate(r2.data_consegna_riga) Then
+                    dateMaxCons = NTSCDate(r2.data_consegna_riga)
+                End If
+            Next
+
+            'compilo i campi di testata con quello che viene passato da IBUS
+            oCleGsor.dttET.Rows(0)!et_datdoc = NTSCDate(Ordine.data_ordine)
+            oCleGsor.dttET.Rows(0)!et_conto = NTSCInt(Ordine.cod_clifor)
+            oCleGsor.dttET.Rows(0)!et_coddest = NTSCInt(Ordine.cod_destinazione)
+            oCleGsor.dttET.Rows(0)!et_datcons = NTSCDate(dateMaxCons)
+            If nTipoBF > 0 Then oCleGsor.dttET.Rows(0)!et_tipobf = nTipoBF
+            If nMagaz > 0 Then oCleGsor.dttET.Rows(0)!et_magaz = nMagaz
+            oCleGsor.dttET.Rows(0)!et_codagen = NTSCInt(CodAgente1)
+            oCleGsor.dttET.Rows(0)!et_codagen2 = NTSCInt(CodAgente2)
+
+
+            ' Disabilitazione blocchi di interfaccia
+            ' ---------------------------------------
+            'Valide per la creazione di un ordine 
+            oCleGsor.strContrFidoInsolinInsOrd = "N"
+            oCleGsor.bConsentiCreazOrdiniCliFornBloccoFisso = True
+            oCleGsor.bSegnalaCreazOrdiniCliFornBloccati = False ' false x non segnalare 
+
+            'Valide per la creazione di un documento 
+            oCleGsor.strContrFidoInsolinInsDoc = "N"
+            oCleGsor.bConsentiCreazDocumCliFornBloccoFisso = True
+            oCleGsor.bSegnalaCreazDocumCliFornBloccati = False  ' false x non segnalare 
+
+            ' Disabilitazione blocchi di interfaccia
+            oCleGsor.bDisabilitaCheckDateAnteriori = True
+            oCleGsor.bInCreaDocDaGnor = True
+            oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
+            oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
+
+            ' Valorizzo il codice di pagamento degli articoli deperibili
+            If NTSCInt(Ordine.cod_cond_pag_deperibilita) <> 0 Then
+                oCleGsor.dttET.Rows(0)!et_codpaga = NTSCInt(Ordine.cod_cond_pag_deperibilita)
+            End If
+
+            ' Fine decodifiche di testata
+
+
+
+            ' Ciclo per ogni riga
+            ' -------------------
+            For Each r As RigaOrdineExport In Ordine.righe
+
+                ' Esegui trascodifiche di riga AM / Business
+                ' ===========================================
+
+                ' Il codice articolo potrebbe contenere il codice della fase.
+                ' Cerco di splittarlo basandomi sul punto come separatore
+                Dim dttTmp As New DataTable
+                Dim strCodArt As String = ""
+                Dim nFase As Integer = 0
+
+                If oCldIbus.ValCodiceDb(r.codice_articolo, strDittaCorrente, "ARTICO", "S", "", dttTmp) AndAlso dttTmp.Rows.Count > 0 Then
+                    strCodArt = r.codice_articolo
+                    nFase = 0
+                Else
+                    If r.codice_articolo.Contains(".") Then
+                        Dim nPosition As Integer = r.codice_articolo.LastIndexOf("."c)
+                        If nPosition > -1 Then
+                            strCodArt = r.codice_articolo.Substring(0, nPosition)
+                            nFase = NTSCInt(r.codice_articolo.Substring(nPosition + 1))
+                        Else
+                            'si dovrebbe loggare (potrebbe essere riga descrittiva)
+                        End If
+                    Else
+                        ' si dovrebbe loggare (potrebbe essere riga descrittiva)
+                    End If
+                End If
+
+                ' Gestisco il tipo riga ordine: 0 = Articolo (valorizzato sopra), 2 = Descrittiva
+                Select Case r.ext_cod_tipo_riga_ord
+                    Case "2"
+                        strCodArt = "D"
+                        nFase = 0
+                End Select
+
+                ' Se il codArt non e' valorizzato lo tratto come riga descrittiva
+                If strCodArt = "" Then
+                    strCodArt = "D"
+                    nFase = 0
+                End If
+
+                ' Se l'articolo e' bloccato lo inserisco come articolo descrittivo
+                Dim dttArti As New DataTable
+                If ocldBase.ValCodiceDb(strCodArt, strDittaCorrente, "ARTICO", "S", "", dttArti) Then
+                    If Not dttArti Is Nothing Then
+                        If dttArti.Rows.Count > 0 Then
+                            If dttArti.Rows(0)!ar_blocco.ToString = "S" Then
+                                'articolo bloccato quindi magari inserisco come codice l'articolo D descrittivo
+                                strCodArt = "D"
+                                ' e nelle note metto il codice articolo bloccato
+                                ' oCleGsor.dttET.Rows(0)!ec_note = "BLOCCATO ('" & strCodart & "')"
+                            End If
+                        End If
+                    End If
+                End If
+
+                ' Gestisco il tipo omaggio
+                strStasino = "S"
+                Select Case r.ext_cod_tipo_riga_omag
+                    Case "0" : strStasino = "S"   'riga normale
+                    Case "1" : strStasino = "O"   'omaggio con rivalsa
+                    Case "2" : strStasino = "P"   'omaggio senza rivalsa
+                    Case "3" : strStasino = "M"   'sconto merce
+                End Select
+
+                ' Gestisco il tipo unita di misura
+                dTipoUM = 1
+                Select Case r.tipo_um
+                    Case "1" : dTipoUM = 1 ' Unità di misura principale
+                    Case "2" : dTipoUM = 2 ' Unità di misura secondaria
+                    Case "3" : dTipoUM = 3 ' Codice confezione
+                End Select
+                Select Case dTipoUM
+                    Case 1
+                        strUnitaMisuraP = r.cod_um_1
+                        dColli = NTSCDec(r.qta)
+                        strUnitaMisura = r.cod_um_1
+                        dQuantita = NTSCDec(r.qta)
+                        dPrezzo = NTSCDec(r.prezzo)
+                    Case 2 Or 3
+                        strUnitaMisuraP = r.cod_um_1
+                        dColli = NTSCDec(r.qta_2)
+                        strUnitaMisura = r.cod_um_2
+                        dQuantita = NTSCDec(r.qta)
+                        dPrezzo = NTSCDec(r.prezzo)
+                End Select
+
+
+                ' Ripristino i newline
+                If String.IsNullOrEmpty(r.note) Then
+                    DescNote = r.note
+                Else
+                    DescNote = r.note.Replace(CLDIEIBUS.iBNewline, vbNewLine)
+                End If
+
+                ' Fine tracodifiche di riga  ======================
+
+                ' Se nel terzo parametro metto 0 (nRiga = 9) il framework incrementa automaticamente il numero riga
+                If Not oCleGsor.AggiungiRigaCorpo(False, strCodArt, nFase, 0) Then
+                    Return False
+                End If
+
+                With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
+                    If r.descrizione_riga.Trim <> "" Then
+                        !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
+                    End If
+
+                    If r.descrizione_riga.Length > 40 Then
+                        !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
+                    End If
+
+                    !ec_note = NTSCStr(!ec_note) & " " & NTSCStr(r.note)
+                    !ec_unmis = NTSCStr(strUnitaMisura)
+                    !ec_colli = NTSCDec(dColli)
+                    !ec_quant = NTSCDec(dQuantita)
+                    !ec_prezzo = NTSCDec(dPrezzo) ' * NTSCDec(!ec_perqta)
+                    !ec_scont1 = NTSCDec(r.sconto_1)
+                    !ec_scont2 = NTSCDec(r.sconto_2)
+                    !ec_scont3 = NTSCDec(r.sconto_3)
+                    !ec_scont4 = NTSCDec(r.sconto_4)
+                    !ec_scont5 = NTSCDec(r.sconto_5)
+                    !ec_scont6 = NTSCDec(r.sconto_6)
+                    !ec_datcons = NTSCDate(r.data_consegna_riga)
+                    !ec_datconsor = NTSCDate(r.data_consegna_riga)
+                    !ec_stasino = NTSCStr(strStasino)
+                End With
+
+                If Not oCleGsor.RecordSalva(oCleGsor.dttEC.Rows.Count - 1, False, Nothing) Then
+                    Return False
+                End If
+
+            Next
+
+            ' Salvo l'ordine
+            If Not oCleGsor.SalvaOrdine("N") Then
+                Return False
+            End If
+
+            NumOrd = lNumord
+            Return True
+
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+    End Function
+
+
+    Public Overridable Function Elabora_ImportOrdiniWS() As Boolean
+
+        ' url del web service di test
+        Dim wsUrl As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+        Dim LastStoredID As Integer = oCldIbus.LegNuma(strDittaCorrente, "IB_LASTID_ORD", "", 0, False)
+        'oCldIbus
+        'ocldGsor.AggNuma(strDittaCorrente strTipoProg strSerie, nAnno, lNumero, True, False, strErr)
+        Dim AuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+
+
+
+
+        'Dim LastStoredOrderID As String = "10"   ' Leggo l'ID dell'ultimo ordine recuperato dal WS
+
+        ' Istanzio l'oggetto Export dell'AMHelper
+        Dim ed As New GetDataAM(AuthKey, wsUrl)
+        Dim OrdersData As ws_rec_orders = Nothing
+        Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
+
+        ' Variabili di uso locale
+        Dim NumOrd As Integer
+        Dim msg As String = ""
+
+        Try
+
+
+
+            If RetVal AndAlso OrdersData IsNot Nothing Then
+
+                For Each t As TestataOrdineExport In OrdersData.testate
+
+                    If GeneraOrdineWS(t, NumOrd) Then
+                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
+                        LogWrite(msg, True)
+                        InviaAlert(1, msg, t.cod_clifor)
+                        Dim strErr As String = ""
+                        ' oCldIbus.AggNuma(strDittaCorrente "IB_LASTID_ORD" " ", 0, NumOrd.ToString, True, False, strErr)
+                        oCldIbus.AggNuma(strDittaCorrente, "IB_LASTID_ORD", " ", 0, NumOrd, False, False, "")
+
+                        ' Qui devo salvare l'ID 
+                    Else
+                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
+                        InviaAlert(99, msg, t.cod_clifor)
+                    End If
+
+
+                Next
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+    End Function
+
+    Public Overridable Function Elabora_ImportOrdini() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+        Dim r1 As StreamReader = Nothing
+        Dim dttFile As New DataTable
+        Dim strRow() As String = Nothing
+        Dim strCodart As String = ""
+        Dim nFase As Integer = 0
+        Dim i As Integer = 0
+        Dim strStasino As String = ""
+        Dim strTipoOrdine As String = ""
+        Dim msg As String = ""
+        Dim NumOrd As Integer = 0
+
+
+
+        ' Mandare una notifica push
+
+        'ApexNetLIB.PushNotification.Send("307", "ib.appstore", "Buona giornata dal team iB" + " - " + strDittaCorrente)
+
+        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unità di misura
+        Dim strUnitaMisuraP As String = ""
+        Dim strUnitaMisura As String = ""
+        Dim dQuantita As Decimal
+        Dim dPrezzo As Decimal
+        Dim dColli As Decimal
+        Dim dTipoUM As Decimal
+
+        Dim DBCodAgente1 As Integer = 0
+        Dim DBCodAgente2 As Integer = 0
+
+        Dim CodAgente1 As Integer = 0
+        Dim CodAgente2 As Integer = 0
+
+        Dim DescNote As String = ""
+
+        Const posDitta As Integer = 0
+        Const posCodExtOrdine As Integer = 1 ' Preventivo = Q, Impegno cliente (ordine) = R
+        Const posDataOrdine As Integer = 2
+        ' Const posNumOrdOri As Integer = 3 NON USATO
+        Const posCodClifor As Integer = 4
+        Const posCodAgente As Integer = 5
+        Const posDataConsegna As Integer = 6
+        Const posDesNote As Integer = 7
+        Const posCodDest As Integer = 8
+        Const posTipoRiga As Integer = 9 ' (Articolo o Descrittivo)
+        Const posCodArt As Integer = 10
+        Const posDesArticolo As Integer = 11
+        Const posUM1 As Integer = 12
+        Const posUM2 As Integer = 13
+        Const posQta1 As Integer = 14
+        Const posQta2 As Integer = 15
+        Const posPrezzo1 As Integer = 16
+        Const posPrezzo2 As Integer = 17
+        Const posTipoUM As Integer = 18
+        Const posTipoOmaggio As Integer = 19
+        Const posSc1 As Integer = 20
+        Const posSc2 As Integer = 21
+        Const posSc3 As Integer = 22
+        Const posSc4 As Integer = 23
+        Const posSc5 As Integer = 24
+        Const posSc6 As Integer = 25
+        Const posScImporto As Integer = 26
+        Const posMagPerc1 As Integer = 27
+        Const posMagPerc2 As Integer = 28
+        Const posMagImporto As Integer = 29
+        Const posCodConf As Integer = 30
+        Const posQtaConf As Integer = 31
+        Const posCodPag As Integer = 32
+        Const posCodPagDep As Integer = 33
+        Const posCodOperatore As Integer = 34
+
+
+
+        Try
+            'verifico se ci sono preventivi/ordini da importare
+            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'una volta letto il file, lo cancello
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_ORD*.DAT")
+
+            dttFile.Columns.Add("tipork", GetType(String))
+            dttFile.Columns.Add("datord", GetType(DateTime))
+            dttFile.Columns.Add("conto", GetType(Integer))
+            dttFile.Columns.Add("agente", GetType(Integer))
+            dttFile.Columns.Add("datcons", GetType(DateTime))
+            dttFile.Columns.Add("codart", GetType(String))
+            dttFile.Columns.Add("fase", GetType(Integer))
+            dttFile.Columns.Add("desart", GetType(String))
+            dttFile.Columns.Add("note", GetType(String))
+            dttFile.Columns.Add("um", GetType(String))
+            dttFile.Columns.Add("ump", GetType(String))
+            dttFile.Columns.Add("colli", GetType(Decimal))
+            dttFile.Columns.Add("quant", GetType(Decimal))
+            dttFile.Columns.Add("prezzo", GetType(Decimal))
+            dttFile.Columns.Add("scont1", GetType(Decimal))
+            dttFile.Columns.Add("scont2", GetType(Decimal))
+            dttFile.Columns.Add("scont3", GetType(Decimal))
+            dttFile.Columns.Add("scont4", GetType(Decimal))
+            dttFile.Columns.Add("scont5", GetType(Decimal))
+            dttFile.Columns.Add("scont6", GetType(Decimal))
+            dttFile.Columns.Add("stasino", GetType(String))
+            dttFile.Columns.Add("coddest", GetType(String))
+            dttFile.Columns.Add("agente2", GetType(Integer))
+            dttFile.Columns.Add("codconf", GetType(String))
+            dttFile.Columns.Add("qtaconf", GetType(Integer))
+
+            dttFile.Columns.Add("codpag", GetType(Integer))
+            dttFile.Columns.Add("codpagdep", GetType(Integer))
+            dttFile.Columns.Add("codoperatore", GetType(String))
+
+            'If ocldBase.get Then
+            'per prova
+            'dttFile.Rows.Add(New Object() {"R", CDate("05/08/2012"), 4010001, 1, CDate("13/08/2012"), "mp1", 0, "Descr. art. 1", "note mp1", "CT", "NR", 1.5, 45, 1.555, 10, 5, 0, 0, 0, 0, "N"})
+            'dttFile.Rows.Add(New Object() {"R", CDate("05/08/2012"), 4010001, 1, CDate("13/08/2012"), "ARTFASI", 2, "Descr. art. 1", "note mp1", "NR", "NR", 10, 10, 1.555, 10, 5, 0, 0, 0, 0, "N"})
+            'dttFile.Rows.Add(New Object() {"R", CDate("05/08/2012"), 4010002, 1, CDate("13/08/2012"), "mp1", 0, "Descr. art. 1", "note mp1", "CT", "NR", 1.5, 45, 1.555, 0, 0, 0, 0, 0, 0, "1"})
+            'dttFile.Rows.Add(New Object() {"Q", CDate("05/08/2012"), 4010001, 2, CDate("13/08/2012"), "mp1", 0, "Descr. art. 1", "note mp1", "CT", "NR", 1.5, 45, 1.555, 0, 0, 0, 0, 0, 0, "2"})
+
+            ' Ciclo per tutti i files
+            For nF = 0 To strF.Length - 1
+                dttFile.Clear()
+                r1 = New StreamReader(strF(nF))
+
+                'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
+
+                ' Ciclo per tutte le righe del file in esame
+                While Not r1.EndOfStream
+                    strRow = r1.ReadLine.Split("|"c)
+
+                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
+                        r1.Close()
+                        GoTo NEXT_FILE
+                    End If
+
+
+                    ' Il codice articolo potrebbe contenere il codice della fase.
+                    ' Cerco di splittarlo basandomi sul punto come separatore
+                    Dim strArt As String = strRow(posCodArt).Trim
+                    Dim dttTmp As New DataTable
+                    If oCldIbus.ValCodiceDb(strArt, strDittaCorrente, "ARTICO", "S", "", dttTmp) AndAlso dttTmp.Rows.Count > 0 Then
+                        strCodart = strRow(posCodArt).Trim
+                        nFase = 0
+                    Else
+                        If strArt.Contains(".") Then
+                            Dim nPosition As Integer = strArt.LastIndexOf("."c)
+                            If nPosition > -1 Then
+                                strCodart = strRow(posCodArt).Substring(0, nPosition)
+                                nFase = NTSCInt(strRow(posCodArt).Substring(nPosition + 1))
+                            Else
+                                'si dovrebbe loggare (potrebbe essere riga descrittiva)
+                            End If
+                        Else
+                            ' si dovrebbe loggare (potrebbe essere riga descrittiva)
+                        End If
+                    End If
+
+                    ' Gestico il tipo riga ordine: 0 = Articolo (valorizzato sopra), 2 = Descrittiva
+                    Select Case strRow(posTipoRiga)
+                        Case "2"
+                            strCodart = "D"
+                            nFase = 0
+                    End Select
+
+
+                    ' Gestisco il tipo omaggio
+                    strStasino = "S"
+                    Select Case strRow(posTipoOmaggio)
+                        Case "0" : strStasino = "S"   'riga normale
+                        Case "1" : strStasino = "O"   'omaggio con rivalsa
+                        Case "2" : strStasino = "P"   'omaggio senza rivalsa
+                        Case "3" : strStasino = "M"   'sconto merce
+                    End Select
+
+                    ' Gestisco il tipo ordine: R = Ordine, Q = Preventivo
+                    strTipoOrdine = "R"
+                    Select Case strRow(posCodExtOrdine)
+                        Case "CLI-MOBORD", "CLI-IGAMMAORD", "R" : strTipoOrdine = "R"
+                        Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P" : strTipoOrdine = "Q"
+                    End Select
+
+
+                    Select Case strRow(posTipoUM)
+                        Case "1" : dTipoUM = 1 ' Unità di misura principale
+                        Case "2" : dTipoUM = 2 ' Unità di misura secondaria
+                        Case "3" : dTipoUM = 3 ' Codice confezione
+                    End Select
+
+                    ' Se la UM2 è valorizzata significa che ho inserito l'ordine con la seconda unità di misura
+                    ' Esempio di tracciato: 
+                    ' UM1 | UM2 | QTA1 | QTA2 | PRZ1  | PRZ2     Intestazione tracciato
+                    ' PZ  |     | 3,0  |      | 11,29 |          Caso 1 (utilizzo prima unità di misura. Pezzi) 3 pezzi a 11,29 € cad.
+                    '     | SC  |      | 16   |       | 11,29    Caso 2 (utilizzo seconda unità di misura. Scatole) 2 scatole per 16 pezzi totali a € 11,28 cad. (2 da dove lo prendo?)
+                    'If strRow(posUM2) <> "" Then
+                    ' strUnitaMisuraP = strRow(posUM2) ' UM che deve essere presa da articoli CALCOLARE - per ora non usata
+                    ' strUnitaMisura = strRow(posUM2) ' UM che arriva dall'ipad
+                    ' dQuantita = NTSCDec(strRow(posQta2)) ' contiene la qta in UM1.
+                    ' dPrezzo = NTSCDec(strRow(posPrezzo2))
+                    ' dColli = NTSCDec(strRow(posQta2)) ' da calcolare sul db CALCOLARE - per ora metto uguale a quantita'
+                    ' Else
+                    ' ' Se sto usando la prima unità di misura, tutto quello che mi arriva dall'iPad è giusto
+                    ' ' perchè la prima UM è sempre quella del valore minimo (pz., kg, lt, mt., ecc)
+                    ' strUnitaMisuraP = strRow(posUM1)
+                    ' strUnitaMisura = strRow(posUM1)
+                    ' dQuantita = NTSCDec(strRow(posQta1))
+                    ' dPrezzo = NTSCDec(strRow(posPrezzo1))
+                    ' dColli = NTSCDec(strRow(posQta1))
+                    ' End If
+
+                    ' Nuova gestione unita' di misura. Ora arrivano le info nel seguente modo
+                    ' Esempio di tracciato: 
+                    ' UM1 | UM2 | QTA1 | QTA2 | PRZ1  | PRZ2     Intestazione tracciato
+                    ' PZ  |     | 3,0  |      | 11,29 |          Tipo UM 1 UMP  (utilizzo prima unità di misura. Pezzi) 3 pezzi a 11,29 € cad.
+                    ' PZ  | NR  | 3,0  | 16   | 11,29 | 11,29    Tipo UM 2 UM2  (utilizzo seconda unità di misura. NR)
+                    ' PZ  | SC  | 3,0  |  5   | 11,29 |   30     Tipo UM 3 CONF (utilizzo confezioni)
+
+
+                    Select Case dTipoUM
+                        Case 1
+                            strUnitaMisuraP = strRow(posUM1)
+                            dColli = NTSCDec(strRow(posQta1))
+                            strUnitaMisura = strRow(posUM1)
+                            dQuantita = NTSCDec(strRow(posQta1))
+                            dPrezzo = NTSCDec(strRow(posPrezzo1))
+                        Case 2 Or 3
+                            strUnitaMisuraP = strRow(posUM1)
+                            dColli = NTSCDec(strRow(posQta2))
+                            strUnitaMisura = strRow(posUM2)
+                            dQuantita = NTSCDec(strRow(posQta1))
+                            dPrezzo = NTSCDec(strRow(posPrezzo1))
+                    End Select
+
+                    ' Verifico se l'ordine e' stato inserito da un agente o da un subagente
+                    If oCldIbus.GetAgentiCliente(strDittaCorrente, strRow(posCodClifor), DBCodAgente1, DBCodAgente2, strCustomWhereGetAgentiCliente) Then
+                        Select Case NTSCInt(strRow(posCodAgente))
+                            Case DBCodAgente1
+                                CodAgente1 = DBCodAgente1
+                                CodAgente2 = DBCodAgente2
+                            Case DBCodAgente2
+                                CodAgente1 = DBCodAgente1
+                                CodAgente2 = DBCodAgente2
+                            Case Else
+                                CodAgente1 = NTSCInt(strRow(posCodAgente))
+                                CodAgente2 = 0
+                        End Select
+
+                    Else
+                        CodAgente1 = NTSCInt(strRow(posCodAgente))
+                        CodAgente2 = 0
+                    End If
+
+                    ' Aggiungo i newline
+                    If String.IsNullOrEmpty(strRow(posDesNote)) Then
+                        DescNote = strRow(posDesNote)
+                    Else
+                        DescNote = strRow(posDesNote).Replace(CLDIEIBUS.iBNewline, vbNewLine)
+                    End If
+
+                    ' Ho tutte le informazioni. Valorizzo un datatable con tutti i dati dell'ordine
                     dttFile.Rows.Add(New Object() {strTipoOrdine, _
                                                    NTSCDate(IntSetDate(strRow(posDataOrdine).Substring(0, 2) & "/" & strRow(posDataOrdine).Substring(2, 2) & "/" & strRow(posDataOrdine).Substring(4, 4))), _
                                                    NTSCInt(strRow(posCodClifor)), _
@@ -3899,436 +4011,437 @@ NEXT_FILE:
                                                    NTSCInt(strRow(posCodPagDep)), _
                                                    strRow(posCodOperatore) _
                                                   })
-        End While
-        r1.Close()
+                End While
+                r1.Close()
 
-        'ho letto l'intero file: ora genero il documento e cancello il file
-        'In un file ci deve essere solo un ordine.
-        'Diversamente se nel file possono esserci 3 ordini e la routine GeneraOrdini ne crea correttamente solo 2
-        'se cancello il file 1 ordine viene perso, se tengo il file alla prossima rielaborazione  importo nuovamente anche i 2 ordini già importati
-        If GeneraOrdini(dttFile, NumOrd) Then
-          msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, strRow(posCodClifor), strRow(posCodAgente)))
-          LogWrite(msg, True)
-          InviaAlert(1, msg, Conto:=strRow(posCodClifor))
-          System.IO.File.Delete(strF(nF))
-        Else
-          msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", strRow(posCodClifor), strRow(posCodAgente)))
-          InviaAlert(99, msg, Conto:=strRow(posCodClifor))
-        End If
+                'ho letto l'intero file: ora genero il documento e cancello il file
+                'In un file ci deve essere solo un ordine.
+                'Diversamente se nel file possono esserci 3 ordini e la routine GeneraOrdini ne crea correttamente solo 2
+                'se cancello il file 1 ordine viene perso, se tengo il file alla prossima rielaborazione  importo nuovamente anche i 2 ordini già importati
+                If GeneraOrdini(dttFile, NumOrd) Then
+                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, strRow(posCodClifor), strRow(posCodAgente)))
+                    LogWrite(msg, True)
+                    InviaAlert(1, msg, Conto:=strRow(posCodClifor))
+                    System.IO.File.Delete(strF(nF))
+                Else
+                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", strRow(posCodClifor), strRow(posCodAgente)))
+                    InviaAlert(99, msg, Conto:=strRow(posCodClifor))
+                End If
 
 
 NEXT_FILE:
-      Next    'For nF = 0 To strF.Length - 1
+            Next    'For nF = 0 To strF.Length - 1
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
 
-  ''' <summary>
-  ''' Invia un alert a business
-  ''' </summary>
-  ''' <param name="msgTipo">Tipo di parametro 1=Impegno inserito</param>
-  ''' <param name="Messaggio">Stringa del messaggio che si vuole inviare</param>
-  ''' <returns>Vero se l'invio è andato a buon fine</returns>
-  ''' <remarks></remarks>
+    ''' <summary>
+    ''' Invia un alert a business
+    ''' </summary>
+    ''' <param name="msgTipo">Tipo di parametro 1=Impegno inserito</param>
+    ''' <param name="Messaggio">Stringa del messaggio che si vuole inviare</param>
+    ''' <returns>Vero se l'invio è andato a buon fine</returns>
+    ''' <remarks></remarks>
 
-  Public Overridable Function InviaAlert(ByVal idEvento As Integer, ByVal Messaggio As String, Optional Conto As String = "") As Boolean
-    Dim dttAlert As DataTable = Nothing
-    Dim strTipork As String = ""
-    Dim strCliente As String = ""
-    ' msgTipo puo' valere :
+    Public Overridable Function InviaAlert(ByVal idEvento As Integer, ByVal Messaggio As String, Optional Conto As String = "") As Boolean
+        Dim dttAlert As DataTable = Nothing
+        Dim strTipork As String = ""
+        Dim strCliente As String = ""
+        ' msgTipo puo' valere :
 
-    If strAttivaAlert = "0" Then Return True
-
-
-    Try
-      'Public Overridable Function Verifica_Genera_Alert(ByVal nTipoOperazione As Integer, ByVal strDitta As String, _
-      '                                             ByVal strProgramma As String, ByVal lIdEvento As Integer, _
-      '                                            ByRef lIdAlert As Integer, ByVal dttMsgOutParam As DataTable) As Boolean
-      ' CONTROLLA SE C'E' UN ALERT DA GENERARE, E NEL CASO LO GENERA
-      '
-      ' IN: nTipoOperazione -> 0 = solo verifica
-      '                     -> 1 = solo genera
-      '                     -> 2 = verifica e genera
-      '
-      '     strCodditt      -> Ditta del programma chiamante
-      '
-      '     strProgramma    -> Programma chiamante
-      '     lIdEvento       -> Id. dell'evento all'interno del programma chiamante
-      '     objfmChiamante  -> riferimento al form del programma chiamante
-      '
-      '     lIdAlert        -> Alesets da verificare
-      '     dttMsgOutParam  -> recordset dei messaggi ed altri eventuali parametri
-      '                        per ogni alert da generare
-      ' OU:
-      '     Verifica_Genera_Alert ->  = True  significa Alert verificato/generato
-      '                               = False significa Alert non verificato/non generato
-      ' Impegno
-
-      dttAlert = CType(oCleComm, CLELBMENU).CreaDynasetAlert
-      dttAlert.Rows.Add(dttAlert.NewRow)
-      dttAlert.Rows(0)!codditt = strDittaCorrente
-      dttAlert.Rows(0)!strMsg = Messaggio
+        If strAttivaAlert = "0" Then Return True
 
 
-      If Conto <> "" And Conto <> "0" Then
-        dttAlert.Rows(0)!strConto = Conto
-      End If
+        Try
+            'Public Overridable Function Verifica_Genera_Alert(ByVal nTipoOperazione As Integer, ByVal strDitta As String, _
+            '                                             ByVal strProgramma As String, ByVal lIdEvento As Integer, _
+            '                                            ByRef lIdAlert As Integer, ByVal dttMsgOutParam As DataTable) As Boolean
+            ' CONTROLLA SE C'E' UN ALERT DA GENERARE, E NEL CASO LO GENERA
+            '
+            ' IN: nTipoOperazione -> 0 = solo verifica
+            '                     -> 1 = solo genera
+            '                     -> 2 = verifica e genera
+            '
+            '     strCodditt      -> Ditta del programma chiamante
+            '
+            '     strProgramma    -> Programma chiamante
+            '     lIdEvento       -> Id. dell'evento all'interno del programma chiamante
+            '     objfmChiamante  -> riferimento al form del programma chiamante
+            '
+            '     lIdAlert        -> Alesets da verificare
+            '     dttMsgOutParam  -> recordset dei messaggi ed altri eventuali parametri
+            '                        per ogni alert da generare
+            ' OU:
+            '     Verifica_Genera_Alert ->  = True  significa Alert verificato/generato
+            '                               = False significa Alert non verificato/non generato
+            ' Impegno
 
-      dttAlert.AcceptChanges()
-
-      CType(oCleComm, CLELBMENU).Verifica_Genera_Alert(2, strDittaCorrente, "BSIEIBUS", idEvento, 0, dttAlert)
-      Return True
-
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------
-    End Try
+            dttAlert = CType(oCleComm, CLELBMENU).CreaDynasetAlert
+            dttAlert.Rows.Add(dttAlert.NewRow)
+            dttAlert.Rows(0)!codditt = strDittaCorrente
+            dttAlert.Rows(0)!strMsg = Messaggio
 
 
+            If Conto <> "" And Conto <> "0" Then
+                dttAlert.Rows(0)!strConto = Conto
+            End If
 
-  End Function
+            dttAlert.AcceptChanges()
 
-  Public Overridable Function GeneraOrdini(ByRef dttIn As DataTable, ByRef NumOrd As Integer) As Boolean
+            CType(oCleComm, CLELBMENU).Verifica_Genera_Alert(2, strDittaCorrente, "BSIEIBUS", idEvento, 0, dttAlert)
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------
+        End Try
+
+
+
+    End Function
+
+    Public Overridable Function GeneraOrdini(ByRef dttIn As DataTable, ByRef NumOrd As Integer) As Boolean
         'nel datatabase vengono passati gli ordini della ditta corrente
-    'devo generare più ordini, raggruppando per cliente/data ordine
-    Dim strKey As String = ""
-    Dim strLastKey As String = ""
-    Dim ds As New DataSet
-    Dim oCleGsor As CLEORGSOR
-    Dim bTestaCreata As Boolean = False   'se true la testata dell'ordine è già stata creata
-    Dim strSerie As String = " "
-    Dim nTipoBF As Integer = 0
-    Dim nMagaz As Integer = 0
-    Dim lNumord As Integer = 0
-    'Dim nRiga As Integer = 0
-    Dim strCodart As String = ""
-    Dim lFaseArt As Integer = 0
-    Try
-      '----------------------------
-      'inizializzo BEORGSOR
-      strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
-      nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
-      nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
+        'devo generare più ordini, raggruppando per cliente/data ordine
+        Dim strKey As String = ""
+        Dim strLastKey As String = ""
+        Dim ds As New DataSet
+        Dim oCleGsor As CLEORGSOR
+        Dim bTestaCreata As Boolean = False   'se true la testata dell'ordine è già stata creata
+        Dim strSerie As String = " "
+        Dim nTipoBF As Integer = 0
+        Dim nMagaz As Integer = 0
+        Dim lNumord As Integer = 0
+        'Dim nRiga As Integer = 0
+        Dim strCodart As String = ""
+        Dim lFaseArt As Integer = 0
+        Try
+            '----------------------------
+            'inizializzo BEORGSOR
+            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
+            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
+            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
-      Dim strErr As String = ""
-      Dim oTmp As Object = Nothing
-      If CLN__STD.NTSIstanziaDll(oApp.ServerDir, oApp.NetDir, "BETVTRAS", "BEORGSOR", oTmp, strErr, False, "", "") = False Then
-        Throw New NTSException(oApp.Tr(Me, 128895477321672967, "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"))
-        Return False
-      End If
-      oCleGsor = CType(oTmp, CLEORGSOR)
-      '------------------------------------------------
-      'AddHandler oCleGsor.RemoteEvent, AddressOf GestisciEventiEntityGsor
-      AddHandler oCleGsor.RemoteEvent, AddressOf GestisciEventiEntityPERS
-
-      If oCleGsor.Init(oApp, oScript, oCleComm, "", False, "", "") = False Then Return False
-      If Not oCleGsor.InitExt() Then Return False
-      oCleGsor.bModuloCRM = False
-      oCleGsor.bIsCRMUser = False
-
-      If Not oCleGsor.ApriOrdine(strDittaCorrente, False, "Q", 1900, " ", -1, ds) Then Return False
-      oCleGsor.bInApriDocSilent = True
-      oCleGsor.ResetVar()
-
-
-      '------------------------------------------------
-      'per ogni riga genero preventivi/ordini
-      For Each dtrT As DataRow In dttIn.Select("", "tipork, datord, conto, agente")
-        strKey = NTSCStr(dtrT!tipork) + "|" + NTSCDate(dtrT!datord).ToShortDateString + "|" + NTSCStr(dtrT!conto) + "|" + NTSCStr(dtrT!agente)
-        If strLastKey <> "" And strKey <> strLastKey Then
-          '-------------------
-          'salvo l'ordine visto che ne devo generare un altro
-          If bTestaCreata Then
-            If Not oCleGsor.SalvaOrdine("N") Then
-              Return False
+            Dim strErr As String = ""
+            Dim oTmp As Object = Nothing
+            If CLN__STD.NTSIstanziaDll(oApp.ServerDir, oApp.NetDir, "BETVTRAS", "BEORGSOR", oTmp, strErr, False, "", "") = False Then
+                Throw New NTSException(oApp.Tr(Me, 128895477321672967, "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"))
+                Return False
             End If
-          End If
-          bTestaCreata = False
-        End If
+            oCleGsor = CType(oTmp, CLEORGSOR)
+            '------------------------------------------------
+            'AddHandler oCleGsor.RemoteEvent, AddressOf GestisciEventiEntityGsor
+            AddHandler oCleGsor.RemoteEvent, AddressOf GestisciEventiEntityPERS
 
-        '-------------------
-        'creo la nuova testata d'ordine se serve
-        If Not bTestaCreata Then
-          lNumord = oCldIbus.LegNuma(strDittaCorrente, NTSCStr(dtrT!tipork), strSerie, NTSCDate(dtrT!datord).Year, False)
-          If lNumord = 0 Then
-            ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente è necessario attivare la numerazione")))
-            Return False
-          End If
+            If oCleGsor.Init(oApp, oScript, oCleComm, "", False, "", "") = False Then Return False
+            If Not oCleGsor.InitExt() Then Return False
+            oCleGsor.bModuloCRM = False
+            oCleGsor.bIsCRMUser = False
 
-          LogWrite(String.Format("Elaboro dati cliente {0}", dtrT!conto.ToString()), False)
-          If Not oCleGsor.NuovoOrdine(strDittaCorrente, NTSCStr(dtrT!tipork), NTSCDate(dtrT!datord).Year, strSerie, lNumord) Then
-            Return False
-          End If
-
-          ' Cerco la data di consegna piu' alta presente nelle righe.
-          ' Mi serve per valorizzare la data di consegna nelle testate
-          Dim dateMaxCons As Date = NTSCDate(dtrT!datcons)
-          For Each dtrMax As DataRow In dttIn.Select("", "tipork, datord, conto, agente")
-            If NTSCStr(dtrT!tipork) = NTSCStr(dtrMax!tipork) And NTSCDate(dtrT!datord).ToShortDateString = NTSCDate(dtrMax!datord).ToShortDateString And NTSCStr(dtrT!conto) = NTSCStr(dtrMax!conto) And NTSCStr(dtrT!agente) = NTSCStr(dtrMax!agente) Then
-              If dateMaxCons < NTSCDate(dtrMax!datcons) Then
-                dateMaxCons = NTSCDate(dtrMax!datcons)
-              End If
-            End If
-          Next
+            If Not oCleGsor.ApriOrdine(strDittaCorrente, False, "Q", 1900, " ", -1, ds) Then Return False
+            oCleGsor.bInApriDocSilent = True
+            oCleGsor.ResetVar()
 
 
-          'compilo i campi di testata con quello che viene passato da IBUS
-          oCleGsor.dttET.Rows(0)!et_datdoc = NTSCDate(dtrT!datord)
-          oCleGsor.dttET.Rows(0)!et_conto = NTSCInt(dtrT!conto)
-          oCleGsor.dttET.Rows(0)!et_coddest = NTSCStr(dtrT!coddest)
-          oCleGsor.dttET.Rows(0)!et_datcons = NTSCDate(dateMaxCons) ' NTSCDate(dtrT!datord)
-          If nTipoBF > 0 Then oCleGsor.dttET.Rows(0)!et_tipobf = nTipoBF
-          If nMagaz > 0 Then oCleGsor.dttET.Rows(0)!et_magaz = nMagaz
-          oCleGsor.dttET.Rows(0)!et_codagen = NTSCInt(dtrT!agente)
-          oCleGsor.dttET.Rows(0)!et_codagen2 = NTSCInt(dtrT!agente2)
+            ' INIZIO ciclo sul datatable 
+            ' --------------------------
+            'per ogni riga genero preventivi/ordini
+            For Each dtrT As DataRow In dttIn.Select("", "tipork, datord, conto, agente")
+                strKey = NTSCStr(dtrT!tipork) + "|" + NTSCDate(dtrT!datord).ToShortDateString + "|" + NTSCStr(dtrT!conto) + "|" + NTSCStr(dtrT!agente)
+                If strLastKey <> "" And strKey <> strLastKey Then
+                    '-------------------
+                    'salvo l'ordine visto che ne devo generare un altro
+                    If bTestaCreata Then
+                        If Not oCleGsor.SalvaOrdine("N") Then
+                            Return False
+                        End If
+                    End If
+                    bTestaCreata = False
+                End If
 
-          ' Disabilitazione blocchi di interfaccia
-          ' ---------------------------------------
-          'Valide per la creazione di un ordine 
-          oCleGsor.strContrFidoInsolinInsOrd = "N"
-          oCleGsor.bConsentiCreazOrdiniCliFornBloccoFisso = True
-          oCleGsor.bSegnalaCreazOrdiniCliFornBloccati = False ' false x non segnalare 
+                '-------------------
+                'creo la nuova testata d'ordine se serve
+                If Not bTestaCreata Then
+                    lNumord = oCldIbus.LegNuma(strDittaCorrente, NTSCStr(dtrT!tipork), strSerie, NTSCDate(dtrT!datord).Year, False)
+                    If lNumord = 0 Then
+                        ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente è necessario attivare la numerazione")))
+                        Return False
+                    End If
 
-          'Valide per la creazione di un documento 
-          oCleGsor.strContrFidoInsolinInsDoc = "N"
-          oCleGsor.bConsentiCreazDocumCliFornBloccoFisso = True
-          oCleGsor.bSegnalaCreazDocumCliFornBloccati = False  ' false x non segnalare 
+                    LogWrite(String.Format("Elaboro dati cliente {0}", dtrT!conto.ToString()), False)
+                    If Not oCleGsor.NuovoOrdine(strDittaCorrente, NTSCStr(dtrT!tipork), NTSCDate(dtrT!datord).Year, strSerie, lNumord) Then
+                        Return False
+                    End If
 
-          ' Disabilitazione blocchi di interfaccia
-          oCleGsor.bDisabilitaCheckDateAnteriori = True
-          oCleGsor.bInCreaDocDaGnor = True
-          oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
-          oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
-
-
-          '
-          ' ---------------------------------------
-
-          ' Valorizzo il codice di pagamento degli articoli deperibili
-          If NTSCInt(dtrT!codpagdep) <> 0 Then oCleGsor.dttET.Rows(0)!et_codpaga = NTSCInt(dtrT!codpagdep)
-          bTestaCreata = True
-        End If
-
-        '-------------------
-        'aggiungo la riga d'ordine
-        'nRiga += 10
-        strCodart = NTSCStr(dtrT!codart)
-        lFaseArt = NTSCInt(dtrT!fase)
-        If NTSCStr(dtrT!codart).Trim = "" Then
-          strCodart = "D"
-          lFaseArt = 0
-        End If
-
-        ' Se l'articolo e' bloccato lo inserisco come articolo descrittivo
-        Dim dttArti As New DataTable
-        If ocldBase.ValCodiceDb(strCodart, strDittaCorrente, "ARTICO", "S", "", dttArti) Then
-          If Not dttArti Is Nothing Then
-            If dttArti.Rows.Count > 0 Then
-              If dttArti.Rows(0)!ar_blocco.ToString = "S" Then
-                'articolo bloccato quindi magari inserisco come codice l'articolo D descrittivo
-                strCodart = "D"
-                ' e nelle note metto il codice articolo bloccato
-                ' oCleGsor.dttET.Rows(0)!ec_note = "BLOCCATO ('" & strCodart & "')"
-              End If
-            End If
-          End If
-        End If
+                    ' Cerco la data di consegna piu' alta presente nelle righe.
+                    ' Mi serve per valorizzare la data di consegna nelle testate
+                    Dim dateMaxCons As Date = NTSCDate(dtrT!datcons)
+                    For Each dtrMax As DataRow In dttIn.Select("", "tipork, datord, conto, agente")
+                        If NTSCStr(dtrT!tipork) = NTSCStr(dtrMax!tipork) And NTSCDate(dtrT!datord).ToShortDateString = NTSCDate(dtrMax!datord).ToShortDateString And NTSCStr(dtrT!conto) = NTSCStr(dtrMax!conto) And NTSCStr(dtrT!agente) = NTSCStr(dtrMax!agente) Then
+                            If dateMaxCons < NTSCDate(dtrMax!datcons) Then
+                                dateMaxCons = NTSCDate(dtrMax!datcons)
+                            End If
+                        End If
+                    Next
 
 
-        ' Se nel terzo parametro metto 0 (nRiga = 9) il framework incrementa automaticamente il numero riga
-        If Not oCleGsor.AggiungiRigaCorpo(False, strCodart, lFaseArt, 0) Then
-          Return False
-        End If
-        With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
-          If NTSCStr(dtrT!desart).Trim <> "" Then !ec_descr = NTSCStr(dtrT!desart).PadRight(40).Substring(0, 40)
-          If NTSCStr(dtrT!desart).Length > 40 Then
+                    'compilo i campi di testata con quello che viene passato da IBUS
+                    oCleGsor.dttET.Rows(0)!et_datdoc = NTSCDate(dtrT!datord)
+                    oCleGsor.dttET.Rows(0)!et_conto = NTSCInt(dtrT!conto)
+                    oCleGsor.dttET.Rows(0)!et_coddest = NTSCStr(dtrT!coddest)
+                    oCleGsor.dttET.Rows(0)!et_datcons = NTSCDate(dateMaxCons) ' NTSCDate(dtrT!datord)
+                    If nTipoBF > 0 Then oCleGsor.dttET.Rows(0)!et_tipobf = nTipoBF
+                    If nMagaz > 0 Then oCleGsor.dttET.Rows(0)!et_magaz = nMagaz
+                    oCleGsor.dttET.Rows(0)!et_codagen = NTSCInt(dtrT!agente)
+                    oCleGsor.dttET.Rows(0)!et_codagen2 = NTSCInt(dtrT!agente2)
+
+                    ' Disabilitazione blocchi di interfaccia
+                    ' ---------------------------------------
+                    'Valide per la creazione di un ordine 
+                    oCleGsor.strContrFidoInsolinInsOrd = "N"
+                    oCleGsor.bConsentiCreazOrdiniCliFornBloccoFisso = True
+                    oCleGsor.bSegnalaCreazOrdiniCliFornBloccati = False ' false x non segnalare 
+
+                    'Valide per la creazione di un documento 
+                    oCleGsor.strContrFidoInsolinInsDoc = "N"
+                    oCleGsor.bConsentiCreazDocumCliFornBloccoFisso = True
+                    oCleGsor.bSegnalaCreazDocumCliFornBloccati = False  ' false x non segnalare 
+
+                    ' Disabilitazione blocchi di interfaccia
+                    oCleGsor.bDisabilitaCheckDateAnteriori = True
+                    oCleGsor.bInCreaDocDaGnor = True
+                    oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
+                    oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
+
+
+                    '
+                    ' ---------------------------------------
+
+                    ' Valorizzo il codice di pagamento degli articoli deperibili
+                    If NTSCInt(dtrT!codpagdep) <> 0 Then oCleGsor.dttET.Rows(0)!et_codpaga = NTSCInt(dtrT!codpagdep)
+                    bTestaCreata = True
+                End If
+
+                '-------------------
+                'aggiungo la riga d'ordine
+                'nRiga += 10
+                strCodart = NTSCStr(dtrT!codart)
+                lFaseArt = NTSCInt(dtrT!fase)
+                If NTSCStr(dtrT!codart).Trim = "" Then
+                    strCodart = "D"
+                    lFaseArt = 0
+                End If
+
+                ' Se l'articolo e' bloccato lo inserisco come articolo descrittivo
+                Dim dttArti As New DataTable
+                If ocldBase.ValCodiceDb(strCodart, strDittaCorrente, "ARTICO", "S", "", dttArti) Then
+                    If Not dttArti Is Nothing Then
+                        If dttArti.Rows.Count > 0 Then
+                            If dttArti.Rows(0)!ar_blocco.ToString = "S" Then
+                                'articolo bloccato quindi magari inserisco come codice l'articolo D descrittivo
+                                strCodart = "D"
+                                ' e nelle note metto il codice articolo bloccato
+                                ' oCleGsor.dttET.Rows(0)!ec_note = "BLOCCATO ('" & strCodart & "')"
+                            End If
+                        End If
+                    End If
+                End If
+
+
+                ' Se nel terzo parametro metto 0 (nRiga = 9) il framework incrementa automaticamente il numero riga
+                If Not oCleGsor.AggiungiRigaCorpo(False, strCodart, lFaseArt, 0) Then
+                    Return False
+                End If
+                With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
+                    If NTSCStr(dtrT!desart).Trim <> "" Then !ec_descr = NTSCStr(dtrT!desart).PadRight(40).Substring(0, 40)
+                    If NTSCStr(dtrT!desart).Length > 40 Then
                         !ec_note = NTSCStr(dtrT!desart).PadRight(200).Substring(40, 40)
-          End If
-          !ec_note = NTSCStr(!ec_note) & " " & NTSCStr(dtrT!note)
-          !ec_unmis = NTSCStr(dtrT!um)
-          !ec_colli = NTSCDec(dtrT!colli)
-          !ec_quant = NTSCDec(dtrT!quant)
-          !ec_prezzo = NTSCDec(dtrT!prezzo) ' * NTSCDec(!ec_perqta)
-          !ec_scont1 = NTSCDec(dtrT!scont1)
-          !ec_scont2 = NTSCDec(dtrT!scont2)
-          !ec_scont3 = NTSCDec(dtrT!scont3)
-          !ec_scont4 = NTSCDec(dtrT!scont4)
-          !ec_scont5 = NTSCDec(dtrT!scont5)
-          !ec_scont6 = NTSCDec(dtrT!scont6)
-          !ec_datcons = NTSCDate(dtrT!datcons)
-          !ec_datconsor = NTSCDate(dtrT!datcons)
-          !ec_stasino = NTSCStr(dtrT!stasino)
-        End With
+                    End If
+                    !ec_note = NTSCStr(!ec_note) & " " & NTSCStr(dtrT!note)
+                    !ec_unmis = NTSCStr(dtrT!um)
+                    !ec_colli = NTSCDec(dtrT!colli)
+                    !ec_quant = NTSCDec(dtrT!quant)
+                    !ec_prezzo = NTSCDec(dtrT!prezzo) ' * NTSCDec(!ec_perqta)
+                    !ec_scont1 = NTSCDec(dtrT!scont1)
+                    !ec_scont2 = NTSCDec(dtrT!scont2)
+                    !ec_scont3 = NTSCDec(dtrT!scont3)
+                    !ec_scont4 = NTSCDec(dtrT!scont4)
+                    !ec_scont5 = NTSCDec(dtrT!scont5)
+                    !ec_scont6 = NTSCDec(dtrT!scont6)
+                    !ec_datcons = NTSCDate(dtrT!datcons)
+                    !ec_datconsor = NTSCDate(dtrT!datcons)
+                    !ec_stasino = NTSCStr(dtrT!stasino)
+                End With
 
-        If Not oCleGsor.RecordSalva(oCleGsor.dttEC.Rows.Count - 1, False, Nothing) Then Return False
+                If Not oCleGsor.RecordSalva(oCleGsor.dttEC.Rows.Count - 1, False, Nothing) Then Return False
 
-        strLastKey = strKey
-      Next    'For Each dtrT As DataRow In dttIn.Select("", "tipork, datord, conto")
+                strLastKey = strKey
+            Next    'For Each dtrT As DataRow In dttIn.Select("", "tipork, datord, conto")
 
-      '-------------------
-      'salvo l'ultimo ordine
-      If bTestaCreata Then
-        If Not oCleGsor.SalvaOrdine("N") Then
-          Return False
+            '-------------------
+            'salvo l'ultimo ordine
+            If bTestaCreata Then
+                If Not oCleGsor.SalvaOrdine("N") Then
+                    Return False
+                End If
+                bTestaCreata = False
+            End If
+
+            NumOrd = lNumord
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+    Public Overridable Sub GestisciEventiEntityPERS(ByVal sender As Object, ByRef e As NTSEventArgs)
+        'Dim fErr As StreamWriter = Nothing
+        'Dim fiErr As FileInfo = Nothing
+        'Dim strNomeFileLog As String = ""
+        Dim strMsg As String = ""
+        Try
+
+            'strNomeFileLog = oApp.AscDir & "\eventi-gsor.LOG"
+            'fiErr = New FileInfo(strNomeFileLog)
+            'If fiErr.Exists Then
+            ' If fiErr.Length > 500000 Then fiErr.Delete()
+            ' End If
+            'fErr = New StreamWriter(strNomeFileLog, True)
+            'fErr.Write(e.Message & vbCrLf)
+            'fErr.Flush()
+            'fErr.Close()
+
+            If e.Message <> "" Then
+                strMsg = oApp.Tr(Me, 129877602933085930, e.Message)
+                LogWrite(strMsg, False)
+                InviaAlert(99, strMsg)
+            End If
+
+            'magari poi inserire anche l'istruzione sotto, così un volta loggati li giriamo comunque alla UI
+            'GestisciEventiEntity(sender, e)
+
+            'oppure creiamo un alert
+            'codice per generare un nuovo alert
+
+        Catch ex As Exception
+            Dim strErr As String = GestError(ex, Me, "", oApp.InfoError, oApp.ErrorLogFile, True)
+        End Try
+    End Sub
+
+
+    Public Function CompressFile(ByRef file As String, ByRef destination As String) As String
+        'Make sure user provided a valid file with path
+        If IO.File.Exists(file) = False Then
+            Return "Please specify a valid file (and path) to compress"
+            Exit Function
+        Else
+            'Make sure the destination directory exists
+            If IO.Directory.Exists(destination) = False Then
+                Return "Please provide a destination location"
+                Exit Function
+            End If
         End If
-        bTestaCreata = False
-      End If
 
-      NumOrd = lNumord
-      Return True
+        Try
+            'Get just the name of the file
+            Dim name As String = Path.GetFileName(file)
+            'Convert the file to a byte array
+            Dim source() As Byte = System.IO.File.ReadAllBytes(file)
+            'Now we need to compress the byte array
+            Dim compressed() As Byte = ConvertToByteArray(source)
+            'Write the new file in the destination directory
+            System.IO.File.WriteAllBytes(destination & "\" & name & ".zip", compressed)
 
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Function
+            Return "Compression Successful!"
+        Catch ex As Exception
+            Return "Compression Error: " & ex.ToString()
+        End Try
+    End Function
 
-  Public Overridable Sub GestisciEventiEntityPERS(ByVal sender As Object, ByRef e As NTSEventArgs)
-    'Dim fErr As StreamWriter = Nothing
-    'Dim fiErr As FileInfo = Nothing
-    'Dim strNomeFileLog As String = ""
-    Dim strMsg As String = ""
-    Try
+    Public Function ConvertToByteArray(ByVal source() As Byte) As Byte()
+        'Create a MemoryStrea
+        Dim memoryStream As New MemoryStream()
 
-      'strNomeFileLog = oApp.AscDir & "\eventi-gsor.LOG"
-      'fiErr = New FileInfo(strNomeFileLog)
-      'If fiErr.Exists Then
-      ' If fiErr.Length > 500000 Then fiErr.Delete()
-      ' End If
-      'fErr = New StreamWriter(strNomeFileLog, True)
-      'fErr.Write(e.Message & vbCrLf)
-      'fErr.Flush()
-      'fErr.Close()
+        'Create a new GZipStream for holding the file bytes
+        Dim gZipStream As New System.IO.Compression.GZipStream(memoryStream, System.IO.Compression.CompressionMode.Compress, True)
+        'Write the bytes to the stream
+        gZipStream.Write(source, 0, source.Length)
+        gZipStream.Dispose()
+        memoryStream.Position = 0
+        'Create a byte array to act as our buffer
+        Dim buffer(CInt(memoryStream.Length)) As Byte
+        'read the stream
+        memoryStream.Read(buffer, 0, buffer.Length)
+        'CLose & clean up
+        memoryStream.Dispose()
+        'Return the byte array
+        Return buffer
+    End Function
 
-      If e.Message <> "" Then
-        strMsg = oApp.Tr(Me, 129877602933085930, e.Message)
-        LogWrite(strMsg, False)
-        InviaAlert(99, strMsg)
-      End If
-
-      'magari poi inserire anche l'istruzione sotto, così un volta loggati li giriamo comunque alla UI
-      'GestisciEventiEntity(sender, e)
-
-      'oppure creiamo un alert
-      'codice per generare un nuovo alert
-
-    Catch ex As Exception
-      Dim strErr As String = GestError(ex, Me, "", oApp.InfoError, oApp.ErrorLogFile, True)
-    End Try
-  End Sub
-
-
-  Public Function CompressFile(ByRef file As String, ByRef destination As String) As String
-    'Make sure user provided a valid file with path
-    If IO.File.Exists(file) = False Then
-      Return "Please specify a valid file (and path) to compress"
-      Exit Function
-    Else
-      'Make sure the destination directory exists
-      If IO.Directory.Exists(destination) = False Then
-        Return "Please provide a destination location"
-        Exit Function
-      End If
-    End If
-
-    Try
-      'Get just the name of the file
-      Dim name As String = Path.GetFileName(file)
-      'Convert the file to a byte array
-      Dim source() As Byte = System.IO.File.ReadAllBytes(file)
-      'Now we need to compress the byte array
-      Dim compressed() As Byte = ConvertToByteArray(source)
-      'Write the new file in the destination directory
-      System.IO.File.WriteAllBytes(destination & "\" & name & ".zip", compressed)
-
-      Return "Compression Successful!"
-    Catch ex As Exception
-      Return "Compression Error: " & ex.ToString()
-    End Try
-  End Function
-
-  Public Function ConvertToByteArray(ByVal source() As Byte) As Byte()
-    'Create a MemoryStrea
-    Dim memoryStream As New MemoryStream()
-
-    'Create a new GZipStream for holding the file bytes
-    Dim gZipStream As New System.IO.Compression.GZipStream(memoryStream, System.IO.Compression.CompressionMode.Compress, True)
-    'Write the bytes to the stream
-    gZipStream.Write(source, 0, source.Length)
-    gZipStream.Dispose()
-    memoryStream.Position = 0
-    'Create a byte array to act as our buffer
-    Dim buffer(CInt(memoryStream.Length)) As Byte
-    'read the stream
-    memoryStream.Read(buffer, 0, buffer.Length)
-    'CLose & clean up
-    memoryStream.Dispose()
-    'Return the byte array
-    Return buffer
-  End Function
-
-  Public Overridable Sub GestisciEventiEntityGsor(ByVal sender As Object, ByRef e As NTSEventArgs)
-    Try
-      'gli eventuali messaggi dati da BEORGSOR tramite la ThrowRemoteEvent li passo a BNIEIBUS
-      ThrowRemoteEvent(e)
-    Catch ex As Exception
-      '--------------------------------------------------------------
-      If GestErrorCallThrow() Then
-        Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-      Else
-        ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-      End If
-      '--------------------------------------------------------------	
-    End Try
-  End Sub
+    Public Overridable Sub GestisciEventiEntityGsor(ByVal sender As Object, ByRef e As NTSEventArgs)
+        Try
+            'gli eventuali messaggi dati da BEORGSOR tramite la ThrowRemoteEvent li passo a BNIEIBUS
+            ThrowRemoteEvent(e)
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Sub
 
 
-  Private Shared Function GetValue(codProgetto As String, key As String) As String
-    Dim keyReg As Microsoft.Win32.RegistryKey
-    'keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("ApexNet AM");
+    Private Shared Function GetValue(codProgetto As String, key As String) As String
+        Dim keyReg As Microsoft.Win32.RegistryKey
+        'keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("ApexNet AM");
 
-    keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\ApexNet\iB\" & codProgetto)
-
-
-    Dim valore As String
-    Try
-      valore = keyReg.GetValue(key).ToString()
-    Catch
-      valore = ""
-    End Try
-
-    keyReg.Close()
-
-    Return valore
-  End Function
+        keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\ApexNet\iB\" & codProgetto)
 
 
-  Private Shared Sub SetValue(codProgetto As String, key As String, value As String)
-    Dim keyReg As Microsoft.Win32.RegistryKey
-    'keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("ApexNet AM");
-    keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\ApexNet\iB\" & codProgetto)
-    keyReg.SetValue(key, value)
-    keyReg.Close()
-  End Sub
+        Dim valore As String
+        Try
+            valore = keyReg.GetValue(key).ToString()
+        Catch
+            valore = ""
+        End Try
+
+        keyReg.Close()
+
+        Return valore
+    End Function
+
+
+    Private Shared Sub SetValue(codProgetto As String, key As String, value As String)
+        Dim keyReg As Microsoft.Win32.RegistryKey
+        'keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("ApexNet AM");
+        keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("Software\ApexNet\iB\" & codProgetto)
+        keyReg.SetValue(key, value)
+        keyReg.Close()
+    End Sub
 
 End Class
