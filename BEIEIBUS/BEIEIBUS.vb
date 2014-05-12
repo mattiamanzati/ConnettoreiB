@@ -3385,6 +3385,13 @@ NEXT_FILE:
 
 
         Try
+            ' Controlli preelaborazione sui dati
+            If Ordine.cod_clifor Is Nothing Then
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non può essere null")))
+                Return False
+            End If
+
+
             ' Esegui trascodifiche di testata AM / Business
             ' ==============================================
 
@@ -3664,7 +3671,7 @@ NEXT_FILE:
 
         ' url del web service di test
         Dim wsUrl As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        Dim LastStoredID As Integer = oCldIbus.LegNuma(strDittaCorrente, "IB_LASTID_ORD", "", 0, False)
+        Dim LastStoredID As Integer = oCldIbus.LegNuma(strDittaCorrente, "IO", " ", 0, True)
         'oCldIbus
         'ocldGsor.AggNuma(strDittaCorrente strTipoProg strSerie, nAnno, lNumero, True, False, strErr)
         Dim AuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
@@ -3684,9 +3691,6 @@ NEXT_FILE:
         Dim msg As String = ""
 
         Try
-
-
-
             If RetVal AndAlso OrdersData IsNot Nothing Then
 
                 For Each t As TestataOrdineExport In OrdersData.testate
@@ -3697,7 +3701,7 @@ NEXT_FILE:
                         InviaAlert(1, msg, t.cod_clifor)
                         Dim strErr As String = ""
                         ' oCldIbus.AggNuma(strDittaCorrente "IB_LASTID_ORD" " ", 0, NumOrd.ToString, True, False, strErr)
-                        oCldIbus.AggNuma(strDittaCorrente, "IB_LASTID_ORD", " ", 0, NumOrd, False, False, "")
+                        oCldIbus.AggNuma(strDittaCorrente, "IO", " ", 0, NumOrd, False, False, "")
 
                         ' Qui devo salvare l'ID 
                     Else
