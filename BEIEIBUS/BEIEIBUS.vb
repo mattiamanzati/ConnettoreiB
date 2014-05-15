@@ -454,8 +454,6 @@ Public Class CLEIEIBUS
 
             ' SI INZIA
             ' --------
-
-
             ' Aggiorno la versione sul license
             Dim CodProgetto As String = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(strDropBoxDir + "\"))
             Dim Versione As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
@@ -767,8 +765,8 @@ Public Class CLEIEIBUS
                 If Not Elabora_ImportLeadNote() Then Return False
                 If Not Elabora_ImportCliforNote() Then Return False
 
-                'If Not Elabora_ImportOrdini() Then Return False
-                If Not Elabora_ImportOrdiniWS() Then Return False
+                If Not Elabora_ImportOrdini() Then Return False
+                'If Not Elabora_ImportOrdiniWS() Then Return False
                 'If Not Elabora_ImportOrdiniNew() Then Return False
 
             End If
@@ -3176,6 +3174,7 @@ NEXT_FILE:
             For nF = 0 To strF.Length - 1
 
                 ' Carico l'xml
+                dsLeads.Clear()
                 dsLeads.ReadXml(strF(nF))
 
                 ' Lo valuto solo se contiene delle righe
@@ -3237,6 +3236,7 @@ NEXT_FILE:
             For nF = 0 To strF.Length - 1
 
                 ' Carico l'xml
+                dsLeads.Clear()
                 dsLeads.ReadXml(strF(nF))
 
                 ' Lo valuto solo se contiene delle righe
@@ -3671,11 +3671,13 @@ NEXT_FILE:
 
         ' url del web service di test
         Dim wsUrl As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        Dim LastStoredID As Integer = oCldIbus.LegNuma(strDittaCorrente, "IO", " ", 0, True)
+        'Dim LastStoredID As Integer = oCldIbus.LegNuma(strDittaCorrente, "IO", " ", 0, True)
+
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
+
         'oCldIbus
         'ocldGsor.AggNuma(strDittaCorrente strTipoProg strSerie, nAnno, lNumero, True, False, strErr)
         Dim AuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-
 
 
 

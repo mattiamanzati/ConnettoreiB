@@ -71,6 +71,62 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function GetCustomData(ByVal strDitta As String, ByVal key As String, ByVal defvalue As String) As String
+        Dim strSQL As String = ""
+        Dim RetValue As String = "1"
+
+        Dim dttOut As New DataTable
+        Try
+
+            strSQL = "select value from hh_ibdata where codditt = @ditta and [key] = @key"
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+            strSQL = strSQL.Replace("@key", CStrSQL(key))
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            If dttOut.Rows.Count = 0 Then
+                Execute(String.Format("insert into hh_ibdata ([key], [value], [codditt]) values ({0}, {1}, {2})", CStrSQL(key), CStrSQL(defvalue), CStrSQL(strDitta)), CLE__APP.DBTIPO.DBAZI)
+                RetValue = defvalue
+            Else
+                RetValue = dttOut.Rows(0)!value.ToString
+            End If
+
+            Return RetValue
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function SetCustomData(ByVal strDitta As String, ByVal key As String, ByVal value As String) As Boolean
+        Dim strSQL As String = ""
+        Dim RetValue As String = "1"
+
+        Dim dttOut As New DataTable
+        Try
+
+            strSQL = "update hh_ibdata set value = {0} where codditt = @ditta and [key] = {1}"
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+            strSQL = strSQL.Replace("@key", CStrSQL(key))
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            If dttOut.Rows.Count = 0 Then
+                Execute(String.Format("insert into hh_ibdata ([key], [value], [codditt]) values ({0}, {1}, {2})", CStrSQL(key), CStrSQL(defvalue), CStrSQL(strDitta)), CLE__APP.DBTIPO.DBAZI)
+                RetValue = defvalue
+            Else
+                RetValue = dttOut.Rows(0)!value.ToString
+            End If
+
+            Return RetValue
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+
+
     Public Overridable Function GetAgentiCliente(ByVal strDitta As String, ByVal strConto As String, ByRef codAgente1 As Integer, ByRef codAgente2 As Integer, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Dim dttOut As New DataTable
@@ -467,23 +523,10 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
 
         Try
-            strSQL = "SELECT COUNT(*) as num_rows FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME='an_hhlat_ib' AND TABLE_NAME='anagra'"
-            dttOut1 = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
-            Dim numRowLat As Integer = CInt(dttOut1.Rows(0).Item("num_rows"))
 
-            If numRowLat = 0 Then
-                Execute("ALTER TABLE anagra ADD an_hhlat_ib DECIMAL(18,6)", CLE__APP.DBTIPO.DBAZI)
-            End If
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "CustomSchema.sql")
 
-
-            strSQL = "SELECT COUNT(*) as num_rows FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME='an_hhlon_ib' AND TABLE_NAME='anagra'"
-            dttOut2 = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
-            Dim numRowLon As Integer = CInt(dttOut2.Rows(0).Item("num_rows"))
-
-            If numRowLon = 0 Then
-                Execute("ALTER TABLE anagra ADD an_hhlon_ib DECIMAL(18,6)", CLE__APP.DBTIPO.DBAZI)
-            End If
-
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
             Return True
         Catch ex As Exception
