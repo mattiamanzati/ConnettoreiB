@@ -1773,7 +1773,6 @@ Public Class CLEIEIBUS
         Try
             If Not oCldIbus.GetClifor(TipoCliFor, strDittaCorrente, dttTmp, strFiltroCliConAgenti, strCustomWhereGetClifor) Then Return False
 
-            ' LISTINO_ARTICOLI (togliere)
             sbFile.Append(
                         "CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|CODICE_FISCALE|TELEFONO1|TELEFONO2|" & _
                         "FAX|CELLULARE|EMAIL|INTERNET|CAP|CITTA|PROVINCIA|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|" & _
@@ -1795,26 +1794,26 @@ Public Class CLEIEIBUS
                             ConvStr(dtrT!an_codfis) & "|" & _
                             ConvStr(dtrT!an_telef) & "|" & _
                             "" & "|" & _
-                            ConvStr(dtrT!an_faxtlx) & "|" & _
-                            ConvStr(dtrT!an_cell) & "|" & _
-                            ConvStr(dtrT!an_email) & "|" & _
-                            ConvStr(dtrT!an_website) & "|" & _
-                            ConvStr(dtrT!an_cap) & "|" & _
-                            ConvStr(dtrT!an_citta) & "|" & _
-                            ConvStr(dtrT!an_prov) & "|" & _
-                            ConvStr(dtrT!an_hhlat_ib) & "|" & _
-                            ConvStr(dtrT!an_hhlon_ib) & "|" & _
-                            dtrT!an_clascon.ToString & "|" & _
-                            "-1" & "|" & _
-                            "-1" & "|" & _
+                                ConvStr(dtrT!an_faxtlx) & "|" & _
+                                ConvStr(dtrT!an_cell) & "|" & _
+                                ConvStr(dtrT!an_email) & "|" & _
+                                ConvStr(dtrT!an_website) & "|" & _
+                                ConvStr(dtrT!an_cap) & "|" & _
+                                ConvStr(dtrT!an_citta) & "|" & _
+                                ConvStr(dtrT!an_prov) & "|" & _
+                                ConvStr(dtrT!an_hhlat_ib) & "|" & _
+                                ConvStr(dtrT!an_hhlon_ib) & "|" & _
+                                dtrT!an_clascon.ToString & "|" & _
+                            ConvStr(dtrT!xx_flg_mod_nel_disp) & "|" & _
+                            ConvStr(dtrT!xx_flg_deperibilita) & "|" & _
                             "" & "|" & _
                             ConvStr(dtrT!tb_desstat) & "|" & _
-                                ConvStr(dtrT!tb_despaga) & "|" & _
-                                ConvStr(dtrT!an_banc1) & "|" & _
-                                ConvStr(dtrT!an_banc2) & "|" & _
-                                (ConvStr(dtrT!an_listino) & " - " & ConvStr(dtrT!tb_deslist)).Trim & "|" & _
-                                ConvStr(dtrT!tb_desvalu) & "|" & _
-                                "0" & "|" & _
+                            ConvStr(dtrT!tb_despaga) & "|" & _
+                            ConvStr(dtrT!an_banc1) & "|" & _
+                            ConvStr(dtrT!an_banc2) & "|" & _
+                            (ConvStr(dtrT!an_listino) & " - " & ConvStr(dtrT!tb_deslist)).Trim & "|" & _
+                            ConvStr(dtrT!tb_desvalu) & "|" & _
+                            "0" & "|" & _
                                 "0" & "|" & _
                                 "0" & "|" & _
                                 NTSCDec(dtrT!tb_scopaga).ToString(oApp.FormatSconti) & "|" & _

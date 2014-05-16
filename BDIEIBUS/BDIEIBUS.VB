@@ -100,7 +100,7 @@ Public Class CLDIEIBUS
 
     Public Overridable Function SetCustomData(ByVal strDitta As String, ByVal key As String, ByVal value As String) As Boolean
         Dim strSQL As String = ""
-        Dim RetValue As String = "1"
+        Dim RetValue As Boolean = True
 
         Dim dttOut As New DataTable
         Try
@@ -112,10 +112,10 @@ Public Class CLDIEIBUS
             dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
 
             If dttOut.Rows.Count = 0 Then
-                Execute(String.Format("insert into hh_ibdata ([key], [value], [codditt]) values ({0}, {1}, {2})", CStrSQL(key), CStrSQL(defvalue), CStrSQL(strDitta)), CLE__APP.DBTIPO.DBAZI)
-                RetValue = defvalue
+                'Execute(String.Format("insert into hh_ibdata ([key], [value], [codditt]) values ({0}, {1}, {2})", CStrSQL(key), CStrSQL(defvalue), CStrSQL(strDitta)), CLE__APP.DBTIPO.DBAZI)
+                'RetValue = defvalue
             Else
-                RetValue = dttOut.Rows(0)!value.ToString
+                'etValue = dttOut.Rows(0)!value.ToString
             End If
 
             Return RetValue
