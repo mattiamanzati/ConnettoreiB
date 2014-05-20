@@ -765,8 +765,8 @@ Public Class CLEIEIBUS
                 If Not Elabora_ImportLeadNote() Then Return False
                 If Not Elabora_ImportCliforNote() Then Return False
 
-                If Not Elabora_ImportOrdini() Then Return False
-                'If Not Elabora_ImportOrdiniWS() Then Return False
+                'If Not Elabora_ImportOrdini() Then Return False
+                If Not Elabora_ImportOrdiniWS() Then Return False
                 'If Not Elabora_ImportOrdiniNew() Then Return False
 
             End If
@@ -3665,27 +3665,50 @@ NEXT_FILE:
 
     End Function
 
+    Public Overridable Function GeneraCliente(ClienteData As List(Of Clienti), ByRef CodCliente As Integer) As Boolean
+        Try
+            ' Da Parametrizzare
+            Dim Mastro As Integer = 401
+
+
+            oCldIbus.InsertCli(strDittaCorrente, ClienteData(0), Mastro, CodCliente)
+
+
+            ' For Each c As Clienti In ClienteData
+            ' oCldIbus.InsertCli(strDittaCorrente, c, Mastro, CodCliente)
+            ' Next
+
+
+            Return True
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
 
     Public Overridable Function Elabora_ImportOrdiniWS() As Boolean
 
-        ' url del web service di test
+        ' url del web service di test e authkey (da parametrizzare)
         Dim wsUrl As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        'Dim LastStoredID As Integer = oCldIbus.LegNuma(strDittaCorrente, "IO", " ", 0, True)
-
-        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
-
-        'oCldIbus
-        'ocldGsor.AggNuma(strDittaCorrente strTipoProg strSerie, nAnno, lNumero, True, False, strErr)
         Dim AuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
 
 
 
-        'Dim LastStoredOrderID As String = "10"   ' Leggo l'ID dell'ultimo ordine recuperato dal WS
+        ' Leggo l'ultimo ID salvato
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
+
+        LastStoredID = 30
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(AuthKey, wsUrl)
         Dim OrdersData As ws_rec_orders = Nothing
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
+
 
         ' Variabili di uso locale
         Dim NumOrd As Integer
@@ -3696,20 +3719,22 @@ NEXT_FILE:
 
                 For Each t As TestataOrdineExport In OrdersData.testate
 
+                    ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
+                    If t.cod_clifor Is Nothing Then
+                        GeneraCliente(t.clienti, CInt(t.cod_clifor))
+                    End If
+
+
                     If GeneraOrdineWS(t, NumOrd) Then
                         msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
                         LogWrite(msg, True)
                         InviaAlert(1, msg, t.cod_clifor)
-                        Dim strErr As String = ""
-                        ' oCldIbus.AggNuma(strDittaCorrente "IB_LASTID_ORD" " ", 0, NumOrd.ToString, True, False, strErr)
-                        oCldIbus.AggNuma(strDittaCorrente, "IO", " ", 0, NumOrd, False, False, "")
-
-                        ' Qui devo salvare l'ID 
                     Else
                         msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
                         InviaAlert(99, msg, t.cod_clifor)
                     End If
 
+                    Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "order_id", t.id.ToString())
 
                 Next
             End If
@@ -4448,5 +4473,7 @@ NEXT_FILE:
         keyReg.SetValue(key, value)
         keyReg.Close()
     End Sub
+
+
 
 End Class

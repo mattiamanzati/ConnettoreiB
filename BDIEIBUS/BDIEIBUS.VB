@@ -2,7 +2,7 @@ Imports NTSInformatica.CLN__STD
 Imports System.Data.Common
 Imports NTSInformatica
 Imports System.IO
-
+Imports AMHelper.WS
 
 
 Public Class CLDIEIBUS
@@ -31,6 +31,24 @@ Public Class CLDIEIBUS
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
             '--------------------------------------------------------------
         End Try
+    End Function
+
+    Public Overridable Function ToSql(ByVal strDesc As String) As String
+        Dim RetVal As String
+
+        Try
+
+            If strDesc Is Nothing Then
+                strDesc = ""
+            End If
+
+            RetVal = ConvEmptyToNull(CStrSQL(strDesc))
+
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strDesc, oApp.InfoError, "", False)))
+        End Try
+        Return RetVal
     End Function
 
     Public Overridable Function ConvEmptyToNull(ByVal strDesc As String) As String
@@ -100,25 +118,14 @@ Public Class CLDIEIBUS
 
     Public Overridable Function SetCustomData(ByVal strDitta As String, ByVal key As String, ByVal value As String) As Boolean
         Dim strSQL As String = ""
-        Dim RetValue As Boolean = True
-
-        Dim dttOut As New DataTable
         Try
 
-            strSQL = "update hh_ibdata set value = {0} where codditt = @ditta and [key] = {1}"
+            strSQL = String.Format("update hh_ibdata set value = {0} where codditt = @ditta and [key] = {1}", CStrSQL(value), CStrSQL(key))
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
-            strSQL = strSQL.Replace("@key", CStrSQL(key))
 
-            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
-            If dttOut.Rows.Count = 0 Then
-                'Execute(String.Format("insert into hh_ibdata ([key], [value], [codditt]) values ({0}, {1}, {2})", CStrSQL(key), CStrSQL(defvalue), CStrSQL(strDitta)), CLE__APP.DBTIPO.DBAZI)
-                'RetValue = defvalue
-            Else
-                'etValue = dttOut.Rows(0)!value.ToString
-            End If
-
-            Return RetValue
+            Return True
 
         Catch ex As Exception
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
@@ -307,6 +314,79 @@ Public Class CLDIEIBUS
                     Return False
                 End If
             End If
+
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function InsertCli(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
+
+        Dim nNumero As Integer = 0
+        Dim dttOut As New DataTable
+        Dim CodiceCliente As New Integer
+        Dim strSQL As String = ""
+
+        Try
+            nNumero = 0
+            nNumero = LegNuma(strDitta, "CC", " ", Mastro, True)
+            nNumero = AggNuma(strDitta, "CC", " ", Mastro, nNumero, False, False, "")
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliente.sql")
+            strSQL = strSQL.Replace("@ditta", ToSql(strDitta))
+            strSQL = strSQL.Replace("@an_conto", CStrSQL(nNumero))
+            strSQL = strSQL.Replace("@an_codmast", CStrSQL(Mastro))
+            strSQL = strSQL.Replace("@cap", ToSql(ClienteData.cap))
+            strSQL = strSQL.Replace("@cellulare", ToSql(ClienteData.cellulare))
+            strSQL = strSQL.Replace("@cod_canale_vendita", ToSql(ClienteData.cod_canale_vendita))
+            strSQL = strSQL.Replace("@cod_categoria", ToSql(ClienteData.cod_categoria))
+            strSQL = strSQL.Replace("@cod_citta", ToSql(ClienteData.cod_citta))
+            strSQL = strSQL.Replace("@cod_classe_sconto", ToSql(ClienteData.cod_classe_sconto))
+            strSQL = strSQL.Replace("@cod_cond_pag", ToSql(ClienteData.cod_cond_pag))
+            strSQL = strSQL.Replace("@cod_nazione", ToSql(ClienteData.cod_nazione))
+            strSQL = strSQL.Replace("@cod_porto_sped", ToSql(ClienteData.cod_porto_sped))
+            strSQL = strSQL.Replace("@codice_fiscale", ToSql(ClienteData.codice_fiscale))
+            strSQL = strSQL.Replace("@des_cond_pag", ToSql(ClienteData.des_cond_pag))
+            strSQL = strSQL.Replace("@email", ToSql(ClienteData.email))
+            strSQL = strSQL.Replace("@fax", ToSql(ClienteData.fax))
+            strSQL = strSQL.Replace("@iban", ToSql(ClienteData.iban))
+            strSQL = strSQL.Replace("@indirizzo", ToSql(ClienteData.indirizzo))
+            strSQL = strSQL.Replace("@titolo_note", ToSql("Cliente inserito ad agente"))
+            strSQL = strSQL.Replace("@note", ToSql(ClienteData.note))
+            strSQL = strSQL.Replace("@partita_iva", ToSql(ClienteData.partita_iva))
+            strSQL = strSQL.Replace("@provincia", ToSql(ClienteData.provincia))
+            strSQL = strSQL.Replace("@ragione_sociale", ToSql(ClienteData.ragione_sociale))
+            strSQL = strSQL.Replace("@telefono", ToSql(ClienteData.telefono))
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+#If False Then
+
+            ' Il lead e' gia' associato? (chiave: opcr_codlead, codditt, opcr_opnome)
+            strSQL = String.Format("select * from acclead where codditt = {0} and opcr_codlead = {1} and opcr_opnome = {2}", _
+                                   CStrSQL(strDitta), _
+                                   CodiceLead.ToString, _
+                                   CStrSQL(dRow("COD_OPERATORE")) _
+                                   )
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            If dttOut.Rows.Count = 0 Then
+
+                ' Inserisco i dati nella tabella accessi          
+                strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
+                                       CStrSQL(strDitta), _
+                                       CStrSQL(dRow("COD_OPERATORE")), _
+                                       CStrSQL(nNumero) _
+                                       )
+                Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            End If
+#End If
+
+            CodCliente = nNumero
+
+
 
             Return True
         Catch ex As Exception
