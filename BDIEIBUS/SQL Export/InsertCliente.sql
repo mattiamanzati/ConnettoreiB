@@ -3,9 +3,34 @@ DECLARE @ditta varchar(200)
 SELECT @ditta = 'SONN'
 */
 
+declare 
+  @tb_ventil varchar(1), 
+  @tb_azgesscad varchar(1)
+
+select 
+	@tb_ventil = case tb_ventil
+		when 'S' then 'S'
+		when 'C' then 'S'
+		else'N'
+	end,
+		@tb_azgesscad = case tb_azgestscad
+		when 'S' then 'S'
+		when 'C' then 'S'
+		else'N'
+	end
+from 
+	tabanaz 
+where 
+     codditt = @codditt@
+
+
 insert into anagra (
 	 codditt
+	,an_codcomu
+	,an_partite
+	,an_scaden
 	,an_conto
+	,an_tipo
 	,an_codmast
 	,an_cap
 	,an_cell
@@ -26,30 +51,36 @@ insert into anagra (
 	,an_pariva
 	,an_prov
 	,an_descr1
-	,an_telef  
+	,an_telef
+	,an_ultagg
 )
 values (
-	 @ditta
-	,@an_conto
-	,@an_codmast
-	,@cap
-	,@cellulare
-	,isnull(@cod_canale_vendita,0)
-	,isnull(@cod_categoria, 0)
-	,@cod_citta
-	,isnull(@cod_classe_sconto, 0)
-	,isnull(@cod_cond_pag, 0)
-	,@cod_nazione
-	,@cod_porto_sped 
-	,@codice_fiscale
- 	,@email
-	,@fax
-	,@iban
-	,@indirizzo  
- 	,@titolo_note
-	,@note 
-	,@partita_iva
-	,@provincia
-	,@ragione_sociale
-	,@telefono  
+	 @codditt@
+	,@an_codcomu@
+	,@tb_ventil
+	,@tb_azgesscad
+	,@an_conto@
+	,@an_tipo@
+	,@an_codmast@
+	,@an_cap@
+	,@an_cell@
+	,isnull(@an_codcana@,0)
+	,isnull(@an_categ@, 0)
+	,@an_citta@
+	,isnull(@an_clascon@, 0)
+	,isnull(@an_codpag@, 0)
+	,@an_nazion1@
+	,@an_porto@
+	,@an_codfis@
+ 	,@an_email@
+	,@an_faxtlx@
+	,@an_iban@
+	,@an_indir@  
+ 	,@an_note@
+	,@an_note2@
+	,@an_pariva@
+	,@an_prov@
+	,@an_descr1@
+	,@an_telef@
+	,getdate()
 )

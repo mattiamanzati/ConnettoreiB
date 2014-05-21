@@ -33,16 +33,22 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function ToSql(ByVal strDesc As String) As String
+    Public Overridable Function ToSql(ByVal strDesc As String, Optional ByVal MaxLength As Integer = 0) As String
         Dim RetVal As String
 
         Try
 
             If strDesc Is Nothing Then
-                strDesc = ""
+                RetVal = ""
+            Else
+                RetVal = strDesc
             End If
 
-            RetVal = ConvEmptyToNull(CStrSQL(strDesc))
+            If MaxLength > 0 And Len(RetVal) >= MaxLength Then
+                RetVal = Left(RetVal, MaxLength)
+            End If
+
+            RetVal = ConvEmptyToNull(CStrSQL(RetVal))
 
 
         Catch ex As Exception
@@ -328,65 +334,101 @@ Public Class CLDIEIBUS
         Dim CodiceCliente As New Integer
         Dim strSQL As String = ""
 
+        CodCliente = 0
+
         Try
             nNumero = 0
             nNumero = LegNuma(strDitta, "CC", " ", Mastro, True)
             nNumero = AggNuma(strDitta, "CC", " ", Mastro, nNumero, False, False, "")
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliente.sql")
-            strSQL = strSQL.Replace("@ditta", ToSql(strDitta))
-            strSQL = strSQL.Replace("@an_conto", CStrSQL(nNumero))
-            strSQL = strSQL.Replace("@an_codmast", CStrSQL(Mastro))
-            strSQL = strSQL.Replace("@cap", ToSql(ClienteData.cap))
-            strSQL = strSQL.Replace("@cellulare", ToSql(ClienteData.cellulare))
-            strSQL = strSQL.Replace("@cod_canale_vendita", ToSql(ClienteData.cod_canale_vendita))
-            strSQL = strSQL.Replace("@cod_categoria", ToSql(ClienteData.cod_categoria))
-            strSQL = strSQL.Replace("@cod_citta", ToSql(ClienteData.cod_citta))
-            strSQL = strSQL.Replace("@cod_classe_sconto", ToSql(ClienteData.cod_classe_sconto))
-            strSQL = strSQL.Replace("@cod_cond_pag", ToSql(ClienteData.cod_cond_pag))
-            strSQL = strSQL.Replace("@cod_nazione", ToSql(ClienteData.cod_nazione))
-            strSQL = strSQL.Replace("@cod_porto_sped", ToSql(ClienteData.cod_porto_sped))
-            strSQL = strSQL.Replace("@codice_fiscale", ToSql(ClienteData.codice_fiscale))
-            strSQL = strSQL.Replace("@des_cond_pag", ToSql(ClienteData.des_cond_pag))
-            strSQL = strSQL.Replace("@email", ToSql(ClienteData.email))
-            strSQL = strSQL.Replace("@fax", ToSql(ClienteData.fax))
-            strSQL = strSQL.Replace("@iban", ToSql(ClienteData.iban))
-            strSQL = strSQL.Replace("@indirizzo", ToSql(ClienteData.indirizzo))
-            strSQL = strSQL.Replace("@titolo_note", ToSql("Cliente inserito ad agente"))
-            strSQL = strSQL.Replace("@note", ToSql(ClienteData.note))
-            strSQL = strSQL.Replace("@partita_iva", ToSql(ClienteData.partita_iva))
-            strSQL = strSQL.Replace("@provincia", ToSql(ClienteData.provincia))
-            strSQL = strSQL.Replace("@ragione_sociale", ToSql(ClienteData.ragione_sociale))
-            strSQL = strSQL.Replace("@telefono", ToSql(ClienteData.telefono))
+            strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
+            strSQL = strSQL.Replace("@an_codcomu@", ToSql(ClienteData.cod_citta))
+            strSQL = strSQL.Replace("@an_partite@", ToSql("S"))
+            strSQL = strSQL.Replace("@an_conto@", ToSql(Mastro.ToString() + nNumero.ToString()))
+            strSQL = strSQL.Replace("@an_tipo@", CStrSQL("C"))
+            strSQL = strSQL.Replace("@an_codmast@", CStrSQL(Mastro))
+            strSQL = strSQL.Replace("@an_cap@", ToSql(ClienteData.cap, 9))
+            strSQL = strSQL.Replace("@an_cell@", ToSql(ClienteData.cellulare, 18))
+            strSQL = strSQL.Replace("@an_codcana@", ToSql(ClienteData.cod_canale_vendita))
+            strSQL = strSQL.Replace("@an_categ@", ToSql(ClienteData.cod_categoria))
+            strSQL = strSQL.Replace("@an_citta@", ToSql(ClienteData.des_citta, 50))
+            strSQL = strSQL.Replace("@an_clascon@", ToSql(ClienteData.cod_classe_sconto))
+            strSQL = strSQL.Replace("@an_codpag@", ToSql(ClienteData.cod_cond_pag))
+            strSQL = strSQL.Replace("@an_nazion1@", ToSql(ClienteData.cod_nazione))
+            strSQL = strSQL.Replace("@an_porto@", ToSql(ClienteData.cod_porto_sped))
+            strSQL = strSQL.Replace("@an_codfis@", ToSql(ClienteData.codice_fiscale, 16))
+            strSQL = strSQL.Replace("@an_email@", ToSql(ClienteData.email))
+            strSQL = strSQL.Replace("@an_faxtlx@", ToSql(ClienteData.fax))
+            strSQL = strSQL.Replace("@an_iban@", ToSql(ClienteData.iban))
+            strSQL = strSQL.Replace("@an_indir@", ToSql(ClienteData.indirizzo, 70))
+            strSQL = strSQL.Replace("@an_note@", ToSql("Inserito da iPad"))
+            strSQL = strSQL.Replace("@an_note2@", ToSql(ClienteData.note))
+            strSQL = strSQL.Replace("@an_pariva@", ToSql(ClienteData.partita_iva, 11))
+            strSQL = strSQL.Replace("@an_prov@", ToSql(ClienteData.provincia, 2))
+            strSQL = strSQL.Replace("@an_descr1@", ToSql(ClienteData.ragione_sociale, 50))
+            strSQL = strSQL.Replace("@an_telef@", ToSql(ClienteData.telefono, 18))
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
-#If False Then
-
-            ' Il lead e' gia' associato? (chiave: opcr_codlead, codditt, opcr_opnome)
-            strSQL = String.Format("select * from acclead where codditt = {0} and opcr_codlead = {1} and opcr_opnome = {2}", _
-                                   CStrSQL(strDitta), _
-                                   CodiceLead.ToString, _
-                                   CStrSQL(dRow("COD_OPERATORE")) _
-                                   )
-            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
-
-            If dttOut.Rows.Count = 0 Then
-
-                ' Inserisco i dati nella tabella accessi          
-                strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
-                                       CStrSQL(strDitta), _
-                                       CStrSQL(dRow("COD_OPERATORE")), _
-                                       CStrSQL(nNumero) _
-                                       )
-                Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-
-            End If
-#End If
-
             CodCliente = nNumero
 
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
 
+    Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodCliente As Integer) As Boolean
+        Dim strSQL As String = ""
+
+        Try
+            'Dest.cap_consegna
+            'Dest.cod_citta_consegna
+            'Dest.cod_nazione_consegna
+            'Dest.des_citta_consegna
+            'Dest.des_nazione_consegna
+            'Dest.indirizzo_consegna
+            'Dest.provincia_consegna
+            'Dest.telefono_consegna
+
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliDest.sql")
+            strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
+            strSQL = strSQL.Replace("@dd_conto@", ToSql(Mastro.ToString() + CodCliente.ToString()))
+            strSQL = strSQL.Replace("@dd_coddest@", ToSql("1"))
+            strSQL = strSQL.Replace("@dd_nomdest@", ToSql(Dest.des_citta_consegna, 50))
+
+            strSQL = strSQL.Replace("@dd_inddest@", ToSql(Dest.indirizzo_consegna, 70))
+            strSQL = strSQL.Replace("@dd_capdest@", ToSql(Dest.cap_consegna, 9))
+            strSQL = strSQL.Replace("@dd_locdest@", ToSql(Dest.des_citta_consegna, 50))
+
+            strSQL = strSQL.Replace("@dd_prodest@", ToSql(Dest.provincia_consegna, 2))
+            'strSQL = strSQL.Replace("@dd_turno@", ToSql(Ordine))
+            strSQL = strSQL.Replace("@dd_telef@", ToSql(Dest.telefono_consegna, 18))
+            'strSQL = strSQL.Replace("@dd_codzona@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_codfis@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_pariva@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_faxtlx@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_agente@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_agente2@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_email@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_usaem@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_vett@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_vett2@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_nomdest2@", ToSql(Ordine))
+            strSQL = strSQL.Replace("@dd_stato@", ToSql(Dest.cod_nazione_consegna, 3))
+            'strSQL = strSQL.Replace("@dd_note@", ToSql(Ordine))
+            strSQL = strSQL.Replace("@dd_codcomu@", ToSql(Dest.cod_citta_consegna, 5))
+            'strSQL = strSQL.Replace("@dd_codfisest@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_statofed@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_codlead@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_latitud@", ToSql(Ordine))
+            'strSQL = strSQL.Replace("@dd_longitud@", ToSql(Ordine))
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            '    Execute(String.Format("update anagra set an_destin=1 where codditt={0} and an_conto={1} and an_tipo = 'C'", ToSql(strDitta), ToSql(Mastro.ToString() + CodCliente.ToString())), CLE__APP.DBTIPO.DBAZI)
 
             Return True
         Catch ex As Exception

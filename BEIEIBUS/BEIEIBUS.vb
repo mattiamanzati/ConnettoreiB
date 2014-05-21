@@ -80,6 +80,11 @@ Public Class CLEIEIBUS
     Public strFiltroCliConAgenti As String = ""
     Public strIncludileadClienti As String = ""
 
+    Public strMastro As String = ""
+    Public strAuthKey As String = ""
+    Public strAppManagerAPI As String = ""
+    Public strUseAPI As String = ""
+
     Public strScontoMaxPercentuale As String = ""
     Public strPercentualeSuPrezzoMinimoVendita As String = ""
 
@@ -360,6 +365,18 @@ Public Class CLEIEIBUS
             strIncludileadClienti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "IncludiLeadClienti", "0", " ", "0").Trim
             strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "0", " ", "0").Trim
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
+
+            strMastro = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Mastro", "0", " ", "0").Trim
+            strAuthKey = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKey", "", " ", "").Trim
+            strAppManagerAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AppManagerAPI", "", " ", "").Trim
+            strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
+
+            strUseAPI = "1"
+            'strAppManagerAPI = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+            'strAuthKey = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+            'strMastro = "401"
+
+
 
             strAttivaAlert = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Abilita_Alert", "0", " ", "0").Trim
 
@@ -765,8 +782,27 @@ Public Class CLEIEIBUS
                 If Not Elabora_ImportLeadNote() Then Return False
                 If Not Elabora_ImportCliforNote() Then Return False
 
-                'If Not Elabora_ImportOrdini() Then Return False
-                If Not Elabora_ImportOrdiniWS() Then Return False
+                If strUseAPI = "0" Then
+                    If Not Elabora_ImportOrdini() Then Return False
+                Else
+                    ' Controlli preelaborazione
+                    If strAuthKey = "" Then
+                        Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AuthKey non configurata")
+                        ThrowRemoteEvent(New NTSEventArgs("", msg))
+                        LogWrite(msg, True)
+                        Return False
+                    End If
+
+                    If strAppManagerAPI = "" Then
+                        Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AppManagerAPI non configurata")
+                        ThrowRemoteEvent(New NTSEventArgs("", msg))
+                        LogWrite(msg, True)
+                        Return False
+                    End If
+
+                    If Not Elabora_ImportOrdiniWS() Then Return False
+                End If
+
                 'If Not Elabora_ImportOrdiniNew() Then Return False
 
             End If
@@ -3665,18 +3701,26 @@ NEXT_FILE:
 
     End Function
 
-    Public Overridable Function GeneraCliente(ClienteData As List(Of Clienti), ByRef CodCliente As Integer) As Boolean
+    'Public Overridable Function GeneraCliente(ClienteData As List(Of Clienti), Ordine As TestataOrdineExport, ByRef CodCliente As Integer) As Boolean
+    Public Overridable Function GeneraCliente(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
         Try
-            ' Da Parametrizzare
-            Dim Mastro As Integer = 401
 
 
-            oCldIbus.InsertCli(strDittaCorrente, ClienteData(0), Mastro, CodCliente)
+            oCldIbus.InsertCli(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente)
 
-
-            ' For Each c As Clienti In ClienteData
-            ' oCldIbus.InsertCli(strDittaCorrente, c, Mastro, CodCliente)
-            ' Next
+            If CodCliente <> 0 Then
+                If Not Ordine.clienti(0).cap_consegna Is Nothing Or _
+                   Not Ordine.clienti(0).cod_citta_consegna Is Nothing Or _
+                   Not Ordine.clienti(0).cod_nazione_consegna Is Nothing Or _
+                   Not Ordine.clienti(0).des_citta_consegna Is Nothing Or _
+                   Not Ordine.clienti(0).des_nazione_consegna Is Nothing Or _
+                   Not Ordine.clienti(0).indirizzo_consegna Is Nothing Or _
+                   Not Ordine.clienti(0).provincia_consegna Is Nothing Or _
+                   Not Ordine.clienti(0).telefono_consegna Is Nothing _
+                Then
+                    oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente)
+                End If
+            End If
 
 
             Return True
@@ -3693,45 +3737,53 @@ NEXT_FILE:
 
     Public Overridable Function Elabora_ImportOrdiniWS() As Boolean
 
-        ' url del web service di test e authkey (da parametrizzare)
-        Dim wsUrl As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        Dim AuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-
-
-
-        ' Leggo l'ultimo ID salvato
-        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
-
-        LastStoredID = 30
-
-        ' Istanzio l'oggetto Export dell'AMHelper
-        Dim ed As New GetDataAM(AuthKey, wsUrl)
-        Dim OrdersData As ws_rec_orders = Nothing
-        Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
-
-
         ' Variabili di uso locale
         Dim NumOrd As Integer
         Dim msg As String = ""
+        Dim NewCodCli As Integer
+
+        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+        'Dim strMastro As Integer = 401
+
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
+
+        ' todo Togliere 
+        LastStoredID = 30
+
+        ' Istanzio l'oggetto Export dell'AMHelper
+        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim OrdersData As ws_rec_orders = Nothing
+        Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
 
         Try
             If RetVal AndAlso OrdersData IsNot Nothing Then
 
                 For Each t As TestataOrdineExport In OrdersData.testate
 
-                    ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
-                    If t.cod_clifor Is Nothing Then
-                        GeneraCliente(t.clienti, CInt(t.cod_clifor))
-                    End If
-
-
-                    If GeneraOrdineWS(t, NumOrd) Then
-                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
+                    If t.cod_clifor Is Nothing And strMastro = "" Then
+                        msg = oApp.Tr(Me, 129919999269031600, "Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine")
                         LogWrite(msg, True)
-                        InviaAlert(1, msg, t.cod_clifor)
-                    Else
-                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
-                        InviaAlert(99, msg, t.cod_clifor)
+
+
+                        ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
+                        If t.cod_clifor Is Nothing Then
+                            GeneraCliente(t, CInt(strMastro), NewCodCli)
+                            t.cod_clifor = strMastro + NewCodCli.ToString()
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente))
+                            LogWrite(msg, True)
+                        End If
+
+
+                        If GeneraOrdineWS(t, NumOrd) Then
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
+                            LogWrite(msg, True)
+                            InviaAlert(1, msg, t.cod_clifor)
+                        Else
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
+                            LogWrite(msg, True)
+                            InviaAlert(99, msg, t.cod_clifor)
+                        End If
                     End If
 
                     Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "order_id", t.id.ToString())

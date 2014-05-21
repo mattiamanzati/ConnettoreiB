@@ -1076,11 +1076,12 @@ Riprova:
             Me.Cursor = Cursors.Default
             oApp.MsgBoxInfo(oApp.Tr(Me, 129877048402908565, "Elaborazione terminata."))
 
-            If oCleIbus.LogError = True And oApp.Batch = False Then
+            If (oCleIbus.LogError = True) And oApp.Batch = False Then
                 If oApp.MsgBoxInfoYesNo_DefYes(oApp.Tr(Me, 129877048655397019, "Esistono dei messaggi nel file di log del programma. Visualizzare il file?")) = Windows.Forms.DialogResult.Yes Then
                     System.Diagnostics.Process.Start("notepad", oCleIbus.LogFileName)
                 End If
             End If
+
             NtsProgressBar1.Position = 0
         Catch ex As Exception
             '-------------------------------------------------
