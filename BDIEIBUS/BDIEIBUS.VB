@@ -10,6 +10,8 @@ Public Class CLDIEIBUS
 
     Public Const iBNewline As String = "§"
 
+#Region "utils"
+
     Public Overridable Function AddWhereCondition(ByRef sqlString As String, ByVal whereCondition As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -74,27 +76,6 @@ Public Class CLDIEIBUS
         Return RetVal
     End Function
 
-
-    Public Overridable Function CheckTabNote(ByVal strDitta As String, ByVal strConto As String, ByVal strProgressivo As String) As Boolean
-        Dim strSQL As String = ""
-        Dim dttOut As New DataTable
-        Try
-            strSQL = "select * from tabnote" & _
-                     " WHERE codditt=" & CStrSQL(strDitta) & _
-                     " AND tb_codnote =" & strProgressivo & _
-                     " AND tb_contonot =" & strConto
-
-            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
-
-            If dttOut.Rows.Count > 0 Then
-                Return True
-            End If
-
-        Catch ex As Exception
-            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
-        End Try
-    End Function
-
     Public Overridable Function GetCustomData(ByVal strDitta As String, ByVal key As String, ByVal defvalue As String) As String
         Dim strSQL As String = ""
         Dim RetValue As String = "1"
@@ -138,7 +119,47 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function AggiungiPersonalizzazioniDb() As Boolean
 
+        Dim dttOut1 As DataTable
+        Dim dttOut2 As DataTable
+
+        Dim strSQL As String = ""
+
+        Try
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "CustomSchema.sql")
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+#End Region
+
+#Region "Others"
+    Public Overridable Function CheckTabNote(ByVal strDitta As String, ByVal strConto As String, ByVal strProgressivo As String) As Boolean
+        Dim strSQL As String = ""
+        Dim dttOut As New DataTable
+        Try
+            strSQL = "select * from tabnote" & _
+                     " WHERE codditt=" & CStrSQL(strDitta) & _
+                     " AND tb_codnote =" & strProgressivo & _
+                     " AND tb_contonot =" & strConto
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            If dttOut.Rows.Count > 0 Then
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
 
     Public Overridable Function GetAgentiCliente(ByVal strDitta As String, ByVal strConto As String, ByRef codAgente1 As Integer, ByRef codAgente2 As Integer, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
@@ -166,7 +187,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function FindArtUltCost(ByVal strDitta As String, ByVal codArticolo As String, ByRef UltCost As Decimal) As Boolean
         Dim strSQL As String = ""
         Dim dttOut As New DataTable
@@ -191,73 +211,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function UpdateCliforTabNote(ByVal strDitta As String, ByVal strConto As String, ByVal strProgressivo As String, _
-                                              ByVal strTitolo As String, ByVal strNote As String) As Boolean
-        Dim strSQL As String = ""
-        Try
-            strSQL = "UPDATE tabnote" & _
-                     " SET tb_desnote=" & CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)) & "," & _
-                     " tb_testonot=" & CStrSQL(strNote.Replace(iBNewline, vbNewLine)) & "," & _
-                     " WHERE codditt=" & CStrSQL(strDitta) & _
-                     " AND tb_codnote =" & strProgressivo & _
-                     " AND tb_contonot =" & strConto
-            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-            Return True
-        Catch ex As Exception
-            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
-        End Try
-    End Function
-    Public Overridable Function InsertCliforTabNote(ByVal strDitta As String, ByVal strConto As String, ByVal strProgressivo As String, _
-                                              ByVal strTitolo As String, ByVal strNote As String) As Boolean
-        Dim strSQL As String = ""
-        Try
-            Dim nNumero As Integer = 0
-            nNumero = LegNuma(strDitta, "NT", " ", 0, True)
-            nNumero = AggNuma(strDitta, "NT", " ", 0, nNumero, False, False, "")
-
-            strSQL = String.Format( _
-                          "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot) values ({0}, {1}, {2}, {3}, {4}, {5})", _
-                                      CStrSQL(strDitta), _
-                                      nNumero, _
-                                      CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)), _
-                                      CStrSQL("S"), _
-                                      strConto, _
-                                      CStrSQL(strNote.Replace(iBNewline, vbNewLine)) _
-                                  )
-
-            'strSQL = "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot)" & _
-            '  " VALUES  ( " & CStrSQL(strDitta) & ", " & nNumero & ", " & CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)) & ", 'S', " & _
-            '  strConto & ", " & _
-            '  CStrSQL(strNote.Replace(iBNewline, vbNewLine)) & _
-            '  " ) "
-
-            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-            Return True
-        Catch ex As Exception
-            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
-        End Try
-    End Function
-
-    Public Overridable Function UpdateCliforNote(ByVal strDitta As String, ByVal strConto As String, ByVal strNote As String, ByVal strTitolo As String) As Boolean
-        Dim strSQL As String = ""
-        Try
-            strSQL = "UPDATE anagra" & _
-                     " SET an_note2=" & CStrSQL(strNote.Replace(iBNewline, vbNewLine)) & "," & _
-                     " an_opnome=" & CStrSQL(Left(oApp.User.Nome, 20)) & "," & _
-                     " an_ultagg=" & CDataOraSQL(Now) & _
-                     " WHERE codditt=" & CStrSQL(strDitta) & _
-                     " AND an_conto =" & strConto
-
-            ' " an_note=" & CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)) & "," & _
-
-            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-            Return True
-        Catch ex As Exception
-            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
-        End Try
-    End Function
-
-
     Public Overridable Function UpdateCliforCoordinate(ByVal strDitta As String, ByVal strConto As String, ByVal dLatitudine As Double, ByVal dLongitudine As Double) As Boolean
         Dim strSQL As String = ""
         Try
@@ -273,52 +226,227 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function UpdateLead(ByVal strDitta As String, ByVal dRow As DataRow, ByRef CodLead As Integer) As Boolean
+    Public Overridable Function GetCliforSenzaCoordinate(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinate.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
+#End Region
+
+#Region "Import da API"
+
+    Public Overridable Function InsertLeadData(ByVal strDitta As String, Lead As TestataLeadsExport, ByRef CodLead As Integer) As Boolean
+        Dim strSQL As String = ""
+
         Dim nNumero As Integer = 0
         Dim dttOut As New DataTable
         Dim CodiceLead As New Integer
 
         Try
+            If Lead.cod_lead = "" Or Lead.cod_lead Is Nothing Then
+                If Lead.cod_agente = "" Or Lead.cod_agente Is Nothing Then
+                    Lead.cod_agente = "0"
+                End If
 
-            If dRow("cod_lead").ToString <> "" Then
-                CodiceLead = CInt(dRow("COD_LEAD"))
+                nNumero = 0
+                nNumero = LegNuma(strDitta, "C8", " ", 0, True)
+                nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
 
-                ' Verifico se il codice lead esiste sul db. Se esiste devo fare un update, altrimenti una insert
-                strSQL = "select le_codlead from leads where codditt = @ditta and le_codlead = @codlead"
-                strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
-                strSQL = strSQL.Replace("@codlead", CodiceLead.ToString)
+                strSQL = _
+                "INSERT INTO leads (" & _
+                "le_codlead ," & _
+                "codditt ," & _
+                "le_zona  ," & _
+                "le_categ  ," & _
+                "le_abi  ," & _
+                "le_cab  ," & _
+                "le_conto  ," & _
+                "le_privacy  ," & _
+                "le_contattato  ," & _
+                "le_nonint  ," & _
+                "le_listino  ," & _
+                "le_agente2  ," & _
+                "le_status  ," & _
+                "le_codcana  ," & _
+                "le_agente  ," & _
+                "le_opnome  ," & _
+                "le_descr1  ," & _
+                "le_descr2  ," & _
+                "le_indir   ," & _
+                "le_cap     ," & _
+                "le_citta   ," & _
+                "le_prov    ," & _
+                "le_stato   ," & _
+                "le_note2   ," & _
+                "le_pariva  ," & _
+                "le_codfis  ," & _
+                "le_telef   ," & _
+                "le_faxtlx  ," & _
+                "le_cell    ," & _
+                "le_email   ," & _
+                "le_website ," & _
+                "le_note    )" & _
+                "VALUES (   " & _
+                CStrSQL(nNumero) & "," & _
+                CStrSQL(strDitta) & "," & _
+                CStr(0) & "," & _
+                CStr(0) & "," & _
+                CStr(0) & "," & _
+                CStr(0) & "," & _
+                CStr(0) & "," & _
+                CStrSQL("S") & "," & _
+                CStrSQL("S") & "," & _
+                CStrSQL("N") & "," & _
+                CStr(1) & "," & _
+                CStr(0) & "," & _
+                CStrSQL("P") & "," & _
+                CStr(1) & "," & _
+                ToSql(Lead.cod_agente) & "," & _
+                ToSql(Lead.cod_operatore) & "," & _
+                ToSql(Lead.descrizione1, 60) & "," & _
+                ToSql(Lead.descrizione2, 50) & "," & _
+                ToSql(Lead.indirizzo, 70) & "," & _
+                ToSql(Lead.cap, 9) & "," & _
+                ToSql(Lead.citta, 50) & "," & _
+                ToSql(Lead.provincia, 2) & "," & _
+                ToSql(Lead.nazione, 3) & "," & _
+                ToSql(Lead.note, 3) & "," & _
+                ToSql(Lead.partita_iva, 11) & "," & _
+                ToSql(Lead.codice_fiscale, 16) & "," & _
+                ToSql(Lead.telefono, 18) & "," & _
+                ToSql(Lead.fax, 18) & "," & _
+                ToSql(Lead.cellulare, 18) & "," & _
+                ToSql(Lead.email, 50) & "," & _
+                ToSql(Lead.internet, 50) & "," & _
+                ToSql(Lead.cod_campagna, 50) & _
+                ")"
 
+                Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+                ' Il lead e' gia' associato? (chiave: opcr_codlead, codditt, opcr_opnome)
+                strSQL = String.Format("select * from acclead where codditt = {0} and opcr_codlead = {1} and opcr_opnome = {2}", _
+                                       ToSql(strDitta), _
+                                       CodiceLead.ToString, _
+                                       ToSql(Lead.cod_operatore) _
+                                       )
                 dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
 
-                ' Se sul db c'è un record nel db posso fare l'update , altrimenti faccio l'insert
-                If dttOut.Rows.Count = 1 Then
-                    strSQL = _
-                    "UPDATE leads set " & _
-                    " le_descr1 = " & ConvEmptyToNull(CStrSQL(Left(dRow("DESCRIZIONE1").ToString, 60))) & "," & _
-                    " le_descr2 = " & ConvEmptyToNull(CStrSQL(Left(dRow("DESCRIZIONE2").ToString, 50))) & "," & _
-                    " le_indir  = " & ConvEmptyToNull(CStrSQL(Left(dRow("INDIRIZZO").ToString, 70))) & "," & _
-                    " le_cap    = " & ConvEmptyToNull(CStrSQL(Left(dRow("CAP").ToString, 9))) & "," & _
-                    " le_citta  = " & ConvEmptyToNull(CStrSQL(Left(dRow("CITTA").ToString, 50))) & "," & _
-                    " le_prov   = " & ConvEmptyToNull(CStrSQL(Left(dRow("PROVINCIA").ToString, 2))) & "," & _
-                    " le_stato  = " & ConvEmptyToNull(CStrSQL(Left(dRow("NAZIONE").ToString, 3))) & "," & _
-                    " le_note2  = " & ConvEmptyToNull(CStrSQL(dRow("DES_NOTE").ToString.Replace(iBNewline, vbNewLine))) & "," & _
-                    " le_pariva = " & ConvEmptyToNull(CStrSQL(Left(dRow("PARTITA_IVA").ToString, 11))) & "," & _
-                    " le_codfis = " & ConvEmptyToNull(CStrSQL(Left(dRow("CODICE_FISCALE").ToString, 16))) & "," & _
-                    " le_telef  = " & ConvEmptyToNull(CStrSQL(Left(dRow("TELEFONO").ToString, 18))) & "," & _
-                    " le_faxtlx = " & ConvEmptyToNull(CStrSQL(Left(dRow("FAX").ToString, 18))) & "," & _
-                    " le_cell   = " & ConvEmptyToNull(CStrSQL(Left(dRow("CELLULARE").ToString, 18))) & "," & _
-                    " le_email  = " & ConvEmptyToNull(CStrSQL(Left(dRow("EMAIL").ToString, 50))) & "," & _
-                    " le_website= " & ConvEmptyToNull(CStrSQL(Left(dRow("INTERNET").ToString, 50))) & "," & _
-                    " le_note   = " & ConvEmptyToNull(CStrSQL(Left(dRow("COD_CAMPAGNA").ToString.Replace(iBNewline, vbNewLine), 50))) & _
-                    " where codditt = " & CStrSQL(strDitta) & " and le_codlead= " & CStrSQL(CodiceLead)
+                If dttOut.Rows.Count = 0 Then
 
-                    Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+                    If Not Lead.cod_operatore Is Nothing And Lead.cod_operatore = "" Then
 
-                    CodLead = CodiceLead
-                Else
-                    Return False
+                        ' Inserisco i dati nella tabella accessi          
+                        strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
+                                               ToSql(strDitta), _
+                                               ToSql(Lead.cod_operatore), _
+                                               CStrSQL(nNumero) _
+                                               )
+                        Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+                    End If
+
                 End If
+
+                CodLead = nNumero
+            Else
+                Return False
+            End If
+
+
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function InsertLeadNoteData(ByVal strDitta As String, t As TestataLeadsNoteExport) As Boolean
+
+        Dim strSQL As String = ""
+        Dim TestoNota As String = ""
+
+        Dim dttOut As New DataTable
+
+        Try
+
+            strSQL = String.Format("select le_note2 from leads where codditt = {0} and le_codlead = {1}", CStrSQL(strDitta), t.cod_lead)
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+            If dttOut.Rows.Count = 1 Then
+                TestoNota = String.Format("{0}{1}{1}***Nota {4} del {2}***{1}{3}", _
+                                          dttOut.Rows(0)("le_note2"), _
+                                          vbCrLf, _
+                                          t.data_import, _
+                                          t.nota, _
+                                          t.cod_operatore _
+                                          )
+            End If
+
+            strSQL = String.Format("update leads set le_note2 = {0} where codditt = {1} and le_codlead = {2}", _
+                                   CStrSQL(TestoNota.Replace(iBNewline, vbNewLine)), _
+                                   CStrSQL(strDitta), _
+                                   t.cod_lead)
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function UpdateLeadData(ByVal strDitta As String, Lead As TestataLeadsExport) As Boolean
+        Dim strSQL As String = ""
+        Dim nNumero As Integer = 0
+        Dim dttOut As New DataTable
+
+
+        Try
+
+            ' Verifico se il codice lead esiste sul db. Se esiste devo fare un update, altrimenti una insert
+            strSQL = "select le_codlead from leads where codditt = @ditta and le_codlead = @codlead"
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+            strSQL = strSQL.Replace("@codlead", Lead.cod_lead)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            If dttOut.Rows.Count = 1 Then
+                strSQL = _
+                "UPDATE leads set " & _
+                " le_descr1 = " & ToSql(Lead.descrizione1, 60) & "," & _
+                    " le_descr1 = " & ToSql(Lead.descrizione1, 60) & "," & _
+                    " le_descr2 = " & ToSql(Lead.descrizione2, 50) & "," & _
+                    " le_indir = " & ToSql(Lead.indirizzo, 70) & "," & _
+                    " le_cap = " & ToSql(Lead.cap, 9) & "," & _
+                    " le_citta = " & ToSql(Lead.citta, 50) & "," & _
+                    " le_prov = " & ToSql(Lead.provincia, 2) & "," & _
+                    " le_stato = " & ToSql(Lead.nazione, 3) & "," & _
+                    " le_note2 = " & ToSql(Lead.note) & "," & _
+                    " le_pariva = " & ToSql(Lead.partita_iva, 11) & "," & _
+                    " le_codfis = " & ToSql(Lead.codice_fiscale, 16) & "," & _
+                    " le_telef = " & ToSql(Lead.telefono, 18) & "," & _
+                    " le_faxtlx = " & ToSql(Lead.fax, 18) & "," & _
+                    " le_cell = " & ToSql(Lead.cellulare, 18) & "," & _
+                    " le_email = " & ToSql(Lead.email, 50) & "," & _
+                    " le_website = " & ToSql(Lead.internet, 50) & "," & _
+                    " le_note = " & ToSql(Lead.cod_campagna, 50) & "," & _
+                " where codditt = " & ToSql(strDitta) & " and le_codlead= " & ToSql(Lead.cod_lead)
+
+                Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+            Else
+                Return False
             End If
 
             Return True
@@ -327,58 +455,92 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function InsertCli(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
-
-        Dim nNumero As Integer = 0
-        Dim dttOut As New DataTable
-        Dim CodiceCliente As New Integer
+    Public Overridable Function InsertCliforTabNoteData(ByVal strDitta As String, Nota As TestataCfNote) As Boolean
         Dim strSQL As String = ""
-
-        CodCliente = 0
-
         Try
-            nNumero = 0
-            nNumero = LegNuma(strDitta, "CC", " ", Mastro, True)
-            nNumero = AggNuma(strDitta, "CC", " ", Mastro, nNumero, False, False, "")
+            Dim nNumero As Integer = 0
+            nNumero = LegNuma(strDitta, "NT", " ", 0, True)
+            nNumero = AggNuma(strDitta, "NT", " ", 0, nNumero, False, False, "")
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliente.sql")
-            strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
-            strSQL = strSQL.Replace("@an_codcomu@", ToSql(ClienteData.cod_citta))
-            strSQL = strSQL.Replace("@an_partite@", ToSql("S"))
-            strSQL = strSQL.Replace("@an_conto@", ToSql(Mastro.ToString() + nNumero.ToString()))
-            strSQL = strSQL.Replace("@an_tipo@", CStrSQL("C"))
-            strSQL = strSQL.Replace("@an_codmast@", CStrSQL(Mastro))
-            strSQL = strSQL.Replace("@an_cap@", ToSql(ClienteData.cap, 9))
-            strSQL = strSQL.Replace("@an_cell@", ToSql(ClienteData.cellulare, 18))
-            strSQL = strSQL.Replace("@an_codcana@", ToSql(ClienteData.cod_canale_vendita))
-            strSQL = strSQL.Replace("@an_categ@", ToSql(ClienteData.cod_categoria))
-            strSQL = strSQL.Replace("@an_citta@", ToSql(ClienteData.des_citta, 50))
-            strSQL = strSQL.Replace("@an_clascon@", ToSql(ClienteData.cod_classe_sconto))
-            strSQL = strSQL.Replace("@an_codpag@", ToSql(ClienteData.cod_cond_pag))
-            strSQL = strSQL.Replace("@an_nazion1@", ToSql(ClienteData.cod_nazione))
-            strSQL = strSQL.Replace("@an_porto@", ToSql(ClienteData.cod_porto_sped))
-            strSQL = strSQL.Replace("@an_codfis@", ToSql(ClienteData.codice_fiscale, 16))
-            strSQL = strSQL.Replace("@an_email@", ToSql(ClienteData.email))
-            strSQL = strSQL.Replace("@an_faxtlx@", ToSql(ClienteData.fax))
-            strSQL = strSQL.Replace("@an_iban@", ToSql(ClienteData.iban))
-            strSQL = strSQL.Replace("@an_indir@", ToSql(ClienteData.indirizzo, 70))
-            strSQL = strSQL.Replace("@an_note@", ToSql("Inserito da iPad"))
-            strSQL = strSQL.Replace("@an_note2@", ToSql(ClienteData.note))
-            strSQL = strSQL.Replace("@an_pariva@", ToSql(ClienteData.partita_iva, 11))
-            strSQL = strSQL.Replace("@an_prov@", ToSql(ClienteData.provincia, 2))
-            strSQL = strSQL.Replace("@an_descr1@", ToSql(ClienteData.ragione_sociale, 50))
-            strSQL = strSQL.Replace("@an_telef@", ToSql(ClienteData.telefono, 18))
+            strSQL = String.Format( _
+                          "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot) values ({0}, {1}, {2}, {3}, {4}, {5})", _
+                                      CStrSQL(strDitta), _
+                                      nNumero, _
+                                      ToSql(Nota.tipo_nota.Replace(iBNewline, vbNewLine)), _
+                                      ToSql("S"), _
+                                      Nota.cod_cliente, _
+                                      ToSql(Nota.nota.Replace(iBNewline, vbNewLine)) _
+                                  )
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-
-            CodCliente = nNumero
-
             Return True
         Catch ex As Exception
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
         End Try
     End Function
 
+    Public Overridable Function UpdateCliforTabNoteData(ByVal strDitta As String, Nota As TestataCfNote) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = "UPDATE tabnote" & _
+                     " SET tb_desnote=" & ToSql(Nota.tipo_nota.Replace(iBNewline, vbNewLine)) & "," & _
+                     " tb_testonot=" & ToSql(Nota.nota.Replace(iBNewline, vbNewLine)) & "," & _
+                     " WHERE codditt=" & ToSql(strDitta) & _
+                     " AND tb_codnote =" & Nota.progressivo & _
+                     " AND tb_contonot =" & Nota.cod_cliente
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function UpdateCliforData(ByVal strDitta As String, ByVal Clifor As TestataCf) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = "UPDATE anagra" & _
+                    " SET an_telef=" & ToSql(Clifor.telefono1, 18) & "," & _
+                    " an_faxtlx=" & ToSql(Clifor.fax, 18) & "," & _
+                    " an_cell=" & ToSql(Clifor.cellulare, 18) & "," & _
+                    " an_email=" & ToSql(Clifor.email, 50) & "," & _
+                    " an_pariva=" & ToSql(Clifor.partita_iva, 11) & "," & _
+                    " an_descr1=" & ToSql(Clifor.ragione_sociale, 50) & "," & _
+                    " an_indir=" & ToSql(Clifor.indirizzo, 70) & "," & _
+                    " an_cap=" & ToSql(Clifor.cap, 5) & "," & _
+                    " an_citta=" & ToSql(Clifor.citta, 50) & "," & _
+                    " an_prov=" & ToSql(Clifor.provincia, 2) & "," & _
+                    " an_codpag=" & NTSCInt(Clifor.cod_cond_pag) & "," & _
+                    " an_codfis=" & ToSql(Clifor.codice_fiscale, 16) & "," & _
+                    " an_opnome=" & ToSql(Clifor.utente, 20) & "," & _
+                    " an_ultagg=" & CDataOraSQL(Now) & _
+                    " WHERE codditt=" & ToSql(strDitta) & _
+                    " AND an_conto =" & ToSql(Clifor.cod_cliente)
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function UpdateCliforNoteData(ByVal strDitta As String, Nota As TestataCfNote) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = "UPDATE anagra" & _
+                     " SET an_note2=" & ToSql(Nota.nota.Replace(iBNewline, vbNewLine)) & "," & _
+                     " an_opnome=" & ToSql(Nota.utente, 20) & "," & _
+                     " an_ultagg=" & CDataOraSQL(Now) & _
+                     " WHERE codditt=" & CStrSQL(strDitta) & _
+                     " AND an_conto =" & ToSql(Nota.cod_cliente)
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    ' Solo per API
     Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodCliente As Integer) As Boolean
         Dim strSQL As String = ""
 
@@ -435,6 +597,63 @@ Public Class CLDIEIBUS
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
         End Try
     End Function
+
+    ' Solo per API
+    Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
+
+        Dim nNumero As Integer = 0
+        Dim dttOut As New DataTable
+        Dim CodiceCliente As New Integer
+        Dim strSQL As String = ""
+
+        CodCliente = 0
+
+        Try
+            nNumero = 0
+            nNumero = LegNuma(strDitta, "CC", " ", Mastro, True)
+            nNumero = AggNuma(strDitta, "CC", " ", Mastro, nNumero, False, False, "")
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliente.sql")
+            strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
+            strSQL = strSQL.Replace("@an_codcomu@", ToSql(ClienteData.cod_citta))
+            strSQL = strSQL.Replace("@an_partite@", ToSql("S"))
+            strSQL = strSQL.Replace("@an_conto@", ToSql(Mastro.ToString() + nNumero.ToString()))
+            strSQL = strSQL.Replace("@an_tipo@", CStrSQL("C"))
+            strSQL = strSQL.Replace("@an_codmast@", CStrSQL(Mastro))
+            strSQL = strSQL.Replace("@an_cap@", ToSql(ClienteData.cap, 9))
+            strSQL = strSQL.Replace("@an_cell@", ToSql(ClienteData.cellulare, 18))
+            strSQL = strSQL.Replace("@an_codcana@", ToSql(ClienteData.cod_canale_vendita))
+            strSQL = strSQL.Replace("@an_categ@", ToSql(ClienteData.cod_categoria))
+            strSQL = strSQL.Replace("@an_citta@", ToSql(ClienteData.des_citta, 50))
+            strSQL = strSQL.Replace("@an_clascon@", ToSql(ClienteData.cod_classe_sconto))
+            strSQL = strSQL.Replace("@an_codpag@", ToSql(ClienteData.cod_cond_pag))
+            strSQL = strSQL.Replace("@an_nazion1@", ToSql(ClienteData.cod_nazione))
+            strSQL = strSQL.Replace("@an_porto@", ToSql(ClienteData.cod_porto_sped))
+            strSQL = strSQL.Replace("@an_codfis@", ToSql(ClienteData.codice_fiscale, 16))
+            strSQL = strSQL.Replace("@an_email@", ToSql(ClienteData.email))
+            strSQL = strSQL.Replace("@an_faxtlx@", ToSql(ClienteData.fax))
+            strSQL = strSQL.Replace("@an_iban@", ToSql(ClienteData.iban))
+            strSQL = strSQL.Replace("@an_indir@", ToSql(ClienteData.indirizzo, 70))
+            strSQL = strSQL.Replace("@an_note@", ToSql("Inserito da iPad"))
+            strSQL = strSQL.Replace("@an_note2@", ToSql(ClienteData.note))
+            strSQL = strSQL.Replace("@an_pariva@", ToSql(ClienteData.partita_iva, 11))
+            strSQL = strSQL.Replace("@an_prov@", ToSql(ClienteData.provincia, 2))
+            strSQL = strSQL.Replace("@an_descr1@", ToSql(ClienteData.ragione_sociale, 50))
+            strSQL = strSQL.Replace("@an_telef@", ToSql(ClienteData.telefono, 18))
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            CodCliente = nNumero
+
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+#End Region
+
+#Region "Import da tracciati"
 
     Public Overridable Function InsertLead(ByVal strDitta As String, ByVal dRow As DataRow, ByRef CodLead As Integer) As Boolean
         Dim strSQL As String = ""
@@ -594,6 +813,108 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function UpdateLead(ByVal strDitta As String, ByVal dRow As DataRow, ByRef CodLead As Integer) As Boolean
+        Dim strSQL As String = ""
+        Dim nNumero As Integer = 0
+        Dim dttOut As New DataTable
+        Dim CodiceLead As New Integer
+
+        Try
+
+            If dRow("cod_lead").ToString <> "" Then
+                CodiceLead = CInt(dRow("COD_LEAD"))
+
+                ' Verifico se il codice lead esiste sul db. Se esiste devo fare un update, altrimenti una insert
+                strSQL = "select le_codlead from leads where codditt = @ditta and le_codlead = @codlead"
+                strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+                strSQL = strSQL.Replace("@codlead", CodiceLead.ToString)
+
+                dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+                ' Se sul db c'è un record nel db posso fare l'update , altrimenti faccio l'insert
+                If dttOut.Rows.Count = 1 Then
+                    strSQL = _
+                    "UPDATE leads set " & _
+                    " le_descr1 = " & ConvEmptyToNull(CStrSQL(Left(dRow("DESCRIZIONE1").ToString, 60))) & "," & _
+                    " le_descr2 = " & ConvEmptyToNull(CStrSQL(Left(dRow("DESCRIZIONE2").ToString, 50))) & "," & _
+                    " le_indir  = " & ConvEmptyToNull(CStrSQL(Left(dRow("INDIRIZZO").ToString, 70))) & "," & _
+                    " le_cap    = " & ConvEmptyToNull(CStrSQL(Left(dRow("CAP").ToString, 9))) & "," & _
+                    " le_citta  = " & ConvEmptyToNull(CStrSQL(Left(dRow("CITTA").ToString, 50))) & "," & _
+                    " le_prov   = " & ConvEmptyToNull(CStrSQL(Left(dRow("PROVINCIA").ToString, 2))) & "," & _
+                    " le_stato  = " & ConvEmptyToNull(CStrSQL(Left(dRow("NAZIONE").ToString, 3))) & "," & _
+                    " le_note2  = " & ConvEmptyToNull(CStrSQL(dRow("DES_NOTE").ToString.Replace(iBNewline, vbNewLine))) & "," & _
+                    " le_pariva = " & ConvEmptyToNull(CStrSQL(Left(dRow("PARTITA_IVA").ToString, 11))) & "," & _
+                    " le_codfis = " & ConvEmptyToNull(CStrSQL(Left(dRow("CODICE_FISCALE").ToString, 16))) & "," & _
+                    " le_telef  = " & ConvEmptyToNull(CStrSQL(Left(dRow("TELEFONO").ToString, 18))) & "," & _
+                    " le_faxtlx = " & ConvEmptyToNull(CStrSQL(Left(dRow("FAX").ToString, 18))) & "," & _
+                    " le_cell   = " & ConvEmptyToNull(CStrSQL(Left(dRow("CELLULARE").ToString, 18))) & "," & _
+                    " le_email  = " & ConvEmptyToNull(CStrSQL(Left(dRow("EMAIL").ToString, 50))) & "," & _
+                    " le_website= " & ConvEmptyToNull(CStrSQL(Left(dRow("INTERNET").ToString, 50))) & "," & _
+                    " le_note   = " & ConvEmptyToNull(CStrSQL(Left(dRow("COD_CAMPAGNA").ToString.Replace(iBNewline, vbNewLine), 50))) & _
+                    " where codditt = " & CStrSQL(strDitta) & " and le_codlead= " & CStrSQL(CodiceLead)
+
+                    Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+                    CodLead = CodiceLead
+                Else
+                    Return False
+                End If
+            End If
+
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function InsertCliforTabNote(ByVal strDitta As String, ByVal strConto As String, ByVal strProgressivo As String, _
+                                                 ByVal strTitolo As String, ByVal strNote As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+            Dim nNumero As Integer = 0
+            nNumero = LegNuma(strDitta, "NT", " ", 0, True)
+            nNumero = AggNuma(strDitta, "NT", " ", 0, nNumero, False, False, "")
+
+            strSQL = String.Format( _
+                          "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot) values ({0}, {1}, {2}, {3}, {4}, {5})", _
+                                      CStrSQL(strDitta), _
+                                      nNumero, _
+                                      CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)), _
+                                      CStrSQL("S"), _
+                                      strConto, _
+                                      CStrSQL(strNote.Replace(iBNewline, vbNewLine)) _
+                                  )
+
+            'strSQL = "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot)" & _
+            '  " VALUES  ( " & CStrSQL(strDitta) & ", " & nNumero & ", " & CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)) & ", 'S', " & _
+            '  strConto & ", " & _
+            '  CStrSQL(strNote.Replace(iBNewline, vbNewLine)) & _
+            '  " ) "
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function UpdateCliforTabNote(ByVal strDitta As String, ByVal strConto As String, ByVal strProgressivo As String, _
+                                          ByVal strTitolo As String, ByVal strNote As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = "UPDATE tabnote" & _
+                     " SET tb_desnote=" & CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)) & "," & _
+                     " tb_testonot=" & CStrSQL(strNote.Replace(iBNewline, vbNewLine)) & "," & _
+                     " WHERE codditt=" & CStrSQL(strDitta) & _
+                     " AND tb_codnote =" & strProgressivo & _
+                     " AND tb_contonot =" & strConto
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
     Public Overridable Function UpdateClifor(ByVal strDitta As String, ByVal strConto As String, ByVal strDati As String()) As Boolean
         Dim strSQL As String = ""
 
@@ -637,25 +958,32 @@ Public Class CLDIEIBUS
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
         End Try
     End Function
-    Public Overridable Function AggiungiPersonalizzazioniDb() As Boolean
 
-        Dim dttOut1 As DataTable
-        Dim dttOut2 As DataTable
-
+    Public Overridable Function UpdateCliforNote(ByVal strDitta As String, ByVal strConto As String, ByVal strNote As String, ByVal strTitolo As String) As Boolean
         Dim strSQL As String = ""
-
         Try
+            strSQL = "UPDATE anagra" & _
+                     " SET an_note2=" & CStrSQL(strNote.Replace(iBNewline, vbNewLine)) & "," & _
+                     " an_opnome=" & CStrSQL(Left(oApp.User.Nome, 20)) & "," & _
+                     " an_ultagg=" & CDataOraSQL(Now) & _
+                     " WHERE codditt=" & CStrSQL(strDitta) & _
+                     " AND an_conto =" & strConto
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "CustomSchema.sql")
+            ' " an_note=" & CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)) & "," & _
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-
             Return True
         Catch ex As Exception
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
         End Try
     End Function
 
+
+    
+    
+#End Region
+
+#Region "Export tracciati"
     Public Overridable Function GetCodpaga(ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -712,7 +1040,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function GetInfo(ByRef dttOut As DataTable, ByVal strRelease As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -729,6 +1056,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetClassiSconto(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -767,7 +1095,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function GetCliforCate(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -786,7 +1113,6 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
-
 
     Public Overridable Function GetCanaliVendita(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
@@ -848,7 +1174,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function GetCliforNote(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -868,27 +1193,6 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
-
-    Public Overridable Function GetCliforSenzaCoordinate(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
-        Dim strSQL As String = ""
-        Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinate.sql")
-            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
-
-            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
-
-            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
-
-            Return True
-
-        Catch ex As Exception
-            '--------------------------------------------------------------
-            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
-            '--------------------------------------------------------------
-        End Try
-    End Function
-
-
     Public Overridable Function GetCliforDestdiv(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -908,6 +1212,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetCliforAge(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -926,6 +1231,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetCliforDettCon(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -946,6 +1252,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetCliforFatt(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -964,6 +1271,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetCliforTestDoc(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String, _
                                                  Optional ByVal strGiorniStoricoDocumenti As String = "365") As Boolean
         Dim strSQL As String = ""
@@ -986,6 +1294,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetCliforRighDoc(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String, _
                                                      Optional ByVal strGiorniStoricoDocumenti As String = "365") As Boolean
         Dim strSQL As String = ""
@@ -1006,6 +1315,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetCliforScaDoc(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -1094,7 +1404,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function GetArtUltAcq(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String, _
                                              Optional ByVal strGiorniUltAcq As String = "180") As Boolean
 
@@ -1141,7 +1450,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function GetArtListini(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -1163,15 +1471,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    ''' <summary>
-    ''' Recupera i dati dei Leads
-    ''' </summary>
-    ''' <param name="strDitta">Ditta per la quale estrarre i dati</param>
-    ''' <param name="dttOut">Variabile di ritorno con il risultato della query</param>
-    ''' <param name="strWhere">Eventuale condizione di where da appendere alla query</param>
-    ''' <param name="strIncludiLeadConClienti">Se impostato a 0 (default), vengono esportati solo i leads senza clienti. 1 per esportare anche i leads associati a clienti</param>
-    ''' <returns>True se andato a buon fine, False se ci sono errori</returns>
-    ''' <remarks>Commenti vari</remarks>
     Public Overridable Function GetLeads(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String, _
                                          Optional ByVal strIncludiLeadConClienti As String = "0") As Boolean
         Dim strSQL As String = ""
@@ -1214,7 +1513,6 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function GetLeadAccessi(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -1234,7 +1532,6 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
-
 
     Public Overridable Function GetLeadAccessiCrm(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
@@ -1317,6 +1614,7 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
     Public Overridable Function GetLeadRighOff(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strIncludiLeadClienti As String, ByVal strWhere As String, _
                                                Optional ByVal strFiltroGiorniOfferte As String = "365") As Boolean
         Dim strSQL As String = ""
@@ -1381,6 +1679,6 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
-
+#End Region
 
 End Class

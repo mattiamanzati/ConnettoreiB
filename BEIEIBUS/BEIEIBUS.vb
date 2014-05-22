@@ -50,24 +50,6 @@ Public Class CLEIEIBUS
     End Property
 
     Public oCldIbus As CLDIEIBUS
-
-
-    'Public Const kClienti As String = "CLI"
-    'Public Const kFornitori As String = "FOR"
-    'Public Const kDocumenti As String = "DOC"
-    'Public Const kArticoli As String = "ART"
-    'Public Const kListini As String = "LIS"
-    'Public Const kSconti As String = "SCO"
-    'Public Const kCatalogo As String = "CAT"
-    'Public Const kMagazzino As String = "MAG"
-    'Public Const kCitta As String = "CIT"
-    'Public Const kPagamenti As String = "PAG"
-    'Public Const kOrdini As String = "ORD"
-    'Public Const kLeads As String = "LEA"
-    'Public Const kOfferte As String = "OFF"
-    'Public Const kCoordinate As String = "COO"
-
-
     Const defRelracciati As String = "1.9"
     Public strReleaseTracciati As String = defRelracciati
 
@@ -194,14 +176,6 @@ Public Class CLEIEIBUS
     Public Const cIMP_CATALOGO As String = "io_catalogo.dat"
     Public Const cIMP_REPORT As String = "io_reports.dat"
 
-    'Public Const cEXP_CLIFOR As String = "AM_CF_ANA.DAT"
-    'Public Const cEXP_ORDERS As String = "AM_ORD_{0}_{1}.DAT"
-    'Public Const cEXP_LEADS As String = "leads_data_{0}_{1}.xml"
-
-
-
-
-
     Public Overrides Function Init(ByRef App As CLE__APP, _
                                 ByRef oScriptEngine As INT__SCRIPT, ByRef oCleLbmenu As Object, ByVal strTabella As String, _
                                 ByVal bRemoting As Boolean, ByVal strRemoteServer As String, _
@@ -227,6 +201,7 @@ Public Class CLEIEIBUS
 
         Return True
     End Function
+
     Public Overridable Function ConvTracciato(ByVal oIn As Object, Optional ByVal bUltAgg As Boolean = False) As String
         ' Da Testare
         Dim retVal As String = ""
@@ -271,7 +246,6 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         End Try
     End Function
-
 
     Public Overridable Function ConvStr(ByVal oIn As Object, Optional ConvNewLine As Boolean = False) As String
         ConvStr = NTSCStr(oIn)
@@ -371,10 +345,11 @@ Public Class CLEIEIBUS
             strAppManagerAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AppManagerAPI", "", " ", "").Trim
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
 
+            ' TOD data
             strUseAPI = "1"
-            'strAppManagerAPI = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-            'strAuthKey = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-            'strMastro = "401"
+            strAppManagerAPI = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+            strAuthKey = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+            strMastro = "401"
 
 
 
@@ -773,39 +748,53 @@ Public Class CLEIEIBUS
 
             '--------------------
             'Import Ordini
-            If strTipork.Contains("ORD;") Then
+            If strTipork.Contains("ORD;") And strUseAPI = "0" Then
                 'meglio importare i dati dei clienti e note modificati o aggiunti
-                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import anagrafiche, note, ordini..."))
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import da file (anagrafiche, note, ordini...)"))
                 If Not Elabora_ImportAnagra() Then Return False
                 If Not Elabora_ImportLead() Then Return False
 
                 If Not Elabora_ImportLeadNote() Then Return False
                 If Not Elabora_ImportCliforNote() Then Return False
 
-                If strUseAPI = "0" Then
-                    If Not Elabora_ImportOrdini() Then Return False
-                Else
-                    ' Controlli preelaborazione
-                    If strAuthKey = "" Then
-                        Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AuthKey non configurata")
-                        ThrowRemoteEvent(New NTSEventArgs("", msg))
-                        LogWrite(msg, True)
-                        Return False
-                    End If
-
-                    If strAppManagerAPI = "" Then
-                        Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AppManagerAPI non configurata")
-                        ThrowRemoteEvent(New NTSEventArgs("", msg))
-                        LogWrite(msg, True)
-                        Return False
-                    End If
-
-                    If Not Elabora_ImportOrdiniWS() Then Return False
-                End If
-
-                'If Not Elabora_ImportOrdiniNew() Then Return False
+                If Not Elabora_ImportOrdini() Then Return False
 
             End If
+
+            '--------------------
+            'Import Ordini
+            If strTipork.Contains("ORD;") And strUseAPI <> "0" Then
+
+                ' Controlli preelaborazione
+                If strAuthKey = "" Then
+                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AuthKey non configurata")
+                    ThrowRemoteEvent(New NTSEventArgs("", msg))
+                    LogWrite(msg, True)
+                    Return False
+                End If
+
+                If strAppManagerAPI = "" Then
+                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AppManagerAPI non configurata")
+                    ThrowRemoteEvent(New NTSEventArgs("", msg))
+                    LogWrite(msg, True)
+                    Return False
+                End If
+
+                'meglio importare i dati dei clienti e note modificati o aggiunti
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import da WS (anagrafiche, note, ordini...)"))
+
+                If Not Elabora_ImportAnagraAPI() Then Return False
+                If Not Elabora_ImportCliforNoteAPI() Then Return False
+
+                If Not Elabora_ImportLeadAPI() Then Return False
+                If Not Elabora_ImportLeadNoteAPI() Then Return False
+
+                If Not Elabora_ImportOrdiniAPI() Then Return False
+            End If
+
+            'If Not Elabora_ImportOrdiniNew() Then Return False
+
+
 
 
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
@@ -825,6 +814,7 @@ Public Class CLEIEIBUS
             LogStop()
         End Try
     End Function
+
     Public Overridable Function AggiornaCoordinate() As Boolean
         Dim dttTmp As New DataTable
         Dim strQuerystring As String = ""
@@ -885,6 +875,56 @@ Public Class CLEIEIBUS
 
     End Function
 
+    Public Overridable Sub GestisciEventiEntityPERS(ByVal sender As Object, ByRef e As NTSEventArgs)
+        'Dim fErr As StreamWriter = Nothing
+        'Dim fiErr As FileInfo = Nothing
+        'Dim strNomeFileLog As String = ""
+        Dim strMsg As String = ""
+        Try
+
+            'strNomeFileLog = oApp.AscDir & "\eventi-gsor.LOG"
+            'fiErr = New FileInfo(strNomeFileLog)
+            'If fiErr.Exists Then
+            ' If fiErr.Length > 500000 Then fiErr.Delete()
+            ' End If
+            'fErr = New StreamWriter(strNomeFileLog, True)
+            'fErr.Write(e.Message & vbCrLf)
+            'fErr.Flush()
+            'fErr.Close()
+
+            If e.Message <> "" Then
+                strMsg = oApp.Tr(Me, 129877602933085930, e.Message)
+                LogWrite(strMsg, False)
+                InviaAlert(99, strMsg)
+            End If
+
+            'magari poi inserire anche l'istruzione sotto, così un volta loggati li giriamo comunque alla UI
+            'GestisciEventiEntity(sender, e)
+
+            'oppure creiamo un alert
+            'codice per generare un nuovo alert
+
+        Catch ex As Exception
+            Dim strErr As String = GestError(ex, Me, "", oApp.InfoError, oApp.ErrorLogFile, True)
+        End Try
+    End Sub
+
+    Public Overridable Sub GestisciEventiEntityGsor(ByVal sender As Object, ByRef e As NTSEventArgs)
+        Try
+            'gli eventuali messaggi dati da BEORGSOR tramite la ThrowRemoteEvent li passo a BNIEIBUS
+            ThrowRemoteEvent(e)
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Sub
+
+#Region "Export tracciati"
 
     Public Overridable Function Elabora_ExportCodpaga(ByVal strFileOut As String) As Boolean
         'esporta tutti i codici pagamento
@@ -924,6 +964,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportComuni(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
@@ -1004,6 +1045,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportClassiSconto(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
@@ -1081,6 +1123,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportCliforCate(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
@@ -1467,6 +1510,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportLeadAccessi(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
@@ -1572,6 +1616,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportLeadTestOff(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
         Dim dttTmp As New DataTable
@@ -1994,6 +2039,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportCliforAge(ByVal strFileOut As String) As Boolean
         'esporta gli agenti di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
@@ -2035,6 +2081,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportCliforDettCon(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
         'esporta l'organizzazione di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
@@ -2095,6 +2142,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportCliforFatt(ByVal strFileOut As String) As Boolean
         'restituisco il fatturato degli ultimi 3 anno diviso per mese di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
@@ -2135,6 +2183,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportCliforTestDoc(ByVal TipoCliFor As String, ByVal strFileOut As String, ByRef dttTmp As DataTable) As Boolean
         'restituisco le testate dei documenti di magazino/ordini di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim sbFile As New StringBuilder
@@ -2286,7 +2335,6 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
-
 
     Public Overridable Function Elabora_ExportCliforRighDoc(ByVal TipoCliFor As String, ByVal strFileOut As String) As Boolean
         'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
@@ -2554,6 +2602,7 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
     Public Overridable Function Elabora_ExportArtGiacenze(ByVal strFileOut As String) As Boolean
         'esporta le giacenze divise per magazzino degli articoli (e relative fasi) 
         Dim dttTmp As New DataTable
@@ -2744,7 +2793,6 @@ Public Class CLEIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function Elabora_ExportArtStoart(ByVal strFileOut As String) As Boolean
         'esporta l'ultimo documento veduto per ogni cliente  
         Dim dttTmp As New DataTable
@@ -2870,7 +2918,6 @@ Public Class CLEIEIBUS
         End Try
     End Function
 
-
     Public Overridable Function Elabora_ExportCatalogo(ByVal strFileOut As String, ByRef dttCat As DataTable, ByVal strCustomQuery As String) As Boolean
         'esporta il catalogo degli articoli  
         Dim sbFile As New StringBuilder
@@ -2914,7 +2961,6 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         End Try
     End Function
-
 
     Public Overridable Function Elabora_ExportListini(ByVal strFileOut As String) As Boolean
         'esporta i listini in vigore alla data odierna
@@ -3081,50 +3127,184 @@ Public Class CLEIEIBUS
         End Try
     End Function
 
-    Public Overridable Function Elabora_ImportCliforNote() As Boolean
-        Dim strF() As String = Nothing  'elenco di ordini da importare
-        Dim nF As Integer = 0
-        Dim r1 As StreamReader = Nothing
-        Dim strRow() As String = Nothing
+#End Region
 
-        Const posDitta As Integer = 0
-        Const posConto As Integer = 1
-        'Const posTipoConto As Integer = 2
-        Const posProgressivo As Integer = 3
-        Const posTitolo As Integer = 4
-        Const posNota As Integer = 5
+#Region "Import da API"
 
+    Public Overridable Function Elabora_ImportOrdiniAPI() As Boolean
+
+        ' Variabili di uso locale
+        Dim NumOrd As Integer
         Dim msg As String = ""
+        Dim NewCodCli As Integer
 
+        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+        'Dim strMastro As Integer = 401
+
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
+
+        ' TOD:  Togliere 
+        ' LastStoredID = 30
+
+        ' Istanzio l'oggetto Export dell'AMHelper
+        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim OrdersData As ws_rec_orders = Nothing
+        Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
 
         Try
-            'verifico se ci sono preventivi/ordini da importare
-            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
-            'una volta letto il file, lo cancello
-            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_NOTE*.DAT")
+            If RetVal AndAlso OrdersData IsNot Nothing Then
 
-            For nF = 0 To strF.Length - 1
+                For Each t As TestataOrdineExport In OrdersData.testate
 
-                r1 = New StreamReader(strF(nF))
+                    If t.cod_clifor Is Nothing And strMastro = "" Then
+                        msg = oApp.Tr(Me, 129919999269031600, "Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine")
+                        LogWrite(msg, True)
 
-                'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
-                While Not r1.EndOfStream
-                    strRow = r1.ReadLine.Split("|"c)
 
-                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
-                    If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
-                        r1.Close()
-                        GoTo NEXT_FILE
+                        ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
+                        If t.cod_clifor Is Nothing Then
+                            GeneraClienteAPI(t, CInt(strMastro), NewCodCli)
+                            t.cod_clifor = strMastro + NewCodCli.ToString()
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente))
+                            LogWrite(msg, True)
+                        End If
+
+
+                        If GeneraOrdineAPI(t, NumOrd) Then
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
+                            LogWrite(msg, True)
+                            InviaAlert(1, msg, t.cod_clifor)
+                        Else
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
+                            LogWrite(msg, True)
+                            InviaAlert(99, msg, t.cod_clifor)
+                        End If
                     End If
 
-                    Dim strConto As String = strRow(posConto)
+                    Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "order_id", t.id.ToString())
+
+                Next
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+    End Function
+
+    Public Overridable Function Elabora_ImportAnagraAPI() As Boolean
+
+        ' Variabili di uso locale
+        Dim NumOrd As Integer
+        Dim msg As String = ""
+        Dim NewCodCli As Integer
+
+        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+        'Dim strMastro As Integer = 401
+
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "anagra_id", "0"))
+
+        ' TOD:  Togliere 
+        ' LastStoredID = 30
+
+        ' Istanzio l'oggetto Export dell'AMHelper
+        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim CliforData As ws_rec_clifor = Nothing
+        Dim RetVal As Boolean = ed.exp_clifor(LastStoredID, CliforData)
+
+        Try
+            If RetVal AndAlso CliforData IsNot Nothing Then
+
+                For Each t As TestataCf In CliforData.clienti
+
+                    ' --------------
+
                     Dim dttAnagra As New DataTable
-                    If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
+                    If oCldIbus.ValCodiceDb(t.cod_cliente, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
                         If dttAnagra.Rows.Count > 0 Then
-                            Select Case NTSCStr(strRow(posProgressivo)).Trim
+                            oCldIbus.UpdateCliforData(strDittaCorrente, t)
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica dati anagrafici cliente {0}", t.cod_cliente))
+                            LogWrite(msg, True)
+                            InviaAlert(2, msg)
+                        Else
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Il cliente da modificare non esiste in anagrafica {0}", t.cod_cliente))
+                            LogWrite(msg, True)
+                        End If
+                    Else
+                        msg = oApp.Tr(Me, 129919999269031600, String.Format("La ValCodiceDb ha fallito {0}", t.cod_cliente))
+                        LogWrite(msg, True)
+                    End If
+
+                    ' ----------------
+
+                    Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "anagra_id", t.id.ToString())
+
+                Next
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+
+
+    End Function
+
+    Public Overridable Function Elabora_ImportCliforNoteAPI() As Boolean
+
+        ' Variabili di uso locale
+        Dim NumOrd As Integer
+        Dim msg As String = ""
+        Dim NewCodCli As Integer
+
+        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+        'Dim strMastro As Integer = 401
+
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "anagra_note_id", "0"))
+
+        ' TOD:  Togliere 
+        ' LastStoredID = 30
+
+        ' Istanzio l'oggetto Export dell'AMHelper
+        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim CliforNoteData As ws_rec_clifor_note = Nothing
+        Dim RetVal As Boolean = ed.exp_clifor_note(LastStoredID, CliforNoteData)
+
+        Try
+            If RetVal AndAlso CliforNoteData IsNot Nothing Then
+
+                For Each t As TestataCfNote In CliforNoteData.note
+
+                    ' ------------------------------
+
+                    Dim dttAnagra As New DataTable
+                    If oCldIbus.ValCodiceDb(t.cod_cliente, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
+                        If dttAnagra.Rows.Count > 0 Then
+                            Select Case NTSCStr(t.progressivo).Trim
                                 Case "0"
-                                    oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
-                                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                    oCldIbus.UpdateCliforNoteData(strDittaCorrente, t)
+                                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", t.cod_cliente))
                                     LogWrite(msg, True)
                                     InviaAlert(2, msg)
                                 Case ""
@@ -3133,22 +3313,22 @@ Public Class CLEIEIBUS
                                     'le note generiche sono vuote
                                     'Se lo sono compilo quelle
                                     If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
-                                        oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
-                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                        oCldIbus.UpdateCliforNoteData(strDittaCorrente, t)
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", t.cod_cliente))
                                         LogWrite(msg, True)
                                         InviaAlert(2, msg)
                                     Else
                                         'insert tabnote
-                                        oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
-                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
+                                        oCldIbus.InsertCliforTabNoteData(strDittaCorrente, t)
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", t.cod_cliente))
                                         LogWrite(msg, True)
                                         InviaAlert(2, msg)
                                     End If
                                 Case Else
-                                    If oCldIbus.CheckTabNote(strDittaCorrente, strConto, strRow(posProgressivo)) Then
+                                    If oCldIbus.CheckTabNote(strDittaCorrente, t.cod_cliente, t.progressivo) Then
                                         'update tabnote
-                                        oCldIbus.UpdateCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
-                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota tabnote per cliente {0}", strConto))
+                                        oCldIbus.UpdateCliforTabNoteData(strDittaCorrente, t)
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota tabnote per cliente {0}", t.cod_cliente))
                                         LogWrite(msg, True)
                                         InviaAlert(2, msg)
                                     Else
@@ -3157,14 +3337,14 @@ Public Class CLEIEIBUS
                                         'le note generiche sono vuote
                                         'Se lo sono compilo quelle
                                         If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
-                                            oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
-                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                            oCldIbus.UpdateCliforNoteData(strDittaCorrente, t)
+                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", t.cod_cliente))
                                             LogWrite(msg, True)
                                             InviaAlert(2, msg)
                                         Else
                                             'insert tabnote
-                                            oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
-                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
+                                            oCldIbus.InsertCliforTabNoteData(strDittaCorrente, t)
+                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", t.cod_cliente))
                                             LogWrite(msg, True)
                                             InviaAlert(2, msg)
                                         End If
@@ -3173,13 +3353,14 @@ Public Class CLEIEIBUS
                         End If
                     End If
 
-                End While
-                r1.Close()
 
-                System.IO.File.Delete(strF(nF))
+                    ' ------------------------------
+                    Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "anagra_note_id", t.id.ToString())
 
-NEXT_FILE:
-            Next    'For nF = 0 To strF.Length - 1
+
+                Next
+            End If
+
 
             Return True
 
@@ -3192,192 +3373,60 @@ NEXT_FILE:
             End If
             '--------------------------------------------------------------	
         End Try
+
+
+
     End Function
 
-    Public Overridable Function Elabora_ImportLead() As Boolean
-        Dim strF() As String = Nothing  'elenco di ordini da importare
-        Dim nF As Integer = 0
+    Public Overridable Function Elabora_ImportLeadAPI() As Boolean
+
+        ' Variabili di uso locale
+        Dim NumOrd As Integer
         Dim msg As String = ""
-        Dim dsLeads As New DataSet
+        Dim NewCodCli As Integer
         Dim CodLead As Integer
 
-        Try
-            ' Leggo la lista dei files
-            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_data_*.xml")
+        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+        'Dim strMastro As Integer = 401
 
-            ' Mi passo un file alla volta
-            For nF = 0 To strF.Length - 1
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "lead_id", "0"))
 
-                ' Carico l'xml
-                dsLeads.Clear()
-                dsLeads.ReadXml(strF(nF))
+        ' TOD:  Togliere 
+        ' LastStoredID = 30
 
-                ' Lo valuto solo se contiene delle righe
-                If dsLeads.Tables(0).Rows.Count > 0 Then
-
-                    ' Mi passo una riga alla volta
-                    For Each dR As DataRow In dsLeads.Tables(0).Rows
-
-                        ' Il cod ditta che e' corretto ?
-                        If dR("COD_DITTA").ToString = strDittaCorrente Then
-                            If dR("COD_LEAD").ToString = "" Then
-                                oCldIbus.InsertLead(strDittaCorrente, dR, CodLead)
-                                LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
-
-                                msg = oApp.Tr(Me, 129919999269031600, String.Format("Import nuovo lead codice: {0}", CodLead))
-                                InviaAlert(2, msg)
-                            Else
-                                oCldIbus.UpdateLead(strDittaCorrente, dR, CodLead)
-                                LogWrite(oApp.Tr(Me, 129919999269031600, "Modifica lead codice " & CodLead), True)
-                                msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica anagrafica lead: {0}", CodLead))
-                                InviaAlert(2, msg)
-                            End If
-                        End If
-                    Next
-                End If
-
-                System.IO.File.Delete(strF(nF))
-
-            Next
-
-
-
-            Return True
-
-        Catch ex As Exception
-            '--------------------------------------------------------------
-            If GestErrorCallThrow() Then
-                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-            Else
-                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-            End If
-            '--------------------------------------------------------------	
-        End Try
-    End Function
-    Public Overridable Function Elabora_ImportLeadNote() As Boolean
-        Dim strF() As String = Nothing  'elenco di ordini da importare
-        Dim nF As Integer = 0
-
-        Dim dsLeads As New DataSet
-        Dim CodLead As Integer
-        Dim msg As String = ""
-
+        ' Istanzio l'oggetto Export dell'AMHelper
+        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim LeadsData As ws_rec_leads = Nothing
+        Dim RetVal As Boolean = ed.exp_leads(LastStoredID, LeadsData)
 
         Try
-            ' Leggo la lista dei files
-            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_note_*.xml")
+            If RetVal AndAlso LeadsData IsNot Nothing Then
 
-            ' Mi passo un file alla volta
-            For nF = 0 To strF.Length - 1
+                For Each t As TestataLeadsExport In LeadsData.leads
 
-                ' Carico l'xml
-                dsLeads.Clear()
-                dsLeads.ReadXml(strF(nF))
+                    ' --------------
 
-                ' Lo valuto solo se contiene delle righe
-                If dsLeads.Tables(0).Rows.Count > 0 Then
+                    If t.cod_lead = "" Then
+                        CodLead = 0
+                        oCldIbus.InsertLeadData(strDittaCorrente, t, CodLead)
+                        LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
 
-                    ' Mi passo una riga alla volta
-                    For Each dR As DataRow In dsLeads.Tables(0).Rows
-
-                        ' Il cod ditta che e' corretto ?
-                        If dR("COD_DITTA").ToString = strDittaCorrente Then
-                            oCldIbus.InsertLeadNote(strDittaCorrente, dR, CodLead)
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota sul lead {0}", CodLead))
-                            LogWrite(msg, True)
-                            InviaAlert(2, msg)
-                        Else
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Attenzione: Nel file trovata riga con codice ditta '{0}' invece di '{1}'", dR("cod_ditta").ToString, strDittaCorrente))
-                            LogWrite(msg, True)
-                            InviaAlert(99, msg)
-                        End If
-                    Next
-                End If
-
-                System.IO.File.Delete(strF(nF))
-
-            Next
-
-            Return True
-
-        Catch ex As Exception
-            '--------------------------------------------------------------
-            If GestErrorCallThrow() Then
-                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-            Else
-                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-            End If
-            '--------------------------------------------------------------	
-        End Try
-    End Function
-
-    Public Overridable Function Elabora_ImportAnagra() As Boolean
-        Dim strF() As String = Nothing  'elenco di ordini da importare
-        Dim nF As Integer = 0
-        Dim r1 As StreamReader = Nothing
-        Dim strRow() As String = Nothing
-
-        Const posDitta As Integer = 0
-        Const posConto As Integer = 1
-        Const posTipoConto As Integer = 2
-        Const posTelefono1 As Integer = 3
-        Const posTelefono2 As Integer = 4
-        Const posFax As Integer = 5
-        Const posCell As Integer = 6
-        Const posEmail As Integer = 7
-        Const posPIVA As Integer = 8
-        Const posRagioneSociale As Integer = 9
-        Const posAddress As Integer = 10
-        Const posCAP As Integer = 11
-        Const posCity As Integer = 12
-        Const posProvincia As Integer = 13
-        Const posCodicePagamento As Integer = 14
-        Const posCodiceFiscale As Integer = 15
-
-        Dim msg As String = ""
-
-        Try
-            'verifico se ci sono preventivi/ordini da importare
-            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
-            'una volta letto il file, lo cancello
-            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_ANA*.DAT")
-
-
-
-            For nF = 0 To strF.Length - 1
-
-                r1 = New StreamReader(strF(nF))
-
-                'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
-                While Not r1.EndOfStream
-                    strRow = r1.ReadLine.Split("|"c)
-
-                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
-                    If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
-                        r1.Close()
-                        GoTo NEXT_FILE
+                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Import nuovo lead codice: {0}", t.cod_lead))
+                        InviaAlert(2, msg)
+                    Else
+                        oCldIbus.UpdateLeadData(strDittaCorrente, t)
+                        LogWrite(oApp.Tr(Me, 129919999269031600, "Modifica lead codice " & t.cod_lead), True)
+                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica anagrafica lead: {0}", t.cod_lead))
+                        InviaAlert(2, msg)
                     End If
 
-                    Dim strConto As String = strRow(posConto)
-                    Dim dttAnagra As New DataTable
-                    If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
-                        If dttAnagra.Rows.Count > 0 Then
-                            oCldIbus.UpdateClifor(strDittaCorrente, strConto, strRow)
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica dati anagrafici cliente {0}", strRow(posConto)))
-                            LogWrite(msg, True)
-                            InviaAlert(2, msg)
+                    ' ----------------
 
-                        End If
-                    End If
+                    Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "lead_id", t.id.ToString())
 
-                End While
-                r1.Close()
-
-                System.IO.File.Delete(strF(nF))
-
-NEXT_FILE:
-            Next    'For nF = 0 To strF.Length - 1
-
+                Next
+            End If
 
 
             Return True
@@ -3391,9 +3440,67 @@ NEXT_FILE:
             End If
             '--------------------------------------------------------------	
         End Try
+
+
+
     End Function
 
-    Public Overridable Function GeneraOrdineWS(ByVal Ordine As TestataOrdineExport, ByRef NumOrd As Integer) As Boolean
+    Public Overridable Function Elabora_ImportLeadNoteAPI() As Boolean
+
+        ' Variabili di uso locale
+        Dim NumOrd As Integer
+        Dim msg As String = ""
+        Dim NewCodCli As Integer
+
+        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
+        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
+        'Dim strMastro As Integer = 401
+
+        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "lead_note_id", "0"))
+
+        ' TOD:  Togliere 
+        ' LastStoredID = 30
+
+        ' Istanzio l'oggetto Export dell'AMHelper
+        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim LeadNoteData As ws_rec_leads_note = Nothing
+        Dim RetVal As Boolean = ed.exp_leads_note(LastStoredID, LeadNoteData)
+
+        Try
+            If RetVal AndAlso LeadNoteData IsNot Nothing Then
+
+                For Each t As TestataLeadsNoteExport In LeadNoteData.note
+
+                    ' --------------
+
+                    oCldIbus.InsertLeadNoteData(strDittaCorrente, t)
+                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota sul lead {0}", t.cod_lead))
+                    LogWrite(msg, True)
+                    InviaAlert(2, msg)
+                    ' ----------------
+
+                    Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "lead_note_id", t.id.ToString())
+
+                Next
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+
+    End Function
+
+    Public Overridable Function GeneraOrdineAPI(ByVal Ordine As TestataOrdineExport, ByRef NumOrd As Integer) As Boolean
 
         Dim strSerie As String = " "
         Dim nTipoBF As Integer = 0
@@ -3701,12 +3808,13 @@ NEXT_FILE:
 
     End Function
 
-    'Public Overridable Function GeneraCliente(ClienteData As List(Of Clienti), Ordine As TestataOrdineExport, ByRef CodCliente As Integer) As Boolean
-    Public Overridable Function GeneraCliente(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
+    ' Solo con WS
+    Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
+        'Public Overridable Function GeneraCliente(ClienteData As List(Of Clienti), Ordine As TestataOrdineExport, ByRef CodCliente As Integer) As Boolean
         Try
 
 
-            oCldIbus.InsertCli(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente)
+            oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente)
 
             If CodCliente <> 0 Then
                 If Not Ordine.clienti(0).cap_consegna Is Nothing Or _
@@ -3735,76 +3843,9 @@ NEXT_FILE:
         End Try
     End Function
 
-    Public Overridable Function Elabora_ImportOrdiniWS() As Boolean
+#End Region
 
-        ' Variabili di uso locale
-        Dim NumOrd As Integer
-        Dim msg As String = ""
-        Dim NewCodCli As Integer
-
-        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-        'Dim strMastro As Integer = 401
-
-        Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
-
-        ' todo Togliere 
-        LastStoredID = 30
-
-        ' Istanzio l'oggetto Export dell'AMHelper
-        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
-        Dim OrdersData As ws_rec_orders = Nothing
-        Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
-
-        Try
-            If RetVal AndAlso OrdersData IsNot Nothing Then
-
-                For Each t As TestataOrdineExport In OrdersData.testate
-
-                    If t.cod_clifor Is Nothing And strMastro = "" Then
-                        msg = oApp.Tr(Me, 129919999269031600, "Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine")
-                        LogWrite(msg, True)
-
-
-                        ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
-                        If t.cod_clifor Is Nothing Then
-                            GeneraCliente(t, CInt(strMastro), NewCodCli)
-                            t.cod_clifor = strMastro + NewCodCli.ToString()
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente))
-                            LogWrite(msg, True)
-                        End If
-
-
-                        If GeneraOrdineWS(t, NumOrd) Then
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
-                            LogWrite(msg, True)
-                            InviaAlert(1, msg, t.cod_clifor)
-                        Else
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
-                            LogWrite(msg, True)
-                            InviaAlert(99, msg, t.cod_clifor)
-                        End If
-                    End If
-
-                    Dim AggResult As Boolean = oCldIbus.SetCustomData(strDittaCorrente, "order_id", t.id.ToString())
-
-                Next
-            End If
-
-
-            Return True
-
-        Catch ex As Exception
-            '--------------------------------------------------------------
-            If GestErrorCallThrow() Then
-                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-            Else
-                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-            End If
-            '--------------------------------------------------------------	
-        End Try
-
-    End Function
+#Region "Import da Tracciati"
 
     Public Overridable Function Elabora_ImportOrdini() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
@@ -4127,60 +4168,75 @@ NEXT_FILE:
         End Try
     End Function
 
-    ''' <summary>
-    ''' Invia un alert a business
-    ''' </summary>
-    ''' <param name="msgTipo">Tipo di parametro 1=Impegno inserito</param>
-    ''' <param name="Messaggio">Stringa del messaggio che si vuole inviare</param>
-    ''' <returns>Vero se l'invio è andato a buon fine</returns>
-    ''' <remarks></remarks>
+    Public Overridable Function Elabora_ImportAnagra() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+        Dim r1 As StreamReader = Nothing
+        Dim strRow() As String = Nothing
 
-    Public Overridable Function InviaAlert(ByVal idEvento As Integer, ByVal Messaggio As String, Optional Conto As String = "") As Boolean
-        Dim dttAlert As DataTable = Nothing
-        Dim strTipork As String = ""
-        Dim strCliente As String = ""
-        ' msgTipo puo' valere :
+        Const posDitta As Integer = 0
+        Const posConto As Integer = 1
+        Const posTipoConto As Integer = 2
+        Const posTelefono1 As Integer = 3
+        Const posTelefono2 As Integer = 4
+        Const posFax As Integer = 5
+        Const posCell As Integer = 6
+        Const posEmail As Integer = 7
+        Const posPIVA As Integer = 8
+        Const posRagioneSociale As Integer = 9
+        Const posAddress As Integer = 10
+        Const posCAP As Integer = 11
+        Const posCity As Integer = 12
+        Const posProvincia As Integer = 13
+        Const posCodicePagamento As Integer = 14
+        Const posCodiceFiscale As Integer = 15
 
-        If strAttivaAlert = "0" Then Return True
-
+        Dim msg As String = ""
 
         Try
-            'Public Overridable Function Verifica_Genera_Alert(ByVal nTipoOperazione As Integer, ByVal strDitta As String, _
-            '                                             ByVal strProgramma As String, ByVal lIdEvento As Integer, _
-            '                                            ByRef lIdAlert As Integer, ByVal dttMsgOutParam As DataTable) As Boolean
-            ' CONTROLLA SE C'E' UN ALERT DA GENERARE, E NEL CASO LO GENERA
-            '
-            ' IN: nTipoOperazione -> 0 = solo verifica
-            '                     -> 1 = solo genera
-            '                     -> 2 = verifica e genera
-            '
-            '     strCodditt      -> Ditta del programma chiamante
-            '
-            '     strProgramma    -> Programma chiamante
-            '     lIdEvento       -> Id. dell'evento all'interno del programma chiamante
-            '     objfmChiamante  -> riferimento al form del programma chiamante
-            '
-            '     lIdAlert        -> Alesets da verificare
-            '     dttMsgOutParam  -> recordset dei messaggi ed altri eventuali parametri
-            '                        per ogni alert da generare
-            ' OU:
-            '     Verifica_Genera_Alert ->  = True  significa Alert verificato/generato
-            '                               = False significa Alert non verificato/non generato
-            ' Impegno
-
-            dttAlert = CType(oCleComm, CLELBMENU).CreaDynasetAlert
-            dttAlert.Rows.Add(dttAlert.NewRow)
-            dttAlert.Rows(0)!codditt = strDittaCorrente
-            dttAlert.Rows(0)!strMsg = Messaggio
+            'verifico se ci sono preventivi/ordini da importare
+            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'una volta letto il file, lo cancello
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_ANA*.DAT")
 
 
-            If Conto <> "" And Conto <> "0" Then
-                dttAlert.Rows(0)!strConto = Conto
-            End If
 
-            dttAlert.AcceptChanges()
+            For nF = 0 To strF.Length - 1
 
-            CType(oCleComm, CLELBMENU).Verifica_Genera_Alert(2, strDittaCorrente, "BSIEIBUS", idEvento, 0, dttAlert)
+                r1 = New StreamReader(strF(nF))
+
+                'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
+                While Not r1.EndOfStream
+                    strRow = r1.ReadLine.Split("|"c)
+
+                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
+                        r1.Close()
+                        GoTo NEXT_FILE
+                    End If
+
+                    Dim strConto As String = strRow(posConto)
+                    Dim dttAnagra As New DataTable
+                    If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
+                        If dttAnagra.Rows.Count > 0 Then
+                            oCldIbus.UpdateClifor(strDittaCorrente, strConto, strRow)
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica dati anagrafici cliente {0}", strRow(posConto)))
+                            LogWrite(msg, True)
+                            InviaAlert(2, msg)
+
+                        End If
+                    End If
+
+                End While
+                r1.Close()
+
+                System.IO.File.Delete(strF(nF))
+
+NEXT_FILE:
+            Next    'For nF = 0 To strF.Length - 1
+
+
+
             Return True
 
         Catch ex As Exception
@@ -4190,11 +4246,239 @@ NEXT_FILE:
             Else
                 ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
             End If
-            '--------------------------------------------------------------
+            '--------------------------------------------------------------	
         End Try
+    End Function
+
+    Public Overridable Function Elabora_ImportCliforNote() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+        Dim r1 As StreamReader = Nothing
+        Dim strRow() As String = Nothing
+
+        Const posDitta As Integer = 0
+        Const posConto As Integer = 1
+        'Const posTipoConto As Integer = 2
+        Const posProgressivo As Integer = 3
+        Const posTitolo As Integer = 4
+        Const posNota As Integer = 5
+
+        Dim msg As String = ""
+
+
+        Try
+            'verifico se ci sono preventivi/ordini da importare
+            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'una volta letto il file, lo cancello
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_NOTE*.DAT")
+
+            For nF = 0 To strF.Length - 1
+
+                r1 = New StreamReader(strF(nF))
+
+                'r1.ReadLine()  'Se la prima riga fosse l'intestazione, la skipperei con questo comanto
+                While Not r1.EndOfStream
+                    strRow = r1.ReadLine.Split("|"c)
+
+                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
+                        r1.Close()
+                        GoTo NEXT_FILE
+                    End If
+
+                    Dim strConto As String = strRow(posConto)
+                    Dim dttAnagra As New DataTable
+                    If oCldIbus.ValCodiceDb(strConto, strDittaCorrente, "ANAGRA", "N", "", dttAnagra) Then
+                        If dttAnagra.Rows.Count > 0 Then
+                            Select Case NTSCStr(strRow(posProgressivo)).Trim
+                                Case "0"
+                                    oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
+                                    msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                    LogWrite(msg, True)
+                                    InviaAlert(2, msg)
+                                Case ""
+                                    'se non trovo la nota su tabnote la devo creare
+                                    'pero' prima provo a vedere se sull'anagrafica cliente
+                                    'le note generiche sono vuote
+                                    'Se lo sono compilo quelle
+                                    If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
+                                        oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                        LogWrite(msg, True)
+                                        InviaAlert(2, msg)
+                                    Else
+                                        'insert tabnote
+                                        oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
+                                        LogWrite(msg, True)
+                                        InviaAlert(2, msg)
+                                    End If
+                                Case Else
+                                    If oCldIbus.CheckTabNote(strDittaCorrente, strConto, strRow(posProgressivo)) Then
+                                        'update tabnote
+                                        oCldIbus.UpdateCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
+                                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota tabnote per cliente {0}", strConto))
+                                        LogWrite(msg, True)
+                                        InviaAlert(2, msg)
+                                    Else
+                                        'se non trovo la nota su tabnote la devo creare
+                                        'pero' prima provo a vedere se sull'anagrafica cliente
+                                        'le note generiche sono vuote
+                                        'Se lo sono compilo quelle
+                                        If NTSCStr(dttAnagra.Rows(0)!an_note2).Trim = "" Then
+                                            oCldIbus.UpdateCliforNote(strDittaCorrente, strConto, strRow(posNota), strRow(posTitolo))
+                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Aggiornamento nota principale cliente {0}", strConto))
+                                            LogWrite(msg, True)
+                                            InviaAlert(2, msg)
+                                        Else
+                                            'insert tabnote
+                                            oCldIbus.InsertCliforTabNote(strDittaCorrente, strConto, strRow(posProgressivo), strRow(posTitolo), strRow(posNota))
+                                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota tabnote per cliente {0}", strConto))
+                                            LogWrite(msg, True)
+                                            InviaAlert(2, msg)
+                                        End If
+                                    End If
+                            End Select
+                        End If
+                    End If
+
+                End While
+                r1.Close()
+
+                System.IO.File.Delete(strF(nF))
+
+NEXT_FILE:
+            Next    'For nF = 0 To strF.Length - 1
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ImportLead() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+        Dim msg As String = ""
+        Dim dsLeads As New DataSet
+        Dim CodLead As Integer
+
+        Try
+            ' Leggo la lista dei files
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_data_*.xml")
+
+            ' Mi passo un file alla volta
+            For nF = 0 To strF.Length - 1
+
+                ' Carico l'xml
+                dsLeads.Clear()
+                dsLeads.ReadXml(strF(nF))
+
+                ' Lo valuto solo se contiene delle righe
+                If dsLeads.Tables(0).Rows.Count > 0 Then
+
+                    ' Mi passo una riga alla volta
+                    For Each dR As DataRow In dsLeads.Tables(0).Rows
+
+                        ' Il cod ditta che e' corretto ?
+                        If dR("COD_DITTA").ToString = strDittaCorrente Then
+                            If dR("COD_LEAD").ToString = "" Then
+                                oCldIbus.InsertLead(strDittaCorrente, dR, CodLead)
+                                LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
+
+                                msg = oApp.Tr(Me, 129919999269031600, String.Format("Import nuovo lead codice: {0}", CodLead))
+                                InviaAlert(2, msg)
+                            Else
+                                oCldIbus.UpdateLead(strDittaCorrente, dR, CodLead)
+                                LogWrite(oApp.Tr(Me, 129919999269031600, "Modifica lead codice " & CodLead), True)
+                                msg = oApp.Tr(Me, 129919999269031600, String.Format("Modifica anagrafica lead: {0}", CodLead))
+                                InviaAlert(2, msg)
+                            End If
+                        End If
+                    Next
+                End If
+
+                System.IO.File.Delete(strF(nF))
+
+            Next
 
 
 
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ImportLeadNote() As Boolean
+        Dim strF() As String = Nothing  'elenco di ordini da importare
+        Dim nF As Integer = 0
+
+        Dim dsLeads As New DataSet
+        Dim CodLead As Integer
+        Dim msg As String = ""
+
+
+        Try
+            ' Leggo la lista dei files
+            strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "leads_note_*.xml")
+
+            ' Mi passo un file alla volta
+            For nF = 0 To strF.Length - 1
+
+                ' Carico l'xml
+                dsLeads.Clear()
+                dsLeads.ReadXml(strF(nF))
+
+                ' Lo valuto solo se contiene delle righe
+                If dsLeads.Tables(0).Rows.Count > 0 Then
+
+                    ' Mi passo una riga alla volta
+                    For Each dR As DataRow In dsLeads.Tables(0).Rows
+
+                        ' Il cod ditta che e' corretto ?
+                        If dR("COD_DITTA").ToString = strDittaCorrente Then
+                            oCldIbus.InsertLeadNote(strDittaCorrente, dR, CodLead)
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Inserimento nota sul lead {0}", CodLead))
+                            LogWrite(msg, True)
+                            InviaAlert(2, msg)
+                        Else
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Attenzione: Nel file trovata riga con codice ditta '{0}' invece di '{1}'", dR("cod_ditta").ToString, strDittaCorrente))
+                            LogWrite(msg, True)
+                            InviaAlert(99, msg)
+                        End If
+                    Next
+                End If
+
+                System.IO.File.Delete(strF(nF))
+
+            Next
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
     End Function
 
     Public Overridable Function GeneraOrdini(ByRef dttIn As DataTable, ByRef NumOrd As Integer) As Boolean
@@ -4398,40 +4682,71 @@ NEXT_FILE:
         End Try
     End Function
 
-    Public Overridable Sub GestisciEventiEntityPERS(ByVal sender As Object, ByRef e As NTSEventArgs)
-        'Dim fErr As StreamWriter = Nothing
-        'Dim fiErr As FileInfo = Nothing
-        'Dim strNomeFileLog As String = ""
-        Dim strMsg As String = ""
+#End Region
+
+#Region "utility"
+
+    Public Overridable Function InviaAlert(ByVal idEvento As Integer, ByVal Messaggio As String, Optional Conto As String = "") As Boolean
+        Dim dttAlert As DataTable = Nothing
+        Dim strTipork As String = ""
+        Dim strCliente As String = ""
+        ' msgTipo puo' valere :
+
+        If strAttivaAlert = "0" Then Return True
+
+
         Try
+            'Public Overridable Function Verifica_Genera_Alert(ByVal nTipoOperazione As Integer, ByVal strDitta As String, _
+            '                                             ByVal strProgramma As String, ByVal lIdEvento As Integer, _
+            '                                            ByRef lIdAlert As Integer, ByVal dttMsgOutParam As DataTable) As Boolean
+            ' CONTROLLA SE C'E' UN ALERT DA GENERARE, E NEL CASO LO GENERA
+            '
+            ' IN: nTipoOperazione -> 0 = solo verifica
+            '                     -> 1 = solo genera
+            '                     -> 2 = verifica e genera
+            '
+            '     strCodditt      -> Ditta del programma chiamante
+            '
+            '     strProgramma    -> Programma chiamante
+            '     lIdEvento       -> Id. dell'evento all'interno del programma chiamante
+            '     objfmChiamante  -> riferimento al form del programma chiamante
+            '
+            '     lIdAlert        -> Alesets da verificare
+            '     dttMsgOutParam  -> recordset dei messaggi ed altri eventuali parametri
+            '                        per ogni alert da generare
+            ' OU:
+            '     Verifica_Genera_Alert ->  = True  significa Alert verificato/generato
+            '                               = False significa Alert non verificato/non generato
+            ' Impegno
 
-            'strNomeFileLog = oApp.AscDir & "\eventi-gsor.LOG"
-            'fiErr = New FileInfo(strNomeFileLog)
-            'If fiErr.Exists Then
-            ' If fiErr.Length > 500000 Then fiErr.Delete()
-            ' End If
-            'fErr = New StreamWriter(strNomeFileLog, True)
-            'fErr.Write(e.Message & vbCrLf)
-            'fErr.Flush()
-            'fErr.Close()
+            dttAlert = CType(oCleComm, CLELBMENU).CreaDynasetAlert
+            dttAlert.Rows.Add(dttAlert.NewRow)
+            dttAlert.Rows(0)!codditt = strDittaCorrente
+            dttAlert.Rows(0)!strMsg = Messaggio
 
-            If e.Message <> "" Then
-                strMsg = oApp.Tr(Me, 129877602933085930, e.Message)
-                LogWrite(strMsg, False)
-                InviaAlert(99, strMsg)
+
+            If Conto <> "" And Conto <> "0" Then
+                dttAlert.Rows(0)!strConto = Conto
             End If
 
-            'magari poi inserire anche l'istruzione sotto, così un volta loggati li giriamo comunque alla UI
-            'GestisciEventiEntity(sender, e)
+            dttAlert.AcceptChanges()
 
-            'oppure creiamo un alert
-            'codice per generare un nuovo alert
+            CType(oCleComm, CLELBMENU).Verifica_Genera_Alert(2, strDittaCorrente, "BSIEIBUS", idEvento, 0, dttAlert)
+            Return True
 
         Catch ex As Exception
-            Dim strErr As String = GestError(ex, Me, "", oApp.InfoError, oApp.ErrorLogFile, True)
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------
         End Try
-    End Sub
 
+
+
+    End Function
 
     Public Function CompressFile(ByRef file As String, ByRef destination As String) As String
         'Make sure user provided a valid file with path
@@ -4482,22 +4797,6 @@ NEXT_FILE:
         Return buffer
     End Function
 
-    Public Overridable Sub GestisciEventiEntityGsor(ByVal sender As Object, ByRef e As NTSEventArgs)
-        Try
-            'gli eventuali messaggi dati da BEORGSOR tramite la ThrowRemoteEvent li passo a BNIEIBUS
-            ThrowRemoteEvent(e)
-        Catch ex As Exception
-            '--------------------------------------------------------------
-            If GestErrorCallThrow() Then
-                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-            Else
-                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-            End If
-            '--------------------------------------------------------------	
-        End Try
-    End Sub
-
-
     Private Shared Function GetValue(codProgetto As String, key As String) As String
         Dim keyReg As Microsoft.Win32.RegistryKey
         'keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("ApexNet AM");
@@ -4517,7 +4816,6 @@ NEXT_FILE:
         Return valore
     End Function
 
-
     Private Shared Sub SetValue(codProgetto As String, key As String, value As String)
         Dim keyReg As Microsoft.Win32.RegistryKey
         'keyReg = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("ApexNet AM");
@@ -4526,6 +4824,7 @@ NEXT_FILE:
         keyReg.Close()
     End Sub
 
+#End Region
 
 
 End Class

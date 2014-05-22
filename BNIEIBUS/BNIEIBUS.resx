@@ -121,46 +121,6 @@
     <value>207, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="tlbStampa.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAdUlEQVQ4T7WQUQ7AIAhDd3RvjmsVAxko
-        S7aXvMGa6ofXX0jBFDmBzqjG2JLT5Cks7UBnVGNsyZnkDpZ2oDOqj7luPAns5K5BhegSft6qcLeBo7Um
-        6oyA7itLL7ifDU9HZwSwq8QGVYFO4n42hIcVhFW/QUSkAw6t553NK3h4AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="tlbStampaVideo.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAASUlEQVQ4T2OAgv9kYDhA4ZAA4PpgDJjJ
-        xGAQgNHIAv+JwKMGQNSBAYweXAYQjUEARiMYJAIUfTCTScEEAUmKYQBZEy5MTcDAAACvZN0jFIdbJQAA
-        AABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="tlbGuida.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAQElEQVQ4T2OgFfiPAxMF/v//j4lbWogz
-        BJsGkgzBpZAiA0hyAQhQpBkZUKQZBCjSDAIDbwAIUKZ56HuBCMDAAABf0Ij26b9OtQAAAABJRU5ErkJg
-        gg==
-</value>
-  </data>
-  <data name="tlbEsci.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAcklEQVQ4T62OAQ7AIAgDeTo/dylao0LE
-        zV3SBLdyKn9RkqS0ohbCuf1LKar9tigL6r6ZgJIRnK3RwfJGML7EC7g8puIEBLM1wmWk4gTILAAvBASz
-        NTrzInG3I7EAbAT5CzxWWgVJQlbBJ64F4FoADgUiD55ez1ceeoFuAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="tlbStrumenti.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
-        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAcklEQVQ4T7WQAQrAIAhFPbpH62YNS8VE
-        XQ72QEb9fNngb6arFqsJcZesuUKyA2tPREYWkoWlwC5SAZUT6Dm7cQTMRJf7SY5wjKEBfU2zED7DopKg
-        WUibBT9JC735i8SP3ZJkb76SVD+MeJWUIXNzpgvAAx0AgODw1eOuAAAAAElFTkSuQmCC
-</value>
-  </data>
   <data name="tlbElabora.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -195,6 +155,46 @@
         +43VaI8lKGGUfkEQWM5atSZYrVYMDQ1JZ9bb2wudTscwtVqNO/ca5Kd8IT50wiYmJqTQKtV6hhmNRjxs
         /hmNekULw1QqVW2sUvTQb78ACi1her1evM12aZ22+UdMrugF0G1SzuoVNaLx76qu7gcBRW7cXjQMZAAA
         AABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="tlbStrumenti.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAcklEQVQ4T7WQAQrAIAhFPbpH62YNS8VE
+        XQ72QEb9fNngb6arFqsJcZesuUKyA2tPREYWkoWlwC5SAZUT6Dm7cQTMRJf7SY5wjKEBfU2zED7DopKg
+        WUibBT9JC735i8SP3ZJkb76SVD+MeJWUIXNzpgvAAx0AgODw1eOuAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="tlbEsci.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAcklEQVQ4T62OAQ7AIAgDeTo/dylao0LE
+        zV3SBLdyKn9RkqS0ohbCuf1LKar9tigL6r6ZgJIRnK3RwfJGML7EC7g8puIEBLM1wmWk4gTILAAvBASz
+        NTrzInG3I7EAbAT5CzxWWgVJQlbBJ64F4FoADgUiD55ez1ceeoFuAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="tlbStampa.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAdUlEQVQ4T7WQUQ7AIAhDd3RvjmsVAxko
+        S7aXvMGa6ofXX0jBFDmBzqjG2JLT5Cks7UBnVGNsyZnkDpZ2oDOqj7luPAns5K5BhegSft6qcLeBo7Um
+        6oyA7itLL7ifDU9HZwSwq8QGVYFO4n42hIcVhFW/QUSkAw6t553NK3h4AAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="tlbStampaVideo.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAASUlEQVQ4T2OAgv9kYDhA4ZAA4PpgDJjJ
+        xGAQgNHIAv+JwKMGQNSBAYweXAYQjUEARiMYJAIUfTCTScEEAUmKYQBZEy5MTcDAAACvZN0jFIdbJQAA
+        AABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="tlbGuida.Glyph" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6
+        JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAQElEQVQ4T2OgFfiPAxMF/v//j4lbWogz
+        BJsGkgzBpZAiA0hyAQhQpBkZUKQZBCjSDAIDbwAIUKZ56HuBCMDAAABf0Ij26b9OtQAAAABJRU5ErkJg
+        gg==
 </value>
   </data>
 </root>

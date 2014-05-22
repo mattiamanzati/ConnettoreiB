@@ -10,6 +10,10 @@ copy ..\TEST\BNIEIBUS.pdb .\iBUpdate
 copy ..\TEST\BEIEIBUS.pdb .\iBUpdate
 copy ..\TEST\BDIEIBUS.pdb .\iBUpdate
 
+copy ..\TEST\RestSharp*.* .\iBUpdate
+copy ..\TEST\Ionic*.* .\iBUpdate
+copy ..\TEST\AMHelper*.* .\iBUpdate
+
 copy ..\TEST\ApexNet*.dll .\iBUpdate
 copy ..\TEST\ApexNet*.pbd .\iBUpdate
 
@@ -17,9 +21,8 @@ copy ..\lib\*.* .\iBUpdate
 copy .\AssistenzaApex.exe .\iBUpdate
 
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "iBUpdate.zip" .\iBUpdate
-
+ 
 rmdir /S /Q iBUpdate
-
 
 del ConnettoreBusiness.zip
 rmdir /S /Q ConnettoreBusiness
@@ -34,10 +37,14 @@ copy ..\TEST\BEIEIBUS.pdb .\ConnettoreBusiness
 copy ..\TEST\BDIEIBUS.dll .\ConnettoreBusiness
 copy ..\TEST\BDIEIBUS.pdb .\ConnettoreBusiness
 
+copy ..\TEST\RestSharp*.* .\ConnettoreBusiness
+copy ..\TEST\Ionic*.* .\ConnettoreBusiness
+copy ..\TEST\AMHelper*.* .\ConnettoreBusiness
+
 copy ..\TEST\ApexNet*.dll .\ConnettoreBusiness
 copy ..\TEST\ApexNet*.pbd .\ConnettoreBusiness
 
-copy ..\lib\*.* .\ConnettoreBusiness
+rem copy ..\lib\*.* .\ConnettoreBusiness
 copy .\AssistenzaApex.exe .\ConnettoreBusiness
 
 copy ..\TEST\iBUpdate.exe .\ConnettoreBusiness

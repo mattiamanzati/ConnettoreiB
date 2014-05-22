@@ -267,7 +267,7 @@ Public Class FRMIEIBUS
         '
         'ckCli
         '
-        Me.ckCli.Cursor = System.Windows.Forms.Cursors.SizeNWSE
+        Me.ckCli.Cursor = System.Windows.Forms.Cursors.Default
         Me.ckCli.Location = New System.Drawing.Point(25, 81)
         Me.ckCli.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
         Me.ckCli.Name = "ckCli"
@@ -1317,14 +1317,25 @@ errorhandle:
     End Sub
 
     Private Sub tlbLog_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles tlbLog.ItemClick
-        Dim frmLog As FRMLOGIBUS = Nothing
 
+        System.Diagnostics.Process.Start("notepad", oCleIbus.LogFileName)
+
+        Process.Start("explorer.exe", oCleIbus.strDropBoxDir)
+        ' System.Diagnostics.Process.Start("notepad", oCleIbus.LogFileName)
+        'If oApp.MsgBoxInfoYesNo_DefYes(oApp.Tr(Me, 129877048655397019, "Esistono dei messaggi nel file di log del programma. Visualizzare il file?")) = Windows.Forms.DialogResult.Yes Then
+        ' System.Diagnostics.Process.Start("notepad", oCleIbus.LogFileName)
+        'End If
+
+#If False Then
+
+        Dim frmLog As FRMLOGIBUS = Nothing
 
         frmLog = CType(NTSNewFormModal("FRMLOGIBUS"), FRMLOGIBUS)
         frmLog.Init(oMenu, oCallParams, DittaCorrente)
         frmLog.oCleIbus = oCleIbus
 
         frmLog.ShowDialog()
+#End If
 
     End Sub
 
