@@ -395,8 +395,8 @@ Public Class CLDIEIBUS
             End If
 
             strSQL = String.Format("update leads set le_note2 = {0} where codditt = {1} and le_codlead = {2}", _
-                                   CStrSQL(TestoNota.Replace(iBNewline, vbNewLine)), _
-                                   CStrSQL(strDitta), _
+                                   ToSql(TestoNota), _
+                                   ToSql(strDitta), _
                                    t.cod_lead)
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
@@ -466,10 +466,10 @@ Public Class CLDIEIBUS
                           "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot) values ({0}, {1}, {2}, {3}, {4}, {5})", _
                                       CStrSQL(strDitta), _
                                       nNumero, _
-                                      ToSql(Nota.tipo_nota.Replace(iBNewline, vbNewLine)), _
+                                      ToSql(Nota.tipo_nota), _
                                       ToSql("S"), _
                                       Nota.cod_cliente, _
-                                      ToSql(Nota.nota.Replace(iBNewline, vbNewLine)) _
+                                      ToSql(Nota.nota) _
                                   )
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
@@ -483,8 +483,8 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
             strSQL = "UPDATE tabnote" & _
-                     " SET tb_desnote=" & ToSql(Nota.tipo_nota.Replace(iBNewline, vbNewLine)) & "," & _
-                     " tb_testonot=" & ToSql(Nota.nota.Replace(iBNewline, vbNewLine)) & "," & _
+                     " SET tb_desnote=" & ToSql(Nota.tipo_nota) & "," & _
+                     " tb_testonot=" & ToSql(Nota.nota) & "," & _
                      " WHERE codditt=" & ToSql(strDitta) & _
                      " AND tb_codnote =" & Nota.progressivo & _
                      " AND tb_contonot =" & Nota.cod_cliente
@@ -527,7 +527,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
             strSQL = "UPDATE anagra" & _
-                     " SET an_note2=" & ToSql(Nota.nota.Replace(iBNewline, vbNewLine)) & "," & _
+                     " SET an_note2=" & ToSql(Nota.nota) & "," & _
                      " an_opnome=" & ToSql(Nota.utente, 20) & "," & _
                      " an_ultagg=" & CDataOraSQL(Now) & _
                      " WHERE codditt=" & CStrSQL(strDitta) & _

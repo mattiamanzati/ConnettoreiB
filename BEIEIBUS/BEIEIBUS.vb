@@ -63,8 +63,12 @@ Public Class CLEIEIBUS
     Public strIncludileadClienti As String = ""
 
     Public strMastro As String = ""
-    Public strAuthKey As String = ""
+    Public strAuthKeyAM As String = ""
+    Public strAuthKeyLM As String = ""
+
     Public strAppManagerAPI As String = ""
+    Public strCodProgetto As String = ""
+
     Public strUseAPI As String = ""
 
     Public strScontoMaxPercentuale As String = ""
@@ -340,18 +344,16 @@ Public Class CLEIEIBUS
             strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "0", " ", "0").Trim
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
 
-            strMastro = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Mastro", "0", " ", "0").Trim
-            strAuthKey = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKey", "", " ", "").Trim
-            strAppManagerAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AppManagerAPI", "", " ", "").Trim
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
+            strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
+            strAuthKeyAM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyAM", "", " ", "").Trim
+            'strAppManagerAPI
+            strMastro = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Mastro", "0", " ", "0").Trim
 
-            ' TOD data
-            strUseAPI = "1"
-            strAppManagerAPI = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-            strAuthKey = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-            strMastro = "401"
-
-
+            'strUseAPI = "1"
+            'strAppManagerAPI = "http://am.apexnet.it/api_gaiainformatica-demo/v1/progetti/ib.gaiainformatica-demo"
+            'strAuthKey = "D00A51A1-2447-4D35-B199-FC0E5AFA1467"  ' String di autenticazione
+            ' strMastro = "101"
 
             strAttivaAlert = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Abilita_Alert", "0", " ", "0").Trim
 
@@ -761,20 +763,27 @@ Public Class CLEIEIBUS
 
             End If
 
+            ' TODO: Scommentare solo in debug
+            'strUseAPI = "1"
+            'strAuthKeyLM = "7C13A2FF-8EDB-4E87-A81F-E9199302BA31"
+            'strAuthKeyAM = "E24EFDA3-9878-42D8-90FE-C00F847FE434"
+            'strMastro = "401"
+
             '--------------------
             'Import Ordini
             If strTipork.Contains("ORD;") And strUseAPI <> "0" Then
 
                 ' Controlli preelaborazione
-                If strAuthKey = "" Then
-                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AuthKey non configurata")
+                If strAuthKeyLM = "" Then
+                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AuthKeyLM non configurata")
                     ThrowRemoteEvent(New NTSEventArgs("", msg))
                     LogWrite(msg, True)
                     Return False
                 End If
 
-                If strAppManagerAPI = "" Then
-                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AppManagerAPI non configurata")
+                ' Controlli preelaborazione
+                If strAuthKeyAM = "" Then
+                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: AuthKeyAM non configurata")
                     ThrowRemoteEvent(New NTSEventArgs("", msg))
                     LogWrite(msg, True)
                     Return False
@@ -782,6 +791,25 @@ Public Class CLEIEIBUS
 
                 'meglio importare i dati dei clienti e note modificati o aggiunti
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import da WS (anagrafiche, note, ordini...)"))
+
+
+                ' Istanzio l'oggetto Export dell'AMHelper
+                'Dim ed As New GetDataLM(strAuthKeyLM)
+                Dim ed As New GetDataLM(strAuthKeyLM, False)
+                Dim AMData As ws_rec_lmparam = Nothing
+                Dim RetVal As Boolean = ed.get_am_par(AMData)
+
+                If RetVal And Not AMData Is Nothing Then
+                    strAppManagerAPI = AMData.url_am_api + "/" + AMData.cod_prog
+                    ' strCodProgetto = AMData.cod_prog
+                Else
+                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: Dati conf. LM non recuperati")
+                    ThrowRemoteEvent(New NTSEventArgs("", msg))
+                    LogWrite(msg, True)
+                    Return False
+                End If
+
+
 
                 If Not Elabora_ImportAnagraAPI() Then Return False
                 If Not Elabora_ImportCliforNoteAPI() Then Return False
@@ -793,9 +821,6 @@ Public Class CLEIEIBUS
             End If
 
             'If Not Elabora_ImportOrdiniNew() Then Return False
-
-
-
 
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
             Return True
@@ -3138,17 +3163,13 @@ Public Class CLEIEIBUS
         Dim msg As String = ""
         Dim NewCodCli As Integer
 
-        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-        'Dim strMastro As Integer = 401
-
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
 
-        ' TOD:  Togliere 
-        ' LastStoredID = 30
+        ' TODO:  Togliere 
+        'LastStoredID = 3
 
         ' Istanzio l'oggetto Export dell'AMHelper
-        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
         Dim OrdersData As ws_rec_orders = Nothing
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
 
@@ -3161,6 +3182,7 @@ Public Class CLEIEIBUS
                         msg = oApp.Tr(Me, 129919999269031600, "Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine")
                         LogWrite(msg, True)
 
+                    Else
 
                         ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
                         If t.cod_clifor Is Nothing Then
@@ -3205,21 +3227,15 @@ Public Class CLEIEIBUS
     Public Overridable Function Elabora_ImportAnagraAPI() As Boolean
 
         ' Variabili di uso locale
-        Dim NumOrd As Integer
         Dim msg As String = ""
-        Dim NewCodCli As Integer
-
-        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-        'Dim strMastro As Integer = 401
 
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "anagra_id", "0"))
 
-        ' TOD:  Togliere 
+        ' TODO:  Togliere 
         ' LastStoredID = 30
 
         ' Istanzio l'oggetto Export dell'AMHelper
-        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
         Dim CliforData As ws_rec_clifor = Nothing
         Dim RetVal As Boolean = ed.exp_clifor(LastStoredID, CliforData)
 
@@ -3273,21 +3289,15 @@ Public Class CLEIEIBUS
     Public Overridable Function Elabora_ImportCliforNoteAPI() As Boolean
 
         ' Variabili di uso locale
-        Dim NumOrd As Integer
         Dim msg As String = ""
-        Dim NewCodCli As Integer
-
-        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-        'Dim strMastro As Integer = 401
 
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "anagra_note_id", "0"))
 
-        ' TOD:  Togliere 
+        ' TODO:  Togliere 
         ' LastStoredID = 30
 
         ' Istanzio l'oggetto Export dell'AMHelper
-        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
         Dim CliforNoteData As ws_rec_clifor_note = Nothing
         Dim RetVal As Boolean = ed.exp_clifor_note(LastStoredID, CliforNoteData)
 
@@ -3381,22 +3391,16 @@ Public Class CLEIEIBUS
     Public Overridable Function Elabora_ImportLeadAPI() As Boolean
 
         ' Variabili di uso locale
-        Dim NumOrd As Integer
         Dim msg As String = ""
-        Dim NewCodCli As Integer
         Dim CodLead As Integer
-
-        'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
-        'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
-        'Dim strMastro As Integer = 401
 
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "lead_id", "0"))
 
-        ' TOD:  Togliere 
+        ' TODO:  Togliere 
         ' LastStoredID = 30
 
         ' Istanzio l'oggetto Export dell'AMHelper
-        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
         Dim LeadsData As ws_rec_leads = Nothing
         Dim RetVal As Boolean = ed.exp_leads(LastStoredID, LeadsData)
 
@@ -3448,9 +3452,7 @@ Public Class CLEIEIBUS
     Public Overridable Function Elabora_ImportLeadNoteAPI() As Boolean
 
         ' Variabili di uso locale
-        Dim NumOrd As Integer
         Dim msg As String = ""
-        Dim NewCodCli As Integer
 
         'Dim strAppManagerAPI As String = "http://test.apexnet.it/appmanager/api/v1/progetti/iorder.test2"
         'Dim strAuthKey As String = "E24EFDA3-9878-42D8-90FE-C00F847FE434"  ' String di autenticazione
@@ -3462,7 +3464,7 @@ Public Class CLEIEIBUS
         ' LastStoredID = 30
 
         ' Istanzio l'oggetto Export dell'AMHelper
-        Dim ed As New GetDataAM(strAuthKey, strAppManagerAPI)
+        Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
         Dim LeadNoteData As ws_rec_leads_note = Nothing
         Dim RetVal As Boolean = ed.exp_leads_note(LastStoredID, LeadNoteData)
 
