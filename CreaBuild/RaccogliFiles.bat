@@ -17,6 +17,8 @@ copy ..\TEST\AMHelper*.* .\iBUpdate
 copy ..\TEST\ApexNet*.dll .\iBUpdate
 copy ..\TEST\ApexNet*.pbd .\iBUpdate
 
+copy ..\TEST\Newtonsoft* .\iBUpdate
+
 copy ..\lib\*.* .\iBUpdate
 copy .\AssistenzaApex.exe .\iBUpdate
 
@@ -49,6 +51,8 @@ copy .\AssistenzaApex.exe .\ConnettoreBusiness
 
 copy ..\TEST\iBUpdate.exe .\ConnettoreBusiness
 copy ..\TEST\iBUpdate.pdb .\ConnettoreBusiness
+
+copy ..\TEST\Newtonsoft* .\ConnettoreBusiness
 
 cd .\ConnettoreBusiness
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "ConnettoreBusiness.zip" *.*

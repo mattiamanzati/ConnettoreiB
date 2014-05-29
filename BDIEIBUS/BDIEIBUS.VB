@@ -187,6 +187,30 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function GetCifreConto(ByVal strDitta As String, ByRef numCifre As Integer) As Boolean
+        Dim strSQL As String = ""
+        Dim dttOut As New DataTable
+        Try
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCifreConto.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            If dttOut.Rows.Count = 0 Then
+                Return False
+            Else
+                numCifre = NTSCInt(dttOut.Rows(0)!xx_num_cifre)
+
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+
     Public Overridable Function FindArtUltCost(ByVal strDitta As String, ByVal codArticolo As String, ByRef UltCost As Decimal) As Boolean
         Dim strSQL As String = ""
         Dim dttOut As New DataTable
@@ -541,7 +565,7 @@ Public Class CLDIEIBUS
     End Function
 
     ' Solo per API
-    Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodCliente As Integer) As Boolean
+    Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodClienteCompleto As Integer) As Boolean
         Dim strSQL As String = ""
 
         Try
@@ -557,7 +581,7 @@ Public Class CLDIEIBUS
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliDest.sql")
             strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
-            strSQL = strSQL.Replace("@dd_conto@", ToSql(Mastro.ToString() + CodCliente.ToString()))
+            strSQL = strSQL.Replace("@dd_conto@", ToSql(CodClienteCompleto.ToString()))
             strSQL = strSQL.Replace("@dd_coddest@", ToSql("1"))
             strSQL = strSQL.Replace("@dd_nomdest@", ToSql(Dest.des_citta_consegna, 50))
 
@@ -599,25 +623,41 @@ Public Class CLDIEIBUS
     End Function
 
     ' Solo per API
-    Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
+    Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodCliente As Integer, ByRef CodClienteCompleto As Integer) As Boolean
 
         Dim nNumero As Integer = 0
         Dim dttOut As New DataTable
         Dim CodiceCliente As New Integer
         Dim strSQL As String = ""
 
+        Dim numCifre As Integer = 0
+        Dim RetValCifre As Boolean
+        Dim CodiceClienteCompleto As String
+
         CodCliente = 0
 
         Try
+            ' Quento deve essere il filler del cod cliente
+            RetValCifre = GetCifreConto(strDitta, numCifre)
+
+            ' Leggo il progressivo (ovvero il cod conto)
             nNumero = 0
             nNumero = LegNuma(strDitta, "CC", " ", Mastro, True)
             nNumero = AggNuma(strDitta, "CC", " ", Mastro, nNumero, False, False, "")
+
+
+            ' Calcolo il cod cliente = Nastro + nNumero (con fill di zero a sx in base a numCifre)
+            CodiceClienteCompleto = Mastro.ToString() + nNumero.ToString().PadLeft(numCifre, CChar("0"))
+
+            If Len(nNumero.ToString()) > numCifre Then
+                Return False
+            End If
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliente.sql")
             strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
             strSQL = strSQL.Replace("@an_codcomu@", ToSql(ClienteData.cod_citta))
             strSQL = strSQL.Replace("@an_partite@", ToSql("S"))
-            strSQL = strSQL.Replace("@an_conto@", ToSql(Mastro.ToString() + nNumero.ToString()))
+            strSQL = strSQL.Replace("@an_conto@", ToSql(CodiceClienteCompleto))
             strSQL = strSQL.Replace("@an_tipo@", CStrSQL("C"))
             strSQL = strSQL.Replace("@an_codmast@", CStrSQL(Mastro))
             strSQL = strSQL.Replace("@an_cap@", ToSql(ClienteData.cap, 9))
@@ -644,6 +684,7 @@ Public Class CLDIEIBUS
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
             CodCliente = nNumero
+            CodClienteCompleto = CInt(CodiceClienteCompleto)
 
             Return True
         Catch ex As Exception

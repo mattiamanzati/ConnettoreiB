@@ -211,13 +211,16 @@
     <EmbeddedResource Include="SQL Export\GetPorto.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="SQL Export\SQL Generic\GetCliforSenzaCoordinate - Copy.sql" />
+    <EmbeddedResource Include="SQL Export\SQL Generic\GetCliforSenzaCoordinate.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SQL Export\InsertCliente.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SQL Export\InsertCliDest.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\SQL Generic\GetCifreConto.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

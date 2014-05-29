@@ -327,11 +327,6 @@ Public Class CLEIEIBUS
 
         Try
 
-            'content = content.Replace("|1", "307")
-            'content = content.Replace("|2", "ib.appstore")
-            'content = content.Replace("|3", "Buona giornata dal team iB")
-
-
             ' Ricordati di aggiornare http://doc.apexnet.it/iB.connettore_IB.ashx
             strDropBoxDir = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DropBoxDir", "", " ", "")
             strContiEsclusi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ContiEsclusi", "0", " ", "0").Trim
@@ -349,11 +344,6 @@ Public Class CLEIEIBUS
             strAuthKeyAM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyAM", "", " ", "").Trim
             'strAppManagerAPI
             strMastro = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Mastro", "0", " ", "0").Trim
-
-            'strUseAPI = "1"
-            'strAppManagerAPI = "http://am.apexnet.it/api_gaiainformatica-demo/v1/progetti/ib.gaiainformatica-demo"
-            'strAuthKey = "D00A51A1-2447-4D35-B199-FC0E5AFA1467"  ' String di autenticazione
-            ' strMastro = "101"
 
             strAttivaAlert = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Abilita_Alert", "0", " ", "0").Trim
 
@@ -764,9 +754,14 @@ Public Class CLEIEIBUS
             End If
 
             ' TODO: Scommentare solo in debug
-            'strUseAPI = "1"
+            ' strUseAPI = "1"
+
+            'strAuthKeyLM = "CC34392A-D3CF-41A4-95DD-FCE524CC6E3E"
+            'strAuthKeyAM = "D00A51A1-2447-4D35-B199-FC0E5AFA1467"
+            'strMastro = "401"
+
             'strAuthKeyLM = "7C13A2FF-8EDB-4E87-A81F-E9199302BA31"
-            'strAuthKeyAM = "E24EFDA3-9878-42D8-90FE-C00F847FE434"
+            'strAuthKeyAM = "B24EFDA3-9878-42D8-90FE-C00F847FE434"
             'strMastro = "401"
 
             '--------------------
@@ -3813,10 +3808,12 @@ Public Class CLEIEIBUS
     ' Solo con WS
     Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
         'Public Overridable Function GeneraCliente(ClienteData As List(Of Clienti), Ordine As TestataOrdineExport, ByRef CodCliente As Integer) As Boolean
+        Dim CodClienteCompleto As Integer
+
         Try
 
 
-            oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente)
+            oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente, CodClienteCompleto)
 
             If CodCliente <> 0 Then
                 If Not Ordine.clienti(0).cap_consegna Is Nothing Or _
@@ -3828,7 +3825,7 @@ Public Class CLEIEIBUS
                    Not Ordine.clienti(0).provincia_consegna Is Nothing Or _
                    Not Ordine.clienti(0).telefono_consegna Is Nothing _
                 Then
-                    oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente)
+                    oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
                 End If
             End If
 
