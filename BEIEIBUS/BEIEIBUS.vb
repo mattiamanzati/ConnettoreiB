@@ -790,7 +790,7 @@ Public Class CLEIEIBUS
 
                 ' Istanzio l'oggetto Export dell'AMHelper
                 'Dim ed As New GetDataLM(strAuthKeyLM)
-                Dim ed As New GetDataLM(strAuthKeyLM, False)
+                Dim ed As New GetDataLM(strAuthKeyLM, True)
                 Dim AMData As ws_rec_lmparam = Nothing
                 Dim RetVal As Boolean = ed.get_am_par(AMData)
 
