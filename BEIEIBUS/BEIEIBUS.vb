@@ -1838,6 +1838,12 @@ Public Class CLEIEIBUS
                                 "0" & "|" & _
                                 "0" & "|" & _
                                 "0" & "|" & _
+                                NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont2).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont3).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont4).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont5).ToString("0.00") & "|" & _
+                                NTSCDec(dtrT!mo_scont6).ToString("0.00") & "|" & _
                                 ConvData(dtrT!td_datconf) & "|" & _
                                 ConvStr(dtrT!td_codlead) & "|" & _
                                 ConvData(dtrT!xx_ultagg, True) & vbCrLf)
