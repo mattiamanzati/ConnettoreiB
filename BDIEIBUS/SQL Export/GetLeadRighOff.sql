@@ -21,6 +21,12 @@ SELECT
         mo_colli,                                                         
         mo_valore,   
 		td_datconf,
+		mo_scont1, 
+		mo_scont2, 
+		mo_scont3, 
+		mo_scont4, 
+		mo_scont5, 
+		mo_scont6,
         CASE                                                              
             WHEN mo_quant <> 0 THEN Round(mo_valore / mo_quant, 4)          
             ELSE 0                                                          
