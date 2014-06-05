@@ -1832,12 +1832,6 @@ Public Class CLEIEIBUS
                                 "" & "|" & _
                                 NTSCDec(dtrT!xx_prezzo).ToString("0.0000") & "|" & _
                                 NTSCDec(dtrT!mo_valore).ToString("0.00") & "|" & _
-                                "0" & "|" & _
-                                "0" & "|" & _
-                                "0" & "|" & _
-                                "0" & "|" & _
-                                "0" & "|" & _
-                                "0" & "|" & _
                                 NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
                                 NTSCDec(dtrT!mo_scont2).ToString("0.00") & "|" & _
                                 NTSCDec(dtrT!mo_scont3).ToString("0.00") & "|" & _
