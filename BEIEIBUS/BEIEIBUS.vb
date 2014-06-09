@@ -2214,9 +2214,9 @@ Public Class CLEIEIBUS
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
-                        "FLGDAEVADERE|DATADOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|DOCORIG|" & _
+                        "FLGDAEVADERE|DATADOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|NUM_DOC|DOCORIG|" & _
                         "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
-                        "NOTE_DOC|DATA_CONFERMA|DAT_ULT_MOD" & vbCrLf)
+                        "DES_NOTE|DATA_CONFERMA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
 
                 Select Case ConvStr(dtrT!xx_flevas)
@@ -2271,6 +2271,7 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
                                 "" & "|" & _
                                 ConvStr(dtrT!tm_serie) & "|" & _
+                                ConvStr(dtrT!tm_numdoc) & "|" & _
                                 ConvStr(dtrT!tm_numdoc) & "|" & _
                                 "" & "|" & _
                                 ConvStr(dtrT!tm_magaz) & "|" & _
