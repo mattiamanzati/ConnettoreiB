@@ -27,6 +27,7 @@ SELECT
 		mo_scont4, 
 		mo_scont5, 
 		mo_scont6,
+		mo_prezzo,
         CASE                                                              
             WHEN mo_quant <> 0 THEN Round(mo_valore / mo_quant, 4)          
             ELSE 0                                                          

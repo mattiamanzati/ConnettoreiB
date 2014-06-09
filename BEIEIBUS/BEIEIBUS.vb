@@ -1829,7 +1829,7 @@ Public Class CLEIEIBUS
                                 (ConvStr(dtrT!mo_descr) & " " & ConvStr(dtrT!mo_desint, True).Trim) & "|" & _
                                 ConvStr(dtrT!mo_ump) & "|" & _
                                 NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
-                                "" & "|" & _
+                                NTSCDec(dtrT!mo_prezzo).ToString("0.0000") & "|" & _
                                 NTSCDec(dtrT!xx_prezzo).ToString("0.0000") & "|" & _
                                 NTSCDec(dtrT!mo_valore).ToString("0.00") & "|" & _
                                 NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
