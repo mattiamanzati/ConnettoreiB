@@ -920,7 +920,7 @@ Public Class CLDIEIBUS
                           "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot) values ({0}, {1}, {2}, {3}, {4}, {5})", _
                                       CStrSQL(strDitta), _
                                       nNumero, _
-                                      CStrSQL(strTitolo.Replace(iBNewline, vbNewLine)), _
+                                      CStrSQL(Left(strTitolo, 80).Replace(iBNewline, vbNewLine)), _
                                       CStrSQL("S"), _
                                       strConto, _
                                       CStrSQL(strNote.Replace(iBNewline, vbNewLine)) _
