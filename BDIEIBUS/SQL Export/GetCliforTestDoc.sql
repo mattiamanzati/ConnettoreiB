@@ -28,6 +28,7 @@ SELECT
 	tm_annpar, 
 	tm_alfpar,
 	tm_numpar,
+	tm_valuta,
 	'0' as xx_flevas,  
 	tm_tipobf as xx_tipobf, 
 	tb_destpbf  
@@ -68,6 +69,7 @@ SELECT
 	tm_annpar, 
 	tm_alfpar,
 	tm_numpar,
+	tm_valuta,
 	'0' as xx_flevas,  
 	tm_tipobf as xx_tipobf, 
 	tb_destpbf  
@@ -108,6 +110,7 @@ SELECT
 	tm_annpar, 
 	tm_alfpar,
 	tm_numpar,
+	tm_valuta,
 	'0' as xx_flevas,  
 	tm_tipobf as xx_tipobf, 
 	tb_destpbf  
@@ -147,6 +150,7 @@ SELECT
 	0, 
 	' ',
 	0, 
+	td_valuta,
 	CASE WHEN td_flevas = 'C' THEN '1' ELSE '0' END, 
 	td_tipobf, 
 	tb_destpbf  

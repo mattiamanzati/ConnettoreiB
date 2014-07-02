@@ -17,6 +17,7 @@ SELECT
  td_tipobf,
  tb_destpbf,
  td_totdoc,
+ testoff.td_valuta,
  CASE td_codoppo WHEN 0 THEN NULL ELSE td_codoppo END AS td_codoppo,
  opportun.op_oggetto as op_oggetto,
  CASE td_validgg WHEN 0 THEN NULL ELSE td_validgg END AS td_validgg,

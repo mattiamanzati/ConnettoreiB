@@ -753,16 +753,17 @@ Public Class CLEIEIBUS
 
             End If
 
+
+            Dim Produzione As Boolean = True
+
+
             ' TODO: Scommentare solo in debug
-            ' strUseAPI = "1"
-
-            'strAuthKeyLM = "CC34392A-D3CF-41A4-95DD-FCE524CC6E3E"
-            'strAuthKeyAM = "D00A51A1-2447-4D35-B199-FC0E5AFA1467"
-            'strMastro = "401"
-
+            'strUseAPI = "1"
             'strAuthKeyLM = "7C13A2FF-8EDB-4E87-A81F-E9199302BA31"
             'strAuthKeyAM = "B24EFDA3-9878-42D8-90FE-C00F847FE434"
             'strMastro = "401"
+            'Produzione = False
+
 
             '--------------------
             'Import Ordini
@@ -790,7 +791,7 @@ Public Class CLEIEIBUS
 
                 ' Istanzio l'oggetto Export dell'AMHelper
                 'Dim ed As New GetDataLM(strAuthKeyLM)
-                Dim ed As New GetDataLM(strAuthKeyLM, True)
+                Dim ed As New GetDataLM(strAuthKeyLM, Produzione)
                 Dim AMData As ws_rec_lmparam = Nothing
                 Dim RetVal As Boolean = ed.get_am_par(AMData)
 
@@ -1429,6 +1430,7 @@ Public Class CLEIEIBUS
                 "CITTA                |" & _
                 "CAP                  |" & _
                 "PROVINCIA            |" & _
+                "DES_PROVINCIA        |" & _
                 "DES_NOTE             |" & _
                 "PARTITA_IVA          |" & _
                 "CODICE_FISCALE       |" & _
@@ -1475,6 +1477,7 @@ Public Class CLEIEIBUS
                            ConvStr(dtrT!le_citta).Trim & "|" & _
                            ConvStr(dtrT!le_cap).Trim & "|" & _
                            ConvStr(dtrT!le_prov).Trim & "|" & _
+                           ConvStr(dtrT!tb_desprov).Trim & "|" & _
                            ConvStr(dtrT!le_note).Trim & "|" & _
                            ConvStr(dtrT!le_pariva) & "|" & _
                            ConvStr(dtrT!le_codfis) & "|" & _
@@ -1678,6 +1681,7 @@ Public Class CLEIEIBUS
                 "EVASO                   |" & _
                 "ANNULLATO               |" & _
                 "CHIUSO                  |" & _
+                "COD_VALUTA              |" & _
                 "TOTALE_OFFERTA          |" & _
                 "DAT_ULT_MOD              " & _
                 vbCrLf).Replace(" ", "")
@@ -1717,6 +1721,7 @@ Public Class CLEIEIBUS
                             ConvStr(dtrT!td_flevas) & "|" & _
                             ConvStr(dtrT!td_annull) & "|" & _
                             ConvStr(dtrT!td_chiuso) & "|" & _
+                            ConvStr(dtrT!td_valuta) & "|" & _
                             ConvStr(dtrT!td_totdoc) & "|" & _
                             ConvData(dtrT!xx_ultagg, True) & vbCrLf)
 
@@ -1805,6 +1810,7 @@ Public Class CLEIEIBUS
             "QTA            |" & _
             "PRZ_LORDO      |" & _
             "PRZ_NETTO      |" & _
+            "COD_VALUTA     |" & _
             "IMPORTO        |" & _
             "SC_1           |" & _
             "SC_2           |" & _
@@ -1831,6 +1837,7 @@ Public Class CLEIEIBUS
                                 NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
                                 NTSCDec(dtrT!mo_prezzo).ToString("0.0000") & "|" & _
                                 NTSCDec(dtrT!xx_prezzo).ToString("0.0000") & "|" & _
+                                ConvStr(dtrT!td_valuta) & "|" & _
                                 NTSCDec(dtrT!mo_valore).ToString("0.00") & "|" & _
                                 NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
                                 NTSCDec(dtrT!mo_scont2).ToString("0.00") & "|" & _
@@ -2216,7 +2223,7 @@ Public Class CLEIEIBUS
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
                         "FLGDAEVADERE|DATADOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|NUM_DOC|DOCORIG|" & _
                         "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
-                        "DES_NOTE|DATA_CONFERMA|DAT_ULT_MOD" & vbCrLf)
+                        "DES_NOTE|DATA_CONFERMA|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
 
                 Select Case ConvStr(dtrT!xx_flevas)
@@ -2286,6 +2293,7 @@ Public Class CLEIEIBUS
                                 (ConvStr(dtrT!tm_numfat) & IIf(NTSCStr(dtrT!tm_alffat) <> " ", "/" & ConvStr(dtrT!tm_alffat), "").ToString).Trim & "|" & _
                                 "" & "|" & _
                                 "" & "|" & _
+                                ConvStr(dtrT!tm_valuta) & "|" & _
                                 ConvData(dtrT!tm_ultagg, True) & vbCrLf)
             Next
 
@@ -2367,7 +2375,7 @@ Public Class CLEIEIBUS
 
             'ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
             sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
-                        "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|DAT_ULT_MOD" & vbCrLf)
+                        "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
                                 strDittaCorrente & "|" & _
@@ -2384,6 +2392,7 @@ Public Class CLEIEIBUS
                                 NTSCDec(dtrT!mm_scont2).ToString("0.00") & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!an_conto) & "|" & _
+                                ConvStr(dtrT!tm_valuta) & "|" & _
                                 ConvData(dtrT!xx_ultagg, True) & vbCrLf)
             Next
 
@@ -3162,7 +3171,7 @@ Public Class CLEIEIBUS
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
 
         ' TODO:  Togliere 
-        'LastStoredID = 3
+        ' LastStoredID = 3
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
@@ -3174,6 +3183,7 @@ Public Class CLEIEIBUS
 
                 For Each t As TestataOrdineExport In OrdersData.testate
 
+                    ' Mi preoccupo dell'esistenza del codice Mastro solo se se devo inserire un nuovo cliente
                     If t.cod_clifor Is Nothing And strMastro = "" Then
                         msg = oApp.Tr(Me, 129919999269031600, "Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine")
                         LogWrite(msg, True)
@@ -3182,8 +3192,9 @@ Public Class CLEIEIBUS
 
                         ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
                         If t.cod_clifor Is Nothing Then
+                            ' Esempio : GeneraClienteAPI con Mastro 126 ritorna 
                             GeneraClienteAPI(t, CInt(strMastro), NewCodCli)
-                            t.cod_clifor = strMastro + NewCodCli.ToString()
+                            t.cod_clifor = NewCodCli.ToString()
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente))
                             LogWrite(msg, True)
                         End If
@@ -3807,16 +3818,13 @@ Public Class CLEIEIBUS
     End Function
 
     ' Solo con WS
-    Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodCliente As Integer) As Boolean
-        'Public Overridable Function GeneraCliente(ClienteData As List(Of Clienti), Ordine As TestataOrdineExport, ByRef CodCliente As Integer) As Boolean
-        Dim CodClienteCompleto As Integer
-
+    Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
         Try
 
+            ' Esempio: Chiamo la insert cliente e passo il mastro 126. Ritorna CodCliente = , CodCliente completo= 
+            Dim ClienteCodificatoCorrettamente As Boolean = oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
 
-            oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodCliente, CodClienteCompleto)
-
-            If CodCliente <> 0 Then
+            If ClienteCodificatoCorrettamente Then
                 If Not Ordine.clienti(0).cap_consegna Is Nothing Or _
                    Not Ordine.clienti(0).cod_citta_consegna Is Nothing Or _
                    Not Ordine.clienti(0).cod_nazione_consegna Is Nothing Or _
@@ -3830,8 +3838,8 @@ Public Class CLEIEIBUS
                 End If
             End If
 
-
             Return True
+
         Catch ex As Exception
             '--------------------------------------------------------------
             If GestErrorCallThrow() Then

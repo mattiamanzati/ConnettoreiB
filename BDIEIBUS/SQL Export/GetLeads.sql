@@ -66,6 +66,7 @@ SELECT
        tb_codzone,
        tb_deszone, 
        tb_descana, 
+	   tb_desprov, 
        '', --le_hhlat_ib, 
        '', --le_hhlon_ib, 
 	   '', --xx_ultfatt
@@ -90,6 +91,8 @@ FROM   dbo.leads WITH (NOLOCK)
                  AND leads.le_categ = tabcate.tb_codcate 
        LEFT JOIN tabstat WITH (NOLOCK)
               ON leads.le_stato = tabstat.tb_codstat
+	   LEFT JOIN tabprov WITH (NOLOCK)
+              ON leads.le_prov = tabprov.tb_codprov
 WHERE 1=1
  	   AND leads.codditt = @ditta 
        AND le_status <> 'I' 

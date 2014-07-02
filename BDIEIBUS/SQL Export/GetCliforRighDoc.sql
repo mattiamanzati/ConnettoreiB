@@ -42,6 +42,7 @@ SELECT
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
         END AS xx_prezzo,
+		tm_valuta,
 		tm_ultagg as xx_ultagg                                                  
     FROM   testmag WITH (NOLOCK)                                            
         INNER JOIN movmag b WITH (NOLOCK)                                 
@@ -89,6 +90,7 @@ UNION ALL
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
         END AS xx_prezzo,
+		tm_valuta,
 		tm_ultagg as xx_ultagg                                                  
     FROM   testmag WITH (NOLOCK)                                            
         INNER JOIN movmag b WITH (NOLOCK)                                 
@@ -138,6 +140,7 @@ UNION ALL
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
         END AS xx_prezzo,
+		tm_valuta,
 		tm_ultagg as xx_ultagg                                                  
     FROM   testmag WITH (NOLOCK)                                            
         INNER JOIN movmag b WITH (NOLOCK)                                 
@@ -185,7 +188,8 @@ UNION ALL
 			WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
 			ELSE 0                                                          
 		END AS xx_prezzo,
-	testmag.tm_ultagg as xx_ultagg                                                     
+		testmag.tm_valuta,
+	    testmag.tm_ultagg as xx_ultagg                                                     
 	FROM testmag WITH (NOLOCK)                                            
 	INNER JOIN testmag AS testmag_1 WITH (NOLOCK)                       
 				ON (testmag.tm_tipork = testmag_1.tm_tiporkfat)         
@@ -238,7 +242,8 @@ UNION ALL
             WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
             ELSE 0                                                          
         END AS xx_prezzo,
-	testmag.tm_ultagg as xx_ultagg                                                     
+	 	testmag.tm_valuta,
+	    testmag.tm_ultagg as xx_ultagg                                                     
     FROM testmag WITH (NOLOCK)                                            
     INNER JOIN testmag AS testmag_1 WITH (NOLOCK)                       
              	ON (testmag.tm_tipork = testmag_1.tm_tiporkfat)         
@@ -293,6 +298,7 @@ UNION ALL
             WHEN mo_quant <> 0 THEN Round(mo_valoremm / mo_quant, 4)       
             ELSE 0                                                         
             END AS xx_prezzo,
+			td_valuta,
 			testord.td_ultagg as xx_ultagg                                                    
     FROM    testord WITH (NOLOCK)                                            
             INNER JOIN movord WITH (NOLOCK)                                  

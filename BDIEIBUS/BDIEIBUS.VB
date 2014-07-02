@@ -623,18 +623,17 @@ Public Class CLDIEIBUS
     End Function
 
     ' Solo per API
-    Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodCliente As Integer, ByRef CodClienteCompleto As Integer) As Boolean
+    Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
 
         Dim nNumero As Integer = 0
         Dim dttOut As New DataTable
-        Dim CodiceCliente As New Integer
         Dim strSQL As String = ""
 
         Dim numCifre As Integer = 0
         Dim RetValCifre As Boolean
         Dim CodiceClienteCompleto As String
 
-        CodCliente = 0
+        CodClienteCompleto = 0
 
         Try
             ' Quento deve essere il filler del cod cliente
@@ -683,10 +682,14 @@ Public Class CLDIEIBUS
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
-            CodCliente = nNumero
             CodClienteCompleto = CInt(CodiceClienteCompleto)
 
-            Return True
+            If nNumero = 0 Then
+                Return False
+            Else
+                Return True
+            End If
+
         Catch ex As Exception
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
         End Try
@@ -770,7 +773,7 @@ Public Class CLDIEIBUS
                 ConvEmptyToNull(CStrSQL(Left(dRow("CAP").ToString, 9))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("CITTA").ToString, 50))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("PROVINCIA").ToString, 2))) & "," & _
-                ConvEmptyToNull(CStrSQL(Left(dRow("NAZIONE").ToString, 3))) & "," & _
+                ConvEmptyToNull(CStrSQL(Left(dRow("COD_NAZIONE").ToString, 3))) & "," & _
                 ConvEmptyToNull(CStrSQL(dRow("DES_NOTE").ToString.Replace(iBNewline, vbNewLine))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("PARTITA_IVA").ToString, 11))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("CODICE_FISCALE").ToString, 16))) & "," & _
@@ -1020,8 +1023,8 @@ Public Class CLDIEIBUS
     End Function
 
 
-    
-    
+
+
 #End Region
 
 #Region "Export tracciati"

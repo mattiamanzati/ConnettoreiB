@@ -5,7 +5,8 @@ SELECT @release = '1.0'
 
 SELECT 
 	an_tipo, 
-	an_conto, 
+	an_conto,
+	moviva.mi_codvalu,
 	Sum(moviva.mi_imponib) * -1 AS xx_fatturato, 
 	month(mi_datreg) as xx_mese, 
 	Year(mi_datreg) as xx_anno,
@@ -25,10 +26,12 @@ WHERE 1=1
 GROUP BY 
 	an_tipo, 
 	an_conto, 
+	moviva.mi_codvalu,
 	Year(mi_datreg), 
 	month(mi_datreg)
 ORDER BY 
 	an_tipo, 
-	an_conto, 
+	an_conto,
+	moviva.mi_codvalu,
 	Year(mi_datreg), 
 	month(mi_datreg)           
