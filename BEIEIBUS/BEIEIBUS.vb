@@ -2221,9 +2221,9 @@ Public Class CLEIEIBUS
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
-                        "FLGDAEVADERE|DATADOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|NUM_DOC|DOCORIG|" & _
+                        "FLGDAEVADERE|DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|NUM_DOC|DOCORIG|" & _
                         "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
-                        "DES_NOTE|DATA_CONFERMA|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
+                        "DES_NOTE|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
 
                 Select Case ConvStr(dtrT!xx_flevas)
@@ -2291,7 +2291,6 @@ Public Class CLEIEIBUS
                                 strDescEvas & "|" & _
                                 ConvData(dtrT!tm_datfat, False) & "|" & _
                                 (ConvStr(dtrT!tm_numfat) & IIf(NTSCStr(dtrT!tm_alffat) <> " ", "/" & ConvStr(dtrT!tm_alffat), "").ToString).Trim & "|" & _
-                                "" & "|" & _
                                 "" & "|" & _
                                 ConvStr(dtrT!tm_valuta) & "|" & _
                                 ConvData(dtrT!tm_ultagg, True) & vbCrLf)
@@ -2424,13 +2423,16 @@ Public Class CLEIEIBUS
         'per collegare le scadenze ai relativi documenti precedentemente esportati, ...
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
+        Dim DesScad As String = ""
 
         Try
             If Not oCldIbus.GetCliforScaDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforScaDoc) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_RATA|DAT_SCAD|IMPORTO|NETTO_PREV|DES_TIPO|DES_STATO|DES_TIPO_PRES|DES_OPERAZIONE|" & _
-                        "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|COD_VALUTA|DATA_DOC|NUM_DOC|DAT_ULT_MOD" & vbCrLf)
+                        "FLG_DA_LIB|FLG_SOSP|DES_BANCA_AGENZIA|TIPO_CLIFOR|COD_CLIFOR|COD_VALUTA|DATA_DOC|NUM_DOC|DES_SCAD|DAT_ULT_MOD" & vbCrLf)
+
             For Each dtrT As DataRow In dttTmp.Rows
+
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_integr) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
                                     strDittaCorrente & "|" & _
                                     ConvStr(dtrT!xx_numreg) & "|" & _
@@ -2450,6 +2452,7 @@ Public Class CLEIEIBUS
                                     ConvStr(dtrT!sc_codvalu) & "|" & _
                                     ConvData(dtrT!sc_datdoc, False) & "|" & _
                                     dtrT!sc_numdoc.ToString & "|" & _
+                                    ConvStr(dtrT!xx_des_scad) & "|" & _
                                     ConvData(dtrT!xx_ultagg, True) & vbCrLf)
             Next
             If dttTmp.Rows.Count > 0 Then

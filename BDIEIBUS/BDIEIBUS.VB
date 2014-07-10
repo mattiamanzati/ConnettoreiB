@@ -35,6 +35,55 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function DecodeDBValue(ByRef Contesto As String, ByRef Campo As String, ByVal Valore As String) As Boolean
+        Dim RetValue As String = ""
+        Try
+            Select Case Contesto
+                Case "tipork"
+                    Select Case Campo
+                        Case "A" : RetValue = "Fatt. Imm. em." '
+                        Case "B" : RetValue = "DDT emesso" ' 
+                        Case "C" : RetValue = "Corr. emesso"
+                        Case "D" : RetValue = "Fatt. Diff. em." '
+                        Case "E" : RetValue = "Note di Add. em."
+                        Case "F" : RetValue = "Ric.Fisc. em."
+                        Case "I" : RetValue = "Riem. Ric.Fisc."
+                        Case "J" : RetValue = "Note Accr. ric."
+                        Case "(" : RetValue = "Nota accr. diff. ric."
+                        Case "K" : RetValue = "Fatt. Diff. ric."
+                        Case "L" : RetValue = "Fatt. Imm. ric."
+                        Case "M" : RetValue = "DDT ricevuto"
+                        Case "N" : RetValue = "Note Accr. em."
+                        Case "£" : RetValue = "Nota accr. diff. em."
+                        Case "P" : RetValue = "Fatt.Ric.Fisc.Diff."
+                        Case "S" : RetValue = "Fatt.Ric.Fisc. em."
+                        Case "T" : RetValue = "Carico da prod."
+                        Case "U" : RetValue = "Scarico a prod."
+                        Case "Z" : RetValue = "Bolle di mov.int."
+                        Case "W" : RetValue = "Note di prel."
+                        Case "R" : RetValue = "Imp. cliente"
+                        Case "O" : RetValue = "Ord. forn."
+                        Case "H" : RetValue = "Ord. di prod."
+                        Case "X" : RetValue = "Imp. Trasfer."
+                        Case "Q" : RetValue = "Prev."
+                        Case "#" : RetValue = "Imp. di comm."
+                        Case "V" : RetValue = "Imp. cli aperto"
+                        Case "$" : RetValue = "Ord. forn aperto"
+                        Case "Y" : RetValue = "Imp. di prod."
+                    End Select
+            End Select
+
+
+            Valore = RetValue
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, Contesto + " - " + Campo, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
     Public Overridable Function ToSql(ByVal strDesc As String, Optional ByVal MaxLength As Integer = 0) As String
         Dim RetVal As String
 
