@@ -4074,20 +4074,22 @@ Public Class CLEIEIBUS
                     ' PZ  | SC  | 3,0  |  5   | 11,29 |   30     Tipo UM 3 CONF (utilizzo confezioni)
 
 
-                    Select Case dTipoUM
+                    Select Case NTSCInt(dTipoUM)
                         Case 1
                             strUnitaMisuraP = strRow(posUM1)
                             dColli = NTSCDec(strRow(posQta1))
                             strUnitaMisura = strRow(posUM1)
                             dQuantita = NTSCDec(strRow(posQta1))
                             dPrezzo = NTSCDec(strRow(posPrezzo1))
-                        Case 2 Or 3
+                        Case 2, 3
                             strUnitaMisuraP = strRow(posUM1)
                             dColli = NTSCDec(strRow(posQta2))
                             strUnitaMisura = strRow(posUM2)
                             dQuantita = NTSCDec(strRow(posQta1))
                             dPrezzo = NTSCDec(strRow(posPrezzo1))
                     End Select
+
+
 
                     ' Verifico se l'ordine e' stato inserito da un agente o da un subagente
                     If oCldIbus.GetAgentiCliente(strDittaCorrente, strRow(posCodClifor), DBCodAgente1, DBCodAgente2, strCustomWhereGetAgentiCliente) Then
