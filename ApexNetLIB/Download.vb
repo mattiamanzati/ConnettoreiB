@@ -1,6 +1,8 @@
 ﻿Imports System.Net
 Imports System.IO
 Imports System.Data
+Imports Ionic
+
 'Imports NTSInformatica.CLN__STD
 
 Public Class Download
@@ -26,8 +28,8 @@ Public Class Download
             Dim rand As Integer = CInt(Int((10000 - 1 + 1) * Rnd()) + 1) 'Generate random number to have an unique filename
             Dim dldname As String = Path.GetFileName(UrlFileUpdate) 'Get filename of file to be downloaded
             DownloadFileWithProgress(UrlFileUpdate, temppath.ToString + "\" + rand.ToString + dldname) 'Download the file
-            Dim a As New Ionic.Utils.Zip.ZipFile(temppath.ToString + "\" + rand.ToString + dldname) 'Create new var with zip file
-            For Each zipfile As Ionic.Utils.Zip.ZipEntry In a 'for each loop for every file in zip
+            Dim a As New Zip.ZipFile(temppath.ToString + "\" + rand.ToString + dldname) 'Create new var with zip file
+            For Each zipfile As Zip.ZipEntry In a 'for each loop for every file in zip
                 If My.Computer.FileSystem.FileExists(vars_unzipdir + "\" + zipfile.FileName) Then 'If this file already exist, delete it
                     My.Computer.FileSystem.DeleteFile(vars_unzipdir + "\" + zipfile.FileName)
                     'If My.Computer.FileSystem.FileExists(vars_unzipdir + "\" + zipfile.FileName + ".OLD") Then

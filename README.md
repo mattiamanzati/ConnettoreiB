@@ -3,7 +3,7 @@ ConnettoreiB
 Questo repositori contiene i sorgenti del connettore di iB.
 Tutta la documentazione relativa al connettore è disponibile qui:
 
-http://doc.apexnet.it/iOrder.connettore_IB.ashx
+* http://apex-net.github.io/iOrder-wiki/it/#!pages/connettore-ib.md
 
 
 ## Rimanere aggiornati con le versioni di rilascio

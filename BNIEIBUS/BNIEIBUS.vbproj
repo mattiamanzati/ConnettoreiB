@@ -110,9 +110,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\TEST\DevExpress.XtraGrid.v6.2.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Utils.Zip">
-      <HintPath>..\lib\Ionic.Utils.Zip.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />

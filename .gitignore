@@ -183,3 +183,4 @@ Desktop.ini
 $RECYCLE.BIN/
 .DS_Store
 CreaBuild/*.zip
+packages/*.*
