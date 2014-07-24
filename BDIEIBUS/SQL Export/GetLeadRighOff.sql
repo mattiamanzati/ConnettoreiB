@@ -18,8 +18,8 @@ SELECT
         mo_unmis,                                                         
         mo_ump,                                                           
         mo_quant,                                                         
-        mo_colli,                                                         
-        mo_valore,   
+        mo_colli,
+		CASE td_valuta WHEN 0 THEN mo_valore ELSE mo_valorev END AS mo_valore,                                                      
 		td_datconf,
 		mo_scont1, 
 		mo_scont2, 
@@ -28,9 +28,9 @@ SELECT
 		mo_scont5, 
 		mo_scont6,
 		td_valuta,
-		mo_prezzo,
+		CASE td_valuta WHEN 0 THEN mo_prezzo ELSE mo_prezvalc END AS mo_prezzo,
         CASE                                                              
-            WHEN mo_quant <> 0 THEN Round(mo_valore / mo_quant, 4)          
+            WHEN mo_quant <> 0 THEN Round((CASE td_valuta WHEN 0 THEN mo_valore ELSE mo_valorev END) / mo_quant, 4)          
             ELSE 0                                                          
         END AS xx_prezzo,
 		mo_ultagg AS xx_ultagg

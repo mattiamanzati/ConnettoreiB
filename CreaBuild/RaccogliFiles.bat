@@ -13,10 +13,10 @@ copy ..\TEST\BDIEIBUS.pdb .\iBUpdate
 copy ..\TEST\ApexNet*.dll .\iBUpdate
 copy ..\TEST\ApexNet*.pbd .\iBUpdate
 
-copy ..\libraries\RestSharp*.* .\iBUpdate
-copy ..\libraries\Ionic*.* .\iBUpdate
-copy ..\libraries\AMHelper*.* .\iBUpdate
-copy ..\libraries\Newtonsoft* .\iBUpdate
+copy ..\TEST\RestSharp*.* .\iBUpdate
+copy ..\TEST\Ionic*.* .\iBUpdate
+copy ..\TEST\AMHelper*.* .\iBUpdate
+copy ..\TEST\Newtonsoft* .\iBUpdate
 
 copy .\AssistenzaApex.exe .\iBUpdate
 
@@ -41,10 +41,10 @@ copy ..\TEST\BDIEIBUS.pdb .\ConnettoreBusiness
 copy ..\TEST\ApexNet*.dll .\ConnettoreBusiness
 copy ..\TEST\ApexNet*.pbd .\ConnettoreBusiness
 
-copy ..\libraries\RestSharp*.* .\ConnettoreBusiness
-copy ..\libraries\Ionic*.* .\ConnettoreBusiness
-copy ..\libraries\AMHelper*.* .\ConnettoreBusiness
-copy ..\libraries\Newtonsoft* .\ConnettoreBusiness
+copy ..\TEST\RestSharp*.* .\ConnettoreBusiness
+copy ..\TEST\Ionic*.* .\ConnettoreBusiness
+copy ..\TEST\AMHelper*.* .\ConnettoreBusiness
+copy ..\TEST\Newtonsoft* .\ConnettoreBusiness
 
 copy .\AssistenzaApex.exe .\ConnettoreBusiness
 
