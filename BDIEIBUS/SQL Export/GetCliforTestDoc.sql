@@ -18,6 +18,8 @@ SELECT
 	tm_serie,
 	tm_numdoc,
 	tm_datdoc,
+	-- Utilizzeremo questa quando gestiremo la valuta sulle testate documenti
+	-- CASE tm_valuta WHEN 0 THEN tm_totdoc ELSE tm_totdocv END AS tm_totdoc,
 	tm_totdoc,
 	tm_ultagg,  
 	tb_desvalu,

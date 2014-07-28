@@ -69,7 +69,6 @@ WHERE  1=1
        AND ( ar_stainv = 'S' OR artico.ar_codart = 'D' ) 
        AND ar_codtagl = 0 
        AND lc_listino >= 0 
-       AND lc_codvalu = 0 
 	   AND convert(datetime,round(convert(float,  lc_datagg ),0,1)) -1  <= convert(datetime,round(convert(float,getdate()),0,1))
        AND lc_datscad >= Getdate() 
        AND ( lc_unmis = artico.ar_unmis OR lc_unmis = ' ' ) 

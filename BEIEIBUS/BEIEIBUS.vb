@@ -1888,7 +1888,7 @@ Public Class CLEIEIBUS
                         "SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
                         "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|" & _
                         "ZONA|CATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
-                        "FIDO_AZIENDALE|FLG_NEW_CLIFOR|DAT_ULT_MOD" & vbCrLf)
+                        "FIDO_AZIENDALE|FLG_NEW_CLIFOR|TAG|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(
@@ -1936,6 +1936,7 @@ Public Class CLEIEIBUS
                             ConvData(dtrT!xx_ultord, False) & "|" & _
                             NTSCDec(dtrT!an_fido).ToString(oApp.FormatSconti) & "|" & _
                             ConvStr(dtrT!xx_flg_new) & "|" & _
+                            ConvStr(dtrT!an_siglaric) & "|" & _
                             ConvData(dtrT!an_ultagg, True) & vbCrLf)
             Next
 

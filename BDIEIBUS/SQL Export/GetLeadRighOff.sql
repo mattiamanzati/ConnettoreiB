@@ -19,7 +19,17 @@ SELECT
         mo_ump,                                                           
         mo_quant,                                                         
         mo_colli,
-		CASE td_valuta WHEN 0 THEN mo_valore ELSE mo_valorev END AS mo_valore,                                                      
+        -- Campo Valore Euro/Valuta	- in caso di valuta calcola valore con formula
+		-- Formula fatta da Marco M. per mancanza campi valuta congruenti. 
+        CASE	WHEN	td_valuta=0	THEN	mo_valore 
+				ELSE	--	td_valuta <>0
+						(	-- qta 
+							CASE WHEN mo_umprz<>'S' THEN mo_quant ELSE mo_colli END 
+							-- prezzo valuta
+							* mo_prezvalc 
+							* (100-mo_scont1)/100*(100-mo_scont2)/100*(100-mo_scont3)/100*(100-mo_scont4)/100*(100-mo_scont5)/100*(100-mo_scont6)/100 
+						) / mo_perqta
+        END AS mo_valore,                                                      
 		td_datconf,
 		mo_scont1, 
 		mo_scont2, 
@@ -29,9 +39,16 @@ SELECT
 		mo_scont6,
 		td_valuta,
 		CASE td_valuta WHEN 0 THEN mo_prezzo ELSE mo_prezvalc END AS mo_prezzo,
-        CASE                                                              
-            WHEN mo_quant <> 0 THEN Round((CASE td_valuta WHEN 0 THEN mo_valore ELSE mo_valorev END) / mo_quant, 4)          
-            ELSE 0                                                          
+		-- Prezzo Netto Sconti
+	    -- Campo Valore Euro/Valuta	- in caso di valuta calcola valore con formula
+		-- Formula fatta da Marco M. per mancanza campi valuta congruenti. 
+        CASE	WHEN td_valuta=0  THEN
+						(	mo_prezzo 
+							* (100-mo_scont1)/100*(100-mo_scont2)/100*(100-mo_scont3)/100*(100-mo_scont4)/100*(100-mo_scont5)/100*(100-mo_scont6)/100 
+						) 
+				ELSE	(	mo_prezvalc
+							* (100-mo_scont1)/100*(100-mo_scont2)/100*(100-mo_scont3)/100*(100-mo_scont4)/100*(100-mo_scont5)/100*(100-mo_scont6)/100 
+						) 
         END AS xx_prezzo,
 		mo_ultagg AS xx_ultagg
     FROM   testoff WITH (NOLOCK)                                            
