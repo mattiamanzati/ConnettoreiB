@@ -9,7 +9,9 @@ CAST(testmag.tm_conto AS VARCHAR) + '§' + CAST(testmag.tm_numdoc AS VARCHAR) + 
 --ordini e impegni
 
 SELECT 
-	'M' as xx_tipo, 
+	'M' as xx_tipo,
+	CAST(tm_note AS VARCHAR(3000)) as tm_note,
+	tm_riferim,
 	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_numpar as varchar) as xx_numreg,
 	an_tipo, 
 	an_conto,
@@ -51,7 +53,9 @@ WHERE 1=1
 	AND (GETDATE() - testmag.tm_datdoc ) < cast(@gg_documenti as integer)    
 UNION
 SELECT 
-	'M' as xx_tipo, 
+	'M' as xx_tipo,
+	CAST(tm_note AS VARCHAR(3000)),
+	tm_riferim,
 	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_annpar as varchar) + '§' + tm_alfpar + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_numpar as varchar)  as xx_numreg,
 --	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) as xx_numreg,
 	an_tipo, 
@@ -94,6 +98,8 @@ WHERE 1=1
 UNION 
 SELECT 
 	'M' as xx_tipo, 
+	CAST(tm_note AS VARCHAR(3000)),
+	tm_riferim,
 	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_tipork as varchar) as xx_numreg,
 	an_tipo, 
 	an_conto,
@@ -133,7 +139,9 @@ WHERE 1=1
 	AND (GETDATE() - testmag.tm_datdoc ) < cast(@gg_documenti as integer)                  
 UNION 
 SELECT 
-	'O' as xx_tipo, 
+	'O' as xx_tipo,
+	CAST(td_note AS VARCHAR(3000)),
+	td_riferim,
 	testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar) + '§' + td_tipork as xx_numreg,
 	an_tipo, 
 	an_conto, 

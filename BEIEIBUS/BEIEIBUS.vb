@@ -2222,9 +2222,9 @@ Public Class CLEIEIBUS
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
-                        "FLGDAEVADERE|DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUMDOC|NUM_DOC|DOCORIG|" & _
+                        "FLGDAEVADERE|DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUM_DOC|DOCORIG|" & _
                         "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
-                        "DES_NOTE|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
+                        "DES_DOC|DES_NOTE|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
 
                 Select Case ConvStr(dtrT!xx_flevas)
@@ -2279,8 +2279,7 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
                                 "" & "|" & _
                                 ConvStr(dtrT!tm_serie) & "|" & _
-                                ConvStr(dtrT!tm_numdoc) & "|" & _
-                                ConvStr(dtrT!tm_numdoc) & "|" & _
+                                 (ConvStr(dtrT!tm_numdoc) & IIf(NTSCStr(dtrT!tm_serie) <> " ", "/" & ConvStr(dtrT!tm_serie), "").ToString).Trim & "|" & _
                                 "" & "|" & _
                                 ConvStr(dtrT!tm_magaz) & "|" & _
                                 ConvStr(dtrT!tb_desvalu) & "|" & _
@@ -2292,9 +2291,12 @@ Public Class CLEIEIBUS
                                 strDescEvas & "|" & _
                                 ConvData(dtrT!tm_datfat, False) & "|" & _
                                 (ConvStr(dtrT!tm_numfat) & IIf(NTSCStr(dtrT!tm_alffat) <> " ", "/" & ConvStr(dtrT!tm_alffat), "").ToString).Trim & "|" & _
-                                "" & "|" & _
+                                ConvStr(dtrT!tm_riferim) & "|" & _
+                                ConvStr(dtrT!tm_note) & "|" & _
                                 ConvStr(dtrT!tm_valuta) & "|" & _
                                 ConvData(dtrT!tm_ultagg, True) & vbCrLf)
+
+                ' ConvStr(dtrT!tm_note).PadRight(1000).Substring(0, 1000).Trim & "|" & _
             Next
 
             If dttTmp.Rows.Count > 0 Then
@@ -3203,7 +3205,6 @@ Public Class CLEIEIBUS
                             LogWrite(msg, True)
                         End If
 
-
                         If GeneraOrdineAPI(t, NumOrd) Then
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
                             LogWrite(msg, True)
@@ -3547,14 +3548,19 @@ Public Class CLEIEIBUS
             End If
 
 
+
             ' Esegui trascodifiche di testata AM / Business
             ' ==============================================
 
             ' Gestisco il tipo ordine: R = Ordine, Q = Preventivo
             strTipoOrdine = "R"
             Select Case Ordine.ext_cod_tipo_ord
-                Case "CLI-MOBORD", "CLI-IGAMMAORD", "R" : strTipoOrdine = "R"
-                Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P" : strTipoOrdine = "Q"
+                Case "CLI-MOBORD", "CLI-IGAMMAORD", "R"
+                    strTipoOrdine = "R"
+                Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P"
+                    strTipoOrdine = "Q"
+                Case Else
+                    strTipoOrdine = Ordine.ext_cod_tipo_ord
             End Select
 
 
@@ -3627,7 +3633,7 @@ Public Class CLEIEIBUS
                 End If
             Next
 
-            'compilo i campi di testata con quello che viene passato da IBUS
+            ' Compilo i campi di testata con quello che viene passato da IBUS
             oCleGsor.dttET.Rows(0)!et_datdoc = NTSCDate(Ordine.data_ordine)
             oCleGsor.dttET.Rows(0)!et_conto = NTSCInt(Ordine.cod_clifor)
             oCleGsor.dttET.Rows(0)!et_coddest = NTSCInt(Ordine.cod_destinazione)
