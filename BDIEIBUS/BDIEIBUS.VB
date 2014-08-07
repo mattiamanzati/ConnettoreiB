@@ -727,7 +727,7 @@ Public Class CLDIEIBUS
             strSQL = strSQL.Replace("@an_pariva@", ToSql(ClienteData.partita_iva, 11))
             strSQL = strSQL.Replace("@an_prov@", ToSql(ClienteData.provincia, 2))
             strSQL = strSQL.Replace("@an_descr1@", ToSql(ClienteData.ragione_sociale, 50))
-            strSQL = strSQL.Replace("@an_telef@", ToSql(ClienteData.telefono, 18))
+            strSQL = strSQL.Replace("@an_telef@", ToSql(ClienteData.telefono1, 18))
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 

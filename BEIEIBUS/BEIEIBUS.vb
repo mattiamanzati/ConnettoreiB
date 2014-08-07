@@ -62,6 +62,12 @@ Public Class CLEIEIBUS
     Public strFiltroCliConAgenti As String = ""
     Public strIncludileadClienti As String = ""
 
+    Public eProxyUrl As String = ""
+    Public eProxyUsername As String = ""
+    Public eProxyPassword As String = ""
+    Public eProxyPort As String = ""
+
+
     Public strMastro As String = ""
     Public strAuthKeyAM As String = ""
     Public strAuthKeyLM As String = ""
@@ -759,10 +765,11 @@ Public Class CLEIEIBUS
 
             ' TODO: Scommentare solo in debug
             'strUseAPI = "1"
-            'strAuthKeyLM = "7C13A2FF-8EDB-4E87-A81F-E9199302BA31"
-            'strAuthKeyAM = "B24EFDA3-9878-42D8-90FE-C00F847FE434"
+            'strAuthKeyLM = "LMKEY6"
+            'strAuthKeyAM = "AMKEY6"
             'strMastro = "401"
             'Produzione = False
+            ' scommentare anche LastStoredID
 
 
             '--------------------
@@ -792,6 +799,13 @@ Public Class CLEIEIBUS
                 ' Istanzio l'oggetto Export dell'AMHelper
                 'Dim ed As New GetDataLM(strAuthKeyLM)
                 Dim ed As New GetDataLM(strAuthKeyLM, Produzione)
+
+
+                If eProxyUrl <> "" Then
+                    ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+                End If
+
+
                 Dim AMData As ws_rec_lmparam = Nothing
                 Dim RetVal As Boolean = ed.get_am_par(AMData)
 
@@ -814,6 +828,9 @@ Public Class CLEIEIBUS
                 If Not Elabora_ImportLeadNoteAPI() Then Return False
 
                 If Not Elabora_ImportOrdiniAPI() Then Return False
+
+
+
             End If
 
             'If Not Elabora_ImportOrdiniNew() Then Return False
@@ -3181,6 +3198,11 @@ Public Class CLEIEIBUS
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
+
+        If eProxyUrl <> "" Then
+            ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+        End If
+
         Dim OrdersData As ws_rec_orders = Nothing
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
 
@@ -3244,10 +3266,15 @@ Public Class CLEIEIBUS
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "anagra_id", "0"))
 
         ' TODO:  Togliere 
-        ' LastStoredID = 30
+        'LastStoredID = 30
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
+
+        If eProxyUrl <> "" Then
+            ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+        End If
+
         Dim CliforData As ws_rec_clifor = Nothing
         Dim RetVal As Boolean = ed.exp_clifor(LastStoredID, CliforData)
 
@@ -3310,6 +3337,11 @@ Public Class CLEIEIBUS
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
+
+        If eProxyUrl <> "" Then
+            ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+        End If
+
         Dim CliforNoteData As ws_rec_clifor_note = Nothing
         Dim RetVal As Boolean = ed.exp_clifor_note(LastStoredID, CliforNoteData)
 
@@ -3413,6 +3445,11 @@ Public Class CLEIEIBUS
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
+
+        If eProxyUrl <> "" Then
+            ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+        End If
+
         Dim LeadsData As ws_rec_leads = Nothing
         Dim RetVal As Boolean = ed.exp_leads(LastStoredID, LeadsData)
 
@@ -3472,11 +3509,16 @@ Public Class CLEIEIBUS
 
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "lead_note_id", "0"))
 
-        ' TOD:  Togliere 
+        ' TODO:  Togliere 
         ' LastStoredID = 30
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
+
+        If eProxyUrl <> "" Then
+            ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+        End If
+
         Dim LeadNoteData As ws_rec_leads_note = Nothing
         Dim RetVal As Boolean = ed.exp_leads_note(LastStoredID, LeadNoteData)
 

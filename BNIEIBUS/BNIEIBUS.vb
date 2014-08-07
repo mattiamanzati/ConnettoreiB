@@ -751,11 +751,19 @@ Riprova:
             Dim CheckboxAttivi As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "CheckboxAttivi", "", " ", "")
             Dim CheckboxDisabilitati As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "CheckboxDisabilitati", "", " ", "")
 
+
             ' Dati per il test. Chiedere a Matteo di attivare il proxy
-            'ProxyUrl = "192.168.12.55"
-            'ProxyUsername = "try"
-            'ProxyPassword = "try"
-            'ProxyPort = "8081"
+            'ProxyUrl = "192.168.10.134"
+            'ProxyUsername = "teo"
+            'ProxyPassword = "gigi"
+            'ProxyPort = "8080"
+
+            'Passo i dati del proxy al BE
+            oCleIbus.eProxyUrl = ProxyUrl
+            oCleIbus.eProxyUsername = ProxyUsername
+            oCleIbus.eProxyPassword = ProxyPassword
+            oCleIbus.eProxyPort = ProxyPort
+
 
             If ProxyUrl <> "" Then
                 ApexNetLIB.SetProxy.SettingProxy(ProxyUrl, CInt(ProxyPort), ProxyUsername, ProxyPassword)
