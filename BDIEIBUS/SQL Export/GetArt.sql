@@ -42,7 +42,7 @@ SELECT
     ar_tipo,
 	ar_codalt,
 	0 as xx_prz_min_ven,
-	@sconto_max_ven as xx_sconto_max_ven,
+	0 as xx_sconto_max_ven,
 	ar_ultagg
 FROM   artico WITH (NOLOCK)                                                                                               
     LEFT JOIN artfasi WITH (NOLOCK)                                                                                    

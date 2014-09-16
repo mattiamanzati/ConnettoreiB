@@ -1431,7 +1431,7 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function GetArt(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strQuery As String, ByVal strWhere As String, Optional strScontoMax As String = "0") As Boolean
+    Public Overridable Function GetArt(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strQuery As String, ByVal strWhere As String) As Boolean
 
         Dim strSQL As String = ""
         Try
@@ -1439,8 +1439,6 @@ Public Class CLDIEIBUS
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArt.sql")
             If strQuery <> "" Then strSQL = strQuery
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
-            strSQL = strSQL.Replace("@sconto_max_ven", CStrSQL(strScontoMax))
-
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 
@@ -1451,6 +1449,21 @@ Public Class CLDIEIBUS
         Catch ex As Exception
             '--------------------------------------------------------------
             Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+
+    End Function
+
+    <Obsolete("Questo metodo è deprecato. Usare GetArt senza il parametro strScontoMax")>
+    Public Overridable Function GetArt(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strQuery As String, ByVal strWhere As String, Optional strScontoMax As String = "") As Boolean
+        Dim retval As Boolean
+
+        Try
+            retval = GetArt(strDitta, dttOut, strQuery, strWhere)
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, "GetArt", oApp.InfoError, "", False)))
             '--------------------------------------------------------------
         End Try
     End Function

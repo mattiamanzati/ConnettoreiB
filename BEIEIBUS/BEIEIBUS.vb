@@ -342,7 +342,7 @@ Public Class CLEIEIBUS
             strFiltroGGDocumenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGDocumenti", "365", " ", "365").Trim
             strFiltroGGUltAcqVen = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGUltAcqVen", "180", " ", "180").Trim
             strIncludileadClienti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "IncludiLeadClienti", "0", " ", "0").Trim
-            strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "0", " ", "0").Trim
+            strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "", " ", "").Trim
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
@@ -2510,10 +2510,10 @@ Public Class CLEIEIBUS
         Dim PrezzoMinimoDiVendita As Decimal
         Dim UltimoCosto As Decimal
         Dim TrovatoPrezzo As Boolean
-
+        Dim scontoMax As String = ""
 
         Try
-            If Not oCldIbus.GetArt(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArt, strScontoMax:=strScontoMaxPercentuale) Then Return False
+            If Not oCldIbus.GetArt(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArt) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_ART|DES_ART|COD_FAM|DES_FAM|COD_SFAM|DES_SFAM|COD_GRUPPO1|DES_GRUPPO1|" & _
                           "COD_GRUPPO2|DES_GRUPPO2|UM1|UM2|FATTORE_CONVERSIONE|DES_GR_STAT1|DES_GR_STAT2|QTA_MIN_VEND|" & _
@@ -2522,8 +2522,8 @@ Public Class CLEIEIBUS
             For Each dtrT As DataRow In dttTmp.Rows
 
                 ' PrezzoMinimoDiVendita
+                ' ----------------------
                 PrezzoMinimoDiVendita = 0
-
 
                 If strPercentualeSuPrezzoMinimoVendita <> "0" And Integer.TryParse(strPercentualeSuPrezzoMinimoVendita, Nothing) Then
                     TrovatoPrezzo = oCldIbus.FindArtUltCost(strDittaCorrente, ConvStr(dtrT!ar_codart), UltimoCosto)
@@ -2531,6 +2531,25 @@ Public Class CLEIEIBUS
                     If TrovatoPrezzo Then
                         PrezzoMinimoDiVendita = UltimoCosto + ((UltimoCosto / 100) * CInt(strPercentualeSuPrezzoMinimoVendita))
                     End If
+                End If
+
+
+                ' Sconto massimo in percentuale
+                ' ------------------------------
+                scontoMax = ""
+
+                ' Se lo sconto max non è stato impostato (da chiave registro)
+                If strScontoMaxPercentuale = "" Or strScontoMaxPercentuale = "0" Then
+                    ' ... valuto lo sconto max ritornato dalla query. Se anch'esso non è impostato (0 o empty string)
+                    If ConvStr(dtrT!xx_sconto_max_ven) = "" Or ConvStr(dtrT!xx_sconto_max_ven) = "0" Then
+                        ' per me vale null
+                        scontoMax = ""
+                    Else
+                        scontoMax = NTSCDec(dtrT!xx_sconto_max_ven).ToString("0.0000")
+                    End If
+                Else
+                    ' altrimenti vale come il parametro
+                    scontoMax = strScontoMaxPercentuale
                 End If
 
                 sbFile.Append(strDittaCorrente & "§" & NTSCStr(dtrT!ar_codart) & "|" & _
@@ -2554,7 +2573,7 @@ Public Class CLEIEIBUS
                               dtrT!ar_clascon.ToString & "|" & _
                               ConvStr(dtrT!ar_tipo) & "|" & _
                               NTSCDec(PrezzoMinimoDiVendita).ToString("0.0000") & "|" & _
-                              NTSCDec(dtrT!xx_sconto_max_ven).ToString("0.0000") & "|" & _
+                              scontoMax & "|" & _
                               "0,000000" & "|" & _
                               ConvData(dtrT!ar_ultagg, True) & vbCrLf)
             Next
