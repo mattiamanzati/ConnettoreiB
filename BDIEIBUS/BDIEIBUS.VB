@@ -535,6 +535,11 @@ Public Class CLDIEIBUS
             nNumero = LegNuma(strDitta, "NT", " ", 0, True)
             nNumero = AggNuma(strDitta, "NT", " ", 0, nNumero, False, False, "")
 
+            If Nota.tipo_nota = "" Then
+                Nota.tipo_nota = "Senza titolo"
+            End If
+
+
             strSQL = String.Format( _
                           "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot) values ({0}, {1}, {2}, {3}, {4}, {5})", _
                                       CStrSQL(strDitta), _
@@ -967,6 +972,10 @@ Public Class CLDIEIBUS
             Dim nNumero As Integer = 0
             nNumero = LegNuma(strDitta, "NT", " ", 0, True)
             nNumero = AggNuma(strDitta, "NT", " ", 0, nNumero, False, False, "")
+
+            If strTitolo = "" Then
+                strTitolo = "Senza titolo"
+            End If
 
             strSQL = String.Format( _
                           "insert into tabnote (codditt, tb_codnote, tb_desnote, tb_tiponot, tb_contonot, tb_testonot) values ({0}, {1}, {2}, {3}, {4}, {5})", _

@@ -764,13 +764,12 @@ Public Class CLEIEIBUS
 
 
             ' TODO: Scommentare solo in debug
-            'strUseAPI = "1"
-            'strAuthKeyLM = "LMKEY6"
-            'strAuthKeyAM = "AMKEY6"
-            'strMastro = "401"
-            'Produzione = False
-            ' scommentare anche LastStoredID
-
+            ' strUseAPI = "1"
+            ' strAuthKeyLM = "LMKEY6"
+            ' strAuthKeyAM = "AMKEY6"
+            ' strMastro = "401"
+            ' Produzione = False
+            ' Scommentare anche LastStoredID
 
             '--------------------
             'Import Ordini
@@ -809,18 +808,18 @@ Public Class CLEIEIBUS
                 Dim AMData As ws_rec_lmparam = Nothing
                 Dim RetVal As Boolean = ed.get_am_par(AMData)
 
-                If RetVal And Not AMData Is Nothing Then
-                    strAppManagerAPI = AMData.url_am_api + "/" + AMData.cod_prog
-                    ' strCodProgetto = AMData.cod_prog
-                Else
+                strAppManagerAPI = AMData.url_am_api
+
+                If AMData.url_am_api = "" Then
                     Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: Dati conf. LM non recuperati")
                     ThrowRemoteEvent(New NTSEventArgs("", msg))
                     LogWrite(msg, True)
                     Return False
                 End If
 
+                strAppManagerAPI = AMData.url_am_api
 
-
+             
                 If Not Elabora_ImportAnagraAPI() Then Return False
                 If Not Elabora_ImportCliforNoteAPI() Then Return False
 
