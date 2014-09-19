@@ -61,6 +61,7 @@ Public Class CLEIEIBUS
     Public strFiltroGGUltAcqVen As String = ""
     Public strFiltroCliConAgenti As String = ""
     Public strIncludileadClienti As String = ""
+    Public strDeterminazioneDescrizioneRigaOrdine As String = ""
 
     Public eProxyUrl As String = ""
     Public eProxyUsername As String = ""
@@ -343,6 +344,7 @@ Public Class CLEIEIBUS
             strFiltroGGUltAcqVen = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGUltAcqVen", "180", " ", "180").Trim
             strIncludileadClienti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "IncludiLeadClienti", "0", " ", "0").Trim
             strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "", " ", "").Trim
+            strDeterminazioneDescrizioneRigaOrdine = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DeterminazioneDescrizioneRigaOrdine", "0", " ", "0").Trim
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
@@ -771,6 +773,13 @@ Public Class CLEIEIBUS
             ' Produzione = False
             ' Scommentare anche LastStoredID
 
+            strUseAPI = "1"
+            strAuthKeyLM = "3818B678-8333-4DAE-9636-44142316F424"
+            strAuthKeyAM = "DDC4C5C1-072F-41D8-A728-D8E4BA686588"
+            'strMastro = "401"
+            Produzione = True
+
+            ' Scommentare anche LastStoredID
             '--------------------
             'Import Ordini
             If strTipork.Contains("ORD;") And strUseAPI <> "0" Then
@@ -819,7 +828,7 @@ Public Class CLEIEIBUS
 
                 strAppManagerAPI = AMData.url_am_api
 
-             
+
                 If Not Elabora_ImportAnagraAPI() Then Return False
                 If Not Elabora_ImportCliforNoteAPI() Then Return False
 
@@ -3835,14 +3844,51 @@ Public Class CLEIEIBUS
                     Return False
                 End If
 
-                With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
-                    If r.descrizione_riga.Trim <> "" Then
-                        !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
-                    End If
 
-                    If r.descrizione_riga.Length > 40 Then
-                        !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
-                    End If
+                With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
+
+
+                    Select Case strDeterminazioneDescrizioneRigaOrdine
+                        Case "0" ' Modalità standard per Determinazione descrizione ordine
+                            ' Se la descrizione non è empty string
+                            If r.descrizione_riga.Trim <> "" Then
+                                ' Prendo i primi 40 caratteri
+                                !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
+                            End If
+
+                            ' Se la descrizione è superiore a 40 caratteri
+                            If r.descrizione_riga.Length > 40 Then
+                                ' I caratteri eccedenti li metto nelle note
+                                !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
+                            End If
+                        Case "1" ' Modalità con decodifica per Determinazione descrizione ordine
+                            ' L'articolo è descrittivo ?
+                            If strCodArt = "D" Then
+                                ' Se esiste una descrizione
+                                If r.descrizione_riga.Trim <> "" Then
+                                    ' ...metti i primi 40 caratteri nella descrizione... 
+                                    !ec_descr = r.descrizione_riga.PadRight(300).Substring(0, 40)
+                                End If
+                                ' ... se la descrizione è superiore a 40 caratteri
+                                If r.descrizione_riga.Length > 40 Then
+                                    ' ... i caratteri eccedenti li metto nelle note
+                                    !ec_desint = r.descrizione_riga.PadRight(300).Substring(40, 40)
+                                End If
+
+                                ' ... se la descrizione è superiore a 80 caratteri
+                                If r.descrizione_riga.Length > 80 Then
+                                    ' i caratteri eccedenti li metto nelle note per non perderli
+                                    !ec_note = r.descrizione_riga.PadRight(300).Substring(80, 40)
+                                End If
+
+                            Else
+                                ' In questo caso, se la riga non è descrittiva non valorizzo le descrizioni.
+                                ' Business dovrebbe prenderle dall'anagrafica articolo
+
+                            End If
+
+                    End Select
+
 
                     !ec_note = NTSCStr(!ec_note) & " " & NTSCStr(r.note)
                     !ec_unmis = NTSCStr(strUnitaMisura)
@@ -4714,10 +4760,45 @@ NEXT_FILE:
                     Return False
                 End If
                 With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
-                    If NTSCStr(dtrT!desart).Trim <> "" Then !ec_descr = NTSCStr(dtrT!desart).PadRight(40).Substring(0, 40)
-                    If NTSCStr(dtrT!desart).Length > 40 Then
-                        !ec_note = NTSCStr(dtrT!desart).PadRight(200).Substring(40, 40)
-                    End If
+
+                    Select Case strDeterminazioneDescrizioneRigaOrdine
+                        Case "0" ' Modalità standard per Determinazione descrizione ordine
+
+                            If NTSCStr(dtrT!desart).Trim <> "" Then !ec_descr = NTSCStr(dtrT!desart).PadRight(40).Substring(0, 40)
+                            If NTSCStr(dtrT!desart).Length > 40 Then
+                                !ec_note = NTSCStr(dtrT!desart).PadRight(200).Substring(40, 40)
+                            End If
+
+                        Case "1" ' Modalità con decodifica per Determinazione descrizione ordine
+                            ' L'articolo è descrittivo ?
+                            If strCodart = "D" Then
+                                ' Se esiste una descrizione
+                                If NTSCStr(dtrT!desart).Trim <> "" Then
+                                    ' ...metti i primi 40 caratteri nella descrizione... 
+                                    !ec_descr = NTSCStr(dtrT!desart).PadRight(300).Substring(0, 40)
+                                End If
+                                ' ... se la descrizione è superiore a 40 caratteri
+                                If NTSCStr(dtrT!desart).Length > 40 Then
+                                    ' ... i caratteri eccedenti li metto nelle note
+                                    !ec_desint = NTSCStr(dtrT!desart).PadRight(300).Substring(40, 40)
+                                End If
+
+                                ' ... se la descrizione è superiore a 80 caratteri
+                                If NTSCStr(dtrT!desart).Length > 80 Then
+                                    ' i caratteri eccedenti li metto nelle note per non perderli
+                                    !ec_note = NTSCStr(dtrT!desart).PadRight(300).Substring(80, 40)
+                                End If
+
+                            Else
+                                ' In questo caso, se la riga non è descrittiva non valorizzo le descrizioni.
+                                ' Business dovrebbe prenderle dall'anagrafica articolo
+
+                            End If
+
+                    End Select
+
+
+
                     !ec_note = NTSCStr(!ec_note) & " " & NTSCStr(dtrT!note)
                     !ec_unmis = NTSCStr(dtrT!um)
                     !ec_colli = NTSCDec(dtrT!colli)

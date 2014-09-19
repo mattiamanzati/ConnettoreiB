@@ -9,5 +9,6 @@ SELECT
 	getdate() as xx_ultagg
 FROM 
 	tabpaga WITH (NOLOCK)
+WHERE 1=1
 ORDER BY 
 	tb_codpaga

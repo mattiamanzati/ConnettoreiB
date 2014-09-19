@@ -11,5 +11,6 @@ SELECT
 	getdate() as xx_ultagg  
  FROM 
 	comuni WITH (NOLOCK)
- ORDER BY 
+WHERE 1=1 
+ORDER BY 
 	co_codcomu
