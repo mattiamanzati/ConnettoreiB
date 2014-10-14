@@ -773,9 +773,9 @@ Public Class CLEIEIBUS
             ' Produzione = False
             ' Scommentare anche LastStoredID
 
-            strUseAPI = "1"
-            strAuthKeyLM = "3818B678-8333-4DAE-9636-44142316F424"
-            strAuthKeyAM = "DDC4C5C1-072F-41D8-A728-D8E4BA686588"
+            ' strUseAPI = "1"
+            ' strAuthKeyLM = "3818B678-8333-4DAE-9636-44142316F424"
+            ' strAuthKeyAM = "DDC4C5C1-072F-41D8-A728-D8E4BA686588"
             'strMastro = "401"
             Produzione = True
 
