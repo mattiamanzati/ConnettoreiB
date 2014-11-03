@@ -287,11 +287,23 @@ Public Class CLDIEIBUS
     Public Overridable Function UpdateCliforCoordinate(ByVal strDitta As String, ByVal strConto As String, ByVal dLatitudine As Double, ByVal dLongitudine As Double) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = "UPDATE anagra" & _
+
+
+            If oApp.BUSNET_VERSIONDB < 19 Then
+                strSQL = "UPDATE anagra" & _
                      " SET an_hhlat_ib=" & CDblSQL(dLatitudine.ToString()) & "," & _
                      " an_hhlon_ib=" & CDblSQL(dLongitudine.ToString()) & _
                      " WHERE codditt=" & CStrSQL(strDitta) & _
                      " AND an_conto =" & strConto
+            Else
+                strSQL = "UPDATE anagra" & _
+                     " SET an_latitud=" & CDblSQL(dLatitudine.ToString()) & "," & _
+                     " an_longitud=" & CDblSQL(dLongitudine.ToString()) & _
+                     " WHERE codditt=" & CStrSQL(strDitta) & _
+                     " AND an_conto =" & strConto
+            End If
+
+
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
             Return True
         Catch ex As Exception
@@ -302,7 +314,13 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCliforSenzaCoordinate(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinate.sql")
+            If oApp.BUSNET_VERSIONDB < 19 Then
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinate.sql")
+            Else
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinateStandard.sql")
+            End If
+
+
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -359,6 +377,10 @@ Public Class CLDIEIBUS
                 "le_opnome  ," & _
                 "le_descr1  ," & _
                 "le_descr2  ," & _
+                "le_codcana  ," & _
+                "le_codcptr ," & _
+                "le_codperv ," & _
+                "le_agente ," & _
                 "le_indir   ," & _
                 "le_cap     ," & _
                 "le_citta   ," & _
@@ -372,7 +394,10 @@ Public Class CLDIEIBUS
                 "le_cell    ," & _
                 "le_email   ," & _
                 "le_website ," & _
-                "le_note    )" & _
+                "le_agente  ," & _
+                "le_codcana  ," & _
+                "le_codcptr  ," & _
+                "le_codperv  )" & _
                 "VALUES (   " & _
                 CStrSQL(nNumero) & "," & _
                 CStrSQL(strDitta) & "," & _
@@ -392,6 +417,10 @@ Public Class CLDIEIBUS
                 ToSql(Lead.cod_operatore) & "," & _
                 ToSql(Lead.descrizione1, 60) & "," & _
                 ToSql(Lead.descrizione2, 50) & "," & _
+                ToSql(Lead.cod_canale_vendita) & "," & _
+                ToSql(Lead.cod_concorrente) & "," & _
+                ToSql(Lead.cod_modalita_acquisizione) & "," & _
+                ToSql(Lead.cod_agente_lead) & "," & _
                 ToSql(Lead.indirizzo, 70) & "," & _
                 ToSql(Lead.cap, 9) & "," & _
                 ToSql(Lead.citta, 50) & "," & _
@@ -405,7 +434,10 @@ Public Class CLDIEIBUS
                 ToSql(Lead.cellulare, 18) & "," & _
                 ToSql(Lead.email, 50) & "," & _
                 ToSql(Lead.internet, 50) & "," & _
-                ToSql(Lead.cod_campagna, 50) & _
+                ToSql(Lead.cod_agente_lead) & "," & _
+                ToSql(Lead.cod_canale_vendita) & "," & _
+                ToSql(Lead.cod_concorrente) & "," & _
+                ToSql(Lead.cod_modalita_acquisizione) & _
                 ")"
 
                 Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
@@ -418,10 +450,9 @@ Public Class CLDIEIBUS
                                        )
                 dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
 
+                'No, non lo é. Lo associo
                 If dttOut.Rows.Count = 0 Then
-
                     If Not Lead.cod_operatore Is Nothing And Lead.cod_operatore = "" Then
-
                         ' Inserisco i dati nella tabella accessi          
                         strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
                                                ToSql(strDitta), _
@@ -429,10 +460,9 @@ Public Class CLDIEIBUS
                                                CStrSQL(nNumero) _
                                                )
                         Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-
                     End If
-
                 End If
+
 
                 CodLead = nNumero
             Else
@@ -803,8 +833,11 @@ Public Class CLDIEIBUS
                 "le_cell    ," & _
                 "le_email   ," & _
                 "le_website ," & _
-                "le_note    )" & _
-                "VALUES (   " & _
+                "le_agente  ," & _
+                "le_codcana  ," & _
+                "le_codcptr  ," & _
+                "le_codperv  )" & _
+                    "VALUES (   " & _
                 CStrSQL(nNumero) & "," & _
                 CStrSQL(strDitta) & "," & _
                 CStr(0) & "," & _
@@ -836,8 +869,13 @@ Public Class CLDIEIBUS
                 ConvEmptyToNull(CStrSQL(Left(dRow("CELLULARE").ToString, 18))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("EMAIL").ToString, 50))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("INTERNET").ToString, 50))) & "," & _
-                ConvEmptyToNull(CStrSQL(dRow("COD_CAMPAGNA"))) & _
+                ConvEmptyToNull(CStrSQL(dRow("COD_AGENTE_LEAD"))) & "," & _
+                ConvEmptyToNull(CStrSQL(dRow("COD_CANALE_VENDITA"))) & "," & _
+                ConvEmptyToNull(CStrSQL(dRow("COD_CONCORRENTE"))) & "," & _
+                ConvEmptyToNull(CStrSQL(dRow("COD_MODALITA_ACQUISIZIONE"))) & _
                 ")"
+
+
 
                 Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
@@ -1086,6 +1124,26 @@ Public Class CLDIEIBUS
 #End Region
 
 #Region "Export tracciati"
+
+    Public Overridable Function GetAgenti(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetAgenti.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
     Public Overridable Function GetCodpaga(ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
@@ -1668,11 +1726,88 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function GetLeadCate(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadCate.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
+    Public Overridable Function GetLeadConcorrenti(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadConcorrenti.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
     Public Overridable Function GetLeadDetCon(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadDetCon.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
+
+    Public Overridable Function GetLeadMansioni(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadMansioni.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
+    Public Overridable Function GetLeadModAcquisizione(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadModAcquisizione.sql")
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
