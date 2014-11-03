@@ -3,6 +3,7 @@ Imports NTSInformatica.CLN__STD
 Imports System.Text
 Imports System.IO
 Imports AMHelper.WS
+Imports AMHelper.CSV
 Imports RestSharp
 Imports ApexNetLIB
 
@@ -91,6 +92,7 @@ Public Class CLEIEIBUS
 
     ' Variabili per la personalizzazione del filtro di where delle query
     Public strCustomWhereGetAgentiCliente As String = ""
+    Public strCustomWhereGetAgenti As String = ""
     Public strCustomWhereGetArt As String = ""
     Public strCustomWhereGetArtCatalogo As String = ""
     Public strCustomWhereGetArtGiacenze As String = ""
@@ -120,7 +122,11 @@ Public Class CLEIEIBUS
     Public strCustomWhereGetNazioni As String = ""
     Public strCustomWhereGetLeadAccessi As String = ""
     Public strCustomWhereGetLeadAccessiCrm As String = ""
+    Public strCustomWhereGetLeadCate As String = ""
+    Public strCustomWhereGetLeadConcorrenti As String = ""
     Public strCustomWhereGetLeadDetCon As String = ""
+    Public strCustomWhereGetLeadMansioni As String = ""
+    Public strCustomWhereGetLeadModAcquisizione As String = ""
     Public strCustomWhereGetLeadNote As String = ""
     Public strCustomWhereGetLeadRighOff As String = ""
     Public strCustomWhereGetLeads As String = ""
@@ -130,7 +136,9 @@ Public Class CLEIEIBUS
     Public strTipork As String = ""         'elenco operazioni da compiere in import/export
 
     Public Const FilePrefix As String = "io_"
+    'Public Const cIMP_ART As String = Tracciati.NomeFile(GetType(rec_art))
     Public Const cIMP_ART As String = "io_art.dat"
+    Public Const cIMP_AGENTI As String = "io_agenti.dat"
     Public Const cIMP_ART_LANG As String = "io_art_lang.dat"
     Public Const cIMP_ARTICOLI_ASSORTIMENTI As String = "io_articoli_assortimenti.dat"
     Public Const cIMP_ART_CONF As String = "io_art_conf.dat"
@@ -167,7 +175,11 @@ Public Class CLEIEIBUS
     Public Const cIMP_INFO As String = "io_info.dat"
     Public Const cIMP_LEADS As String = "io_leads.dat"
     Public Const cIMP_LEAD_ACCCRM As String = "io_lead_acccrm.dat"
+    Public Const cIMP_LEAD_CONCORRENTI As String = "io_lead_concorrenti.dat"
     Public Const cIMP_LEAD_ACCESSI As String = "io_lead_accessi.dat"
+    Public Const cIMP_LEAD_CATE As String = "io_lead_cate.dat"
+    Public Const cIMP_LEAD_MANSIONI As String = "io_lead_mansioni.dat"
+    Public Const cIMP_LEAD_MOD_ACQUISIZIONE As String = "io_lead_mod_acquisizione.dat"
     Public Const cIMP_LEAD_NOTE As String = "io_lead_note.dat"
     Public Const cIMP_LEAD_RIGHOFF As String = "io_lead_righoff.dat"
     Public Const cIMP_LEAD_SCONTI As String = "io_lead_sconti.dat"
@@ -186,6 +198,8 @@ Public Class CLEIEIBUS
     Public Const cIMP_VAR_COMBINAZIONI As String = "io_var_combinazioni.dat"
     Public Const cIMP_CATALOGO As String = "io_catalogo.dat"
     Public Const cIMP_REPORT As String = "io_reports.dat"
+
+
 
     Public Overrides Function Init(ByRef App As CLE__APP, _
                                 ByRef oScriptEngine As INT__SCRIPT, ByRef oCleLbmenu As Object, ByVal strTabella As String, _
@@ -394,7 +408,11 @@ Public Class CLEIEIBUS
             ' Leads
             strCustomWhereGetLeadAccessi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadAccessi", "", " ", "").Trim
             strCustomWhereGetLeadAccessiCrm = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadAccessiCrm", "", " ", "").Trim
+            strCustomWhereGetLeadCate = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadCate", "", " ", "").Trim
+            strCustomWhereGetLeadConcorrenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadConcorrenti", "", " ", "").Trim
             strCustomWhereGetLeadDetCon = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadDetCon", "", " ", "").Trim
+            strCustomWhereGetLeadMansioni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadMansioni", "", " ", "").Trim
+            strCustomWhereGetLeadModAcquisizione = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadModAcquisizione", "", " ", "").Trim
             strCustomWhereGetLeadNote = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadNote", "", " ", "").Trim
             strCustomWhereGetLeadRighOff = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeadRighOff", "", " ", "").Trim
             strCustomWhereGetLeads = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetLeads", "", " ", "").Trim
@@ -407,6 +425,7 @@ Public Class CLEIEIBUS
             strCustomWhereGetCanaliVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetCanaliVendita", "", " ", "").Trim
             strCustomWhereGetComuni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetComuni", "", " ", "").Trim
             strCustomWhereGetNazioni = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetNazioni", "", " ", "").Trim
+            strCustomWhereGetAgenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgenti", "", " ", "").Trim
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
             strCustomWhereGetPorto = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetPorto", "", " ", "").Trim
 
@@ -468,7 +487,8 @@ Public Class CLEIEIBUS
             If strTipork.Contains("COO;") Then
                 '--------------------
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Identificazione coordinate da Google..."))
-                AggiornaCoordinate()
+                    AggiornaCoordinate()
+
             End If
 
             '--------------------
@@ -484,9 +504,14 @@ Public Class CLEIEIBUS
             'Export tabelle di base
             If strTipork.Contains("TBS;") Or strTipork.Contains("CIT;") Then
 
+
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export comuni..."))
                 If Not Elabora_ExportComuni(oApp.AscDir & "\" + cIMP_CITTA) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_CITTA)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export nazioni..."))
+                If Not Elabora_ExportNazioni(oApp.AscDir & "\" + cIMP_NAZIONI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_NAZIONI)
 
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export nazioni..."))
                 If Not Elabora_ExportNazioni(oApp.AscDir & "\" + cIMP_NAZIONI) Then Return False
@@ -507,6 +532,10 @@ Public Class CLEIEIBUS
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export porto..."))
                 If Not Elabora_ExportPorto(oApp.AscDir & "\" + cIMP_PORTO) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_PORTO)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export agenti..."))
+                If Not Elabora_ExportAgenti(oApp.AscDir & "\" + cIMP_AGENTI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_AGENTI)
 
             End If
             'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "30"))
@@ -598,9 +627,25 @@ Public Class CLEIEIBUS
                 If Not Elabora_ExportLeadAccessiCrm(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM)
 
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead categorie..."))
+                If Not Elabora_ExportLeadCate(oApp.AscDir & "\" + cIMP_LEAD_CATE) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_CATE)
+
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Campagne..."))
                 If Not Elabora_ExportCampagne(oApp.AscDir & "\" + cIMP_CAMPAGNE) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_CAMPAGNE)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead modalità acquisizione..."))
+                If Not Elabora_ExportLeadModAcquisizione(oApp.AscDir & "\" + cIMP_LEAD_MOD_ACQUISIZIONE) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_MOD_ACQUISIZIONE)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Concorrenti..."))
+                If Not Elabora_ExportLeadConcorrenti(oApp.AscDir & "\" + cIMP_LEAD_CONCORRENTI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_CONCORRENTI)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Mansioni..."))
+                If Not Elabora_ExportLeadMansioni(oApp.AscDir & "\" + cIMP_LEAD_MANSIONI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_MANSIONI)
 
             End If
 
@@ -903,7 +948,7 @@ Public Class CLEIEIBUS
         End Try
 
     End Function
-
+   
     Public Overridable Function Elabora_Child() As Boolean
         Try
 
@@ -1091,6 +1136,64 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
+    ' Esempio di utilizzo di CSV Helper
+    'Public Overridable Function Elabora_ExportNazioniTEST(ByVal strFileOut As String) As Boolean
+
+
+    '    Dim dttTmp As New DataTable
+
+    '    Try
+    '        If Not oCldIbus.GetNazioni(dttTmp, strCustomWhereGetNazioni) Then Return False
+
+
+    '        Dim lista As New List(Of AMHelper.CSV.rec_nazioni)()
+
+    '        For Each dtrT As DataRow In dttTmp.Rows
+    '            lista.Add(New AMHelper.CSV.rec_nazioni() With {
+    '                 .CHIAVE = strDittaCorrente & "§" & ConvStr(dtrT!tb_codstat),
+    '                 .COD_DITTA = strDittaCorrente, _
+    '                 .CODICE = ConvStr(dtrT!tb_codstat),
+    '                 .DESCRIZIONE = ConvStr(dtrT!tb_desstat)
+    '        })
+
+    '        Next
+
+    '        ' Scrivo il file
+    '        Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+
+    '        Dim writer As New CsvHelper.CsvWriter(w1)
+
+    '        writer.Configuration.Delimiter = "|"
+    '        writer.Configuration.HasHeaderRecord = True
+
+
+    '        Dim row As New AMHelper.CSV.rec_nazioni
+
+
+    '        For Each row In lista
+    '            writer.WriteField(row.CHIAVE)
+    '            writer.WriteField(row.COD_DITTA)
+    '            writer.NextRecord()
+
+    '        Next
+    '        writer.Dispose()
+
+    '        Return True
+
+    '    Catch ex As Exception
+    '        '--------------------------------------------------------------
+    '        If GestErrorCallThrow() Then
+    '            Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+    '        Else
+    '            ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+    '        End If
+    '        '--------------------------------------------------------------	
+    '    Finally
+    '        dttTmp.Clear()
+    '    End Try
+    'End Function
+
 
     Public Overridable Function Elabora_ExportClassiSconto(ByVal strFileOut As String) As Boolean
         'esporta tutti i comuni
@@ -1342,6 +1445,84 @@ Public Class CLEIEIBUS
             Next
 
             sbFile.Append("Assembly|" & BNIEVersion & vbCrLf)
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportLeadCate(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetLeadCate(strDittaCorrente, dttTmp, strCustomWhereGetLeadCate) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|COD_CATEGORIA|DES_CATEGORIA" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codcate) & "|" & _
+                                ConvStr(dtrT!tb_descate) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportLeadConcorrenti(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetLeadConcorrenti(strDittaCorrente, dttTmp, strCustomWhereGetLeadConcorrenti) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|COD_CONCORRENTE|DES_CONCORRENTE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codcptr) & "|" & _
+                                ConvStr(dtrT!tb_descptr) & vbCrLf)
+            Next
 
             If dttTmp.Rows.Count > 0 Then
                 Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
@@ -1757,6 +1938,84 @@ Public Class CLEIEIBUS
                 w1.Flush()
                 w1.Close()
             End If
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportLeadMansioni(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetLeadMansioni(strDittaCorrente, dttTmp, strCustomWhereGetLeadMansioni) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|COD_MANSIONE|DES_MANSIONE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codruaz) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codruaz) & "|" & _
+                                ConvStr(dtrT!tb_desruaz) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportLeadModAcquisizione(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetLeadModAcquisizione(strDittaCorrente, dttTmp, strCustomWhereGetLeadModAcquisizione) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ACQUISIZIONE|DES_ACQUISIZIONE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codperv) & "|" & _
+                                ConvStr(dtrT!tb_desperv) & vbCrLf)
+            Next
+
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
 
             Return True
 
@@ -2483,6 +2742,45 @@ Public Class CLEIEIBUS
                                     ConvStr(dtrT!xx_des_scad) & "|" & _
                                     ConvData(dtrT!xx_ultagg, True) & vbCrLf)
             Next
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
+    Public Overridable Function Elabora_ExportAgenti(ByVal strFileOut As String) As Boolean
+        'esporta tutti i comuni
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetAgenti(strDittaCorrente, dttTmp, strCustomWhereGetAgenti) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|COD_AGENTE|DES_AGENTE" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!tb_codcage) & "|" & _
+                                ConvStr(dtrT!tb_descage) & vbCrLf)
+            Next
+
             If dttTmp.Rows.Count > 0 Then
                 Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
                 w1.Write(sbFile.ToString)
@@ -4024,7 +4322,7 @@ Public Class CLEIEIBUS
         Const posQta1 As Integer = 14
         Const posQta2 As Integer = 15
         Const posPrezzo1 As Integer = 16
-        Const posPrezzo2 As Integer = 17
+        'Const posPrezzo2 As Integer = 17
         Const posTipoUM As Integer = 18
         Const posTipoOmaggio As Integer = 19
         Const posSc1 As Integer = 20
@@ -4033,10 +4331,10 @@ Public Class CLEIEIBUS
         Const posSc4 As Integer = 23
         Const posSc5 As Integer = 24
         Const posSc6 As Integer = 25
-        Const posScImporto As Integer = 26
-        Const posMagPerc1 As Integer = 27
-        Const posMagPerc2 As Integer = 28
-        Const posMagImporto As Integer = 29
+        'Const posScImporto As Integer = 26
+        'Const posMagPerc1 As Integer = 27
+        'Const posMagPerc2 As Integer = 28
+        'Const posMagImporto As Integer = 29
         Const posCodConf As Integer = 30
         Const posQtaConf As Integer = 31
         Const posCodPag As Integer = 32
@@ -4302,20 +4600,21 @@ NEXT_FILE:
 
         Const posDitta As Integer = 0
         Const posConto As Integer = 1
-        Const posTipoConto As Integer = 2
-        Const posTelefono1 As Integer = 3
-        Const posTelefono2 As Integer = 4
-        Const posFax As Integer = 5
-        Const posCell As Integer = 6
-        Const posEmail As Integer = 7
-        Const posPIVA As Integer = 8
-        Const posRagioneSociale As Integer = 9
-        Const posAddress As Integer = 10
-        Const posCAP As Integer = 11
-        Const posCity As Integer = 12
-        Const posProvincia As Integer = 13
-        Const posCodicePagamento As Integer = 14
-        Const posCodiceFiscale As Integer = 15
+
+        'Const posTipoConto As Integer = 2
+        'Const posTelefono1 As Integer = 3
+        'Const posTelefono2 As Integer = 4
+        'Const posFax As Integer = 5
+        'Const posCell As Integer = 6
+        'Const posEmail As Integer = 7
+        'Const posPIVA As Integer = 8
+        'Const posRagioneSociale As Integer = 9
+        'Const posAddress As Integer = 10
+        'Const posCAP As Integer = 11
+        'Const posCity As Integer = 12
+        'Const posProvincia As Integer = 13
+        'Const posCodicePagamento As Integer = 14
+        'Const posCodiceFiscale As Integer = 15
 
         Dim msg As String = ""
 
