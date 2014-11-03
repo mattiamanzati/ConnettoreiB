@@ -56,9 +56,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AMHelper, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AMHelper, Version=2.0.1.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.0\lib\2.0\AMHelper.dll</HintPath>
+      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\AMHelper.dll</HintPath>
     </Reference>
     <Reference Include="ApexNetLIB, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -81,11 +81,11 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.0\lib\2.0\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp.Net2, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.0\lib\2.0\RestSharp.Net2.dll</HintPath>
+      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\RestSharp.Net2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -221,6 +221,24 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SQL Export\SQL Generic\GetCifreConto.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\GetLeadCate.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\GetLeadConcorrenti.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\GetLeadModAcquisizione.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\GetLeadMansioni.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\GetAgenti.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SQL Export\SQL Generic\GetCliforSenzaCoordinateStandard.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
