@@ -8,6 +8,8 @@ Imports RestSharp
 Imports ApexNetLIB
 
 
+
+
 Public Class CLEIEIBUS
     Inherits CLE__BASN
 
@@ -73,6 +75,7 @@ Public Class CLEIEIBUS
     Public strMastro As String = ""
     Public strAuthKeyAM As String = ""
     Public strAuthKeyLM As String = ""
+    Public strProduzioneAPI As String = "-1"
 
     Public strAppManagerAPI As String = ""
     Public strCodProgetto As String = ""
@@ -364,6 +367,8 @@ Public Class CLEIEIBUS
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
             strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
             strAuthKeyAM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyAM", "", " ", "").Trim
+            strProduzioneAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ProduzioneAPI", "-1", " ", "-1").Trim
+
             'strAppManagerAPI
             strMastro = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Mastro", "0", " ", "0").Trim
 
@@ -792,42 +797,55 @@ Public Class CLEIEIBUS
             End If
 
             '--------------------
-            'Import Ordini
+            'Import Ordini basato si file
             If strTipork.Contains("ORD;") And strUseAPI = "0" Then
                 'meglio importare i dati dei clienti e note modificati o aggiunti
-                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import da file (anagrafiche, note, ordini...)"))
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import modifiche clienti da file..."))
                 If Not Elabora_ImportAnagra() Then Return False
-                If Not Elabora_ImportLead() Then Return False
 
-                If Not Elabora_ImportLeadNote() Then Return False
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import note clienti da file..."))
                 If Not Elabora_ImportCliforNote() Then Return False
 
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import nuovi leads da file..."))
+                If Not Elabora_ImportLead() Then Return False
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import note leads da file..."))
+                If Not Elabora_ImportLeadNote() Then Return False
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import ordini da file..."))
                 If Not Elabora_ImportOrdini() Then Return False
 
             End If
 
 
-            Dim Produzione As Boolean = True
-
-
-            ' TODO: Scommentare solo in debug
-            ' strUseAPI = "1"
-            ' strAuthKeyLM = "LMKEY6"
-            ' strAuthKeyAM = "AMKEY6"
-            ' strMastro = "401"
-            ' Produzione = False
-            ' Scommentare anche LastStoredID
-
-            ' strUseAPI = "1"
-            ' strAuthKeyLM = "3818B678-8333-4DAE-9636-44142316F424"
-            ' strAuthKeyAM = "DDC4C5C1-072F-41D8-A728-D8E4BA686588"
-            'strMastro = "401"
-            Produzione = True
 
             ' Scommentare anche LastStoredID
             '--------------------
             'Import Ordini
             If strTipork.Contains("ORD;") And strUseAPI <> "0" Then
+
+                ' Set variabili
+
+                ' TODO: Scommentare solo in debug
+                ' strUseAPI = "1"
+                ' strAuthKeyLM = "LMKEY6"
+                ' strAuthKeyAM = "AMKEY6"
+                ' strMastro = "401"
+                ' Produzione = False
+                ' Scommentare anche LastStoredID
+
+                ' strUseAPI = "1"
+                ' strAuthKeyLM = "3818B678-8333-4DAE-9636-44142316F424"
+                ' strAuthKeyAM = "DDC4C5C1-072F-41D8-A728-D8E4BA686588"
+                'strMastro = "401"
+
+                Dim Produzione As Boolean = True
+
+                If strProduzioneAPI = "0" Then
+                    Produzione = False
+                Else
+                    Produzione = True
+                End If
 
                 ' Controlli preelaborazione
                 If strAuthKeyLM = "" Then
@@ -845,41 +863,45 @@ Public Class CLEIEIBUS
                     Return False
                 End If
 
-                'meglio importare i dati dei clienti e note modificati o aggiunti
-                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import da WS (anagrafiche, note, ordini...)"))
+                'Import da ws
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Inizio import da ws..."))
 
 
                 ' Istanzio l'oggetto Export dell'AMHelper
                 'Dim ed As New GetDataLM(strAuthKeyLM)
                 Dim ed As New GetDataLM(strAuthKeyLM, Produzione)
 
-
                 If eProxyUrl <> "" Then
                     ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
                 End If
-
 
                 Dim AMData As ws_rec_lmparam = Nothing
                 Dim RetVal As Boolean = ed.get_am_par(AMData)
 
                 strAppManagerAPI = AMData.url_am_api
 
-                If AMData.url_am_api = "" Then
-                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: Dati conf. LM non recuperati")
+                If AMData.url_am_api = "" Or AMData.url_am_api.Length < 10 Then
+                    Dim msg As String = oApp.Tr(Me, 129919999269031600, "ERR: Url api non recuperato da LM. Verifica i parametri nel registro")
                     ThrowRemoteEvent(New NTSEventArgs("", msg))
                     LogWrite(msg, True)
                     Return False
                 End If
 
-                strAppManagerAPI = AMData.url_am_api
 
 
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import modifiche clienti da ws..."))
                 If Not Elabora_ImportAnagraAPI() Then Return False
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import note clienti da ws..."))
                 If Not Elabora_ImportCliforNoteAPI() Then Return False
 
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import nuovi leads da ws..."))
                 If Not Elabora_ImportLeadAPI() Then Return False
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import note leads da ws..."))
                 If Not Elabora_ImportLeadNoteAPI() Then Return False
 
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Import ordini da ws..."))
                 If Not Elabora_ImportOrdiniAPI() Then Return False
 
 

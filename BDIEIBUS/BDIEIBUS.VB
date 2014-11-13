@@ -84,6 +84,13 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    ''' <summary>
+    ''' Converte una Stringa con valore Nothing in "" (Empty string).
+    ''' </summary>
+    ''' <param name="strDesc">Stringa da trattare</param>
+    ''' <param name="MaxLength">Lunghezza massima della stringa di ritorno</param>
+    ''' <returns>Stringa troncata a MaxLenght caratteri</returns>
+    ''' <remarks></remarks>
     Public Overridable Function ToSql(ByVal strDesc As String, Optional ByVal MaxLength As Integer = 0) As String
         Dim RetVal As String
 
@@ -357,6 +364,31 @@ Public Class CLDIEIBUS
                 nNumero = LegNuma(strDitta, "C8", " ", 0, True)
                 nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
 
+                ' Dati di default
+                If String.IsNullOrEmpty(Lead.cod_agente_lead) Then
+                    Lead.cod_agente_lead = "0"
+                End If
+
+                If String.IsNullOrEmpty(Lead.cod_canale_vendita) Then
+                    Lead.cod_canale_vendita = "0"
+                End If
+
+                If String.IsNullOrEmpty(Lead.cod_concorrente) Then
+                    Lead.cod_concorrente = "0"
+                End If
+
+                If String.IsNullOrEmpty(Lead.cod_interesse) Then
+                    Lead.cod_interesse = "0"
+                End If
+
+                If String.IsNullOrEmpty(Lead.cod_categoria) Then
+                    Lead.cod_categoria = "0"
+                End If
+
+                If String.IsNullOrEmpty(Lead.cod_modalita_acquisizione) Then
+                    Lead.cod_modalita_acquisizione = "0"
+                End If
+
                 strSQL = _
                 "INSERT INTO leads (" & _
                 "le_codlead ," & _
@@ -372,15 +404,9 @@ Public Class CLDIEIBUS
                 "le_listino  ," & _
                 "le_agente2  ," & _
                 "le_status  ," & _
-                "le_codcana  ," & _
-                "le_agente  ," & _
                 "le_opnome  ," & _
                 "le_descr1  ," & _
                 "le_descr2  ," & _
-                "le_codcana  ," & _
-                "le_codcptr ," & _
-                "le_codperv ," & _
-                "le_agente ," & _
                 "le_indir   ," & _
                 "le_cap     ," & _
                 "le_citta   ," & _
@@ -394,10 +420,10 @@ Public Class CLDIEIBUS
                 "le_cell    ," & _
                 "le_email   ," & _
                 "le_website ," & _
-                "le_agente  ," & _
-                "le_codcana  ," & _
-                "le_codcptr  ," & _
-                "le_codperv  )" & _
+                 "le_agente  ," & _
+                 "le_codcana  ," & _
+                 "le_codcptr  ," & _
+                 "le_codperv  )" & _
                 "VALUES (   " & _
                 CStrSQL(nNumero) & "," & _
                 CStrSQL(strDitta) & "," & _
@@ -412,21 +438,15 @@ Public Class CLDIEIBUS
                 CStr(1) & "," & _
                 CStr(0) & "," & _
                 CStrSQL("P") & "," & _
-                CStr(1) & "," & _
-                ToSql(Lead.cod_agente) & "," & _
                 ToSql(Lead.cod_operatore) & "," & _
                 ToSql(Lead.descrizione1, 60) & "," & _
                 ToSql(Lead.descrizione2, 50) & "," & _
-                ToSql(Lead.cod_canale_vendita) & "," & _
-                ToSql(Lead.cod_concorrente) & "," & _
-                ToSql(Lead.cod_modalita_acquisizione) & "," & _
-                ToSql(Lead.cod_agente_lead) & "," & _
                 ToSql(Lead.indirizzo, 70) & "," & _
                 ToSql(Lead.cap, 9) & "," & _
                 ToSql(Lead.citta, 50) & "," & _
                 ToSql(Lead.provincia, 2) & "," & _
                 ToSql(Lead.nazione, 3) & "," & _
-                ToSql(Lead.note, 3) & "," & _
+                ToSql(Lead.note) & "," & _
                 ToSql(Lead.partita_iva, 11) & "," & _
                 ToSql(Lead.codice_fiscale, 16) & "," & _
                 ToSql(Lead.telefono, 18) & "," & _
@@ -1521,19 +1541,6 @@ Public Class CLDIEIBUS
 
     End Function
 
-    <Obsolete("Questo metodo è deprecato. Usare GetArt senza il parametro strScontoMax")>
-    Public Overridable Function GetArt(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strQuery As String, ByVal strWhere As String, Optional strScontoMax As String = "") As Boolean
-        Dim retval As Boolean
-
-        Try
-            retval = GetArt(strDitta, dttOut, strQuery, strWhere)
-
-        Catch ex As Exception
-            '--------------------------------------------------------------
-            Throw (New NTSException(GestError(ex, Me, "GetArt", oApp.InfoError, "", False)))
-            '--------------------------------------------------------------
-        End Try
-    End Function
 
     Public Overridable Function GetArtGiacenze(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
