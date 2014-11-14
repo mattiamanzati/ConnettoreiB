@@ -2336,7 +2336,7 @@ Public Class CLEIEIBUS
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!dd_conto) & "|" & _
-                                "0" & "|" & _
+                                ConvStr(dtrT!xx_preferenziale) & "|" & _
                                 ConvStr(dtrT!dd_coddest) & "|" & _
                                 ConvStr(dtrT!dd_nomdest) & "|" & _
                                 ConvStr(dtrT!dd_inddest) & "|" & _

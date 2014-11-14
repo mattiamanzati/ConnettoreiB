@@ -16,6 +16,7 @@ SELECT
 	dd_faxtlx,
 	dd_email, 
 	dd_note,
+	case when anagra.an_destin = dd_coddest THEN 1 ELSE 0 END AS xx_preferenziale,
 	getdate() as xx_ultagg
 FROM 
 	destdiv WITH (NOLOCK)
