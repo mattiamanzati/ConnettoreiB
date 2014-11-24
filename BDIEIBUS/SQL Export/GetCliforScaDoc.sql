@@ -38,7 +38,7 @@ SELECT
 	sc_codvalu,
 	sc_alfpar,
 	sc_numpar,
-	'Fattura' as xx_des_scad,
+	'Fattura' + ' ' + ISNULL(sc_descr,'') as xx_des_scad,
 	getdate() as xx_ultagg
 FROM  
     scaden WITH (NOLOCK)

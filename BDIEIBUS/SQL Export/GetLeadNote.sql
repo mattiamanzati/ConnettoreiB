@@ -3,19 +3,6 @@ DECLARE @release varchar(200)
 SELECT @release = '1.0'
 */
 
-/*
-SELECT leads.codditt + '§0§' + CAST(leads.le_codlead AS VARCHAR) AS xx_chiave,
-       dbo.leads.le_codlead,
-	   'A' as xx_progressivo,
-       'Nota principale' as tb_codnote, 
-       leads.le_note
-FROM   dbo.leads WITH (NOLOCK)
-WHERE 1=1
-AND le_note <> '' 
-AND codditt = @ditta 
-UNION ALL
-*/
-
 SELECT  
        leads.codditt + '§0§' + CAST(leads.le_codlead AS VARCHAR) AS xx_chiave,
        leads.le_codlead,
@@ -26,7 +13,9 @@ SELECT
 FROM   dbo.leads WITH (NOLOCK)
 WHERE  1=1
 AND    codditt = @ditta 
-AND    ISNULL(le_note,'') <> '' 
+AND    le_note IS NOT null
+AND    leads.le_note2  IS NOT null
+AND    CAST(leads.le_note2 AS VARCHAR)  <> ''
 AND    le_status <> 'I' 
 ORDER BY
 	leads.le_codlead

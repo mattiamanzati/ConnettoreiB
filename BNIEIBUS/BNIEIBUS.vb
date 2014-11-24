@@ -812,6 +812,16 @@ Riprova:
             If CheckboxAttivi.Contains("ORD;") Then
                 ckOrdini.Checked = True
             End If
+            If CheckboxAttivi.Contains("LEA;") Then
+                ckLeads.Checked = True
+            End If
+            If CheckboxAttivi.Contains("OFF;") Then
+                ckOff.Checked = True
+            End If
+            If CheckboxAttivi.Contains("CAT;") Then
+                ckCatalogo.Checked = True
+            End If
+
 
 
             'CLI;FOR;ART;LIS;SCO;DOC;MAG;CIT;PAG;COO;
@@ -836,6 +846,9 @@ Riprova:
             If CheckboxDisabilitati.Contains("MAG;") Then
                 ckMagaz.Enabled = False
             End If
+            If CheckboxDisabilitati.Contains("TBS;") Or CheckboxDisabilitati.Contains("CIT;") Then
+                ckTabBase.Enabled = False
+            End If
             If CheckboxDisabilitati.Contains("PAG;") Then
                 ckCodpaga.Enabled = False
             End If
@@ -845,9 +858,15 @@ Riprova:
             If CheckboxDisabilitati.Contains("ORD;") Then
                 ckOrdini.Enabled = False
             End If
-
-
-
+            If CheckboxDisabilitati.Contains("LEA;") Then
+                ckLeads.Enabled = True
+            End If
+            If CheckboxDisabilitati.Contains("OFF;") Then
+                ckOff.Enabled = True
+            End If
+            If CheckboxDisabilitati.Contains("CAT;") Then
+                ckCatalogo.Enabled = True
+            End If
 
 
         Catch ex As Exception

@@ -204,6 +204,8 @@ Public Class CLEIEIBUS
 
 
 
+
+
     Public Overrides Function Init(ByRef App As CLE__APP, _
                                 ByRef oScriptEngine As INT__SCRIPT, ByRef oCleLbmenu As Object, ByVal strTabella As String, _
                                 ByVal bRemoting As Boolean, ByVal strRemoteServer As String, _
@@ -434,6 +436,7 @@ Public Class CLEIEIBUS
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
             strCustomWhereGetPorto = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetPorto", "", " ", "").Trim
 
+
             arFileGen.Clear()
 
             'InviaAlert(1, "PIPPO")
@@ -492,7 +495,7 @@ Public Class CLEIEIBUS
             If strTipork.Contains("COO;") Then
                 '--------------------
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Identificazione coordinate da Google..."))
-                    AggiornaCoordinate()
+                AggiornaCoordinate()
 
             End If
 
@@ -4257,6 +4260,8 @@ Public Class CLEIEIBUS
     Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
         Try
 
+
+
             ' Esempio: Chiamo la insert cliente e passo il mastro 126. Ritorna CodCliente = , CodCliente completo= 
             Dim ClienteCodificatoCorrettamente As Boolean = oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
 
@@ -4272,6 +4277,38 @@ Public Class CLEIEIBUS
                 Then
                     oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
                 End If
+
+
+
+                ' Quali moduli sono installati ?
+                Dim dttTmpConf As New DataTable
+                oCldIbus.ValCodiceDb("S", strDittaCorrente, "TABINSG", "N", "", dttTmpConf)
+
+                ' Modulo CRM
+                Dim moduleCRM As Boolean = False
+                If NTSCStr(dttTmpConf.Rows(0)!tb_mod3_6) = "S" Then
+                    moduleCRM = True
+                End If
+
+                ' Modulo Anagrafiche generali
+                Dim moduleAnaGen As Boolean = False
+                If NTSCStr(dttTmpConf.Rows(0)!tb_mod3_10) = "S" Then
+                    moduleAnaGen = True
+                End If
+
+                dttTmpConf.Clear()
+
+                If moduleCRM Then
+
+
+                End If
+
+                If moduleAnaGen Then
+
+
+                End If
+
+
             End If
 
             Return True
