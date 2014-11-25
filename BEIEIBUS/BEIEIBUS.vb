@@ -99,6 +99,7 @@ Public Class CLEIEIBUS
     Public strCustomWhereGetArt As String = ""
     Public strCustomWhereGetArtCatalogo As String = ""
     Public strCustomWhereGetArtGiacenze As String = ""
+    Public strCustomWhereGetArtLingua As String = ""
     Public strCustomWhereGetArtListini As String = ""
     Public strCustomWhereGetArtSconti As String = ""
     Public strCustomWhereGetArtStoart As String = ""
@@ -401,6 +402,7 @@ Public Class CLEIEIBUS
             strCustomWhereGetArtCatalogo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtCatalogo", "", " ", "").Trim
             strCustomWhereGetArtGiacenze = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtGiacenze", "", " ", "").Trim
             strCustomWhereGetArtListini = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtListini", "", " ", "").Trim
+            strCustomWhereGetArtLingua = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtLingua", "", " ", "").Trim
             strCustomWhereGetArtSconti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtSconti", "", " ", "").Trim
             strCustomWhereGetArtStoart = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtStoart", "", " ", "").Trim
             strCustomWhereGetArtUltAcq = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtUltAcq", "", " ", "").Trim
@@ -701,6 +703,11 @@ Public Class CLEIEIBUS
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_ART)
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_CONF)
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_UM)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export articoli in lingua..."))
+                If Not Elabora_ExportArtLingua(oApp.AscDir & "\" + cIMP_ART_LANG) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_LANG)
+
             End If
             'ThrowRemoteEvent(New NTSEventArgs("PROGRESSBA", "75"))
 
@@ -3006,6 +3013,43 @@ Public Class CLEIEIBUS
         End Try
     End Function
 
+    Public Overridable Function Elabora_ExportArtLingua(ByVal strFileOut As String) As Boolean
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Try
+            If Not oCldIbus.GetArtLingua(strDittaCorrente, dttTmp, strCustomWhereGetArtLingua) Then Return False
+
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|COD_LINGUA|DES_ART|DAT_ULT_MOD" & vbCrLf)
+            For Each dtrT As DataRow In dttTmp.Rows
+                sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                strDittaCorrente & "|" & _
+                                ConvStr(dtrT!ax_codart) & "|" & _
+                                ConvStr(dtrT!ax_codvalu) & "|" & _
+                                ConvStr(dtrT!ax_descr) & "|" & _
+                                ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+            Next
+            If dttTmp.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
     Public Overridable Function Elabora_ExportArtGiacenze(ByVal strFileOut As String) As Boolean
         'esporta le giacenze divise per magazzino degli articoli (e relative fasi) 
         Dim dttTmp As New DataTable
@@ -4279,35 +4323,22 @@ Public Class CLEIEIBUS
                 End If
 
 
-
-                ' Quali moduli sono installati ?
-                Dim dttTmpConf As New DataTable
-                oCldIbus.ValCodiceDb("S", strDittaCorrente, "TABINSG", "N", "", dttTmpConf)
-
-                ' Modulo CRM
-                Dim moduleCRM As Boolean = False
-                If NTSCStr(dttTmpConf.Rows(0)!tb_mod3_6) = "S" Then
-                    moduleCRM = True
+                ' C'è il modulo CRM ?
+                Dim bCRM As Boolean = False
+                If CBool(ModuliExtDittaDitt(strDittaCorrente) And bsModExtCRM) Then
+                    bCRM = True
+                Else
+                    bCRM = False
                 End If
 
-                ' Modulo Anagrafiche generali
-                Dim moduleAnaGen As Boolean = False
-                If NTSCStr(dttTmpConf.Rows(0)!tb_mod3_10) = "S" Then
-                    moduleAnaGen = True
+                ' C'è il modulo Anagrafiche generali ?
+                Dim bAnagGenerali As Boolean = False
+
+                If CBool(ModuliExtDittaDitt(strDittaCorrente) And bsModExtANG) Then
+                    bAnagGenerali = True
+                Else
+                    bAnagGenerali = False
                 End If
-
-                dttTmpConf.Clear()
-
-                If moduleCRM Then
-
-
-                End If
-
-                If moduleAnaGen Then
-
-
-                End If
-
 
             End If
 
