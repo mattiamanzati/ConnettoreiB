@@ -472,7 +472,9 @@ Public Class CLDIEIBUS
 
                 'No, non lo é. Lo associo
                 If dttOut.Rows.Count = 0 Then
-                    If Not Lead.cod_operatore Is Nothing And Lead.cod_operatore = "" Then
+
+                    ' Se il cod_operatore che viene dai web service non  empty e contiene un valore...
+                    If Not Lead.cod_operatore Is Nothing And Lead.cod_operatore <> "" Then
                         ' Inserisco i dati nella tabella accessi          
                         strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
                                                ToSql(strDitta), _
