@@ -16,5 +16,5 @@ FROM anagra WITH (NOLOCK)
        ON an_stato = tb_codstat 
 WHERE 1=1
 	AND anagra.codditt = @ditta
-    AND  (isnull(an_latitud,0) = 0 OR isnull(an_longitud,0) = 0) 
+    AND  (isnull(an_latitud, '0') = '0' OR isnull(an_longitud, '0') = '0') 
 	AND an_indir is not null
