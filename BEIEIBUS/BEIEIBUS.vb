@@ -2692,12 +2692,13 @@ Public Class CLEIEIBUS
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
             'ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
-            sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
+            sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_ART|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
                         "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!xx_numreg) & "|" & _
+                                ConvStr(dtrT!xx_codart) & "|" & _
                                 ConvStr(dtrT!mm_riga) & "|" & _
                                 (ConvStr(dtrT!mm_codart) & IIf(NTSCStr(dtrT!mm_fase) <> "0", "." & ConvStr(dtrT!mm_fase), "").ToString).Trim & "|" & _
                                 (ConvStr(dtrT!mm_descr) & " " & ConvStr(dtrT!mm_desint, True)).Trim & "|" & _

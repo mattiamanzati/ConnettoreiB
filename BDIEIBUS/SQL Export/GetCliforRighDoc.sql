@@ -15,6 +15,7 @@
 
 SELECT  
         1 AS query,
+		b.mm_codart AS xx_codart,
         an_tipo,                                                          
         an_conto,     
 		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_numpar as varchar) as xx_numreg,
@@ -73,7 +74,8 @@ SELECT
 		AND tm_tipork in ('A','N')  
 UNION ALL
 	SELECT 
-	    2,  
+	    2,
+		b.mm_codart,
         an_tipo,                                                          
         an_conto,     
 		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar) + '§' + CAST(testmag.tm_numpar as varchar) as xx_numreg,
@@ -128,7 +130,8 @@ UNION ALL
 	    AND testmag.tm_annpar > 0 AND testmag.tm_numpar > 0
 UNION ALL
 	SELECT 
-	    3,  
+	    3,
+		b.mm_codart,
         an_tipo,                                                          
         an_conto,     
 		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_tipork as varchar) as xx_numreg,
@@ -181,7 +184,8 @@ UNION ALL
 		AND tm_tipork not in ('L','K','J','A','D','N','Z','T','U')
 UNION ALL        
 	SELECT 
-	    4,                                                               
+	    4,
+		movmag.mm_codart,                                                         
 		an_tipo,                                                          
 		an_conto,    
 		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_anno as varchar) + '§' + testmag.tm_serie + '§' + CAST(testmag.tm_numdoc as varchar) + '§' + CAST(testmag.tm_numpar as varchar)  as xx_numreg, 
@@ -240,7 +244,8 @@ UNION ALL
 		AND testmag.tm_tipork = 'D'   
 UNION ALL
     SELECT 
-	    5,                                                               
+	    5, 
+		movmag.mm_codart,                                                                
         an_tipo,                                                          
         an_conto,    
 		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar)+ '§' + CAST(testmag.tm_numpar as varchar)  +  '§' + testmag.tm_tipork as xx_numreg,
@@ -301,7 +306,8 @@ UNION ALL
 	    AND testmag.tm_annpar > 0 AND testmag.tm_numpar > 0                       
 UNION ALL 
     SELECT
-	        6,                                                                  
+	        6,
+		    movord.mo_codart,                                                                    
             an_tipo,                                                         
             an_conto,  
 			testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar) + '§' + td_tipork as xx_numreg,
