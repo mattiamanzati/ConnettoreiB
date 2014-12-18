@@ -4,6 +4,9 @@ SELECT @release = '1.0'
 */
 -- strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_agente) & "§" & ConvStr(dtrT!xx_prefer) & "|" & _
 
+SELECT DISTINCT an_conto, xx_agente,  tb_descage, xx_ultagg, an_tipo, MAX(xx_prefer) as xx_prefer, MAX(xx_chiave) as xx_chiave
+FROM 
+(
 SELECT 
        '1§' + anagra.codditt + '§' + anagra.an_tipo + '§' + cast(an_conto as varchar) + '§' + cast(an_agente as varchar) + '§' + 'A' as xx_chiave,
        an_tipo    AS an_tipo, 
@@ -77,3 +80,5 @@ WHERE  1=1
        AND destdiv.codditt = @ditta 
        AND an_tipo <> 'S' 
        AND an_status = 'A'
+) AS agenti
+GROUP BY an_conto, xx_agente, tb_descage, xx_ultagg, an_tipo
