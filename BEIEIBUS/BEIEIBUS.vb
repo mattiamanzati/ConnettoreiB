@@ -4217,19 +4217,7 @@ Public Class CLEIEIBUS
 
 
                     Select Case strDeterminazioneDescrizioneRigaOrdine
-                        Case "0" ' Modalità standard per Determinazione descrizione ordine
-                            ' Se la descrizione non è empty string
-                            If r.descrizione_riga.Trim <> "" Then
-                                ' Prendo i primi 40 caratteri
-                                !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
-                            End If
-
-                            ' Se la descrizione è superiore a 40 caratteri
-                            If r.descrizione_riga.Length > 40 Then
-                                ' I caratteri eccedenti li metto nelle note
-                                !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
-                            End If
-                        Case "1" ' Modalità con decodifica per Determinazione descrizione ordine
+                        Case "0", "1" ' Modalità con decodifica per Determinazione descrizione ordine
                             ' L'articolo è descrittivo ?
                             If strCodArt = "D" Then
                                 ' Se esiste una descrizione
@@ -4254,7 +4242,18 @@ Public Class CLEIEIBUS
                                 ' Business dovrebbe prenderle dall'anagrafica articolo
 
                             End If
+                        Case "2" ' Modalità standard per Determinazione descrizione ordine
+                            ' Se la descrizione non è empty string
+                            If r.descrizione_riga.Trim <> "" Then
+                                ' Prendo i primi 40 caratteri
+                                !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
+                            End If
 
+                            ' Se la descrizione è superiore a 40 caratteri
+                            If r.descrizione_riga.Length > 40 Then
+                                ' I caratteri eccedenti li metto nelle note
+                                !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
+                            End If
                     End Select
 
 
@@ -4306,7 +4305,6 @@ Public Class CLEIEIBUS
         Try
 
 
-
             ' Esempio: Chiamo la insert cliente e passo il mastro 126. Ritorna CodCliente = , CodCliente completo= 
             Dim ClienteCodificatoCorrettamente As Boolean = oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
 
@@ -4324,21 +4322,24 @@ Public Class CLEIEIBUS
                 End If
 
 
-                ' C'è il modulo CRM ?
-                Dim bCRM As Boolean = False
+                ' Se c'è il modulo CRM, Devo inserire un Lead collegato
                 If CBool(ModuliExtDittaDitt(strDittaCorrente) And bsModExtCRM) Then
-                    bCRM = True
-                Else
-                    bCRM = False
+
+                    Dim CodOperatore As String = ""
+                    If Not String.IsNullOrEmpty(Ordine.cod_operatore) Then
+                        CodOperatore = Ordine.cod_operatore
+                    Else
+                        CodOperatore = "Admin"
+                    End If
+
+                    Dim CodLead As Integer
+                    oCldIbus.InsertLeadFromCliData(strDittaCorrente, CodClienteCompleto.ToString(), CodOperatore, CodLead)
                 End If
 
                 ' C'è il modulo Anagrafiche generali ?
-                Dim bAnagGenerali As Boolean = False
-
                 If CBool(ModuliExtDittaDitt(strDittaCorrente) And bsModExtANG) Then
-                    bAnagGenerali = True
-                Else
-                    bAnagGenerali = False
+                    Dim CodAnagen As Integer
+                    oCldIbus.InsertAnagenFromCliData(strDittaCorrente, CodClienteCompleto.ToString(), CodAnagen)
                 End If
 
             End If

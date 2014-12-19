@@ -177,9 +177,6 @@ Public Class CLDIEIBUS
 
     Public Overridable Function AggiungiPersonalizzazioniDb() As Boolean
 
-        Dim dttOut1 As DataTable
-        Dim dttOut2 As DataTable
-
         Dim strSQL As String = ""
 
         Try
@@ -363,7 +360,7 @@ Public Class CLDIEIBUS
                 nNumero = 0
                 nNumero = LegNuma(strDitta, "C8", " ", 0, True)
                 nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
-
+ 
                 ' Dati di default
                 If String.IsNullOrEmpty(Lead.cod_agente_lead) Then
                     Lead.cod_agente_lead = "0"
@@ -462,28 +459,32 @@ Public Class CLDIEIBUS
 
                 Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
+                Dim RetValAssociazione As Boolean = AssociaOperatoreLead(strDitta, nNumero, Lead.cod_operatore)
+
+
                 ' Il lead e' gia' associato? (chiave: opcr_codlead, codditt, opcr_opnome)
-                strSQL = String.Format("select * from acclead where codditt = {0} and opcr_codlead = {1} and opcr_opnome = {2}", _
-                                       ToSql(strDitta), _
-                                       CodiceLead.ToString, _
-                                       ToSql(Lead.cod_operatore) _
-                                       )
-                dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+                'strSQL = String.Format("select * from acclead where codditt = {0} and opcr_codlead = {1} and opcr_opnome = {2}", _
+                '                       ToSql(strDitta), _
+                '                       CodiceLead.ToString, _
+                '                       ToSql(Lead.cod_operatore) _
+                '                       )
+                'dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
 
                 'No, non lo é. Lo associo
-                If dttOut.Rows.Count = 0 Then
+                'If dttOut.Rows.Count = 0 Then
 
-                    ' Se il cod_operatore che viene dai web service non  empty e contiene un valore...
-                    If Not Lead.cod_operatore Is Nothing And Lead.cod_operatore <> "" Then
-                        ' Inserisco i dati nella tabella accessi          
-                        strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
-                                               ToSql(strDitta), _
-                                               ToSql(Lead.cod_operatore), _
-                                               CStrSQL(nNumero) _
-                                               )
-                        Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
-                    End If
-                End If
+                ' Se il cod_operatore che viene dai web service non  empty e contiene un valore...
+                'If Not Lead.cod_operatore Is Nothing And Lead.cod_operatore <> "" Then
+                ' Inserisco i dati nella tabella accessi          
+                'strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
+                '                      ToSql(strDitta), _
+                '                      ToSql(Lead.cod_operatore), _
+                '                      CStrSQL(nNumero) _
+                '                     )
+                'Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+                'End If
+
+                ' End If
 
 
                 CodLead = nNumero
@@ -491,6 +492,41 @@ Public Class CLDIEIBUS
                 Return False
             End If
 
+
+            Return True
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function AssociaOperatoreLead(ByVal strDitta As String, CodLead As Integer, ByVal CodOperatore As String) As Boolean
+        Dim strSQL As String = ""
+        Dim dttOut As New DataTable
+
+        Try
+
+            ' Il lead e' gia' associato? (chiave: opcr_codlead, codditt, opcr_opnome)
+            strSQL = String.Format("select * from acclead where codditt = {0} and opcr_codlead = {1} and opcr_opnome = {2}", _
+                                   ToSql(strDitta), _
+                                   CodLead.ToString, _
+                                   ToSql(CodOperatore) _
+                                   )
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            'No, non lo é. Lo associo
+            If dttOut.Rows.Count = 0 Then
+
+                ' Se il cod_operatore che viene dai web service non  empty e contiene un valore...
+                If Not CodOperatore Is Nothing And CodOperatore <> "" Then
+                    ' Inserisco i dati nella tabella accessi          
+                    strSQL = String.Format("insert into acclead (codditt, opcr_opnome, opcr_codlead, opcr_crmvis, opcr_crmmod) values ({0}, {1}, {2}, 'S', 'S')", _
+                                           ToSql(strDitta), _
+                                           ToSql(CodOperatore), _
+                                           CStrSQL(CodLead) _
+                                           )
+                    Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+                End If
+            End If
 
             Return True
         Catch ex As Exception
@@ -728,6 +764,84 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function InsertAnagenFromCliData(ByVal strDitta As String, ByVal CodCLiente As String, ByRef CodAnagen As Integer) As Boolean
+
+        Dim nNumero As Integer = 0
+        Dim strSQL As String = ""
+
+        Dim dttTmp As New DataTable
+
+        Try
+
+            ' Prenoto il progressivo codLead 
+            nNumero = 0
+            nNumero = LegNumg("AG", " ", 0, True)
+            ValCodiceDb(nNumero.ToString, strDitta, "ANAGEN", "N", "", dttTmp)
+            If dttTmp.Rows.Count > 0 Then
+                ' Attenzione: il progressivo da attribuire alla nuova anagrafica generale letto dalla tabella numerazioni risulta essere già usato. Correggere la tabella numerazioni
+                Throw (New NTSException("progressivo da attribuire alla nuova anagrafica generale letto dalla tabella numerazioni risulta essere già usato"))
+                Return False
+            End If
+
+            Dim strErr As String = ""
+            nNumero = AggNumg("AG", "", 0, nNumero, True, True, strErr)
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertAnagenFromCliente.sql")
+            strSQL = strSQL.Replace("@ditta@", ToSql(strDitta))
+            strSQL = strSQL.Replace("@conto@", ToSql(CodCLiente))
+            strSQL = strSQL.Replace("@codanagen@", CStrSQL(nNumero))
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            CodAnagen = nNumero
+
+            If nNumero = 0 Then
+                Return False
+            Else
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    ' Solo per API
+    Public Overridable Function InsertLeadFromCliData(ByVal strDitta As String, ByVal CodCLiente As String, ByVal CodOperatore As String, ByRef CodLead As Integer) As Boolean
+
+        Dim nNumero As Integer = 0
+        Dim strSQL As String = ""
+
+        Try
+
+            ' Prenoto il progressivo codLead 
+            nNumero = 0
+            nNumero = LegNuma(strDitta, "C8", " ", 0, True)
+            nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
+
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertLeadFromCliente.sql")
+            strSQL = strSQL.Replace("@ditta@", ToSql(strDitta))
+            strSQL = strSQL.Replace("@conto@", ToSql(CodCLiente))
+            strSQL = strSQL.Replace("@codlead@", CStrSQL(nNumero))
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Dim RetValAssociazione As Boolean = AssociaOperatoreLead(strDitta, nNumero, CodOperatore)
+
+            CodLead = nNumero
+
+            If nNumero = 0 Then
+                Return False
+            Else
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
     ' Solo per API
     Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
 
@@ -789,6 +903,7 @@ Public Class CLDIEIBUS
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
             CodClienteCompleto = CInt(CodiceClienteCompleto)
+
 
             If nNumero = 0 Then
                 Return False
