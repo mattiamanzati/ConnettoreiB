@@ -1042,6 +1042,7 @@ Public Class CLEIEIBUS
                 Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
             Else
                 ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+                'ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 128517126976816000, "Una riga a prezzo netto deve avere tutti gli sconti pari a 0.")))
             End If
             '--------------------------------------------------------------	
         End Try
@@ -3589,7 +3590,7 @@ Public Class CLEIEIBUS
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
 
         ' TODO:  Togliere 
-        ' LastStoredID = 3
+        LastStoredID = 19679
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)

@@ -436,7 +436,7 @@ Public Class CLDIEIBUS
                 CStr(0) & "," & _
                 CStrSQL("P") & "," & _
                 ToSql(Lead.cod_operatore) & "," & _
-                ToSql(Lead.descrizione1, 60) & "," & _
+                ToSql(Lead.descrizione1, 50) & "," & _
                 ToSql(Lead.descrizione2, 50) & "," & _
                 ToSql(Lead.indirizzo, 70) & "," & _
                 ToSql(Lead.cap, 9) & "," & _
@@ -991,7 +991,7 @@ Public Class CLDIEIBUS
                 CStr(1) & "," & _
                 ConvEmptyToNull(CStrSQL(dRow("COD_AGENTE"))) & "," & _
                 ConvEmptyToNull(CStrSQL(dRow("COD_OPERATORE"))) & "," & _
-                ConvEmptyToNull(CStrSQL(Left(dRow("DESCRIZIONE1").ToString, 60))) & "," & _
+                ConvEmptyToNull(CStrSQL(Left(dRow("DESCRIZIONE1").ToString, 50))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("DESCRIZIONE2").ToString, 50))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("INDIRIZZO").ToString, 70))) & "," & _
                 ConvEmptyToNull(CStrSQL(Left(dRow("CAP").ToString, 9))) & "," & _
