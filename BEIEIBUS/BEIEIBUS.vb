@@ -3590,7 +3590,7 @@ Public Class CLEIEIBUS
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
 
         ' TODO:  Togliere 
-        LastStoredID = 19679
+        ' LastStoredID = 19679
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
