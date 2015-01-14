@@ -240,12 +240,12 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function GetCifreConto(ByVal strDitta As String, ByRef numCifre As Integer) As Boolean
+    Public Overridable Function GetDatiAzienda(ByVal strDitta As String, ByRef numCifreConto As Integer, ByRef CodPianoConti As String) As Boolean
         Dim strSQL As String = ""
         Dim dttOut As New DataTable
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCifreConto.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetDatiAzienda.sql")
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
@@ -253,7 +253,8 @@ Public Class CLDIEIBUS
             If dttOut.Rows.Count = 0 Then
                 Return False
             Else
-                numCifre = NTSCInt(dttOut.Rows(0)!xx_num_cifre)
+                numCifreConto = NTSCInt(dttOut.Rows(0)!xx_num_cifre)
+                CodPianoConti = NTSCStr(dttOut.Rows(0)!tb_azcodpcon)
 
                 Return True
             End If
@@ -850,6 +851,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
 
         Dim numCifre As Integer = 0
+        Dim CodPianoConti As String = "0"
         Dim RetValCifre As Boolean
         Dim CodiceClienteCompleto As String
 
@@ -857,7 +859,7 @@ Public Class CLDIEIBUS
 
         Try
             ' Quento deve essere il filler del cod cliente
-            RetValCifre = GetCifreConto(strDitta, numCifre)
+            RetValCifre = GetDatiAzienda(strDitta, numCifre, CodPianoConti)
 
             ' Leggo il progressivo (ovvero il cod conto)
             nNumero = 0
@@ -899,6 +901,7 @@ Public Class CLDIEIBUS
             strSQL = strSQL.Replace("@an_prov@", ToSql(ClienteData.provincia, 2))
             strSQL = strSQL.Replace("@an_descr1@", ToSql(ClienteData.ragione_sociale, 50))
             strSQL = strSQL.Replace("@an_telef@", ToSql(ClienteData.telefono1, 18))
+            strSQL = strSQL.Replace("@an_codpcon@", ToSql(CodPianoConti))
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 

@@ -220,7 +220,7 @@
     <EmbeddedResource Include="SQL Export\InsertCliDest.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="SQL Export\SQL Generic\GetCifreConto.sql" />
+    <EmbeddedResource Include="SQL Export\SQL Generic\GetDatiAzienda.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SQL Export\GetLeadCate.sql" />

@@ -4,6 +4,7 @@ SELECT @release = '1.0'
 */
 
 SELECT 
+  tb_azcodpcon,
   case tb_struttura
 	when 'S' then '4'
 	when 'A' then '5'
