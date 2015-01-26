@@ -17,5 +17,6 @@ AND    le_note IS NOT null
 AND    leads.le_note2  IS NOT null
 AND    CAST(leads.le_note2 AS VARCHAR)  <> ''
 AND    le_status <> 'I' 
+AND    leads.le_servdeleted <> 'S'
 ORDER BY
 	leads.le_codlead

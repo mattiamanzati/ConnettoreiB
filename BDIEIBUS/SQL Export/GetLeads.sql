@@ -98,6 +98,7 @@ WHERE 1=1
        AND le_status <> 'I' 
 	   AND (le_conto = '0' or @includi_lead_clienti <> '0')
 	   AND le_coddest = 0
+	   AND leads.le_servdeleted <> 'S'
 ORDER  BY 
     le_codlead
 

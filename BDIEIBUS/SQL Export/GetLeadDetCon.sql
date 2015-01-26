@@ -30,6 +30,8 @@ WHERE 1=1
 	AND og_tipork = 'L'                                       
 	AND leads.le_coddest=0
 	AND leads.codditt = @ditta
+	AND leads.le_servdeleted <> 'S'
+	AND organig.og_servdeleted <> 'S'
 ORDER  BY 
     og_conto,                                               
     og_progr        
