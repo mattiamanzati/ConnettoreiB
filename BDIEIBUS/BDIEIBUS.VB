@@ -844,7 +844,7 @@ Public Class CLDIEIBUS
     End Function
 
     ' Solo per API
-    Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
+    Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal CodAgente As String, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
 
         Dim nNumero As Integer = 0
         Dim dttOut As New DataTable
@@ -902,6 +902,10 @@ Public Class CLDIEIBUS
             strSQL = strSQL.Replace("@an_descr1@", ToSql(ClienteData.ragione_sociale, 50))
             strSQL = strSQL.Replace("@an_telef@", ToSql(ClienteData.telefono1, 18))
             strSQL = strSQL.Replace("@an_codpcon@", ToSql(CodPianoConti))
+            strSQL = strSQL.Replace("@an_agente@", ToSql(CodAgente))
+
+
+
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 

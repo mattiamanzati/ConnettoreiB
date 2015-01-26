@@ -53,6 +53,7 @@ insert into anagra (
 	,an_descr1
 	,an_telef
 	,an_codpcon
+	,an_agente
 	,an_ultagg
 )
 values (
@@ -84,5 +85,6 @@ values (
 	,@an_descr1@
 	,@an_telef@
 	,@an_codpcon@
+	,@an_agente@
 	,getdate()
 )

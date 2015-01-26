@@ -8,8 +8,6 @@ Imports RestSharp
 Imports ApexNetLIB
 
 
-
-
 Public Class CLEIEIBUS
     Inherits CLE__BASN
 
@@ -3590,7 +3588,7 @@ Public Class CLEIEIBUS
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
 
         ' TODO:  Togliere 
-        ' LastStoredID = 19679
+        'LastStoredID = 344
 
         ' Istanzio l'oggetto Export dell'AMHelper
         Dim ed As New GetDataAM(strAuthKeyAM, strAppManagerAPI)
@@ -4305,9 +4303,8 @@ Public Class CLEIEIBUS
     Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
         Try
 
-
             ' Esempio: Chiamo la insert cliente e passo il mastro 126. Ritorna CodCliente = , CodCliente completo= 
-            Dim ClienteCodificatoCorrettamente As Boolean = oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
+            Dim ClienteCodificatoCorrettamente As Boolean = oCldIbus.InsertCliData(strDittaCorrente, Ordine.clienti(0), Ordine.cod_agente, Mastro, CodClienteCompleto)
 
             If ClienteCodificatoCorrettamente Then
                 If Not Ordine.clienti(0).cap_consegna Is Nothing Or _
@@ -4321,7 +4318,6 @@ Public Class CLEIEIBUS
                 Then
                     oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
                 End If
-
 
                 ' Se c'è il modulo CRM, Devo inserire un Lead collegato
                 If CBool(ModuliExtDittaDitt(strDittaCorrente) And bsModExtCRM) Then
