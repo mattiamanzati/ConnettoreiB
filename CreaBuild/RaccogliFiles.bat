@@ -13,10 +13,10 @@ copy ..\TEST\BDIEIBUS.pdb .\iBUpdate
 copy ..\TEST\ApexNet*.dll .\iBUpdate
 copy ..\TEST\ApexNet*.pbd .\iBUpdate
 
-copy ..\TEST\RestSharp*.* .\iBUpdate
+copy ..\TEST\RestSharpApex*.* .\iBUpdate
 copy ..\TEST\Ionic*.* .\iBUpdate
 copy ..\TEST\AMHelper*.* .\iBUpdate
-copy ..\TEST\Newtonsoft* .\iBUpdate
+copy ..\TEST\NewtonsoftApex* .\iBUpdate
 
 
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "iBUpdate.zip" .\iBUpdate
@@ -40,10 +40,10 @@ copy ..\TEST\BDIEIBUS.pdb .\ConnettoreBusiness
 copy ..\TEST\ApexNet*.dll .\ConnettoreBusiness
 copy ..\TEST\ApexNet*.pbd .\ConnettoreBusiness
 
-copy ..\TEST\RestSharp*.* .\ConnettoreBusiness
+copy ..\TEST\RestSharpApex*.* .\ConnettoreBusiness
 copy ..\TEST\Ionic*.* .\ConnettoreBusiness
 copy ..\TEST\AMHelper*.* .\ConnettoreBusiness
-copy ..\TEST\Newtonsoft* .\ConnettoreBusiness
+copy ..\TEST\NewtonsoftApex* .\ConnettoreBusiness
 
 
 rem ci sono differenze solo a partire da qui

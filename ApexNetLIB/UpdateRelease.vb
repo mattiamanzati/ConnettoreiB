@@ -1,8 +1,8 @@
 ﻿Imports System.Data
 Imports System
 Imports System.Net
-Imports RestSharp
-Imports Newtonsoft
+Imports RestSharpApex
+Imports NewtonsoftApex
 Imports NTSInformatica.CLN__STD
 
 

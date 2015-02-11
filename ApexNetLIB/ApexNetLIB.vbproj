@@ -50,16 +50,18 @@
     <OptionInfer>Off</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AMHelper, Version=2.0.1.2, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AMHelper, Version=2.0.2.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\AMHelper.dll</HintPath>
+      <HintPath>..\packages\AMHelper.2.0.2.2\lib\2.0\AMHelper.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\DotNetZip.1.9.3\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp.Net2, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\RestSharp.Net2.dll</HintPath>
+    <Reference Include="NewtonsoftApex.Json">
+      <HintPath>..\packages\AMHelper.2.0.2.2\lib\2.0\NewtonsoftApex.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharpApex.Net2">
+      <HintPath>..\packages\AMHelper.2.0.2.2\lib\2.0\RestSharpApex.Net2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

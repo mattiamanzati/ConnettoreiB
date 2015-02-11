@@ -56,9 +56,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AMHelper, Version=2.0.1.2, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AMHelper, Version=2.0.2.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\AMHelper.dll</HintPath>
+      <HintPath>..\packages\AMHelper.2.0.2.2\lib\2.0\AMHelper.dll</HintPath>
     </Reference>
     <Reference Include="ApexNetLIB, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -79,13 +79,11 @@
       <HintPath>..\TEST\BN__STD.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="NewtonsoftApex.Json">
+      <HintPath>..\packages\AMHelper.2.0.2.2\lib\2.0\NewtonsoftApex.Json.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp.Net2, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AMHelper.2.0.1.2\lib\2.0\RestSharp.Net2.dll</HintPath>
+    <Reference Include="RestSharpApex.Net2">
+      <HintPath>..\packages\AMHelper.2.0.2.2\lib\2.0\RestSharpApex.Net2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
