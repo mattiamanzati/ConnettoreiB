@@ -85,6 +85,6 @@ values (
 	,@an_descr1@
 	,@an_telef@
 	,@an_codpcon@
-	,@an_agente@
+	,isnull(@an_agente@,0)
 	,getdate()
 )
