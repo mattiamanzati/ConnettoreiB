@@ -61,7 +61,8 @@ SELECT
 			AND ( artico.ar_codart <> 'D') 
             AND ( ar_stainv = 'S')                                                              
             AND ar_codtagl = 0                                                                                      
-            AND td_tipork IN ('Q', 'R', 'O' )                                                             
+            --AND td_tipork IN ('Q', 'R', 'O' )   tolto il 25/02 da richiesta Luca per Elmec       
+			AND td_tipork IN ('R')                                                       
             --AND ( ar_gesvar = 'N'  OR ( ar_gesvar = 'S'  AND ar_codroot <> '' ) )
 			AND ( ar_gesvar <> 'S'  OR ( ar_gesvar = 'S'  AND ar_codroot <> '' ) )
 			AND (an_tipo = 'C')

@@ -1,0 +1,31 @@
+Tipi documento di Business
+============================
+Case "A" : strTipoDoc = "Fatt. Imm. em." '
+Case "B" : strTipoDoc = "DDT emesso" ' 
+Case "C" : strTipoDoc = "Corr. emesso"
+Case "D" : strTipoDoc = "Fatt. Diff. em." '
+Case "E" : strTipoDoc = "Note di Add. em."
+Case "F" : strTipoDoc = "Ric.Fisc. em."
+Case "I" : strTipoDoc = "Riem. Ric.Fisc."
+Case "J" : strTipoDoc = "Note Accr. ric."
+Case "(" : strTipoDoc = "Nota accr. diff. ric."
+Case "K" : strTipoDoc = "Fatt. Diff. ric."
+Case "L" : strTipoDoc = "Fatt. Imm. ric."
+Case "M" : strTipoDoc = "DDT ricevuto"
+Case "N" : strTipoDoc = "Note Accr. em."
+Case "£" : strTipoDoc = "Nota accr. diff. em."
+Case "P" : strTipoDoc = "Fatt.Ric.Fisc.Diff."
+Case "S" : strTipoDoc = "Fatt.Ric.Fisc. em."
+Case "T" : strTipoDoc = "Carico da prod."
+Case "U" : strTipoDoc = "Scarico a prod."
+Case "Z" : strTipoDoc = "Bolle di mov.int."
+Case "W" : strTipoDoc = "Note di prel."
+Case "R" : strTipoDoc = "Imp. cliente"
+Case "O" : strTipoDoc = "Ord. forn."
+Case "H" : strTipoDoc = "Ord. di prod."
+Case "X" : strTipoDoc = "Imp. Trasfer."
+Case "Q" : strTipoDoc = "Prev."
+Case "#" : strTipoDoc = "Imp. di comm."
+Case "V" : strTipoDoc = "Imp. cli aperto"
+Case "$" : strTipoDoc = "Ord. forn aperto"
+Case "Y" : strTipoDoc = "Imp. di prod."
