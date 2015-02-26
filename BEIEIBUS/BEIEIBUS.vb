@@ -3976,6 +3976,7 @@ Public Class CLEIEIBUS
         Dim CodAgente2 As Integer = 0
 
 
+
         Try
             ' Controlli preelaborazione sui dati
             If Ordine.cod_clifor Is Nothing Then
@@ -4099,6 +4100,10 @@ Public Class CLEIEIBUS
             oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
 
             ' Valorizzo il codice di pagamento degli articoli deperibili
+            If NTSCInt(Ordine.cod_cond_pag) <> 0 Then
+                oCleGsor.dttET.Rows(0)!et_codpaga = NTSCInt(Ordine.cod_cond_pag)
+            End If
+
             If NTSCInt(Ordine.cod_cond_pag_deperibilita) <> 0 Then
                 oCleGsor.dttET.Rows(0)!et_codpaga = NTSCInt(Ordine.cod_cond_pag_deperibilita)
             End If
