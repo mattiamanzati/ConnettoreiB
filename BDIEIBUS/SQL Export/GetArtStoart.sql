@@ -56,7 +56,8 @@ SELECT
 		LEFT JOIN tabmarc WITH (NOLOCK)
 				ON artico.codditt = tabmarc.codditt
 					AND artico.ar_codmarc = tabmarc.tb_codmarc
-    WHERE  1=1                                                                                                     
+    WHERE  1=1           
+	        AND ( ar_blocco != 'S')                                                                                                 
             AND artico.codditt =  @ditta
 			AND ( artico.ar_codart <> 'D') 
             AND ( ar_stainv = 'S')                                                              
@@ -120,7 +121,8 @@ SELECT
 		LEFT JOIN tabmarc WITH (NOLOCK)
 				ON artico.codditt = tabmarc.codditt
 					AND artico.ar_codmarc = tabmarc.tb_codmarc
-    WHERE  1=1                                                                                                     
+    WHERE  1=1                 
+	        AND ( ar_blocco != 'S')                                                                                      
             AND artico.codditt =  @ditta
 			AND ( artico.ar_codart <> 'D') 
             AND ( ar_stainv = 'S' )                                                              
