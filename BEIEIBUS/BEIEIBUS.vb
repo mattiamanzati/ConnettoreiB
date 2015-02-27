@@ -521,10 +521,6 @@ Public Class CLEIEIBUS
                 If Not Elabora_ExportNazioni(oApp.AscDir & "\" + cIMP_NAZIONI) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_NAZIONI)
 
-                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export nazioni..."))
-                If Not Elabora_ExportNazioni(oApp.AscDir & "\" + cIMP_NAZIONI) Then Return False
-                arFileGen.Add(oApp.AscDir & "\" + cIMP_NAZIONI)
-
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export classi sconto..."))
                 If Not Elabora_ExportClassiSconto(oApp.AscDir & "\" + cIMP_CLASSI_SCONTO) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_CLASSI_SCONTO)
