@@ -1781,7 +1781,7 @@ Public Class CLEIEIBUS
                 "COD_LEAD         |" & _
                 "FLG_VISUALIZZA   |" & _
                 "FLG_MODIFICA     |" & _
-                "DAT_ULT_MOD      |" & _
+                "DAT_ULT_MOD       " & _
                 vbCrLf).Replace(" ", "")
 
             For Each dtrT As DataRow In dttTmp.Rows
