@@ -61,6 +61,7 @@ Public Class CLEIEIBUS
     Public strFiltroGGOfferte As String = ""
     Public strFiltroGGUltAcqVen As String = ""
     Public strFiltroCliConAgenti As String = ""
+    Public strDisattivaModificaDatiCliente As String = ""
     Public strIncludileadClienti As String = ""
     Public strDeterminazioneDescrizioneRigaOrdine As String = ""
 
@@ -356,6 +357,8 @@ Public Class CLEIEIBUS
             strDropBoxDir = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DropBoxDir", "", " ", "")
             strContiEsclusi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ContiEsclusi", "0", " ", "0").Trim
             strFiltroCliConAgenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroCliConAgenti", "0", " ", "0").Trim
+            strDisattivaModificaDatiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DisattivaModificaDatiCliente", "0", " ", "0").Trim
+
             strFiltroGGOfferte = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGOfferte", "365", " ", "365").Trim
             strFiltroGGStoArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGStoArt", "180", " ", "180").Trim
             strFiltroGGDocumenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGDocumenti", "365", " ", "365").Trim
@@ -2192,6 +2195,7 @@ Public Class CLEIEIBUS
         Try
             If Not oCldIbus.GetClifor(TipoCliFor, strDittaCorrente, dttTmp, strFiltroCliConAgenti, strCustomWhereGetClifor) Then Return False
 
+
             sbFile.Append(
                         "CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|RAG_SOC|INDIRIZZO|PARTITA_IVA|CODICE_FISCALE|TELEFONO1|TELEFONO2|" & _
                         "FAX|CELLULARE|EMAIL|INTERNET|CAP|CITTA|PROVINCIA|LATITUDINE|LONGITUDINE|COD_CLASSE_SCONTO|" & _
@@ -2223,7 +2227,7 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!an_hhlat_ib) & "|" & _
                                 ConvStr(dtrT!an_hhlon_ib) & "|" & _
                                 dtrT!an_clascon.ToString & "|" & _
-                            ConvStr(dtrT!xx_flg_mod_nel_disp) & "|" & _
+                            IIf(strDisattivaModificaDatiCliente = "0", ConvStr(dtrT!xx_flg_mod_nel_disp), "0").ToString & "|" & _
                             ConvStr(dtrT!xx_flg_deperibilita) & "|" & _
                             "" & "|" & _
                             ConvStr(dtrT!tb_desstat) & "|" & _
