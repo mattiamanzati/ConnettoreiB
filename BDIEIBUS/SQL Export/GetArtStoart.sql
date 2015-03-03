@@ -68,6 +68,7 @@ SELECT
 			AND ( ar_gesvar <> 'S'  OR ( ar_gesvar = 'S'  AND ar_codroot <> '' ) )
 			AND (an_tipo = 'C')
 			--AND an_conto IN ('10010875') AND  ar_codart IN ('91339L')
+			AND ( (movord.mo_flevas = 'S' AND movord.mo_quaeva > 0) OR (@flg_includi_non_evasi = 1) )
 UNION                                                                                     
 SELECT                                                                                                         
     ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + Cast(af_fase AS VARCHAR (5)) ELSE '' END  AS ar_codart,    

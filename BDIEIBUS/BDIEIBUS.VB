@@ -1750,7 +1750,7 @@ Public Class CLDIEIBUS
     End Function
 
     Public Overridable Function GetArtStoart(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String, _
-                                             Optional ByVal strFiltroGiorniStoArt As String = "180") As Boolean
+                                             Optional ByVal strFiltroGiorniStoArt As String = "180", Optional ByVal strIncludiNonEvasi As String = "1") As Boolean
         'per ogni articolo/cliente prendo l'ultimo ordine
         Dim strSQL As String = ""
         Try
@@ -1758,6 +1758,9 @@ Public Class CLDIEIBUS
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtStoart.sql")
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@giornistorico", CStrSQL(strFiltroGiorniStoArt))
+            strSQL = strSQL.Replace("@flg_includi_non_evasi", CStrSQL(strIncludiNonEvasi))
+
+
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 

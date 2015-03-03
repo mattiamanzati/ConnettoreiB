@@ -61,6 +61,7 @@ Public Class CLEIEIBUS
     Public strFiltroGGOfferte As String = ""
     Public strFiltroGGUltAcqVen As String = ""
     Public strFiltroCliConAgenti As String = ""
+    Public strFiltroIncludiNonEvasi As String = "1"
     Public strDisattivaModificaDatiCliente As String = ""
     Public strIncludileadClienti As String = ""
     Public strDeterminazioneDescrizioneRigaOrdine As String = ""
@@ -358,6 +359,8 @@ Public Class CLEIEIBUS
             strContiEsclusi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ContiEsclusi", "0", " ", "0").Trim
             strFiltroCliConAgenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroCliConAgenti", "0", " ", "0").Trim
             strDisattivaModificaDatiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DisattivaModificaDatiCliente", "0", " ", "0").Trim
+
+            strFiltroIncludiNonEvasi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroIncludiNonEvasi", "1", " ", "1").Trim
 
             strFiltroGGOfferte = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGOfferte", "365", " ", "365").Trim
             strFiltroGGStoArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroGGStoArt", "180", " ", "180").Trim
@@ -3256,7 +3259,7 @@ Public Class CLEIEIBUS
 
         Try
             If Not oCldIbus.GetArtStoart(strDittaCorrente, dttTmp, strCustomWhereGetArtStoart, _
-                                        strFiltroGiorniStoArt:=strFiltroGGStoArt) Then Return False
+                                        strFiltroGiorniStoArt:=strFiltroGGStoArt, strIncludiNonEvasi:=strFiltroIncludiNonEvasi) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_CLIFOR|COD_ART|DESC_ARTICOLO|NUM_RIGHE|ULT_NUM_REG|ULT_PROG_RIGA|" & _
                             "ULT_QTA|ULT_PRZ|ULT_UM|ULT_QTA2|ULT_PRZ2|ULT_UM2|COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
