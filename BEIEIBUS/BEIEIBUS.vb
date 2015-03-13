@@ -497,6 +497,7 @@ Public Class CLEIEIBUS
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_INFO)
             End If
 
+
             ' Aggiorno i dati della Geolocalizzazione
             If strTipork.Contains("COO;") Then
                 '--------------------

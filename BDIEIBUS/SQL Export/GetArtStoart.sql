@@ -1,4 +1,6 @@
-﻿/* Da usare per il debug in management studio
+﻿
+/* 
+Da usare per il debug in management studio
 DECLARE @ditta varchar(200), @giornistorico integer
 SELECT @ditta = 'SONN', @giornistorico=180
 versione 2
