@@ -763,8 +763,8 @@ Public Class CLEIEIBUS
             End If
 
 
-            '--------------------
-            'copio i files dei tracciati nella dir di dropbox
+            'Copio i files dei tracciati nella dir di dropbox
+            '----------------------------------------------------
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia tracciati in " & strDropBoxDir))
             For i = 0 To arFileGen.Count - 1
                 ' Mi occupo dei dati del catalogo
@@ -783,13 +783,16 @@ Public Class CLEIEIBUS
                 End If
             Next
 
-            '--------------------
-            'se devo esportare anche il catalogo, copio le immagini
+
+            'Se devo esportare anche il catalogo, copio le immagini
+            '-----------------------------------------------------------
+            If Not Directory.Exists(strDropBoxDir & "\multimedia") Then
+                Directory.CreateDirectory(strDropBoxDir & "\multimedia")
+            End If
+
             If dttCat.Rows.Count > 0 Then
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia immagini in " & strDropBoxDir & "\multimedia"))
-                If Not Directory.Exists(strDropBoxDir & "\multimedia") Then
-                    Directory.CreateDirectory(strDropBoxDir & "\multimedia")
-                End If
+
                 For Each dtrT As DataRow In dttCat.Rows
                     'tolgo l'eventale attributo di sola lettura
                     'strFileCat = strDropBoxDir & "\multimedia\" & NTSCStr(dtrT!ar_codart) & Path.GetExtension(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1))
