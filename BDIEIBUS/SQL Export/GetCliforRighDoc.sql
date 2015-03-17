@@ -1,10 +1,7 @@
 ﻿-- Da usare per il debug in management studio
--- DECLARE @ditta varchar(200), @tipocf varchar(2), @conti_esclusi varchar(10), @gg_documenti varchar(10)
--- SELECT @ditta = 'PROVA', @tipocf ='CF', @conti_esclusi= '0', @gg_documenti ='180'
--- CAST(testmag.tm_conto AS VARCHAR) + '§' + CAST(testmag.tm_numdoc AS VARCHAR) + '§' + testmag.codditt as xx_numreg,                                                    
--- CAST(testmag.tm_conto AS VARCHAR) + '§' + CAST(testmag.tm_numdoc AS VARCHAR) + '§' + testmag.codditt as xx_numreg,                                                                                                         
--- CAST(testord.td_conto AS VARCHAR) + '§' + CAST(testord.td_numord AS VARCHAR) + '§' + testord.codditt as xx_numreg,                                                                                                 
-
+--DECLARE @ditta varchar(200), @tipocf varchar(2), @conti_esclusi varchar(10), @gg_documenti varchar(10), @codcli varchar(10)
+--SELECT @ditta = 'VARESEDIS', @tipocf ='CF', @conti_esclusi= '0', @gg_documenti ='180', @codcli = '4010350'
+                                                                                              
 -- righe
 -- fatture immediate attive e note di credito attive
 -- fatture immediate PASSIVE e note di credito PASSIVE
@@ -55,6 +52,7 @@ SELECT
 					END
 		END	AS xx_prezzo,  
 		tm_valuta,
+		mm_stasino,
 		tm_ultagg as xx_ultagg                                                  
     FROM   testmag WITH (NOLOCK)                                            
         INNER JOIN movmag b WITH (NOLOCK)                                 
@@ -68,7 +66,8 @@ SELECT
                 AND testmag.tm_conto = anagra.an_conto                    
     WHERE  anagra.codditt =  @ditta
         AND an_tipo <> 'S'                                                
-        AND an_status = 'A'                                              
+        AND an_status = 'A'         
+		--AND an_conto =  @codcli                                    
 		AND ((an_tipo = 'C' and @tipocf = 'C') or (an_tipo = 'F' and @tipocf = 'F') or (an_tipo <> 'S' and @tipocf = 'CF'))              
 		AND    cast((GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)   
 		AND tm_tipork in ('A','N')  
@@ -109,6 +108,7 @@ UNION ALL
 			END
 		END	AS xx_prezzo, 
 		tm_valuta,
+		mm_stasino,
 		tm_ultagg as xx_ultagg                                                  
     FROM   testmag WITH (NOLOCK)                                            
         INNER JOIN movmag b WITH (NOLOCK)                                 
@@ -122,7 +122,8 @@ UNION ALL
                 AND testmag.tm_conto = anagra.an_conto                    
     WHERE  anagra.codditt =  @ditta
         AND an_tipo <> 'S'                                                
-        AND an_status = 'A'                                              
+        AND an_status = 'A'     
+		--AND an_conto =  @codcli                                            
 		AND ((an_tipo = 'C' and @tipocf = 'C') or (an_tipo = 'F' and @tipocf = 'F') or (an_tipo <> 'S' and @tipocf = 'CF'))            
 		AND    cast((GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)   
 		AND tm_tipork in ('L','J') 
@@ -165,6 +166,7 @@ UNION ALL
 					END
 		END	AS xx_prezzo, 
 		tm_valuta,
+		mm_stasino,
 		tm_ultagg as xx_ultagg                                                  
     FROM   testmag WITH (NOLOCK)                                            
         INNER JOIN movmag b WITH (NOLOCK)                                 
@@ -177,7 +179,8 @@ UNION ALL
                 ON testmag.codditt = anagra.codditt                       
                 AND testmag.tm_conto = anagra.an_conto                    
     WHERE  anagra.codditt =  @ditta
-        AND an_tipo <> 'S'                                                
+        AND an_tipo <> 'S'      
+		--AND an_conto =  @codcli                                             
         AND an_status = 'A'                                              
 		AND ((an_tipo = 'C' and @tipocf = 'C') or (an_tipo = 'F' and @tipocf = 'F') or (an_tipo <> 'S' and @tipocf = 'CF'))  
 		AND    cast((GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)   
@@ -219,6 +222,7 @@ UNION ALL
 					END
 		END	AS xx_prezzo,  
 		testmag.tm_valuta,
+		mm_stasino,
 	    testmag.tm_ultagg as xx_ultagg                                                     
 	FROM testmag WITH (NOLOCK)                                            
 	INNER JOIN testmag AS testmag_1 WITH (NOLOCK)                       
@@ -237,7 +241,8 @@ UNION ALL
 				ON testmag.codditt = anagra.codditt                           
              		AND testmag.tm_conto = anagra.an_conto                      
 	WHERE  anagra.codditt =  @ditta
-		AND an_tipo <> 'S'                                             
+		AND an_tipo <> 'S'      
+		--AND an_conto =  @codcli                                          
 		AND an_status = 'A'                                           
 	AND ((an_tipo = 'C' and @tipocf = 'C') or (an_tipo = 'F' and @tipocf = 'F') or (an_tipo <> 'S' and @tipocf = 'CF'))  
 		AND   cast( (GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)    
@@ -279,6 +284,7 @@ UNION ALL
 					END
 		END	AS xx_prezzo,   
 	 	testmag.tm_valuta,
+		mm_stasino,
 	    testmag.tm_ultagg as xx_ultagg                                                     
     FROM testmag WITH (NOLOCK)                                            
     INNER JOIN testmag AS testmag_1 WITH (NOLOCK)                       
@@ -298,7 +304,8 @@ UNION ALL
              		AND testmag.tm_conto = anagra.an_conto                      
     WHERE  anagra.codditt =  @ditta
         AND an_tipo <> 'S'                                             
-        AND an_status = 'A'                                           
+        AND an_status = 'A'    
+		--AND an_conto =  @codcli                                          
     AND ((an_tipo = 'C' and @tipocf = 'C') or (an_tipo = 'F' and @tipocf = 'F') or (an_tipo <> 'S' and @tipocf = 'CF'))  
 		AND   cast( (GETDATE() - testmag.tm_datdoc ) as integer) < cast(@gg_documenti as integer)    
         AND testmag.tm_tipork = 'K'
@@ -339,6 +346,7 @@ UNION ALL
 						END
 			END	AS xx_prezzo,     
 			td_valuta,
+			mo_stasino,
 			testord.td_ultagg as xx_ultagg                                                    
     FROM    testord WITH (NOLOCK)                                            
             INNER JOIN movord WITH (NOLOCK)                                  
@@ -351,7 +359,8 @@ UNION ALL
                     ON testord.codditt = anagra.codditt                      
                     AND testord.td_conto = anagra.an_conto                   
     WHERE  anagra.codditt =  @ditta
-            AND an_tipo <> 'S'                                               
+            AND an_tipo <> 'S'     
+			--AND an_conto =  @codcli                                             
             AND an_status = 'A'                                             
     AND ((an_tipo = 'C' and @tipocf = 'C') or (an_tipo = 'F' and @tipocf = 'F') or (an_tipo <> 'S' and @tipocf = 'CF'))  
             AND testord.td_tipork NOT IN ('X', 'H', 'Y')     

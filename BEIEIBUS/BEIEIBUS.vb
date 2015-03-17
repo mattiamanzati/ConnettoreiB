@@ -2690,6 +2690,9 @@ Public Class CLEIEIBUS
         'restituisco le righe dei documenti degli ultimi 3 anni di ogni cliente/fornitore ATTIVO o POTENZIALE
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
+        Dim descOmaggio As String = ""
+        Dim RetValOmaggio As Boolean
+
         Try
             If Not oCldIbus.GetCliforRighDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforRighDoc,
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
@@ -2698,13 +2701,17 @@ Public Class CLEIEIBUS
             sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_ART|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
                         "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
+
+                RetValOmaggio = oCldIbus.DecodeDBValue("stasino", ConvStr(dtrT!mm_stasino), descOmaggio)
+                If descOmaggio <> "" Then descOmaggio = " - (" & descOmaggio & ")"
+
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!xx_numreg) & "|" & _
                                 ConvStr(dtrT!xx_codart) & "|" & _
                                 ConvStr(dtrT!mm_riga) & "|" & _
                                 (ConvStr(dtrT!mm_codart) & IIf(NTSCStr(dtrT!mm_fase) <> "0", "." & ConvStr(dtrT!mm_fase), "").ToString).Trim & "|" & _
-                                (ConvStr(dtrT!mm_descr) & " " & ConvStr(dtrT!mm_desint, True)).Trim & "|" & _
+                                (ConvStr(dtrT!mm_descr) & " " & ConvStr(dtrT!mm_desint, True)).Trim & descOmaggio & "|" & _
                                 ConvStr(dtrT!mm_ump) & "|" & _
                                 NTSCDec(dtrT!mm_quant).ToString("0.00000") & "|" & _
                                 "0" & "|" & _

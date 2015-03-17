@@ -35,7 +35,7 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function DecodeDBValue(ByRef Contesto As String, ByRef Campo As String, ByVal Valore As String) As Boolean
+    Public Overridable Function DecodeDBValue(ByVal Contesto As String, ByVal Campo As String, ByRef Valore As String) As Boolean
         Dim RetValue As String = ""
         Try
             Select Case Contesto
@@ -70,6 +70,14 @@ Public Class CLDIEIBUS
                         Case "V" : RetValue = "Imp. cli aperto"
                         Case "$" : RetValue = "Ord. forn aperto"
                         Case "Y" : RetValue = "Imp. di prod."
+                    End Select
+
+                Case "stasino"
+                    Select Case Campo
+                        Case "O" : RetValue = "Omaggio con rivalsa"
+                        Case "P" : RetValue = "Omaggio senza rivalsa" ' 
+                        Case "M" : RetValue = "Sconto merce"
+                        Case "X" : RetValue = "Sconto merce NC" ' (non contabile)
                     End Select
             End Select
 
