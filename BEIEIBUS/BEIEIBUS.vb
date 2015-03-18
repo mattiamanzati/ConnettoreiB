@@ -754,8 +754,8 @@ Public Class CLEIEIBUS
             If Not Elabora_Child() Then Return False
 
 
-            '--------------------
             'Export catalogo articoli
+            '-------------------------
             If strTipork.Contains("CAT;") Then
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export catalogo..."))
                 If Not Elabora_ExportCatalogo(oApp.AscDir & "\" + cIMP_CATALOGO, dttCat, strCustomQueryGetArtCatalogo) Then Return False
