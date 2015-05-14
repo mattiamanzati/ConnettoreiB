@@ -1,8 +1,7 @@
-﻿/* Da usare per il debug in management studio
-DECLARE @release varchar(200)
-SELECT @release = '1.0'
+﻿/*
+DECLARE @release varchar(200), @ditta varchar(50)
+SELECT @release = '1.0', @ditta = 'GIOCHOTEL'
 */
--- strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_agente) & "§" & ConvStr(dtrT!xx_prefer) & "|" & _
 
 SELECT DISTINCT an_conto, xx_agente,  tb_descage, xx_ultagg, an_tipo, MAX(xx_prefer) as xx_prefer, MAX(xx_chiave) as xx_chiave
 FROM 
@@ -80,5 +79,21 @@ WHERE  1=1
        AND destdiv.codditt = @ditta 
        AND an_tipo <> 'S' 
        AND an_status = 'A'
+UNION -- Se esistono clienti template metto in cross join la tabella clienti con gli agenti per ottenere tutte le combinazioni possibili
+SELECT 
+	   '5§' + anagra.codditt + '§' + anagra.an_tipo + '§' + cast(an_conto as varchar) + '§' + cast( tabcage.tb_codcage as varchar) + '§' + 'A' as xx_chiave,
+       anagra.an_tipo, 
+       anagra.an_conto, 
+       tabcage.tb_codcage, 
+       tabcage.tb_descage, 
+       0        ,
+	   getdate()
+FROM   anagra WITH (NOLOCK), tabcage
+WHERE  1=1
+       AND tabcage.codditt = @ditta 
+	   AND anagra.codditt =  @ditta 
+	   AND anagra.an_pariva = '99999999999'
+	   AND anagra.an_agente= 0
+	   AND anagra.an_agente2 = 0
 ) AS agenti
 GROUP BY an_conto, xx_agente, tb_descage, xx_ultagg, an_tipo
