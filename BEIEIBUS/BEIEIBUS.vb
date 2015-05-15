@@ -984,7 +984,7 @@ Public Class CLEIEIBUS
         End Try
 
     End Function
-   
+
     Public Overridable Function Elabora_Child() As Boolean
         Try
 
@@ -2502,7 +2502,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ANNO|MESE|FATTURATO|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_anno) & "§" & ConvStr(dtrT!xx_mese) & "|" & _
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!xx_codvalu) & "§" & ConvStr(dtrT!an_tipo) & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_anno) & "§" & ConvStr(dtrT!xx_mese) & "|" & _
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!an_conto) & "|" & _
