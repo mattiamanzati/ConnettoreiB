@@ -28,7 +28,10 @@ SELECT
 	   when 4 then 'Contanti'
 	   when 5 then 'Accr.banc.'
 	end as xx_tippaga,
-	tabpaga.tb_despaga as tb_despaga,
+	case sc_flsaldato
+	   when 'S' then LTRIM(ISNULL(tabpaga.tb_despaga,'n.d.'))
+	   else ltrim(ISNULL(tabpaga.tb_despaga,'n.d.') + CASE sc_insolu when 'S' then ' (Insol.)' else '' end)
+	end AS tb_despaga,
 	sc_banc1,
 	sc_banc2,
 	sc_insolu,
