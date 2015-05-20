@@ -2231,8 +2231,8 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!an_cap) & "|" & _
                                 ConvStr(dtrT!an_citta) & "|" & _
                                 ConvStr(dtrT!an_prov) & "|" & _
-                                ConvStr(dtrT!an_hhlat_ib) & "|" & _
-                                ConvStr(dtrT!an_hhlon_ib) & "|" & _
+                                ConvStr(dtrT!an_latitud) & "|" & _
+                                ConvStr(dtrT!an_longitud) & "|" & _
                                 dtrT!an_clascon.ToString & "|" & _
                             IIf(strDisattivaModificaDatiCliente = "0", ConvStr(dtrT!xx_flg_mod_nel_disp), "0").ToString & "|" & _
                             ConvStr(dtrT!xx_flg_deperibilita) & "|" & _

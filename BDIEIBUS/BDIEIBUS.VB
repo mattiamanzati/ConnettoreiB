@@ -1448,7 +1448,13 @@ Public Class CLDIEIBUS
     Public Overridable Function GetClifor(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strFiltraConAgenti As String, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetClifor.sql")
+
+            If oApp.BUSNET_VERSIONDB < 19 Then
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforOld.sql")
+            Else
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetClifor.sql")
+            End If
+
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
             strSQL = strSQL.Replace("@filtra_con_agenti", CStrSQL(strFiltraConAgenti))

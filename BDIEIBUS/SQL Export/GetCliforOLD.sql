@@ -3,7 +3,7 @@ DECLARE @release varchar(200)
 SELECT @release = '1.0', @tipocf = 'CF'
 */
 
--- Se si modifica questa query occorre modificare anche la GetCliforOld.sql per versioni di Business < 19
+-- Se si modifica questa query occorre modificare anche la GetClifor.sql per versioni di Business > 19
 
 SELECT an_tipo, 
        an_conto, 
@@ -52,8 +52,8 @@ SELECT an_tipo,
          WHEN an_pariva = '99999999999' THEN '-1' 
          ELSE null 
        END                        AS xx_flg_new, 
-       an_latitud  as an_latitud, 
-       an_longitud as an_longitud,
+       an_hhlat_ib as an_latitud, 
+       an_hhlon_ib as an_longitud,
 	   (select max(tm_datdoc) from testmag where testmag.codditt = anagra.codditt and testmag.tm_conto = anagra.an_conto and tm_tipork in ( 'A', 'D','L','K') ) AS xx_ultfatt, 
        (SELECT TOP 1 td_datord 
         FROM   testord 
