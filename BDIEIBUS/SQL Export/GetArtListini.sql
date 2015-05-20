@@ -73,5 +73,6 @@ WHERE  1=1
        AND lc_datscad >= Getdate() 
        AND ( lc_unmis = artico.ar_unmis OR lc_unmis = ' ' ) 
 	   AND ( artico.ar_gesvar <> 'S' OR ( artico.ar_gesvar = 'S' AND artico.ar_codroot <> '' ) ) 
+	   AND busvw_listini.lc_tipo <> 'F'
 
 
