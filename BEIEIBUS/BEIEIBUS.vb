@@ -77,6 +77,8 @@ Public Class CLEIEIBUS
     Public strAuthKeyLM As String = ""
     Public strProduzioneAPI As String = "-1"
 
+    Public ProduzioneLM As Boolean = True
+
     Public strAppManagerAPI As String = ""
     Public strCodProgetto As String = ""
 
@@ -86,6 +88,7 @@ Public Class CLEIEIBUS
     Public strPercentualeSuPrezzoMinimoVendita As String = ""
 
     Public strAttivaAlert As String = ""
+    Public strAttivaPush As String = ""
     Public strContiEsclusi As String = "0"  'conto NS stabilimento
 
     ' Variabili per la sostituzione della query
@@ -380,6 +383,7 @@ Public Class CLEIEIBUS
             strMastro = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Mastro", "0", " ", "0").Trim
 
             strAttivaAlert = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Abilita_Alert", "0", " ", "0").Trim
+            strAttivaPush = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "Abilita_Push", "0", " ", "0").Trim
 
 
             ' Sostituzione query
@@ -853,12 +857,12 @@ Public Class CLEIEIBUS
                 ' strAuthKeyAM = "DDC4C5C1-072F-41D8-A728-D8E4BA686588"
                 'strMastro = "401"
 
-                Dim Produzione As Boolean = True
+
 
                 If strProduzioneAPI = "0" Then
-                    Produzione = False
+                    ProduzioneLM = False
                 Else
-                    Produzione = True
+                    ProduzioneLM = True
                 End If
 
                 ' Controlli preelaborazione
@@ -883,7 +887,7 @@ Public Class CLEIEIBUS
 
                 ' Istanzio l'oggetto Export dell'AMHelper
                 'Dim ed As New GetDataLM(strAuthKeyLM)
-                Dim ed As New GetDataLM(strAuthKeyLM, Produzione)
+                Dim ed As New GetDataLM(strAuthKeyLM, ProduzioneLM)
 
                 If eProxyUrl <> "" Then
                     ed.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
@@ -3614,6 +3618,7 @@ Public Class CLEIEIBUS
         Dim OrdersData As ws_rec_orders = Nothing
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
 
+
         Try
             If RetVal AndAlso OrdersData IsNot Nothing Then
 
@@ -3639,6 +3644,7 @@ Public Class CLEIEIBUS
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
+                            InviaPush(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
                         Else
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
                             LogWrite(msg, True)
@@ -5300,6 +5306,43 @@ NEXT_FILE:
             dttAlert.AcceptChanges()
 
             CType(oCleComm, CLELBMENU).Verifica_Genera_Alert(2, strDittaCorrente, "BSIEIBUS", idEvento, 0, dttAlert)
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------
+        End Try
+
+
+
+    End Function
+
+    Public Overridable Function InviaPush(ByVal Username As String, ByVal Messaggio As String) As Boolean
+        ' msgTipo puo' valere :
+
+        If strAttivaPush = "0" Then Return True
+
+
+        Dim lmPush As New GetDataLM(strAuthKeyLM, ProduzioneLM)
+
+        If eProxyUrl <> "" Then
+            lmPush.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+        End If
+
+        Dim AMData As ws_rec_lmparam = Nothing
+        Dim RetVal As Boolean = lmPush.get_am_par(AMData)
+
+
+        Dim PushRetVal As Boolean = lmPush.send_push_notification_by_username(Username, Messaggio)
+
+
+        Try
+
             Return True
 
         Catch ex As Exception
