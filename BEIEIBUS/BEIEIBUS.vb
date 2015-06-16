@@ -4,7 +4,7 @@ Imports System.Text
 Imports System.IO
 Imports AMHelper.WS
 Imports AMHelper.CSV
-Imports RestSharp
+Imports RestSharpApex
 Imports ApexNetLIB
 
 
@@ -3282,7 +3282,7 @@ Public Class CLEIEIBUS
                             "ULT_MAG_IMPORTO|ULT_DATA|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Select("", "ar_codart, td_conto, td_datord DESC")
-                ' Per ogni coppia client/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
+                ' Per ogni coppia cliente/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
                 ' Ho implementato la "distinct" da codice per non complicare la leggibilita' della query e per problemi di prestazioni
                 If RotturaConto <> ConvStr(dtrT!td_conto) Or RotturaArticolo <> ConvStr(dtrT!ar_codart) Then
                     RotturaConto = ConvStr(dtrT!td_conto)

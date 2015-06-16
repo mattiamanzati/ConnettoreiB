@@ -1450,7 +1450,7 @@ Public Class CLDIEIBUS
         Try
 
             If oApp.BUSNET_VERSIONDB < 19 Then
-                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforOld.sql")
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforOLD.sql")
             Else
                 strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetClifor.sql")
             End If
