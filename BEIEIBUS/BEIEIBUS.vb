@@ -2213,7 +2213,7 @@ Public Class CLEIEIBUS
                         "FLG_MOD_NEL_DISP|FLG_DEPERIBILITA|COD_CAT_EXTRA_SCONTO|NAZIONE|PAGAMENTO|BANCA|AGENZIA|LISTINO_ANAGRAFICO|VALUTA|" & _
                         "SCONTI_ANAG_PERC|SCONTI_ANAG_IMP|" & _
                         "MAGGIORAZIONE_ANAG_PERC|SCONTO_PIEDE|COD_LISTINO|COD_CONDPAG|COD_VALUTA|MACROAREA|DATA_CREAZIONE|" & _
-                        "ZONA|CATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
+                        "ZONA|COD_CATEGORIA|CATEGORIA|DATA_ULT_DOC_FT|DATA_ULT_ORDINE|" & _
                         "FIDO_AZIENDALE|FLG_NEW_CLIFOR|TAG|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
@@ -2257,6 +2257,7 @@ Public Class CLEIEIBUS
                             ConvStr(dtrT!tb_descana) & "|" & _
                             ConvData(dtrT!an_dtaper, False) & "|" & _
                             ConvStr(dtrT!tb_deszone) & "|" & _
+                            ConvStr(dtrT!xx_categ) & "|" & _
                             ConvStr(dtrT!tb_descate) & "|" & _
                             ConvData(dtrT!xx_ultfatt, False) & "|" & _
                             ConvData(dtrT!xx_ultord, False) & "|" & _
@@ -2788,9 +2789,11 @@ Public Class CLEIEIBUS
                                     ConvStr(dtrT!an_conto) & "|" & _
                                     ConvStr(dtrT!sc_codvalu) & "|" & _
                                     ConvData(dtrT!sc_datdoc, False) & "|" & _
-                                    dtrT!sc_numdoc.ToString & "|" & _
+                                    (ConvStr(dtrT!sc_numdoc) & IIf(NTSCStr(dtrT!sc_alfpar) <> " ", "/" & ConvStr(dtrT!sc_alfpar), "").ToString).Trim & "|" & _
                                     ConvStr(dtrT!xx_des_scad) & "|" & _
                                     ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+
+                ' dtrT!sc_numdoc.ToString & "|" & _
             Next
             If dttTmp.Rows.Count > 0 Then
                 Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
