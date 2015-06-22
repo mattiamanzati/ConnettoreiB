@@ -2,9 +2,10 @@
 DECLARE @ditta varchar(200), @tipocf varchar(2), @conti_esclusi varchar(10), @anni integer
 SELECT @ditta = 'SONN' , @tipocf='C', @conti_esclusi = '0', @anni = 0
 */
---scadenze
+-- scadenze
 SELECT
-    scaden.codditt + '§' + CAST(sc_conto AS VARCHAR)+ '§' + CAST(sc_annpar as varchar) + '§' + sc_alfpar + '§' + CAST(sc_numdoc as varchar)  + '§' + CAST(sc_numpar as varchar) as xx_numreg,
+    scaden.codditt + '§' + CAST(sc_conto AS VARCHAR)+ '§' + CAST(sc_annpar as varchar) + '§' + sc_alfpar + '§' + CAST(sc_numdoc as varchar) as xx_numreg,
+   -- scaden.codditt + '§' + CAST(sc_conto AS VARCHAR)+ '§' + CAST(sc_annpar as varchar) + '§' + sc_alfpar + '§' + CAST(sc_numdoc as varchar)  + '§' + CAST(sc_numpar as varchar) as xx_numreg,
 	an_tipo,
 	an_conto,
 	sc_annpar,
