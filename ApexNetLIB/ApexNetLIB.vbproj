@@ -78,6 +78,7 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckProcessRunning.vb" />
     <Compile Include="UpdateRelease.vb" />
     <Compile Include="Download.vb" />
     <Compile Include="EmbeddedResource.vb" />

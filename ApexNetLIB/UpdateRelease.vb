@@ -3,9 +3,6 @@ Imports System
 Imports System.Net
 Imports RestSharpApex
 Imports NewtonsoftApex
-Imports NTSInformatica.CLN__STD
-
-
 
 
 Public Class UpdateRelease

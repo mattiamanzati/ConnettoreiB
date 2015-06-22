@@ -1271,10 +1271,13 @@ Riprova:
                 Dim strParametri As String = """" & _batch & """" & " " & """" & oApp.NetDir & "\BusNet.exe" & """" & " " & """" & dirAgg & "\iBUpdate" & """" & " " & """" & oApp.NetDir & """" & " " & """" & oApp.StartUpParams & """" & " " & """" & percorsoiBUpdateFileLog & """"
 
                 'If Process.GetProcessesByName("iBUpdate").Length = 0 Then
-                Process.Start(oApp.NetDir & "\iBUpdate.exe", strParametri)
-                'End If
 
-                Me.Close()
+                If Not ApexNetLIB.CheckProcessRunning.IsProcessRunning(oApp.NetDir & "\iBUpdate.exe") Then
+                    Process.Start(oApp.NetDir & "\iBUpdate.exe", strParametri)
+                    'End If
+                End If
+
+                ' Me.Close()
             Else
                 'NON SI VUOLE FARE VEDERE NESSUN MESSAGGIO DI ERRORE ALL'UTENTE
                 'oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Attenzione. Errore durante lo scaricamento dell'aggiornamento connettore iB."))
