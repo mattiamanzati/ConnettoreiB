@@ -48,7 +48,8 @@ Partial Public Class FRMIEIBUS
   Public WithEvents lblRelease As NTSInformatica.NTSLabel
   Public WithEvents ckLeads As NTSInformatica.NTSCheckBox
   Public WithEvents ckOff As NTSInformatica.NTSCheckBox
-  Public WithEvents ckCoordinate As NTSInformatica.NTSCheckBox
+    Public WithEvents ckCoordinate As NTSInformatica.NTSCheckBox
+    Public WithEvents ckNotifichePush As NTSInformatica.NTSCheckBox
   Public WithEvents NtsLabel1 As NTSInformatica.NTSLabel
     Public WithEvents lblCustomRelease As NTSInformatica.NTSLabel
     Public WithEvents ckTabBase As NTSInformatica.NTSCheckBox

@@ -122,6 +122,7 @@ Public Class CLEIEIBUS
     Public strCustomWhereGetCliforNote As String = ""
     Public strCustomWhereGetCliforRighDoc As String = ""
     Public strCustomWhereGetCliforScaDoc As String = ""
+    Public strCustomWhereGetScaDocPush As String = ""
     Public strCustomWhereGetCliforSenzaCoordinate As String = ""
     Public strCustomWhereGetCliforTestDoc As String = ""
     Public strCustomWhereGetCodpaga As String = ""
@@ -445,6 +446,7 @@ Public Class CLEIEIBUS
             strCustomWhereGetAgenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgenti", "", " ", "").Trim
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
             strCustomWhereGetPorto = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetPorto", "", " ", "").Trim
+            strCustomWhereGetScaDocPush = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetScaDocPush", "", " ", "").Trim
 
 
             arFileGen.Clear()
@@ -501,6 +503,14 @@ Public Class CLEIEIBUS
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_INFO)
             End If
 
+
+            ' Invio le notifiche push
+            If strTipork.Contains("PUS;") Then
+                '--------------------
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Invio notifiche push..."))
+                Elabora_NotifichePushInsoluti()
+
+            End If
 
             ' Aggiorno i dati della Geolocalizzazione
             If strTipork.Contains("COO;") Then
@@ -944,6 +954,65 @@ Public Class CLEIEIBUS
             dttCat.Clear()
             LogStop()
         End Try
+    End Function
+
+    Public Overridable Function Elabora_NotifichePushInsoluti() As Boolean
+        'restituisco le scadenze di cliente/fornitore ATTIVO o POTENZIALE
+        'per collegare le scadenze ai relativi documenti precedentemente esportati, ...
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim DesScad As String = ""
+        Dim MemoInviata As Boolean = False
+        Dim MsgInsoluto As String = ""
+
+
+        Try
+            If Not oCldIbus.GetScaDocPush(strDittaCorrente, dttTmp, strCustomWhereGetScaDocPush) Then Return False
+
+            For Each dtrT As DataRow In dttTmp.Rows
+
+                MsgInsoluto = "Insoluto cliente " & ConvStr(dtrT!sc_conto) & " - " & ConvStr(dtrT!an_descr1) & " - " & ConvStr(dtrT!sc_importo) & " - " & "Rata:" & ConvStr(dtrT!sc_numrata)
+
+                MemoInviata = False
+
+                If ConvStr(dtrT!xx_agente1) <> "0" Then
+                    MemoInviata = True
+                    InviaPushByCodAgente(ConvStr(dtrT!xx_agente1), MsgInsoluto)
+                End If
+                If ConvStr(dtrT!xx_agente2) <> "0" Then
+                    MemoInviata = True
+                    InviaPushByCodAgente(ConvStr(dtrT!xx_agente2), MsgInsoluto)
+                End If
+
+                If MemoInviata Then
+                    ' chiave: sc_conto, sc_annpar, sc_alfpar, sc_numpar, sc_integr, sc_numrata, codditt
+                    ' Setta il record come insoluto gia' inviato
+                    oCldIbus.SetDatePushInsolutiIB(ConvStr(dtrT!sc_conto),
+                                                   ConvStr(dtrT!sc_annpar),
+                                                   ConvStr(dtrT!sc_alfpar),
+                                                   ConvStr(dtrT!sc_numpar),
+                                                   ConvStr(dtrT!sc_integr),
+                                                   ConvStr(dtrT!sc_numrata),
+                                                   ConvStr(dtrT!codditt))
+                End If
+
+
+            Next
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+
     End Function
 
     Public Overridable Function AggiornaCoordinate() As Boolean
@@ -3652,7 +3721,7 @@ Public Class CLEIEIBUS
 
                         If GeneraOrdineAPI(t, tNumOrd, tAnno, tSerie, tTipork, tCodDitta) Then
                             ' Memorizzo in un campo personalizzato il guid dell'ordine di IB
-                            oCldIbus.SetIBNumOrd(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
+                            oCldIbus.SetNumordIB(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
 
                             ' Procedura per modificare l'ordine appena inserito
                             PostInsert_Ordine(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
@@ -3660,7 +3729,7 @@ Public Class CLEIEIBUS
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
-                            InviaPush(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
+                            InviaPushByUsername(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
                         Else
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
                             LogWrite(msg, True)
@@ -5345,7 +5414,7 @@ NEXT_FILE:
 
     End Function
 
-    Public Overridable Function InviaPush(ByVal Username As String, ByVal Messaggio As String) As Boolean
+    Public Overridable Function InviaPushByUsername(ByVal Username As String, ByVal Messaggio As String) As Boolean
         ' msgTipo puo' valere :
 
         If strAttivaPush = "0" Then Return True
@@ -5363,6 +5432,41 @@ NEXT_FILE:
 
         Dim PushRetVal As Boolean = lmPush.send_push_notification_by_username(Username, Messaggio)
 
+
+        Try
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------
+        End Try
+
+
+
+    End Function
+
+    Public Overridable Function InviaPushByCodAgente(ByVal CodAgente As String, ByVal Messaggio As String) As Boolean
+        ' msgTipo puo' valere :
+
+        If strAttivaPush = "0" Then Return True
+
+
+        Dim lmPush As New GetDataLM(strAuthKeyLM, ProduzioneLM)
+
+        If eProxyUrl <> "" Then
+            lmPush.HttpProxyAutentication(eProxyUsername, eProxyPassword, eProxyUrl, CInt(eProxyPort))
+        End If
+
+        Dim AMData As ws_rec_lmparam = Nothing
+        Dim RetVal As Boolean = lmPush.get_am_par(AMData)
+
+        Dim PushRetVal As Boolean = lmPush.send_push_notification_by_agent(CodAgente, Messaggio)
 
         Try
 
@@ -5480,4 +5584,7 @@ NEXT_FILE:
 #End Region
 
 
+    Protected Overrides Sub Finalize()
+        MyBase.Finalize()
+    End Sub
 End Class

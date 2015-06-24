@@ -167,9 +167,8 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function SetIBNumOrd(ByVal pIBNumOrd As String, ByVal pNumOrd As Integer, ByVal pAnno As Integer, ByVal pSerie As String, ByVal pTipork As String, ByVal pCodDitta As String) As Boolean
+    Public Overridable Function SetNumordIB(ByVal pIBNumOrd As String, ByVal pNumOrd As Integer, ByVal pAnno As Integer, ByVal pSerie As String, ByVal pTipork As String, ByVal pCodDitta As String) As Boolean
         Dim strSQL As String = ""
-
 
         Try
 
@@ -182,6 +181,31 @@ Public Class CLDIEIBUS
             strSQL = strSQL.Replace("@anno", CStrSQL(pAnno))
             strSQL = strSQL.Replace("@serie", CStrSQL(pSerie))
             strSQL = strSQL.Replace("@tipork", CStrSQL(pTipork))
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function SetDatePushInsolutiIB(ByVal pConto As String, ByVal pAnnpar As String, ByVal pAlfpar As String, ByVal pNumpar As String, ByVal pIntegr As String, ByVal pNumrata As String, ByVal pCodDitta As String) As Boolean
+        Dim strSQL As String = ""
+
+        Try
+            strSQL = "update scaden set sc_hhdatapush_ib = getdate() where codditt = @ditta and sc_conto=@p_conto and sc_annpar=@p_annpar and sc_alfpar=@p_alfpar and sc_numpar=@p_numpar and sc_integr=@p_integr and sc_numrata=@p_numrata"
+
+            ' where
+            strSQL = strSQL.Replace("@ditta", CStrSQL(pCodDitta))
+            strSQL = strSQL.Replace("@p_conto", CStrSQL(pConto))
+            strSQL = strSQL.Replace("@p_annpar", CStrSQL(pAnnpar))
+            strSQL = strSQL.Replace("@p_alfpar", CStrSQL(pAlfpar))
+            strSQL = strSQL.Replace("@p_numpar", CStrSQL(pNumpar))
+            strSQL = strSQL.Replace("@p_integr", CStrSQL(pIntegr))
+            strSQL = strSQL.Replace("@p_numrata", CStrSQL(pNumrata))
+
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
@@ -1668,6 +1692,26 @@ Public Class CLDIEIBUS
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
             strSQL = strSQL.Replace("@anni", CStrSQL(2))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
+    Public Overridable Function GetScaDocPush(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+        Dim strSQL As String = ""
+        Try
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetScadocPush.sql")
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 

@@ -89,6 +89,7 @@ Public Class FRMIEIBUS
         Me.ckLeads = New NTSInformatica.NTSCheckBox()
         Me.ckOff = New NTSInformatica.NTSCheckBox()
         Me.ckCoordinate = New NTSInformatica.NTSCheckBox()
+        Me.ckNotifichePush = New NTSInformatica.NTSCheckBox()
         Me.NtsLabel1 = New NTSInformatica.NTSLabel()
         Me.lblCustomRelease = New NTSInformatica.NTSLabel()
         Me.ckTabBase = New NTSInformatica.NTSCheckBox()
@@ -107,6 +108,7 @@ Public Class FRMIEIBUS
         CType(Me.ckLeads.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ckOff.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ckCoordinate.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ckNotifichePush.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ckTabBase.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -489,6 +491,22 @@ Public Class FRMIEIBUS
         Me.ckCoordinate.TabIndex = 32
         Me.ckCoordinate.ToolTip = "Identifica le coordinate geografiche del cliente in base all'indirizzo inserito i" & _
     "n anagrafica.  La localizzazione si basa sui servizi di Google."
+
+        '
+        'ckNotifichePush
+        '
+        Me.ckNotifichePush.Cursor = System.Windows.Forms.Cursors.Default
+        Me.ckNotifichePush.Location = New System.Drawing.Point(25, 324)
+        Me.ckNotifichePush.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
+        Me.ckNotifichePush.Name = "ckNotifichePush"
+        Me.ckNotifichePush.NTSCheckValue = "S"
+        Me.ckNotifichePush.NTSUnCheckValue = "N"
+        Me.ckNotifichePush.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.ckNotifichePush.Properties.Appearance.Options.UseBackColor = True
+        Me.ckNotifichePush.Properties.Caption = "Notifiche push"
+        Me.ckNotifichePush.Size = New System.Drawing.Size(321, 19)
+        Me.ckNotifichePush.TabIndex = 32
+        Me.ckNotifichePush.ToolTip = "Invia notifiche push agli agenti"
         '
         'NtsLabel1
         '
@@ -542,6 +560,7 @@ Public Class FRMIEIBUS
         Me.Controls.Add(Me.lblCustomRelease)
         Me.Controls.Add(Me.NtsLabel1)
         Me.Controls.Add(Me.ckCoordinate)
+        Me.Controls.Add(Me.ckNotifichePush)
         Me.Controls.Add(Me.ckOff)
         Me.Controls.Add(Me.ckLeads)
         Me.Controls.Add(Me.lblRelease)
@@ -583,6 +602,7 @@ Public Class FRMIEIBUS
         CType(Me.ckLeads.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ckOff.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ckCoordinate.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ckNotifichePush.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ckTabBase.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -680,6 +700,7 @@ Public Class FRMIEIBUS
             ckLeads.NTSSetParam(oMenu, oApp.Tr(Me, 129877043590416098, "Leads"), "S", "N")
             ckOff.NTSSetParam(oMenu, oApp.Tr(Me, 129877043590416092, "Offerte"), "S", "N")
             ckCoordinate.NTSSetParam(oMenu, oApp.Tr(Me, 129877043590416093, "Coordinate di Google"), "S", "N")
+            ckNotifichePush.NTSSetParam(oMenu, oApp.Tr(Me, 129877043590416094, "Notifiche push"), "S", "N")
 
             '-------------------------------------------------
             'chiamo lo script per inizializzare i controlli caricati con source ext
@@ -809,6 +830,9 @@ Riprova:
             If CheckboxAttivi.Contains("COO;") Then
                 ckCoordinate.Checked = True
             End If
+            If CheckboxAttivi.Contains("PUS;") Then
+                ckNotifichePush.Checked = True
+            End If
             If CheckboxAttivi.Contains("ORD;") Then
                 ckOrdini.Checked = True
             End If
@@ -854,6 +878,9 @@ Riprova:
             End If
             If CheckboxDisabilitati.Contains("COO;") Then
                 ckCoordinate.Enabled = False
+            End If
+            If CheckboxDisabilitati.Contains("PUSH;") Then
+                ckNotifichePush.Enabled = False
             End If
             If CheckboxDisabilitati.Contains("ORD;") Then
                 ckOrdini.Enabled = False
@@ -924,6 +951,7 @@ Riprova:
                 ckLeads.Checked = False
                 ckOff.Checked = False
                 ckCoordinate.Checked = False
+                ckNotifichePush.Checked = False
 
                 Dim strTmp As String = oApp.AvvioProgrammaParametri.Trim
                 'strTmp = "c:\bus2012\asc\bnieibus.bub"
@@ -949,6 +977,7 @@ Riprova:
                                 If strT1(i) = "LEA" Then ckLeads.Checked = True
                                 If strT1(i) = "OFF" Then ckOff.Checked = True
                                 If strT1(i) = "COO" Then ckCoordinate.Checked = True
+                                If strT1(i) = "PUS" Then ckNotifichePush.Checked = True
                             Next
                         Case "ditta"
                             DittaCorrente = strT(1)
@@ -993,6 +1022,7 @@ Riprova:
                    ckLeads.Checked = False And _
                    ckOff.Checked = False And _
                    ckCoordinate.Checked = False And _
+                   ckNotifichePush.Checked = False And _
                    ckDoc.Checked = False Then
                     oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Selezionare almeno un tipo di dato da elaborare"))
                     Return
@@ -1018,6 +1048,7 @@ Riprova:
                 If ckLeads.Checked Then strTipork1 += "LEA;"
                 If ckOff.Checked Then strTipork1 += "OFF;"
                 If ckCoordinate.Checked Then strTipork1 += "COO;"
+                If ckNotifichePush.Checked Then strTipork1 += "COO;"
                 If strTipork1.Length > 0 Then strTipork1 = strTipork1.Substring(0, strTipork1.Length - 1)
                 w1.WriteLine("tipork=" & strTipork1)
                 w1.WriteLine("ditta=" & DittaCorrente)
@@ -1093,7 +1124,7 @@ Riprova:
             If ckLeads.Checked Then strTipork1 += "LEA;"
             If ckOff.Checked Then strTipork1 += "OFF;"
             If ckCoordinate.Checked Then strTipork1 += "COO;"
-
+            If ckNotifichePush.Checked Then strTipork1 += "PUS;"
 
             If strTipork1.Length > 0 Then strTipork1 = strTipork1.Substring(0, strTipork1.Length - 1)
             oCleIbus.strTipork = strTipork1
@@ -1335,6 +1366,10 @@ errorhandle:
     End Sub
 
     Private Sub NtsCheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles ckCoordinate.CheckedChanged, ckCoordinate.CheckedChanged, ckCoordinate.CheckedChanged
+
+    End Sub
+
+    Private Sub ckNotifichePush_CheckedChanged(sender As Object, e As EventArgs) Handles ckNotifichePush.CheckedChanged, ckNotifichePush.CheckedChanged, ckNotifichePush.CheckedChanged
 
     End Sub
 
