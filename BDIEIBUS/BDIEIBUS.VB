@@ -167,6 +167,32 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function SetIBNumOrd(ByVal pIBNumOrd As String, ByVal pNumOrd As Integer, ByVal pAnno As Integer, ByVal pSerie As String, ByVal pTipork As String, ByVal pCodDitta As String) As Boolean
+        Dim strSQL As String = ""
+
+
+        Try
+
+            strSQL = "update testord set td_hhnumord_ib = @ibnumord where codditt = @ditta and td_numord=@numord and td_anno=@anno and td_serie=@serie and td_tipork=@tipork"
+            ' set 
+            strSQL = strSQL.Replace("@ibnumord", CStrSQL(pIBNumOrd))
+            ' where
+            strSQL = strSQL.Replace("@ditta", CStrSQL(pCodDitta))
+            strSQL = strSQL.Replace("@numord", CStrSQL(pNumOrd))
+            strSQL = strSQL.Replace("@anno", CStrSQL(pAnno))
+            strSQL = strSQL.Replace("@serie", CStrSQL(pSerie))
+            strSQL = strSQL.Replace("@tipork", CStrSQL(pTipork))
+
+            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+
     Public Overridable Function SetCustomData(ByVal strDitta As String, ByVal key As String, ByVal value As String) As Boolean
         Dim strSQL As String = ""
         Try

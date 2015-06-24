@@ -28,3 +28,8 @@ if not exists (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='an_hh
    alter table anagra add an_hhlon_ib decimal(18,6)
  end
 
+ /* Add custom field td_hhnumord_ib to testord for ib order number */
+if not exists (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='td_hhnumord_ib' AND TABLE_NAME='testord')
+ begin
+   alter table testord add td_hhnumord_ib varchar(255)
+ end

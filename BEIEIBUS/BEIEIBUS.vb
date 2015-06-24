@@ -3601,8 +3601,14 @@ Public Class CLEIEIBUS
 
     Public Overridable Function Elabora_ImportOrdiniAPI() As Boolean
 
-        ' Variabili di uso locale
-        Dim NumOrd As Integer
+        ' Variabili di uso locale.
+        ' Identificano la chiave dell'ordine creato
+        Dim tNumOrd As Integer
+        Dim tAnno As Integer = 0
+        Dim tSerie As String = ""
+        Dim tTipork As String = ""
+        Dim tCodDitta As String = ""
+
         Dim msg As String = ""
         Dim NewCodCli As Integer
 
@@ -3638,13 +3644,20 @@ Public Class CLEIEIBUS
                         If t.cod_clifor Is Nothing Then
                             ' Esempio : GeneraClienteAPI con Mastro 126 ritorna 
                             GeneraClienteAPI(t, CInt(strMastro), NewCodCli)
+
                             t.cod_clifor = NewCodCli.ToString()
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente))
                             LogWrite(msg, True)
                         End If
 
-                        If GeneraOrdineAPI(t, NumOrd) Then
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, t.cod_clifor, t.cod_agente))
+                        If GeneraOrdineAPI(t, tNumOrd, tAnno, tSerie, tTipork, tCodDitta) Then
+                            ' Memorizzo in un campo personalizzato il guid dell'ordine di IB
+                            oCldIbus.SetIBNumOrd(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
+
+                            ' Procedura per modificare l'ordine appena inserito
+                            PostInsert_Ordine(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
+
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
                             InviaPush(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
@@ -3973,7 +3986,7 @@ Public Class CLEIEIBUS
 
     End Function
 
-    Public Overridable Function GeneraOrdineAPI(ByVal Ordine As TestataOrdineExport, ByRef NumOrd As Integer) As Boolean
+    Public Overridable Function GeneraOrdineAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
 
         Dim strSerie As String = " "
         Dim nTipoBF As Integer = 0
@@ -4311,7 +4324,14 @@ Public Class CLEIEIBUS
                 Return False
             End If
 
-            NumOrd = lNumord
+            pNumOrd = lNumord
+            pAnno = NTSCDate(Ordine.data_ordine).Year
+            pTipork = strTipoOrdine
+            pSerie = strSerie
+            pCodDitta = strDittaCorrente
+
+
+
             Return True
 
 
@@ -5429,6 +5449,25 @@ NEXT_FILE:
 
         Return valore
     End Function
+
+    Public Overridable Function PostInsert_Ordine(ByVal pIBNumOrd As String, ByVal pNumOrd As Integer, ByVal pAnno As Integer, ByVal pSerie As String, ByVal pTipork As String, ByVal pCodDitta As String) As Boolean
+        Try
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+
+    End Function
+
 
     Private Shared Sub SetValue(codProgetto As String, key As String, value As String)
         Dim keyReg As Microsoft.Win32.RegistryKey
