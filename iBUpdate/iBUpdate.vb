@@ -42,12 +42,20 @@ Public Class iBUpdate
                 End If
             End If
 
-            Dim cicli As Integer = 1500 '1500 volte e aspetto 2 secondi, quindi consento all'utente circa 50 minuti
+            Dim cicli As Integer = 1500 '1500 volte e aspetto 2 secondi, quindi aspetto che l'utente esca da Busnet per 50 minuti
             If batch = "False" Then
                 ' verifico che l'eseguibile di busnet non è utilizzato
                 Do
                     cicli = cicli - 1
-                    If Not IsProcessRunning(strBusNetExeDir) Then
+
+                    '  If Not IsProcessRunning(strBusNetExeDir) Then
+                    '    busNetChiuso = True
+                    '    Exit Do
+                    '  Else
+
+                    If IsWriteble(strBusNetDir + "\" + "BNIEIBUS.dll") AndAlso
+                       IsWriteble(strBusNetDir + "\" + "BEIEIBUS.dll") AndAlso
+                       IsWriteble(strBusNetDir + "\" + "BDIEIBUS.dll") Then
                         busNetChiuso = True
                         Exit Do
                     Else
@@ -91,12 +99,31 @@ Public Class iBUpdate
     End Function
 
     Private Function IsProcessRunning(ByVal processPath As String) As Boolean
-    ' http://msdn.microsoft.com/en-us/library/windows/desktop/aa394372(v=vs.85).aspx
-    On Error Resume Next
+        ' http://msdn.microsoft.com/en-us/library/windows/desktop/aa394372(v=vs.85).aspx
+        On Error Resume Next
         IsProcessRunning = GetObject("winmgmts:").ExecQuery("SELECT * FROM Win32_Process " & _
             "WHERE ExecutablePath = '" & Replace(processPath, "\", "\\") & "'").Count
         Return IsProcessRunning
     End Function
+
+    ' erifica se il file passato è scrivibile (aggiornabile)
+    Private Function IsWriteble(pFileName As String) As Boolean
+        Dim RetValue As Boolean = True
+
+        Try
+            If File.Exists(pFileName) Then
+                Dim streamData As FileStream = File.Open(pFileName, FileMode.Open)
+                streamData.Close()
+
+            End If
+        Catch
+            RetValue = False
+        End Try
+
+        Return RetValue
+
+    End Function
+
 
     Public Sub CopyDirectory(ByVal sourcePath As String, ByVal destPath As String, ByVal overwrite As Boolean)
         Dim sourceDir As System.IO.DirectoryInfo = New System.IO.DirectoryInfo(sourcePath)
@@ -106,19 +133,19 @@ Public Class iBUpdate
                 destDir.Create()
             End If
             Dim file As System.IO.FileInfo
-      For Each file In sourceDir.GetFiles()
-        Try
-          If (overwrite) Then
-            file.CopyTo(System.IO.Path.Combine(destDir.FullName, file.Name), True)
-          Else
-            If ((System.IO.File.Exists(System.IO.Path.Combine(destDir.FullName, file.Name))) = False) Then
-              file.CopyTo(System.IO.Path.Combine(destDir.FullName, file.Name), False)
-            End If
-          End If
-        Catch ex As Exception
-          ' Non faccio nulla se ho un errore
-        End Try
-      Next
+            For Each file In sourceDir.GetFiles()
+                Try
+                    If (overwrite) Then
+                        file.CopyTo(System.IO.Path.Combine(destDir.FullName, file.Name), True)
+                    Else
+                        If ((System.IO.File.Exists(System.IO.Path.Combine(destDir.FullName, file.Name))) = False) Then
+                            file.CopyTo(System.IO.Path.Combine(destDir.FullName, file.Name), False)
+                        End If
+                    End If
+                Catch ex As Exception
+                    ' Non faccio nulla se ho un errore
+                End Try
+            Next
             Dim dir As System.IO.DirectoryInfo
             For Each dir In sourceDir.GetDirectories()
                 CopyDirectory(dir.FullName, System.IO.Path.Combine(destDir.FullName, dir.Name), overwrite)

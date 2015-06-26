@@ -18,6 +18,7 @@ copy ..\TEST\Ionic*.* .\iBUpdate
 copy ..\TEST\AMHelper*.* .\iBUpdate
 copy ..\TEST\NewtonsoftApex* .\iBUpdate
 
+copy ..\TEST\iBUpdater.* .\iBUpdate
 
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "iBUpdate.zip" .\iBUpdate
  
@@ -45,10 +46,8 @@ copy ..\TEST\Ionic*.* .\ConnettoreBusiness
 copy ..\TEST\AMHelper*.* .\ConnettoreBusiness
 copy ..\TEST\NewtonsoftApex* .\ConnettoreBusiness
 
-
 rem ci sono differenze solo a partire da qui
-copy ..\TEST\iBUpdate.exe .\ConnettoreBusiness
-copy ..\TEST\iBUpdate.pdb .\ConnettoreBusiness
+copy ..\TEST\iBUpdater.* .\ConnettoreBusiness
 
 cd .\ConnettoreBusiness
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "ConnettoreBusiness.zip" *.*

@@ -503,7 +503,7 @@ Public Class FRMIEIBUS
         Me.ckNotifichePush.NTSUnCheckValue = "N"
         Me.ckNotifichePush.Properties.Appearance.BackColor = System.Drawing.Color.Transparent
         Me.ckNotifichePush.Properties.Appearance.Options.UseBackColor = True
-        Me.ckNotifichePush.Properties.Caption = "Notifiche push"
+        Me.ckNotifichePush.Properties.Caption = "Notifiche push (insoluti)"
         Me.ckNotifichePush.Size = New System.Drawing.Size(321, 19)
         Me.ckNotifichePush.TabIndex = 32
         Me.ckNotifichePush.ToolTip = "Invia notifiche push agli agenti"
@@ -1303,10 +1303,11 @@ Riprova:
 
                 'If Process.GetProcessesByName("iBUpdate").Length = 0 Then
 
-                If Not ApexNetLIB.CheckProcessRunning.IsProcessRunning(oApp.NetDir & "\iBUpdate.exe") Then
-                    Process.Start(oApp.NetDir & "\iBUpdate.exe", strParametri)
+                If Not ApexNetLIB.CheckProcessRunning.IsProcessRunning(oApp.NetDir & "\iBUpdater.exe") Then
+                    Process.Start(oApp.NetDir & "\iBUpdater.exe", strParametri)
                     'End If
                 End If
+
 
                 ' Me.Close()
             Else
