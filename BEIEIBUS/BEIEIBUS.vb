@@ -505,7 +505,7 @@ Public Class CLEIEIBUS
 
 
             ' Invio le notifiche push
-            If strTipork.Contains("PUS;") Then
+            If strTipork.Contains("PUS;") And strUseAPI <> "0" Then
                 '--------------------
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Invio notifiche push..."))
                 Elabora_NotifichePushInsoluti()
