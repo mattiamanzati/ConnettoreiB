@@ -26,7 +26,7 @@ SELECT an_tipo,
        an_blocco, 
 	   CASE 
          WHEN an_fido = 0 THEN NULL 
-         ELSE an_fido 
+         ELSE an_fido
        END                        AS an_fido, 
        an_banc1, 
        an_banc2, 
@@ -44,6 +44,7 @@ SELECT an_tipo,
 	   '-1' as xx_flg_deperibilita, 
        an_clascon,
 	   an_valuta, 
+	   anagra.an_categ as xx_categ,
        tb_descate, 
        tb_deszone,
 	   tb_desstat, 
