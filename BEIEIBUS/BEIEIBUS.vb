@@ -2945,7 +2945,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_ART|DES_ART|COD_FAM|DES_FAM|COD_SFAM|DES_SFAM|COD_GRUPPO1|DES_GRUPPO1|" & _
                           "COD_GRUPPO2|DES_GRUPPO2|UM1|UM2|FATTORE_CONVERSIONE|DES_GR_STAT1|DES_GR_STAT2|QTA_MIN_VEND|" & _
-                          "COD_CLASSE_SCONTO|COD_DEPERIBILITA|PREZZO_MIN_VEN|SCONTO_MAX_VEN|MAX_EXTRA_SCONTO|DAT_ULT_MOD" & vbCrLf)
+                          "COD_CLASSE_SCONTO|COD_DEPERIBILITA|PREZZO_MIN_VEN|SCONTO_MAX_VEN|MAX_EXTRA_SCONTO|DES_FILTRO1|DES_FILTRO2|DES_FILTRO3|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
 
@@ -3003,6 +3003,9 @@ Public Class CLEIEIBUS
                               NTSCDec(PrezzoMinimoDiVendita).ToString("0.0000") & "|" & _
                               scontoMax & "|" & _
                               "0,000000" & "|" & _
+                              ConvStr(dtrT!tb_desmarc) & "|" & _
+                              ConvStr(dtrT!tb_desgmer) & "|" & _
+                              ConvStr(dtrT!tb_dessgme) & "|" & _
                               ConvData(dtrT!ar_ultagg, True) & vbCrLf)
             Next
 
