@@ -4,7 +4,7 @@ SELECT @ditta = 'SONN' , @tipocf='C', @conti_esclusi = '0', @anni = 0
 */
 -- scadenze
 SELECT
-    scaden.codditt + '§' + CAST(sc_conto AS VARCHAR)+ '§' + CAST(sc_annpar as varchar) + '§' + sc_alfpar + '§' + CAST(sc_numdoc as varchar) as xx_numreg,
+    upper(scaden.codditt + '§' + CAST(sc_conto AS VARCHAR)+ '§' + CAST(sc_annpar as varchar) + '§' + sc_alfpar + '§' + CAST(sc_numdoc as varchar)) as xx_numreg,
    -- scaden.codditt + '§' + CAST(sc_conto AS VARCHAR)+ '§' + CAST(sc_annpar as varchar) + '§' + sc_alfpar + '§' + CAST(sc_numdoc as varchar)  + '§' + CAST(sc_numpar as varchar) as xx_numreg,
 	an_tipo,
 	an_conto,

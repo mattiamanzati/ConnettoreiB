@@ -13,7 +13,7 @@ SELECT
 	CAST(tm_note AS VARCHAR(3000)) as tm_note,
 	tm_riferim,
 	--testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_numpar as varchar) as xx_numreg,
-	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) as xx_numreg,
+	upper(testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar)) as xx_numreg,
 	an_tipo, 
 	an_conto,
 	tm_tipork,
