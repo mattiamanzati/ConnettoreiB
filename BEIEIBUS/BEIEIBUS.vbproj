@@ -72,13 +72,17 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Becrgsof, Version=19.0.1.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\TEST\Becrgsof.dll</HintPath>
+    </Reference>
     <Reference Include="BELBMENU, Version=18.0.1.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BEMGDOCU, Version=18.0.1.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="Bemgdocu, Version=19.0.1.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+      <HintPath>..\TEST\Bemgdocu.dll</HintPath>
     </Reference>
     <Reference Include="BEORGSOR, Version=18.0.1.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>

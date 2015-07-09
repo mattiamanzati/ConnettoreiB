@@ -2165,6 +2165,30 @@ Public Class CLDIEIBUS
             '--------------------------------------------------------------
         End Try
     End Function
+
+    Public Overridable Function GetOleObjects(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strQuery As String, ByVal strWhere As String) As Boolean
+        'nb: escludo gli articoli descrittivi (eccetto 'd'), gli articoli TCO e gli articoli a varianti non movimentabili (la radice della variante)
+        Dim strSQL As String = ""
+        Try
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetOleObjects.sql")
+            ' Se esiste una query personalizzata sovrascrivo quella standard
+            If strQuery <> "" Then strSQL = strQuery
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
 #End Region
 
 End Class

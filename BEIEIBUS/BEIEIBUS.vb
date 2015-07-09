@@ -352,7 +352,9 @@ Public Class CLEIEIBUS
         Dim i As Integer = 0
         Dim dttTm As New DataTable      'testate documenti di magazzino/ordini
         Dim dttCat As New DataTable     'articoli con immagine catalogo
+        Dim dttRep As New DataTable
         Dim strFileCat As String = ""
+        Dim strFileRep As String = ""
         Dim TipoCF As String = "CF"
 
 
@@ -776,6 +778,15 @@ Public Class CLEIEIBUS
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_CATALOGO)
             End If
 
+            'Export catalogo oggetti ole (per ora non attivo da interfaccia)
+            '-------------------------
+            If strTipork.Contains("OLE;") Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export ole objects..."))
+                If Not Elabora_ExportOleObjects(oApp.AscDir & "\" + cIMP_REPORT, dttRep, "") Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_REPORT)
+            End If
+
+
 
             'Copio i files dei tracciati nella dir di dropbox
             '----------------------------------------------------
@@ -786,6 +797,11 @@ Public Class CLEIEIBUS
                     File.Delete(strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
                     If File.Exists(arFileGen(i).ToString) Then
                         System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
+                    End If
+                ElseIf arFileGen(i).ToString.ToLower.EndsWith(cIMP_REPORT) Then
+                    File.Delete(strDropBoxDir & "\reports\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
+                    If File.Exists(arFileGen(i).ToString) Then
+                        System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\reports\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
                     End If
                 Else
                     ' Mi occupo dei dati gestionale
@@ -819,6 +835,33 @@ Public Class CLEIEIBUS
                         System.IO.File.Copy(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1), strFileCat, True)
                     Catch ex As Exception
                         ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Salto read only" & oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1)))
+                    End Try
+
+                Next
+            End If
+
+
+            'Se devo esportare anche i reports, copio gli oggetti ole
+            '-----------------------------------------------------------
+            If Not Directory.Exists(strDropBoxDir & "\reports") Then
+                Directory.CreateDirectory(strDropBoxDir & "\reports")
+            End If
+
+            If dttRep.Rows.Count > 0 Then
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia immagini in " & strDropBoxDir & "\reports"))
+
+                For Each dtrT As DataRow In dttRep.Rows
+                    'tolgo l'eventale attributo di sola lettura
+                    'strFileRep = strDropBoxDir & "\multimedia\" & NTSCStr(dtrT!ar_codart) & Path.GetExtension(oApp.ImgDir & "\" & NTSCStr(dtrT!ar_gif1))
+                    strFileRep = strDropBoxDir & "\reports\" & Path.GetFileName(ConvStr(dtrT!xx_nome_doc))
+                    If File.Exists(strFileRep) Then
+                        File.SetAttributes(strFileRep, FileAttributes.Normal)
+                    End If
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia di " & ConvStr(dtrT!xx_nome_doc)))
+                    Try
+                        System.IO.File.Copy(ConvStr(dtrT!xx_nome_doc), strFileRep, True)
+                    Catch ex As Exception
+                        ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Salto read only" & ConvStr(dtrT!xx_nome_doc)))
                     End Try
 
                 Next
@@ -3502,6 +3545,52 @@ Public Class CLEIEIBUS
         End Try
     End Function
 
+
+    Public Overridable Function Elabora_ExportOleObjects(ByVal strFileOut As String, ByRef dttOle As DataTable, ByVal strCustomQuery As String) As Boolean
+        'esporta il catalogo degli articoli  
+        Dim sbFile As New StringBuilder
+
+        Try
+            If Not oCldIbus.GetOleObjects(strDittaCorrente, dttOle, strCustomQuery, strCustomWhereGetArtCatalogo) Then Return False
+
+            sbFile.Append("NOMEFILE|TITOLO|COD_ART|L1|L2|L3|L4|DAT_ULT_MOD" & vbCrLf)
+
+            For Each dtrT As DataRow In dttOle.Rows
+                If File.Exists(NTSCStr(dtrT!xx_nome_doc)) Then
+
+                    sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
+                                  ConvStr(dtrT!xx_nome_doc).Trim & "|" & _
+                                  ConvStr(dtrT!xx_ext_code) & "|" & _
+                                  ConvStr(dtrT!xx_l1) & "|" & _
+                                  ConvStr(dtrT!xx_l2) & "|" & _
+                                  ConvStr(dtrT!xx_l3) & "|" & _
+                                  ConvStr(dtrT!xx_l4) & "|" & _
+                                  ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+                Else
+                    dtrT.Delete()
+                End If
+            Next
+            dttOle.AcceptChanges()
+
+            Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+            w1.Write(sbFile.ToString)
+            w1.Flush()
+            w1.Close()
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+    End Function
+
+
     Public Overridable Function Elabora_ExportListini(ByVal strFileOut As String) As Boolean
         'esporta i listini in vigore alla data odierna
         'no listini in valuta
@@ -3721,6 +3810,8 @@ Public Class CLEIEIBUS
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente))
                             LogWrite(msg, True)
                         End If
+
+                        'GeneraOffertaAPI(t, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
 
                         If GeneraOrdineAPI(t, tNumOrd, tAnno, tSerie, tTipork, tCodDitta) Then
                             ' Memorizzo in un campo personalizzato il guid dell'ordine di IB
@@ -4207,6 +4298,8 @@ Public Class CLEIEIBUS
             oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
             oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
 
+
+
             ' Valorizzo il codice di pagamento degli articoli deperibili
             If NTSCInt(Ordine.cod_cond_pag) <> 0 Then
                 oCleGsor.dttET.Rows(0)!et_codpaga = NTSCInt(Ordine.cod_cond_pag)
@@ -4369,11 +4462,11 @@ Public Class CLEIEIBUS
                     End Select
 
 
-                    !ec_note = NTSCStr(!ec_note) & " " & NTSCStr(r.note)
+                    !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
                     !ec_unmis = NTSCStr(strUnitaMisura)
                     !ec_colli = NTSCDec(dColli)
                     !ec_quant = NTSCDec(dQuantita)
-                    !ec_prezzo = NTSCDec(dPrezzo) ' * NTSCDec(!ec_perqta)
+                    !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                     !ec_scont1 = NTSCDec(r.sconto_1)
                     !ec_scont2 = NTSCDec(r.sconto_2)
                     !ec_scont3 = NTSCDec(r.sconto_3)
@@ -4393,6 +4486,378 @@ Public Class CLEIEIBUS
 
             ' Salvo l'ordine
             If Not oCleGsor.SalvaOrdine("N") Then
+                Return False
+            End If
+
+            pNumOrd = lNumord
+            pAnno = NTSCDate(Ordine.data_ordine).Year
+            pTipork = strTipoOrdine
+            pSerie = strSerie
+            pCodDitta = strDittaCorrente
+
+
+
+            Return True
+
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+    End Function
+
+    Public Overridable Function GeneraOffertaAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
+
+        Dim strSerie As String = " "
+        Dim nTipoBF As Integer = 0
+        Dim nMagaz As Integer = 0
+        Dim oCleGsof As CLECRGSOF
+        Dim lNumord As Integer = 0
+        Dim ds As New DataSet
+        Dim strTipoOrdine As String = ""
+        Dim strStasino As String = ""
+
+        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unità di misura
+        Dim strUnitaMisuraP As String = ""
+        Dim strUnitaMisura As String = ""
+        Dim dQuantita As Decimal
+        Dim dPrezzo As Decimal
+        Dim dColli As Decimal
+        Dim dTipoUM As Decimal
+        Dim DescNote As String = ""
+
+        Dim DBCodAgente1 As Integer = 0
+        Dim DBCodAgente2 As Integer = 0
+        Dim CodAgente1 As Integer = 0
+        Dim CodAgente2 As Integer = 0
+
+
+
+        Try
+            ' Controlli preelaborazione sui dati
+            If Ordine.cod_clifor Is Nothing Then
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non può essere null")))
+                Return False
+            End If
+
+
+
+            ' Esegui trascodifiche di testata AM / Business
+            ' ==============================================
+
+            ' Gestisco il tipo ordine: R = Ordine, Q = Preventivo
+            strTipoOrdine = "!"
+
+            'Select Case Ordine.ext_cod_tipo_ord
+            '    Case "CLI-MOBORD", "CLI-IGAMMAORD", "R"
+            'strTipoOrdine = "R"
+            '    Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P"
+            'strTipoOrdine = "Q"
+            '    Case Else
+            'strTipoOrdine = Ordine.ext_cod_tipo_ord
+            'End Select
+
+
+            ' Verifico se l'ordine e' stato inserito da un agente o da un subagente
+            If oCldIbus.GetAgentiCliente(strDittaCorrente, Ordine.cod_clifor, DBCodAgente1, DBCodAgente2, strCustomWhereGetAgentiCliente) Then
+                Select Case NTSCInt(Ordine.cod_agente)
+                    Case DBCodAgente1
+                        CodAgente1 = DBCodAgente1
+                        CodAgente2 = DBCodAgente2
+                    Case DBCodAgente2
+                        CodAgente1 = DBCodAgente1
+                        CodAgente2 = DBCodAgente2
+                    Case Else
+                        CodAgente1 = NTSCInt(Ordine.cod_agente)
+                        CodAgente2 = 0
+                End Select
+
+            Else
+                CodAgente1 = NTSCInt(Ordine.cod_agente)
+                CodAgente2 = 0
+            End If
+            ' -----------------------------
+
+
+            'inizializzo BEORGSOR
+            '----------------------------------------------------------------
+            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
+            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
+            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
+
+            Dim strErr As String = ""
+            Dim oTmp As Object = Nothing
+            If CLN__STD.NTSIstanziaDll(oApp.ServerDir, oApp.NetDir, "BETVTRAS", "BECRGSOF", oTmp, strErr, False, "", "") = False Then
+                Throw New NTSException(oApp.Tr(Me, 128895477321672967, "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"))
+                Return False
+            End If
+            oCleGsof = CType(oTmp, CLECRGSOF)
+
+            AddHandler oCleGsof.RemoteEvent, AddressOf GestisciEventiEntityGsor
+            'AddHandler oCleGsor.RemoteEvent, AddressOf GestisciEventiEntityPERS
+
+            If oCleGsof.Init(oApp, oScript, oCleComm, "", False, "", "") = False Then Return False
+            If Not oCleGsof.InitExt() Then Return False
+            oCleGsof.bModuloCRM = False
+            oCleGsof.bIsCRMUser = False
+
+      
+
+            If Not oCleGsof.ApriOfferta(strDittaCorrente, False, "!", 1900, " ", -1, 1, ds) Then Return False
+            'oCleGsof.bInApriDocSilent = True COMMMENTATO
+            oCleGsof.ResetVar()
+
+
+   
+            
+            ' Inizio la creazione dell'ordine. La numerazione e' attiva ?
+            lNumord = oCldIbus.LegNuma(strDittaCorrente, strTipoOrdine, strSerie, NTSCDate(Ordine.data_ordine).Year, False)
+            If lNumord = 0 Then
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare una nuova offerta è necessario attivare la numerazione")))
+                Return False
+            End If
+
+            ' Creo un nuovo ordine
+            LogWrite(String.Format("Elaboro dati cliente {0}", Ordine.cod_clifor), False)
+            If Not oCleGsof.NuovoOfferta(strDittaCorrente, strTipoOrdine, NTSCDate(Ordine.data_ordine).Year, strSerie, lNumord, 1) Then
+                Return False
+            End If
+
+            ' Cerco la data di consegna piu' alta presente nelle righe.
+            ' Mi serve per valorizzare la data di consegna nelle testate
+            Dim dateMaxCons As Date = NTSCDate(Ordine.data_consegna)
+            For Each r2 As RigaOrdineExport In Ordine.righe
+                If dateMaxCons < NTSCDate(r2.data_consegna_riga) Then
+                    dateMaxCons = NTSCDate(r2.data_consegna_riga)
+                End If
+            Next
+
+            ' Compilo i campi di testata con quello che viene passato da IBUS
+            oCleGsof.dttET.Rows(0)!et_datdoc = NTSCDate(Ordine.data_ordine)
+            oCleGsof.dttET.Rows(0)!et_conto = NTSCInt(Ordine.cod_clifor)
+            oCleGsof.dttET.Rows(0)!et_coddest = NTSCInt(Ordine.cod_destinazione)
+            oCleGsof.dttET.Rows(0)!et_datcons = NTSCDate(dateMaxCons)
+            If nTipoBF > 0 Then oCleGsof.dttET.Rows(0)!et_tipobf = nTipoBF
+            If nMagaz > 0 Then oCleGsof.dttET.Rows(0)!et_magaz = nMagaz
+            oCleGsof.dttET.Rows(0)!et_codagen = NTSCInt(CodAgente1)
+            oCleGsof.dttET.Rows(0)!et_codagen2 = NTSCInt(CodAgente2)
+
+
+            ' Disabilitazione blocchi di interfaccia
+            ' ---------------------------------------
+            'Valide per la creazione di un ordine 
+            oCleGsof.strContrFidoInsolinInsOrd = "N"
+            'oCleGsof.bConsentiCreazOCliFornBloccoFisso = True
+            'oCleGsof.bSegnalaCreazOrdiniCliFornBloccati = False ' false x non segnalare 
+
+            'Valide per la creazione di un documento 
+            'oCleGsof.strContrFidoInsolinInsDoc = "N"   COMMMENTATO
+            'oCleGsof.bConsentiCreazDocumCliFornBloccoFisso = True  COMMMENTATO
+            ' oCleGsof.bSegnalaCreazDocumCliFornBloccati = False  ' false x non segnalare  COMMMENTATO
+
+            ' Disabilitazione blocchi di interfaccia
+            'oCleGsof.bDisabilitaCheckDateAnteriori = True COMMMENTATO
+            ' oCleGsof.bInCreaDocDaGnor = True COMMMENTATO
+
+            'oCleGsof.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
+            'oCleGsof.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
+
+
+
+            ' Valorizzo il codice di pagamento degli articoli deperibili
+            If NTSCInt(Ordine.cod_cond_pag) <> 0 Then
+                oCleGsof.dttET.Rows(0)!et_codpaga = NTSCInt(Ordine.cod_cond_pag)
+            End If
+
+            If NTSCInt(Ordine.cod_cond_pag_deperibilita) <> 0 Then
+                oCleGsof.dttET.Rows(0)!et_codpaga = NTSCInt(Ordine.cod_cond_pag_deperibilita)
+            End If
+
+            ' Fine decodifiche di testata
+
+
+
+            ' Ciclo per ogni riga
+            ' -------------------
+            For Each r As RigaOrdineExport In Ordine.righe
+
+                ' Esegui trascodifiche di riga AM / Business
+                ' ===========================================
+
+                ' Il codice articolo potrebbe contenere il codice della fase.
+                ' Cerco di splittarlo basandomi sul punto come separatore
+                Dim dttTmp As New DataTable
+                Dim strCodArt As String = ""
+                Dim nFase As Integer = 0
+
+                If oCldIbus.ValCodiceDb(r.codice_articolo, strDittaCorrente, "ARTICO", "S", "", dttTmp) AndAlso dttTmp.Rows.Count > 0 Then
+                    strCodArt = r.codice_articolo
+                    nFase = 0
+                Else
+                    If r.codice_articolo.Contains(".") Then
+                        Dim nPosition As Integer = r.codice_articolo.LastIndexOf("."c)
+                        If nPosition > -1 Then
+                            strCodArt = r.codice_articolo.Substring(0, nPosition)
+                            nFase = NTSCInt(r.codice_articolo.Substring(nPosition + 1))
+                        Else
+                            'si dovrebbe loggare (potrebbe essere riga descrittiva)
+                        End If
+                    Else
+                        ' si dovrebbe loggare (potrebbe essere riga descrittiva)
+                    End If
+                End If
+
+                ' Gestisco il tipo riga ordine: 0 = Articolo (valorizzato sopra), 2 = Descrittiva
+                Select Case r.ext_cod_tipo_riga_ord
+                    Case "2"
+                        strCodArt = "D"
+                        nFase = 0
+                End Select
+
+                ' Se il codArt non e' valorizzato lo tratto come riga descrittiva
+                If strCodArt = "" Then
+                    strCodArt = "D"
+                    nFase = 0
+                End If
+
+                ' Se l'articolo e' bloccato lo inserisco come articolo descrittivo
+                Dim dttArti As New DataTable
+                If ocldBase.ValCodiceDb(strCodArt, strDittaCorrente, "ARTICO", "S", "", dttArti) Then
+                    If Not dttArti Is Nothing Then
+                        If dttArti.Rows.Count > 0 Then
+                            If dttArti.Rows(0)!ar_blocco.ToString = "S" Then
+                                'articolo bloccato quindi magari inserisco come codice l'articolo D descrittivo
+                                strCodArt = "D"
+                                ' e nelle note metto il codice articolo bloccato
+                                ' oCleGsor.dttET.Rows(0)!ec_note = "BLOCCATO ('" & strCodart & "')"
+                            End If
+                        End If
+                    End If
+                End If
+
+                ' Gestisco il tipo omaggio
+                strStasino = "S"
+                Select Case r.ext_cod_tipo_riga_omag
+                    Case "0" : strStasino = "S"   'riga normale
+                    Case "1" : strStasino = "O"   'omaggio con rivalsa
+                    Case "2" : strStasino = "P"   'omaggio senza rivalsa
+                    Case "3" : strStasino = "M"   'sconto merce
+                End Select
+
+                ' Gestisco il tipo unita di misura
+                dTipoUM = 1
+                Select Case r.tipo_um
+                    Case "1" : dTipoUM = 1 ' Unità di misura principale
+                    Case "2" : dTipoUM = 2 ' Unità di misura secondaria
+                    Case "3" : dTipoUM = 3 ' Codice confezione
+                End Select
+                Select Case dTipoUM
+                    Case 1
+                        strUnitaMisuraP = r.cod_um_1
+                        dColli = NTSCDec(r.qta)
+                        strUnitaMisura = r.cod_um_1
+                        dQuantita = NTSCDec(r.qta)
+                        dPrezzo = NTSCDec(r.prezzo)
+                    Case 2 Or 3
+                        strUnitaMisuraP = r.cod_um_1
+                        dColli = NTSCDec(r.qta_2)
+                        strUnitaMisura = r.cod_um_2
+                        dQuantita = NTSCDec(r.qta)
+                        dPrezzo = NTSCDec(r.prezzo)
+                End Select
+
+
+                ' Ripristino i newline
+                If String.IsNullOrEmpty(r.note) Then
+                    DescNote = r.note
+                Else
+                    DescNote = r.note.Replace(CLDIEIBUS.iBNewline, vbNewLine)
+                End If
+
+                ' Fine tracodifiche di riga  ======================
+
+                ' Se nel terzo parametro metto 0 (nRiga = 9) il framework incrementa automaticamente il numero riga
+                'If Not oCleGsof.AggiungiRigaCorpo(False, strCodArt, nFase, 0) Then
+                ' Return False
+                ' End If
+
+
+
+
+                With oCleGsof.dttEC.Rows(oCleGsof.dttEC.Rows.Count - 1)
+
+
+                    Select Case strDeterminazioneDescrizioneRigaOrdine
+                        Case "0", "1" ' Modalità con decodifica per Determinazione descrizione ordine
+                            ' L'articolo è descrittivo ?
+                            If strCodArt = "D" Then
+                                ' Se esiste una descrizione
+                                If r.descrizione_riga.Trim <> "" Then
+                                    ' ...metti i primi 40 caratteri nella descrizione... 
+                                    !ec_descr = r.descrizione_riga.PadRight(300).Substring(0, 40)
+                                End If
+                                ' ... se la descrizione è superiore a 40 caratteri
+                                If r.descrizione_riga.Length > 40 Then
+                                    ' ... i caratteri eccedenti li metto nelle note
+                                    !ec_desint = r.descrizione_riga.PadRight(300).Substring(40, 40)
+                                End If
+
+                                ' ... se la descrizione è superiore a 80 caratteri
+                                If r.descrizione_riga.Length > 80 Then
+                                    ' i caratteri eccedenti li metto nelle note per non perderli
+                                    !ec_note = r.descrizione_riga.PadRight(300).Substring(80, 40)
+                                End If
+
+                            Else
+                                ' In questo caso, se la riga non è descrittiva non valorizzo le descrizioni.
+                                ' Business dovrebbe prenderle dall'anagrafica articolo
+
+                            End If
+                        Case "2" ' Modalità standard per Determinazione descrizione ordine
+                            ' Se la descrizione non è empty string
+                            If r.descrizione_riga.Trim <> "" Then
+                                ' Prendo i primi 40 caratteri
+                                !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
+                            End If
+
+                            ' Se la descrizione è superiore a 40 caratteri
+                            If r.descrizione_riga.Length > 40 Then
+                                ' I caratteri eccedenti li metto nelle note
+                                !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
+                            End If
+                    End Select
+
+
+                    !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
+                    !ec_unmis = NTSCStr(strUnitaMisura)
+                    !ec_colli = NTSCDec(dColli)
+                    !ec_quant = NTSCDec(dQuantita)
+                    !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
+                    !ec_scont1 = NTSCDec(r.sconto_1)
+                    !ec_scont2 = NTSCDec(r.sconto_2)
+                    !ec_scont3 = NTSCDec(r.sconto_3)
+                    !ec_scont4 = NTSCDec(r.sconto_4)
+                    !ec_scont5 = NTSCDec(r.sconto_5)
+                    !ec_scont6 = NTSCDec(r.sconto_6)
+                    !ec_datcons = NTSCDate(r.data_consegna_riga)
+                    !ec_datconsor = NTSCDate(r.data_consegna_riga)
+                    !ec_stasino = NTSCStr(strStasino)
+                End With
+
+                If Not oCleGsof.RecordSalva(oCleGsof.dttEC.Rows.Count - 1, False, Nothing) Then
+                    Return False
+                End If
+
+            Next
+
+            ' Salvo l'ordine
+            If Not oCleGsof.SalvaOfferta("N") Then
                 Return False
             End If
 
