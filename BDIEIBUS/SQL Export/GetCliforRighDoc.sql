@@ -54,7 +54,7 @@ SELECT
 		--END	AS xx_prezzo,
 		CASE	WHEN mm_quant=0 THEN 0
 				ELSE
-					Round( (mm_valore / mm_quant) * mm_perqta , 4) 				
+					Round( (mm_valore / mm_quant) * mm_perqta , 2) 				
 		END	AS xx_prezzo, 
 		tm_valuta,
 		mm_stasino,
@@ -115,7 +115,7 @@ UNION ALL
 		--END	AS xx_prezzo,
 		CASE	WHEN mm_quant=0 THEN 0
 			ELSE
-				Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+				Round( (mm_valore / mm_quant) * mm_perqta , 2)       
 		END	AS xx_prezzo, 
 		tm_valuta,
 		mm_stasino,
@@ -178,7 +178,7 @@ UNION ALL
 		--END	AS xx_prezzo, 
 		CASE	WHEN mm_quant=0 THEN 0
 		ELSE
-			Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+			Round( (mm_valore / mm_quant) * mm_perqta , 2)       
 		END	AS xx_prezzo, 
 		tm_valuta,
 		mm_stasino,
@@ -240,7 +240,7 @@ UNION ALL
 		--END	AS xx_prezzo, 
 		CASE	WHEN mm_quant=0 THEN 0
 		ELSE
-		       	Round( (mm_valore / mm_quant) * mm_perqta , 4)    			
+		       	Round( (mm_valore / mm_quant) * mm_perqta , 2)    			
 		END	AS xx_prezzo, 
 		testmag.tm_valuta,
 		mm_stasino,
@@ -308,7 +308,7 @@ UNION ALL
 		--END	AS xx_prezzo,  
 		CASE	WHEN mm_quant=0 THEN 0
 				ELSE
-					Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+					Round( (mm_valore / mm_quant) * mm_perqta , 2)       
 		END	AS xx_prezzo, 
 	 	testmag.tm_valuta,
 		mm_stasino,
@@ -375,7 +375,7 @@ UNION ALL
 			--END	AS xx_prezzo,  
 			CASE	WHEN mo_quant=0 THEN 0
 				 ELSE
-						Round( (mo_valoremm / mo_quant) * mo_perqta , 4)       
+						Round( (mo_valoremm / mo_quant) * mo_perqta , 2)       
 			END	AS xx_prezzo,     
 			td_valuta,
 			mo_stasino,
