@@ -70,7 +70,7 @@ WHERE  1=1
        AND ar_codtagl = 0 
        AND lc_listino >= 0 
 	   AND convert(datetime,round(convert(float,  lc_datagg ),0,1)) -1  <= convert(datetime,round(convert(float,getdate()),0,1))
-       AND lc_datscad >= Getdate() 
+       AND lc_datscad >= convert(datetime,round(convert(float,getdate()),0,1))
        AND ( lc_unmis = artico.ar_unmis OR lc_unmis = ' ' ) 
 	   AND ( artico.ar_gesvar <> 'S' OR ( artico.ar_gesvar = 'S' AND artico.ar_codroot <> '' ) ) 
 	   AND busvw_listini.lc_tipo <> 'F'
