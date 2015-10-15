@@ -1,6 +1,6 @@
 ﻿/* Da usare per il debug in management studio
-DECLARE @release varchar(200)
-SELECT @release = '1.0'
+DECLARE @includi_lead_clienti varchar(200), @ditta VARCHAR(50)
+SELECT @includi_lead_clienti = '0', @ditta = 'AEC'
 */
 
 SELECT 
@@ -31,6 +31,8 @@ WHERE 1=1
 	AND leads.le_coddest=0
 	AND leads.codditt = @ditta
 	AND leads.le_servdeleted <> 'S'
+	AND organig.og_servdeleted <> 'S'
+	AND (leads.le_conto = '0' or @includi_lead_clienti <> '0')
 	AND organig.og_servdeleted <> 'S'
 ORDER  BY 
     og_conto,                                               

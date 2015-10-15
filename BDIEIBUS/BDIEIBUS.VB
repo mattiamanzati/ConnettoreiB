@@ -2000,12 +2000,14 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function GetLeadDetCon(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+    Public Overridable Function GetLeadDetCon(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String, _
+                                         Optional ByVal strIncludiLeadConClienti As String = "0") As Boolean
         Dim strSQL As String = ""
         Try
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadDetCon.sql")
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+            strSQL = strSQL.Replace("@includi_lead_clienti", strIncludiLeadConClienti)
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 
