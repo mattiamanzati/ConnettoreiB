@@ -185,4 +185,4 @@ $RECYCLE.BIN/
 CreaBuild/*.zip
 packages/*.*
 
-.DS_Store
+TEST/*
