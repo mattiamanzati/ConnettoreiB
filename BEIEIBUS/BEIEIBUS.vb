@@ -646,10 +646,6 @@ Public Class CLEIEIBUS
                 If Not Elabora_ExportLeadDetCon(oApp.AscDir & "\" + cIMP_LEAD_DETCON) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_DETCON)
 
-                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Operatori..."))
-                If Not Elabora_ExportLeadAccessi(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI) Then Return False
-                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI)
-
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Accessi CRM..."))
                 If Not Elabora_ExportLeadAccessiCrm(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCCRM)
@@ -673,6 +669,10 @@ Public Class CLEIEIBUS
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Mansioni..."))
                 If Not Elabora_ExportLeadMansioni(oApp.AscDir & "\" + cIMP_LEAD_MANSIONI) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_MANSIONI)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead Operatori..."))
+                If Not Elabora_ExportLeadAccessi(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI) Then Return False
+                arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_ACCESSI)
 
             End If
 
@@ -1287,6 +1287,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -1501,6 +1502,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -1658,6 +1660,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -1697,6 +1700,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -1705,7 +1709,8 @@ Public Class CLEIEIBUS
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
         Try
-            If Not oCldIbus.GetLeadDetCon(strDittaCorrente, dttTmp, strCustomWhereGetLeadDetCon) Then Return False
+            If Not oCldIbus.GetLeadDetCon(strDittaCorrente, dttTmp, strCustomWhereGetLeadDetCon, _
+                 strIncludiLeadConClienti:=strIncludileadClienti) Then Return False
 
             sbFile.Append(
                 "CHIAVE                |" & _
@@ -1767,6 +1772,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -1889,7 +1895,10 @@ Public Class CLEIEIBUS
             End If
             '--------------------------------------------------------------	
         Finally
+
             dttTmp.Clear()
+            dttTmp.Dispose()
+
         End Try
     End Function
 
@@ -1943,6 +1952,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -1996,6 +2006,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -2104,6 +2115,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -2143,6 +2155,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -2182,6 +2195,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -2224,6 +2238,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -2307,6 +2322,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -2708,7 +2724,7 @@ Public Class CLEIEIBUS
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!an_conto) & "|" & _
-                                Asc(strTipoDoc).ToString & "|" & _
+                                Asc(ConvStr(dtrT!tm_tipork)) & "|" & _
                                 ConvStr(dtrT!xx_tipobf) & "|" & _
                                 ConvStr(dtrT!xx_flevas) & "|" & _
                                 ConvData(dtrT!tm_datdoc, False) & "|" & _
@@ -3672,6 +3688,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
@@ -3753,6 +3770,7 @@ Public Class CLEIEIBUS
             '--------------------------------------------------------------	
         Finally
             dttTmp.Clear()
+            dttTmp.Dispose()
         End Try
     End Function
 
