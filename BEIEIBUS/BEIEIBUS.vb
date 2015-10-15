@@ -2673,11 +2673,19 @@ Public Class CLEIEIBUS
         Dim strTipoDoc As String = ""
         Dim strDescEvas As String = ""
         Try
+            ' I filtri sui documenti che vengono fatti nell'iPad sono basati sulle distinct dei seguenti campi:
+            '
+            ' - COD_TIPODOC   con decodifica descrittiva del campo TIPO          (Es: 68)
+            ' - COD_STIPODOC  con decodifica descrittiva del campo SOTTOTIPO     (Es: DDT emesso, DDT Ricevuto, ecc.)
+            ' - TIPOSTATO_DOC con decodifica descrittiva del campo DESSTATO_DOC  (Es: Evaso, Da evadere, ecc.)
+            '
+            ' Personalizzando i valori di queste 3 coppie di campi si possono modificare i filtri.
+
             If Not oCldIbus.GetCliforTestDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforTestDoc,
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
-                        "FLGDAEVADERE|DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUM_DOC|DOCORIG|" & _
+                        "DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUM_DOC|DOCORIG|" & _
                         "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
                         "DES_DOC|DES_NOTE|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
@@ -2726,7 +2734,6 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!an_conto) & "|" & _
                                 Asc(ConvStr(dtrT!tm_tipork)) & "|" & _
                                 ConvStr(dtrT!xx_tipobf) & "|" & _
-                                ConvStr(dtrT!xx_flevas) & "|" & _
                                 ConvData(dtrT!tm_datdoc, False) & "|" & _
                                 ConvStr(dtrT!xx_numreg) & "|" & _
                                 ConvStr(dtrT!tm_tipork) & "|" & _
