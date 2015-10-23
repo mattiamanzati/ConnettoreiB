@@ -86,6 +86,7 @@ Public Class CLEIEIBUS
 
     Public strScontoMaxPercentuale As String = ""
     Public strPercentualeSuPrezzoMinimoVendita As String = ""
+    Public strEsplodiKit As String = ""
 
     Public strAttivaAlert As String = ""
     Public strAttivaPush As String = ""
@@ -376,6 +377,7 @@ Public Class CLEIEIBUS
             strScontoMaxPercentuale = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ScontoMaxPercentuale", "", " ", "").Trim
             strDeterminazioneDescrizioneRigaOrdine = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DeterminazioneDescrizioneRigaOrdine", "0", " ", "0").Trim
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
+            strEsplodiKit = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "EsplodiKit", "0", " ", "0").Trim
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
             strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
@@ -4320,8 +4322,9 @@ Public Class CLEIEIBUS
             ' Disabilitazione blocchi di interfaccia
             oCleGsor.bDisabilitaCheckDateAnteriori = True
             oCleGsor.bInCreaDocDaGnor = True
-            oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
-            oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
+
+            oCleGsor.bInDuplicadoc = False             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
+            oCleGsor.bSaltaAfterInsert = False         'non fa esplodere la diba e le righe kit 
 
 
 
@@ -4501,6 +4504,7 @@ Public Class CLEIEIBUS
                     !ec_datcons = NTSCDate(r.data_consegna_riga)
                     !ec_datconsor = NTSCDate(r.data_consegna_riga)
                     !ec_stasino = NTSCStr(strStasino)
+                    '!ec_flkit
                 End With
 
                 If Not oCleGsor.RecordSalva(oCleGsor.dttEC.Rows.Count - 1, False, Nothing) Then
@@ -5715,9 +5719,15 @@ NEXT_FILE:
                     ' Disabilitazione blocchi di interfaccia
                     oCleGsor.bDisabilitaCheckDateAnteriori = True
                     oCleGsor.bInCreaDocDaGnor = True
-                    oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
-                    oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
 
+                    If strEsplodiKit = "0" Then
+                        oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
+                        oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
+                    Else
+                        oCleGsor.bInDuplicadoc = False
+                        oCleGsor.bSaltaAfterInsert = False
+                    End If
+  
 
                     '
                     ' ---------------------------------------
