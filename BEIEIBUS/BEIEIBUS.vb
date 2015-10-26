@@ -4323,9 +4323,13 @@ Public Class CLEIEIBUS
             oCleGsor.bDisabilitaCheckDateAnteriori = True
             oCleGsor.bInCreaDocDaGnor = True
 
-            oCleGsor.bInDuplicadoc = False             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
-            oCleGsor.bSaltaAfterInsert = False         'non fa esplodere la diba e le righe kit 
-
+            If strEsplodiKit = "0" Then
+                oCleGsor.bInDuplicadoc = True             'tolgo un po' di messaggi tipo 'confermi riga con qta = 0, con prezzo = 0, non faccio esplodere righe kit, oppure gestione articoli accessori/succedanei, ...
+                oCleGsor.bSaltaAfterInsert = True         'non fa esplodere la diba e le righe kit 
+            Else
+                oCleGsor.bInDuplicadoc = False
+                oCleGsor.bSaltaAfterInsert = False
+            End If
 
 
             ' Valorizzo il codice di pagamento degli articoli deperibili
@@ -4417,13 +4421,13 @@ Public Class CLEIEIBUS
                 End Select
                 Select Case dTipoUM
                     Case 1
-                        strUnitaMisuraP = r.cod_um_1
+                        'strUnitaMisuraP = r.cod_um_1
                         dColli = NTSCDec(r.qta)
                         strUnitaMisura = r.cod_um_1
                         dQuantita = NTSCDec(r.qta)
                         dPrezzo = NTSCDec(r.prezzo)
                     Case 2 Or 3
-                        strUnitaMisuraP = r.cod_um_1
+                        'strUnitaMisuraP = r.cod_um_1
                         dColli = NTSCDec(r.qta_2)
                         strUnitaMisura = r.cod_um_2
                         dQuantita = NTSCDec(r.qta)
@@ -4448,11 +4452,14 @@ Public Class CLEIEIBUS
 
                 With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
 
-
+                    ' default
                     Select Case strDeterminazioneDescrizioneRigaOrdine
                         Case "0", "1" ' Modalità con decodifica per Determinazione descrizione ordine
                             ' L'articolo è descrittivo ?
                             If strCodArt = "D" Then
+                                '!ec_ump = ""
+
+
                                 ' Se esiste una descrizione
                                 If r.descrizione_riga.Trim <> "" Then
                                     ' ...metti i primi 40 caratteri nella descrizione... 
@@ -4490,6 +4497,10 @@ Public Class CLEIEIBUS
                     End Select
 
 
+                    If NTSCStr(strUnitaMisura) = "" Then
+                        strUnitaMisura = "."
+                    End If
+
                     !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
                     !ec_unmis = NTSCStr(strUnitaMisura)
                     !ec_colli = NTSCDec(dColli)
@@ -4504,7 +4515,8 @@ Public Class CLEIEIBUS
                     !ec_datcons = NTSCDate(r.data_consegna_riga)
                     !ec_datconsor = NTSCDate(r.data_consegna_riga)
                     !ec_stasino = NTSCStr(strStasino)
-                    '!ec_flkit
+
+
                 End With
 
                 If Not oCleGsor.RecordSalva(oCleGsor.dttEC.Rows.Count - 1, False, Nothing) Then
