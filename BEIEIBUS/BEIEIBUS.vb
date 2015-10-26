@@ -89,6 +89,8 @@ Public Class CLEIEIBUS
     Public strEsplodiKit As String = ""
 
     Public strAttivaAlert As String = ""
+
+    Public strAccodaLog As String = ""
     Public strAttivaPush As String = ""
     Public strContiEsclusi As String = "0"  'conto NS stabilimento
 
@@ -378,6 +380,7 @@ Public Class CLEIEIBUS
             strDeterminazioneDescrizioneRigaOrdine = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DeterminazioneDescrizioneRigaOrdine", "0", " ", "0").Trim
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
             strEsplodiKit = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "EsplodiKit", "0", " ", "0").Trim
+            strAccodaLog = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AccodaLog", "0", " ", "0").Trim
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
             strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
@@ -463,7 +466,11 @@ Public Class CLEIEIBUS
                 If Not LogStart("BNIEIBUS_BATCH", "Import/export Vs IBUS" & vbCrLf, True) Then Return False
                 LogWrite(oApp.Tr(Me, 128768492996465000, "Per dettagli sull'avvio in modalità BATCH consultare il file '|BusNetBatch_" & System.Diagnostics.Process.GetCurrentProcess.Id.ToString & ".log|'"), False)
             Else
-                If Not LogStart("BNIEIBUS", "Import/export Vs IBUS" & vbCrLf) Then Return False
+                Dim bLogAppend As Boolean = False
+                If strAccodaLog <> "0" Then
+                    bLogAppend = True
+                End If
+                If Not LogStart("BNIEIBUS", "Import/export Vs IBUS" & vbCrLf, bLogAppend) Then Return False
             End If
             strMsg = oApp.Tr(Me, 129877602933085931, "INIZIO ELABORAZIONE")
             LogWrite(strMsg, False)
