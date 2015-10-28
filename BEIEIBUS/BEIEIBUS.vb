@@ -3830,7 +3830,7 @@ Public Class CLEIEIBUS
 
                     ' Mi preoccupo dell'esistenza del codice Mastro solo se se devo inserire un nuovo cliente
                     If t.cod_clifor Is Nothing And strMastro = "" Then
-                        msg = oApp.Tr(Me, 129919999269031600, "Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine")
+                        msg = oApp.Tr(Me, 129919999269031600, String.Format("Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine, Unique ID: {0}", t.unique_id))
                         LogWrite(msg, True)
 
                     Else
@@ -3841,7 +3841,7 @@ Public Class CLEIEIBUS
                             GeneraClienteAPI(t, CInt(strMastro), NewCodCli)
 
                             t.cod_clifor = NewCodCli.ToString()
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente))
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}, Unique ID: {4}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente, t.unique_id))
                             LogWrite(msg, True)
                         End If
 
@@ -3854,12 +3854,12 @@ Public Class CLEIEIBUS
                             ' Procedura per modificare l'ordine appena inserito
                             PostInsert_Ordine(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
 
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente))
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}, Unique ID: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
                             InviaPushByUsername(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
                         Else
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}", t.cod_clifor, t.cod_agente))
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}, Unique ID: {2}", t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(99, msg, t.cod_clifor)
                         End If
