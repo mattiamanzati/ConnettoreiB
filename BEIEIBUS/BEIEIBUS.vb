@@ -351,7 +351,7 @@ Public Class CLEIEIBUS
     End Function
 
     Public Overridable Function Elabora() As Boolean
-        Dim strMsg As String = ""
+        Dim strMsgLog As String = ""
         Dim i As Integer = 0
         Dim dttTm As New DataTable      'testate documenti di magazzino/ordini
         Dim dttCat As New DataTable     'articoli con immagine catalogo
@@ -462,18 +462,27 @@ Public Class CLEIEIBUS
 
             'avvio il file di log della procedura di import/export
             '--------------------
-            If oApp.Batch Then
-                If Not LogStart("BNIEIBUS_BATCH", "Import/export Vs IBUS" & vbCrLf, True) Then Return False
-                LogWrite(oApp.Tr(Me, 128768492996465000, "Per dettagli sull'avvio in modalità BATCH consultare il file '|BusNetBatch_" & System.Diagnostics.Process.GetCurrentProcess.Id.ToString & ".log|'"), False)
-            Else
-                Dim bLogAppend As Boolean = False
-                If strAccodaLog <> "0" Then
-                    bLogAppend = True
-                End If
-                If Not LogStart("BNIEIBUS", "Import/export Vs IBUS" & vbCrLf, bLogAppend) Then Return False
+
+
+            Dim bLogAppendFromInterface As Boolean = False
+            If strAccodaLog <> "0" Then
+                bLogAppendFromInterface = True
             End If
-            strMsg = oApp.Tr(Me, 129877602933085931, "INIZIO ELABORAZIONE")
-            LogWrite(strMsg, False)
+
+
+            If oApp.Batch Then
+                If Not LogStart("BNIEIBUS_BATCH", "Import/export Vs IBUS da batch" & vbCrLf, True) Then Return False
+                LogWrite("Per dettagli sull'avvio in modalità BATCH consultare il file '|BusNetBatch_" & System.Diagnostics.Process.GetCurrentProcess.Id.ToString & ".log|'", False)
+            Else
+
+                If Not LogStart("BNIEIBUS", "Import/export Vs IBUS da interfaccia" & vbCrLf, bLogAppendFromInterface, False) Then Return False
+                LogWrite("Esecuzione da interfaccia:", False)
+            End If
+
+
+            strMsgLog = oApp.Tr(Me, 129877602933085931, "INIZIO ELABORAZIONE")
+            LogWrite(strMsgLog, False)
+            LogWrite("Selezione: [" + strTipork + "]", False)
 
 
             'controlli pre-elaborazione
@@ -500,6 +509,7 @@ Public Class CLEIEIBUS
             Dim CodProgetto As String = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(strDropBoxDir + "\"))
             Dim Versione As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
             If CodProgetto.Contains(".") Then
+                LogWrite("Invio versione...", False)
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Invio versione..."))
                 ApexNetLIB.UpdateRelease.SendVersion(CodProgetto, Versione)
             End If
@@ -543,7 +553,6 @@ Public Class CLEIEIBUS
             '--------------------
             'Export tabelle di base
             If strTipork.Contains("TBS;") Or strTipork.Contains("CIT;") Then
-
 
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export comuni..."))
                 If Not Elabora_ExportComuni(oApp.AscDir & "\" + cIMP_CITTA) Then Return False

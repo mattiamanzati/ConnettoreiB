@@ -986,7 +986,7 @@ Riprova:
                 Loop
 
                 tlbElabora_ItemClick(tlbElabora, Nothing)
-                tlbElabora_ItemClick(tlbLog, Nothing)
+                'tlbElabora_ItemClick(tlbLog, Nothing)
 
                 Me.Close()
                 Return
