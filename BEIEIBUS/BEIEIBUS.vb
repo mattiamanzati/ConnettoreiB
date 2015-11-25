@@ -3837,6 +3837,10 @@ Public Class CLEIEIBUS
 
                 For Each t As TestataOrdineExport In OrdersData.testate
 
+                    'ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import ordine cliente {0} - [{1}]", t.cod_clifor, t.guid_test_ord)))
+
+                    PreInsert_Ordine(t)
+
                     ' Mi preoccupo dell'esistenza del codice Mastro solo se se devo inserire un nuovo cliente
                     If t.cod_clifor Is Nothing And strMastro = "" Then
                         msg = oApp.Tr(Me, 129919999269031600, String.Format("Codice Mastro non configurato. Non posso inserire il cliente. Elaboro il prossimo ordine, Unique ID: {0}", t.unique_id))
@@ -6083,6 +6087,24 @@ NEXT_FILE:
         keyReg.Close()
 
         Return valore
+    End Function
+
+    Public Overridable Function PreInsert_Ordine(ByRef t As TestataOrdineExport) As Boolean
+        Try
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+
     End Function
 
     Public Overridable Function PostInsert_Ordine(ByVal pIBNumOrd As String, ByVal pNumOrd As Integer, ByVal pAnno As Integer, ByVal pSerie As String, ByVal pTipork As String, ByVal pCodDitta As String) As Boolean
