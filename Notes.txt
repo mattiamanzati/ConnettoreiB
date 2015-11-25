@@ -29,3 +29,8 @@ Case "#" : strTipoDoc = "Imp. di comm."
 Case "V" : strTipoDoc = "Imp. cli aperto"
 Case "$" : strTipoDoc = "Ord. forn aperto"
 Case "Y" : strTipoDoc = "Imp. di prod."
+
+
+Per eseguire il programma in modalità batch
+===========================================
+admin . IBVARESEDIS Business2015 BNIEIBUS /B C:\Bus.Business2015\Asc\BNIEIBUS.BUB
