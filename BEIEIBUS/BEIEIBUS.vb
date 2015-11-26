@@ -3015,7 +3015,6 @@ Public Class CLEIEIBUS
         'esporta gli articoli (e relative fasi) NO articoli TCO
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
-        Dim sbFileConf As New StringBuilder
         Dim sbFileUM As New StringBuilder
         Dim my_ar_conver As String
         Dim my_ar_qtaconf2 As String
@@ -3093,18 +3092,7 @@ Public Class CLEIEIBUS
                               ConvData(dtrT!ar_ultagg, True) & vbCrLf)
             Next
 
-            'IB_ART_CONF.DAT
-            sbFileConf.Append("CHIAVE|COD_ART|COD_DITTA|COD_CONF|PZ_CONF|FLG_PREF|DAT_ULT_MOD" & vbCrLf)
-            For Each dtrT As DataRow In dttTmp.Select("ar_qtacon2 <> 0", "ar_codart")
-                sbFileConf.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "|" & _
-                                  ConvStr(dtrT!ar_codart) & "|" & _
-                                  strDittaCorrente & "|" & _
-                                  ConvStr(dtrT!ar_confez2) & "|" & _
-                                  NTSCDec(dtrT!ar_qtacon2).ToString("0.0000") & "|" & _
-                                  "1" & "|" & _
-                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-            Next
-
+    
             'IB_ART_UM.DAT
             sbFileUM.Append("CHIAVE|COD_DITTA|COD_ART|UM|DESC_UM|FAT_CONV|TIPO_UM|DAT_ULT_MOD" & vbCrLf)
 
@@ -3162,11 +3150,6 @@ Public Class CLEIEIBUS
 
             Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
             w1.Write(sbFile.ToString)
-            w1.Flush()
-            w1.Close()
-
-            w1 = New StreamWriter(strFileOutConf, False, System.Text.Encoding.UTF8)
-            w1.Write(sbFileConf.ToString)
             w1.Flush()
             w1.Close()
 
