@@ -2651,7 +2651,7 @@ Public Class CLEIEIBUS
         Try
             If Not oCldIbus.GetCliforFatt(strDittaCorrente, dttTmp, strCustomWhereGetCliforFatt) Then Return False
 
-            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ANNO|MESE|FATTURATO|DAT_ULT_MOD" & vbCrLf)
+            sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ANNO|MESE|COD_VALUTA|FATTURATO|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!xx_codvalu) & "§" & ConvStr(dtrT!an_tipo) & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_anno) & "§" & ConvStr(dtrT!xx_mese) & "|" & _
                                 strDittaCorrente & "|" & _
@@ -2659,8 +2659,11 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!an_conto) & "|" & _
                                 ConvStr(dtrT!xx_anno) & "|" & _
                                 ConvStr(dtrT!xx_mese) & "|" & _
+                                ConvStr(dtrT!xx_codvalu) & "|" & _
                                 NTSCDec(dtrT!xx_fatturato).ToString(oApp.FormatSconti) & "|" & _
                                 ConvData(dtrT!xx_ultagg, True) & vbCrLf)
+
+
             Next
 
             If dttTmp.Rows.Count > 0 Then
@@ -2703,8 +2706,8 @@ Public Class CLEIEIBUS
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_TIPODOC|COD_STIPODOC|" & _
-                        "DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|DATAREG|SEZIONALE|NUM_DOC|DOCORIG|" & _
-                        "DEPOSITO|VALUTA|TOTALEDOC|DATACONS|SCADENZE|ESTCONT|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
+                        "DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|SEZIONALE|NUM_DOC|" & _
+                        "DEPOSITO|TOTALEDOC|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
                         "DES_DOC|DES_NOTE|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
 
@@ -2757,16 +2760,10 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!tm_tipork) & "|" & _
                                 strTipoDoc.PadRight(20).Substring(0, 20).Trim & "|" & _
                                 ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
-                                "" & "|" & _
                                 ConvStr(dtrT!tm_serie) & "|" & _
                                  (ConvStr(dtrT!tm_numdoc) & IIf(NTSCStr(dtrT!tm_serie) <> " ", "/" & ConvStr(dtrT!tm_serie), "").ToString).Trim & "|" & _
-                                "" & "|" & _
                                 ConvStr(dtrT!tm_magaz) & "|" & _
-                                ConvStr(dtrT!tb_desvalu) & "|" & _
                                 NTSCDec(dtrT!tm_totdoc).ToString(oApp.FormatSconti) & "|" & _
-                                "" & "|" & _
-                                "" & "|" & _
-                                "" & "|" & _
                                 ConvStr(dtrT!xx_flevas) & "|" & _
                                 strDescEvas & "|" & _
                                 ConvData(dtrT!tm_datfat, False) & "|" & _
@@ -3274,8 +3271,9 @@ Public Class CLEIEIBUS
             If Not oCldIbus.GetArtUltVen(strDittaCorrente, dttTmp, strCustomWhereGetArtUltVen, _
                                         strGiorniUltVen:=strFiltroGGUltAcqVen) Then Return False
 
+
             'IB_ART_ULTVEN.DAT
-            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|VALUTA|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|DAT_ULT_MOD" & vbCrLf)
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
 
                 ' Per ogni coppia client/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
@@ -3303,11 +3301,11 @@ Public Class CLEIEIBUS
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!ar_codart) & "|" & _
                                 ConvStr(i) & "|" & _
-                                "" & "|" & _
                                 NTSCDec(dtrT!mm_val).ToString("0.0000") & "|" & _
                                 ConvData(dtrT!km_aammgg, False) & "|" & _
                                 ConvStr(dtrT!km_numdoc) & "|" & _
                                 ConvStr(dtrT!km_conto) & "|" & _
+                                ConvStr(dtrT!tm_valuta) & "|" & _
                                 ConvData(dtrT!xx_ultagg, True) & vbCrLf)
             Next
 
@@ -3353,7 +3351,7 @@ Public Class CLEIEIBUS
                                         strGiorniUltAcq:=strFiltroGGUltAcqVen) Then Return False
 
             'IB_ART_ULTACQ.DAT
-            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|VALUTA|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|TIPO_DOC|DAT_ULT_MOD" & vbCrLf)
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|PROG|PRZ|DATA_DOC|NUM_DOC|COD_CLFOR|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             i = 0
             For Each dtrT As DataRow In dttTmp.Rows
                 i += 1
@@ -3367,12 +3365,11 @@ Public Class CLEIEIBUS
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!ar_codart) & "|" & _
                                 ConvStr(i) & "|" & _
-                                "" & "|" & _
                                 NTSCDec(dtrT!mm_val).ToString("0.0000") & "|" & _
                                 ConvData(dtrT!km_aammgg, False) & "|" & _
                                 ConvStr(dtrT!km_numdoc) & "|" & _
                                 ConvStr(dtrT!km_conto) & "|" & _
-                                "" & "|" & _
+                                ConvStr(dtrT!tm_valuta) & "|" & _
                                 ConvData(dtrT!xx_ultagg, True) & vbCrLf)
             Next
 
@@ -3421,7 +3418,7 @@ Public Class CLEIEIBUS
             sbFile.Append("CHIAVE|COD_DITTA|COD_CLIFOR|COD_ART|DESC_ARTICOLO|NUM_RIGHE|ULT_NUM_REG|ULT_PROG_RIGA|" & _
                             "ULT_QTA|ULT_PRZ|ULT_UM|ULT_QTA2|ULT_PRZ2|ULT_UM2|COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
                             "ULT_SC_PER5|ULT_SC_PER6|ULT_SC_IMPORTO|ULT_MAG_PER1|ULT_MAG_PER2|" & _
-                            "ULT_MAG_IMPORTO|ULT_DATA|DAT_ULT_MOD" & vbCrLf)
+                            "ULT_MAG_IMPORTO|ULT_DATA|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Select("", "ar_codart, td_conto, td_datord DESC")
                 ' Per ogni coppia cliente/articolo devo estrarre solo un valore. La query ritorna piu' righe per questa coppia.
@@ -3461,6 +3458,7 @@ Public Class CLEIEIBUS
                                 "0" & "|" & _
                                 "0" & "|" & _
                                 ConvData(dtrT!td_datord, False) & "|" & _
+                                ConvStr(dtrT!td_valuta) & "|" & _
                                 ConvData(dtrT!mo_ultagg, True) & vbCrLf)
                 End If
             Next
