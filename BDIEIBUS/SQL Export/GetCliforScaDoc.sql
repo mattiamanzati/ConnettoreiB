@@ -14,7 +14,7 @@ SELECT
 	sc_numpar,
 	sc_numrata,
 	sc_datsca,
-	sc_importo,
+	CASE sc_codvalu WHEN 0 THEN sc_importo ELSE sc_impval END AS sc_importo,
 	sc_integr,
 	sc_flsaldato,
 	case sc_flsaldato

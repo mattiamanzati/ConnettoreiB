@@ -1,9 +1,14 @@
-﻿
-/* 
+﻿/* 
 Da usare per il debug in management studio
-DECLARE @ditta varchar(200), @giornistorico integer
-SELECT @ditta = 'SONN', @giornistorico=180
+DECLARE @ditta varchar(200), @giornistorico INTEGER, @flg_includi_non_evasi INTEGER
+SELECT @ditta = 'CMATIC', @giornistorico=180, @flg_includi_non_evasi =0
 versione 2
+
+ATTENZIONE: 
+Il risultato di questa query, prima di creare il tracciao, viene elaborato nel BEIEIBUS dove, per ogni
+coppia cliente/articolo, viene estratto solo un valore. 
+La query ritorna piu' righe per questa coppia.
+La "distinct" è implementata da codice per non complicare la leggibilita' di questa query e per problemi di prestazioni
 */
 
 SELECT                                                                                                         
@@ -15,7 +20,11 @@ SELECT
     mo_serie AS mo_serie,                                                                                   
     mo_tipork AS mo_tipork,                                                                                  
     mo_riga AS mo_riga,                                                                                     
-    mo_prezzo AS mo_prezzo,                                                                                 
+	-- Calcolo del prezzo in valuta
+	CASE	WHEN testord.td_valuta = 0	THEN	mo_prezzo
+			ELSE						mo_prezvalc
+	END as mo_prezzo,
+	testord.td_valuta AS td_valuta,                                                                           
     mo_ump AS mo_ump,                                                                                       
     mo_numord AS mo_numord,                                                                                 
     mo_quant AS mo_quant,                                                                                   
@@ -80,8 +89,12 @@ SELECT
     mm_anno AS mm_anno,                                                                                     
     mm_serie AS mm_serie,                                                                                   
     mm_tipork AS mm_serie,                                                                                  
-    mm_riga AS mm_riga,                                                                                     
-    mm_prezzo AS mm_prezzo,                                                                                 
+    mm_riga AS mm_riga,
+	-- Calcolo del prezzo in valuta
+	CASE	WHEN testmag.tm_valuta = 0	THEN	mm_prezzo
+			ELSE						mm_prezvalc
+	END as mm_prezzo, 
+	testmag.tm_valuta AS tm_valuta,
     mm_ump AS mm_ump,                                                                                       
     mm_numdoc AS mm_numord,                                                                                 
     mm_quant AS mm_quant,                                                                                   

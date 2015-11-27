@@ -33,11 +33,10 @@ SELECT
         mm_ump,                                                           
         mm_quant,                                                         
         mm_colli,
-		-- Quando gestiremo la valuta useremo questo calcolo
-		-- CASE	WHEN tm_valuta=0	THEN	mm_valore
-		--		ELSE						mm_valorev
-		-- END as mm_valore,                                                          
-        mm_valore,
+		-- Calcolo del prezzo in valuta
+		CASE	WHEN tm_valuta=0	THEN	mm_valore
+				ELSE						mm_valorev
+		END as mm_valore,                                                          
 		mm_scont1,
 		mm_scont2,
 		mm_scont3,
@@ -46,16 +45,16 @@ SELECT
         --    WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)          
         --    ELSE 0                                                          
         --END AS xx_prezzo,
-        --CASE	WHEN mm_quant=0 THEN 0
-		--		ELSE
-		--			CASE	WHEN tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
-		--					ELSE						Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
-		--			END
-		--END	AS xx_prezzo,
-		CASE	WHEN mm_quant=0 THEN 0
+        CASE	WHEN mm_quant=0 THEN 0
 				ELSE
-					Round( (mm_valore / mm_quant) * mm_perqta , 2) 				
-		END	AS xx_prezzo, 
+					CASE	WHEN tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+							ELSE						Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
+					END
+		END	AS xx_prezzo,
+		--CASE	WHEN mm_quant=0 THEN 0
+		--		ELSE
+		--			Round( (mm_valore / mm_quant) * mm_perqta , 2) 				
+		--END	AS xx_prezzo, 
 		tm_valuta,
 		mm_stasino,
 		tm_ultagg as xx_ultagg                                                  
@@ -100,10 +99,9 @@ UNION ALL
         mm_ump,                                                           
         mm_quant,                                                         
         mm_colli,
-        -- CASE	WHEN tm_valuta=0	THEN	mm_valore
-		--		ELSE						mm_valorev
-		-- END as mm_valore,                                                        
-        mm_valore,
+        CASE	WHEN tm_valuta=0	THEN	mm_valore
+				ELSE						mm_valorev
+		END as mm_valore,                                                        
 		mm_scont1,
 		mm_scont2,
 		mm_scont3,
@@ -113,10 +111,16 @@ UNION ALL
 		--			ELSE						    Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
 		--	END
 		--END	AS xx_prezzo,
+		--CASE	WHEN mm_quant=0 THEN 0
+		--	ELSE
+		--		Round( (mm_valore / mm_quant) * mm_perqta , 2)       
+		--END	AS xx_prezzo, 
 		CASE	WHEN mm_quant=0 THEN 0
-			ELSE
-				Round( (mm_valore / mm_quant) * mm_perqta , 2)       
-		END	AS xx_prezzo, 
+		ELSE
+			CASE	WHEN tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+					ELSE						Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
+			END
+		END	AS xx_prezzo,
 		tm_valuta,
 		mm_stasino,
 		tm_ultagg as xx_ultagg                                                  
@@ -163,23 +167,22 @@ UNION ALL
         mm_ump,                                                           
         mm_quant,                                                         
         mm_colli, 
-		--      CASE	WHEN tm_valuta=0	THEN	mm_valore
-		--		ELSE						mm_valorev
-		-- END as mm_valore,                                                         
-        mm_valore,
+		CASE	WHEN tm_valuta=0	THEN	mm_valore
+				ELSE						mm_valorev
+		END as mm_valore,                                                         
 		mm_scont1,
 		mm_scont2,
 		mm_scont3,
-        --CASE	WHEN mm_quant=0 THEN 0
-		--		ELSE
-		--			CASE	WHEN tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
-		--					ELSE						Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
-		--			END
-		--END	AS xx_prezzo, 
-		CASE	WHEN mm_quant=0 THEN 0
-		ELSE
-			Round( (mm_valore / mm_quant) * mm_perqta , 2)       
+        CASE	WHEN mm_quant=0 THEN 0
+				ELSE
+					CASE	WHEN tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+							ELSE						Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
+					END
 		END	AS xx_prezzo, 
+		--CASE	WHEN mm_quant=0 THEN 0
+		--ELSE
+		--	Round( (mm_valore / mm_quant) * mm_perqta , 2)       
+		--END	AS xx_prezzo, 
 		tm_valuta,
 		mm_stasino,
 		tm_ultagg as xx_ultagg                                                  
@@ -225,23 +228,22 @@ UNION ALL
 		mm_ump,                                                           
 		mm_quant,                                                         
 		mm_colli,  
-		--     CASE	WHEN testmag.tm_valuta=0	THEN	mm_valore
-		--		ELSE						mm_valorev
-		--  END as mm_valore,                                                        
-		mm_valore,
+		CASE	WHEN testmag.tm_valuta=0	THEN	mm_valore
+				ELSE						mm_valorev
+		END as mm_valore,                                                        
 		mm_scont1,
 		mm_scont2,
 		mm_scont3,
-        --CASE	WHEN mm_quant=0 THEN 0
-		--		ELSE
-		--			CASE	WHEN testmag.tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
-		--					ELSE								Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
-		--			END
-		--END	AS xx_prezzo, 
-		CASE	WHEN mm_quant=0 THEN 0
-		ELSE
-		       	Round( (mm_valore / mm_quant) * mm_perqta , 2)    			
+        CASE	WHEN mm_quant=0 THEN 0
+				ELSE
+					CASE	WHEN testmag.tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+							ELSE								Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
+					END
 		END	AS xx_prezzo, 
+		--CASE	WHEN mm_quant=0 THEN 0
+		--ELSE
+		--       	Round( (mm_valore / mm_quant) * mm_perqta , 2)    			
+		--END	AS xx_prezzo, 
 		testmag.tm_valuta,
 		mm_stasino,
 	    testmag.tm_ultagg as xx_ultagg                                                     
@@ -293,23 +295,22 @@ UNION ALL
         mm_ump,                                                           
         mm_quant,                                                         
         mm_colli, 
-		--        CASE	WHEN testmag.tm_valuta=0	THEN	mm_valore
-		--		ELSE						mm_valorev
-		--   END as mm_valore,                                                         
-        mm_valore,
+		CASE	WHEN testmag.tm_valuta=0	THEN	mm_valore
+				ELSE						mm_valorev
+		END as mm_valore,                                                         
 		mm_scont1,
 		mm_scont2,
 		mm_scont3,
-        --CASE	WHEN mm_quant=0 THEN 0
-		--		ELSE
-		--			CASE	WHEN testmag.tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
-		--					ELSE								Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
-		--			END
-		--END	AS xx_prezzo,  
-		CASE	WHEN mm_quant=0 THEN 0
+        CASE	WHEN mm_quant=0 THEN 0
 				ELSE
-					Round( (mm_valore / mm_quant) * mm_perqta , 2)       
-		END	AS xx_prezzo, 
+					CASE	WHEN testmag.tm_valuta=0	THEN	Round( (mm_valore / mm_quant) * mm_perqta , 4)       
+							ELSE								Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
+					END
+		END	AS xx_prezzo,  
+		--CASE	WHEN mm_quant=0 THEN 0
+		--		ELSE
+		--			Round( (mm_valore / mm_quant) * mm_perqta , 2)       
+		--END	AS xx_prezzo, 
 	 	testmag.tm_valuta,
 		mm_stasino,
 	    testmag.tm_ultagg as xx_ultagg                                                     
@@ -362,21 +363,20 @@ UNION ALL
             mo_ump,                                                          
             mo_quant,                                                        
             mo_colli,  
-			--CASE td_valuta WHEN 0 THEN mo_valoremm ELSE mo_valorev END AS mo_valore,                                                        
-            mo_valoremm,
+			CASE td_valuta WHEN 0 THEN mo_valoremm ELSE mo_valorev END AS mo_valoremm,                                                        
 			mo_scont1,
 			mo_scont2,
 			mo_scont3, 
-            --CASE	WHEN mo_quant=0 THEN 0
-			--		ELSE
-			--			CASE	WHEN td_valuta=0	THEN	Round( (mo_valoremm / mo_quant) * mo_perqta , 4)       
-			--					ELSE						Round( (mo_valorev / mo_quant) * mo_perqta , 4)       
-			--			END
-			--END	AS xx_prezzo,  
-			CASE	WHEN mo_quant=0 THEN 0
-				 ELSE
-						Round( (mo_valoremm / mo_quant) * mo_perqta , 2)       
-			END	AS xx_prezzo,     
+            CASE	WHEN mo_quant=0 THEN 0
+					ELSE
+						CASE	WHEN td_valuta=0	THEN	Round( (mo_valoremm / mo_quant) * mo_perqta , 4)       
+								ELSE						Round( (mo_valorev / mo_quant) * mo_perqta , 4)       
+						END
+			END	AS xx_prezzo,  
+			--CASE	WHEN mo_quant=0 THEN 0
+			--	 ELSE
+			--			Round( (mo_valoremm / mo_quant) * mo_perqta , 2)       
+			--END	AS xx_prezzo,     
 			td_valuta,
 			mo_stasino,
 			testord.td_ultagg as xx_ultagg                                                    
