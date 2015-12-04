@@ -22,8 +22,9 @@ SELECT
 	tm_numdoc,
 	tm_datdoc,
 	-- Utilizzeremo questa quando gestiremo la valuta sulle testate documenti
-	-- CASE tm_valuta WHEN 0 THEN tm_totdoc ELSE tm_totdocv END AS tm_totdoc,
-	tm_totdoc - tm_totomag as tm_totdoc,
+	CASE WHEN tm_valuta=0 THEN tm_totdoc - tm_totomag   
+		                  ELSE tm_totdocv - tm_totomagv  
+	END as tm_totdoc,    
 	tm_ultagg,  
 	tb_desvalu,
 	tm_magaz,
@@ -58,8 +59,6 @@ SELECT
 	CAST(tm_note AS VARCHAR(3000)),
 	tm_riferim,
 	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_annpar as varchar) + '§' + tm_alfpar + '§' + CAST(tm_numdoc as varchar) as xx_numreg,
---	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_annpar as varchar) + '§' + tm_alfpar + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_numpar as varchar)  as xx_numreg,
---	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) as xx_numreg,
 	an_tipo, 
 	an_conto,
 	tm_tipork,
@@ -67,7 +66,9 @@ SELECT
 	tm_serie,
 	tm_numdoc,
 	tm_datdoc,
-	tm_totdoc - tm_totomag,
+	CASE WHEN tm_valuta=0 THEN tm_totdoc - tm_totomag   
+		                  ELSE tm_totdocv - tm_totomagv  
+	END as tm_totodoc,  
 	tm_ultagg,  
 	tb_desvalu,
 	tm_magaz,
@@ -103,7 +104,6 @@ SELECT
 	CAST(tm_note AS VARCHAR(3000)),
 	tm_riferim,
 	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) as xx_numreg,
---	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(tm_anno as varchar) + '§' + tm_serie + '§' + CAST(tm_numdoc as varchar) + '§' + CAST(tm_tipork as varchar) as xx_numreg,
 	an_tipo, 
 	an_conto,
 	tm_tipork,
@@ -111,7 +111,9 @@ SELECT
 	tm_serie,
 	tm_numdoc,
 	tm_datdoc,
-	tm_totdoc - tm_totomag,
+	CASE WHEN tm_valuta=0 THEN tm_totdoc - tm_totomag   
+		                  ELSE tm_totdocv - tm_totomagv  
+	END as tm_totodoc,  
 	tm_ultagg,  
 	tb_desvalu,
 	tm_magaz,
@@ -146,7 +148,6 @@ SELECT
 	CAST(td_note AS VARCHAR(3000)),
 	td_riferim,
 	testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar) as xx_numreg,
---	testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar) + '§' + td_tipork as xx_numreg,
 	an_tipo, 
 	an_conto, 
 	td_tipork, 
@@ -154,7 +155,9 @@ SELECT
 	td_serie,
 	td_numord, 
 	td_datord, 
-	td_totdoc - td_totomag,
+	CASE WHEN td_valuta=0 THEN td_totdoc - td_totomag   
+		                  ELSE td_totdocv - td_totomagv  
+	END as td_totodoc,  
 	td_ultagg,  
 	tb_desvalu,
 	td_magaz,

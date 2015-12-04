@@ -3150,6 +3150,7 @@ Public Class CLEIEIBUS
             w1.Flush()
             w1.Close()
 
+
             w1 = New StreamWriter(strFileUM, False, System.Text.Encoding.UTF8)
             w1.Write(sbFileUM.ToString)
             w1.Flush()
