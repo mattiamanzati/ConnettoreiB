@@ -93,6 +93,7 @@ Public Class FRMIEIBUS
         Me.NtsLabel1 = New NTSInformatica.NTSLabel()
         Me.lblCustomRelease = New NTSInformatica.NTSLabel()
         Me.ckTabBase = New NTSInformatica.NTSCheckBox()
+        CType(Me.dttSmartArt, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -155,6 +156,7 @@ Public Class FRMIEIBUS
         '
         Me.tlbElabora.Caption = "Elabora"
         Me.tlbElabora.Glyph = CType(resources.GetObject("tlbElabora.Glyph"), System.Drawing.Image)
+        Me.tlbElabora.GlyphPath = ""
         Me.tlbElabora.Id = 19
         Me.tlbElabora.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
         Me.tlbElabora.Name = "tlbElabora"
@@ -164,6 +166,7 @@ Public Class FRMIEIBUS
         '
         Me.tlbLog.Caption = "Log"
         Me.tlbLog.Glyph = CType(resources.GetObject("tlbLog.Glyph"), System.Drawing.Image)
+        Me.tlbLog.GlyphPath = ""
         Me.tlbLog.Id = 99
         Me.tlbLog.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
         Me.tlbLog.Name = "tlbLog"
@@ -173,6 +176,7 @@ Public Class FRMIEIBUS
         '
         Me.tlbStrumenti.Caption = "Strumenti"
         Me.tlbStrumenti.Glyph = CType(resources.GetObject("tlbStrumenti.Glyph"), System.Drawing.Image)
+        Me.tlbStrumenti.GlyphPath = ""
         Me.tlbStrumenti.Id = 15
         Me.tlbStrumenti.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.tlbCambioDitta)})
         Me.tlbStrumenti.Name = "tlbStrumenti"
@@ -182,6 +186,7 @@ Public Class FRMIEIBUS
         'tlbCambioDitta
         '
         Me.tlbCambioDitta.Caption = "Cambio ditta"
+        Me.tlbCambioDitta.GlyphPath = ""
         Me.tlbCambioDitta.Id = 17
         Me.tlbCambioDitta.ItemShortcut = New DevExpress.XtraBars.BarShortcut((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.D))
         Me.tlbCambioDitta.Name = "tlbCambioDitta"
@@ -192,6 +197,7 @@ Public Class FRMIEIBUS
         '
         Me.tlbEsci.Caption = "Esci"
         Me.tlbEsci.Glyph = CType(resources.GetObject("tlbEsci.Glyph"), System.Drawing.Image)
+        Me.tlbEsci.GlyphPath = ""
         Me.tlbEsci.Id = 12
         Me.tlbEsci.Name = "tlbEsci"
         Me.tlbEsci.Visible = True
@@ -200,6 +206,7 @@ Public Class FRMIEIBUS
         '
         Me.tlbStampa.Caption = "Stampa"
         Me.tlbStampa.Glyph = CType(resources.GetObject("tlbStampa.Glyph"), System.Drawing.Image)
+        Me.tlbStampa.GlyphPath = ""
         Me.tlbStampa.Id = 4
         Me.tlbStampa.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F6)
         Me.tlbStampa.Name = "tlbStampa"
@@ -209,6 +216,7 @@ Public Class FRMIEIBUS
         '
         Me.tlbStampaVideo.Caption = "Stampa video"
         Me.tlbStampaVideo.Glyph = CType(resources.GetObject("tlbStampaVideo.Glyph"), System.Drawing.Image)
+        Me.tlbStampaVideo.GlyphPath = ""
         Me.tlbStampaVideo.Id = 5
         Me.tlbStampaVideo.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F12)
         Me.tlbStampaVideo.Name = "tlbStampaVideo"
@@ -218,6 +226,7 @@ Public Class FRMIEIBUS
         '
         Me.tlbGuida.Caption = "Guida"
         Me.tlbGuida.Glyph = CType(resources.GetObject("tlbGuida.Glyph"), System.Drawing.Image)
+        Me.tlbGuida.GlyphPath = ""
         Me.tlbGuida.Id = 11
         Me.tlbGuida.Name = "tlbGuida"
         Me.tlbGuida.Visible = True
@@ -225,6 +234,7 @@ Public Class FRMIEIBUS
         'tlbImpostaStampante
         '
         Me.tlbImpostaStampante.Caption = "Imposta Stampante"
+        Me.tlbImpostaStampante.GlyphPath = ""
         Me.tlbImpostaStampante.Id = 16
         Me.tlbImpostaStampante.Name = "tlbImpostaStampante"
         Me.tlbImpostaStampante.Visible = True
@@ -232,6 +242,7 @@ Public Class FRMIEIBUS
         'tlbCancella
         '
         Me.tlbCancella.Caption = "Cancella"
+        Me.tlbCancella.GlyphPath = ""
         Me.tlbCancella.Id = 18
         Me.tlbCancella.Name = "tlbCancella"
         Me.tlbCancella.NTSIsCheckBox = False
@@ -257,7 +268,7 @@ Public Class FRMIEIBUS
         Me.lbImport.AutoSize = True
         Me.lbImport.BackColor = System.Drawing.Color.Transparent
         Me.lbImport.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbImport.Location = New System.Drawing.Point(12, 217)
+        Me.lbImport.Location = New System.Drawing.Point(12, 222)
         Me.lbImport.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
         Me.lbImport.Name = "lbImport"
         Me.lbImport.NTSDbField = ""
@@ -284,7 +295,7 @@ Public Class FRMIEIBUS
         'ckOrdini
         '
         Me.ckOrdini.Cursor = System.Windows.Forms.Cursors.Default
-        Me.ckOrdini.Location = New System.Drawing.Point(25, 234)
+        Me.ckOrdini.Location = New System.Drawing.Point(25, 239)
         Me.ckOrdini.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
         Me.ckOrdini.Name = "ckOrdini"
         Me.ckOrdini.NTSCheckValue = "S"
@@ -479,7 +490,7 @@ Public Class FRMIEIBUS
         'ckCoordinate
         '
         Me.ckCoordinate.Cursor = System.Windows.Forms.Cursors.Default
-        Me.ckCoordinate.Location = New System.Drawing.Point(25, 301)
+        Me.ckCoordinate.Location = New System.Drawing.Point(25, 304)
         Me.ckCoordinate.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
         Me.ckCoordinate.Name = "ckCoordinate"
         Me.ckCoordinate.NTSCheckValue = "S"
@@ -491,12 +502,11 @@ Public Class FRMIEIBUS
         Me.ckCoordinate.TabIndex = 32
         Me.ckCoordinate.ToolTip = "Identifica le coordinate geografiche del cliente in base all'indirizzo inserito i" & _
     "n anagrafica.  La localizzazione si basa sui servizi di Google."
-
         '
         'ckNotifichePush
         '
         Me.ckNotifichePush.Cursor = System.Windows.Forms.Cursors.Default
-        Me.ckNotifichePush.Location = New System.Drawing.Point(25, 324)
+        Me.ckNotifichePush.Location = New System.Drawing.Point(25, 327)
         Me.ckNotifichePush.Margin = New System.Windows.Forms.Padding(3, 1, 3, 3)
         Me.ckNotifichePush.Name = "ckNotifichePush"
         Me.ckNotifichePush.NTSCheckValue = "S"
@@ -513,7 +523,7 @@ Public Class FRMIEIBUS
         Me.NtsLabel1.AutoSize = True
         Me.NtsLabel1.BackColor = System.Drawing.Color.Transparent
         Me.NtsLabel1.Font = New System.Drawing.Font("Tahoma", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.NtsLabel1.Location = New System.Drawing.Point(12, 284)
+        Me.NtsLabel1.Location = New System.Drawing.Point(12, 287)
         Me.NtsLabel1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 3)
         Me.NtsLabel1.Name = "NtsLabel1"
         Me.NtsLabel1.NTSDbField = ""
@@ -582,11 +592,13 @@ Public Class FRMIEIBUS
         Me.Controls.Add(Me.barDockControlRight)
         Me.Controls.Add(Me.barDockControlBottom)
         Me.Controls.Add(Me.barDockControlTop)
+        Me.Cursor = System.Windows.Forms.Cursors.Default
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.HelpButton = True
         Me.MaximizeBox = False
         Me.Name = "FRMIEIBUS"
         Me.Text = "IMPORT / EXPORT VS IBUS"
+        CType(Me.dttSmartArt, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).EndInit()
