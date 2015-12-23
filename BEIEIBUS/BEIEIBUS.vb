@@ -3856,10 +3856,15 @@ Public Class CLEIEIBUS
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
 
 
+
         Try
             If RetVal AndAlso OrdersData IsNot Nothing Then
 
                 For Each t As TestataOrdineExport In OrdersData.testate
+
+                    If t.id < LastStoredID Then
+                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Ordini.", t.id))
+                    End If
 
                     'ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import ordine cliente {0} - [{1}]", t.cod_clifor, t.guid_test_ord)))
 
@@ -3947,6 +3952,10 @@ Public Class CLEIEIBUS
 
                 For Each t As TestataCf In CliforData.clienti
 
+                    If t.id < LastStoredID Then
+                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Anagra.", t.id))
+                    End If
+
                     ' --------------
 
                     Dim dttAnagra As New DataTable
@@ -4013,6 +4022,10 @@ Public Class CLEIEIBUS
             If RetVal AndAlso CliforNoteData IsNot Nothing Then
 
                 For Each t As TestataCfNote In CliforNoteData.note
+
+                    If t.id < LastStoredID Then
+                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Note Clienti.", t.id))
+                    End If
 
                     ' ------------------------------
 
@@ -4122,6 +4135,10 @@ Public Class CLEIEIBUS
 
                 For Each t As TestataLeadsExport In LeadsData.leads
 
+                    If t.id < LastStoredID Then
+                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Lead.", t.id))
+                    End If
+
                     ' --------------
 
                     If t.cod_lead = "" Then
@@ -4190,6 +4207,10 @@ Public Class CLEIEIBUS
             If RetVal AndAlso LeadNoteData IsNot Nothing Then
 
                 For Each t As TestataLeadsNoteExport In LeadNoteData.note
+
+                    If t.id < LastStoredID Then
+                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Note API", t.id))
+                    End If
 
                     ' --------------
 
