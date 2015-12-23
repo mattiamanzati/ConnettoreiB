@@ -14,6 +14,7 @@ Se vuoi escludere le famigli aggiungi una oba tipo:  AND tabcfam.tb_codcfam not 
 
 */
 
+-- Questa query e' identica alla GetArt
 SELECT 
     ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + Cast(af_fase AS VARCHAR (5)) ELSE '' END AS ar_codart, 
     ar_descr as ar_descr, 
@@ -43,7 +44,7 @@ SELECT
 	ar_codalt,
 	0 as xx_prz_min_ven,
 	0 as xx_sconto_max_ven,
-    ar_umdapr as ar_umdapr,
+	ar_umdapr as ar_umdapr,
 	ar_ultagg
 FROM   artico WITH (NOLOCK)                                                                                               
     LEFT JOIN artfasi WITH (NOLOCK)                                                                                    

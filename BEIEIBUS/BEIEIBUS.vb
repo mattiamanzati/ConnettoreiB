@@ -91,11 +91,13 @@ Public Class CLEIEIBUS
     Public strAttivaAlert As String = ""
 
     Public strAccodaLog As String = ""
+    Public strUsaUMVendita As String = ""
     Public strAttivaPush As String = ""
     Public strContiEsclusi As String = "0"  'conto NS stabilimento
 
     ' Variabili per la sostituzione della query
     Public strCustomQueryGetArt As String = ""
+    Public strCustomQueryGetArtUM As String = ""
     Public strCustomQueryGetArtCatalogo As String = ""
     Public strCustomQueryGetArtUM_EstraiTutte As String = ""
 
@@ -103,6 +105,7 @@ Public Class CLEIEIBUS
     Public strCustomWhereGetAgentiCliente As String = ""
     Public strCustomWhereGetAgenti As String = ""
     Public strCustomWhereGetArt As String = ""
+    Public strCustomWhereGetArtUM As String = ""
     Public strCustomWhereGetArtCatalogo As String = ""
     Public strCustomWhereGetArtGiacenze As String = ""
     Public strCustomWhereGetArtLingua As String = ""
@@ -152,7 +155,6 @@ Public Class CLEIEIBUS
     Public Const cIMP_AGENTI As String = "io_agenti.dat"
     Public Const cIMP_ART_LANG As String = "io_art_lang.dat"
     Public Const cIMP_ARTICOLI_ASSORTIMENTI As String = "io_articoli_assortimenti.dat"
-    Public Const cIMP_ART_CONF As String = "io_art_conf.dat"
     Public Const cIMP_ART_ULTACQ As String = "io_art_ultacq.dat"
     Public Const cIMP_ART_ULTVEN As String = "io_art_ultven.dat"
     Public Const cIMP_ART_UM As String = "io_art_um.dat"
@@ -381,6 +383,7 @@ Public Class CLEIEIBUS
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
             strEsplodiKit = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "EsplodiKit", "0", " ", "0").Trim
             strAccodaLog = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AccodaLog", "0", " ", "0").Trim
+            strUsaUMVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UsaUMVendita", "0", " ", "0").Trim
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
             strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
@@ -398,6 +401,7 @@ Public Class CLEIEIBUS
             ' ------------------
             strCustomQueryGetArtUM_EstraiTutte = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArtUM_EstraiTutte", "0", " ", "0").Trim
             strCustomQueryGetArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArt", "", " ", "").Trim
+            strCustomQueryGetArtUM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArtUM", "", " ", "").Trim
             strCustomQueryGetArtCatalogo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "QueryGetArtCatalogo", "", " ", "").Trim
 
             ' Filtri di Where
@@ -415,6 +419,7 @@ Public Class CLEIEIBUS
 
             ' Articoli
             strCustomWhereGetArt = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArt", "", " ", "").Trim
+            strCustomWhereGetArtUM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtUM", "", " ", "").Trim
             strCustomWhereGetArtCatalogo = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtCatalogo", "", " ", "").Trim
             strCustomWhereGetArtGiacenze = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtGiacenze", "", " ", "").Trim
             strCustomWhereGetArtListini = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetArtListini", "", " ", "").Trim
@@ -730,13 +735,11 @@ Public Class CLEIEIBUS
             'Export articoli e tabelle relative
             If strTipork.Contains("ART;") Then
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export articoli..."))
-                If Not Elabora_ExportArt(oApp.AscDir & "\" + cIMP_ART, _
-                                         oApp.AscDir & "\" + cIMP_ART_CONF, _
-                                         oApp.AscDir & "\" + cIMP_ART_UM, _
-                                         strCustomQueryGetArt _
-                                         ) Then Return False
+                If Not Elabora_ExportArt(oApp.AscDir & "\" + cIMP_ART, strCustomQueryGetArt) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_ART)
-                arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_CONF)
+
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export UM articoli..."))
+                If Not Elabora_ExportArtUM(oApp.AscDir & "\" + cIMP_ART_UM, strCustomQueryGetArtUM) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_ART_UM)
 
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export articoli in lingua..."))
@@ -2976,6 +2979,10 @@ Public Class CLEIEIBUS
         Try
             If Not oCldIbus.GetAgenti(strDittaCorrente, dttTmp, strCustomWhereGetAgenti) Then Return False
 
+            ' La chiave del datatable deve essere univoca. Meglio verificare l'integrità all'origine
+            Dim uc As New UniqueConstraint(dttTmp.Columns("xx_chiave"))
+            dttTmp.Constraints.Add(uc)
+
             sbFile.Append("CHIAVE|COD_DITTA|COD_AGENTE|DES_AGENTE" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(ConvStr(dtrT!xx_chiave) & "|" & _
@@ -3007,14 +3014,12 @@ Public Class CLEIEIBUS
         End Try
     End Function
 
-    Public Overridable Function Elabora_ExportArt(ByVal strFileOut As String, ByVal strFileOutConf As String, ByVal strFileUM As String, ByVal strCustomQuery As String) As Boolean
+    Public Overridable Function Elabora_ExportArt(ByVal strFileOut As String, ByVal strCustomQuery As String) As Boolean
 
         'esporta gli articoli (e relative fasi) NO articoli TCO
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
         Dim sbFileUM As New StringBuilder
-        Dim my_ar_conver As String
-        Dim my_ar_qtaconf2 As String
         Dim PrezzoMinimoDiVendita As Decimal
         Dim UltimoCosto As Decimal
         Dim TrovatoPrezzo As Boolean
@@ -3089,70 +3094,8 @@ Public Class CLEIEIBUS
                               ConvData(dtrT!ar_ultagg, True) & vbCrLf)
             Next
 
-    
-            'IB_ART_UM.DAT
-            sbFileUM.Append("CHIAVE|COD_DITTA|COD_ART|UM|DESC_UM|FAT_CONV|TIPO_UM|DAT_ULT_MOD" & vbCrLf)
-
-            For Each dtrT As DataRow In dttTmp.Select("1=1", "ar_codart")
-                sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§1" & "|" & _
-                          strDittaCorrente & "|" & _
-                          ConvStr(dtrT!ar_codart) & "|" & _
-                          ConvStr(dtrT!ar_unmis) & "|" & _
-                          ConvStr(dtrT!tb_desunmis) & "|" & _
-                          "" & "|" & _
-                          "1" & "|" & _
-                          ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-
-                If ConvStr(dtrT!ar_unmis2) <> "" Then
-                    If (NTSCDec(dtrT!ar_conver) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
-
-                        If ConvStr(dtrT!ar_conver) = "0" Then
-                            my_ar_conver = "1"
-                        Else
-                            my_ar_conver = (1 / NTSCDec(dtrT!ar_conver)).ToString("0.00000000")
-                        End If
-
-                        sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§2" & "|" &
-                                  strDittaCorrente & "|" & _
-                                  ConvStr(dtrT!ar_codart) & "|" & _
-                                  ConvStr(dtrT!ar_unmis2) & "|" & _
-                                  ConvStr(dtrT!tb_desunmis2) & " (" & ConvStr(dtrT!ar_conver) & ")" & "|" & _
-                                  my_ar_conver & "|" & _
-                                  "2" & "|" & _
-                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-                    End If
-                End If
-
-                If ConvStr(dtrT!ar_confez2) <> "" Then
-                    If (NTSCDec(dtrT!ar_qtacon2) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
-
-                        If ConvStr(dtrT!ar_qtacon2) = "0" Then
-                            my_ar_qtaconf2 = "1"
-                        Else
-                            my_ar_qtaconf2 = NTSCDec(dtrT!ar_qtacon2).ToString("0.0000")
-                        End If
-
-
-                        sbFileUM.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§3" & "|" &
-                                  strDittaCorrente & "|" & _
-                                  ConvStr(dtrT!ar_codart) & "|" & _
-                                  ConvStr(dtrT!ar_confez2) & "|" & _
-                                  ConvStr(dtrT!tb_desconfez2) & " (" & ConvStr(dtrT!ar_qtacon2) & ")" & "|" & _
-                                  my_ar_qtaconf2 & "|" & _
-                                  "3" & "|" & _
-                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
-                    End If
-                End If
-            Next
-
             Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
             w1.Write(sbFile.ToString)
-            w1.Flush()
-            w1.Close()
-
-
-            w1 = New StreamWriter(strFileUM, False, System.Text.Encoding.UTF8)
-            w1.Write(sbFileUM.ToString)
             w1.Flush()
             w1.Close()
 
@@ -3170,6 +3113,105 @@ Public Class CLEIEIBUS
             dttTmp.Clear()
         End Try
     End Function
+
+    Public Overridable Function Elabora_ExportArtUM(ByVal strFileOut As String, ByVal strCustomQuery As String) As Boolean
+
+        'esporta gli articoli (e relative fasi) NO articoli TCO
+        Dim dttTmp As New DataTable
+        Dim sbFile As New StringBuilder
+        Dim my_ar_conver As String
+        Dim my_ar_qtaconf2 As String
+        Dim scontoMax As String = ""
+        Dim UMVendita As String = "P"
+
+        Try
+            If Not oCldIbus.GetArtUM(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArtUM) Then Return False
+
+            'IB_ART_UM.DAT
+            sbFile.Append("CHIAVE|COD_DITTA|COD_ART|UM|DESC_UM|FAT_CONV|TIPO_UM|FLG_DEFAULT|DAT_ULT_MOD" & vbCrLf)
+
+            For Each dtrT As DataRow In dttTmp.Select("1=1", "ar_codart")
+
+                If strUsaUMVendita = "1" Then
+                    UMVendita = ConvStr(dtrT!ar_umdapr)
+                Else
+                    UMVendita = "P"
+                End If
+
+                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§1" & "|" & _
+                          strDittaCorrente & "|" & _
+                          ConvStr(dtrT!ar_codart) & "|" & _
+                          ConvStr(dtrT!ar_unmis) & "|" & _
+                          ConvStr(dtrT!tb_desunmis) & "|" & _
+                          "" & "|" & _
+                          "1" & "|" & _
+                          CStr(IIf(UMVendita = "P" Or UMVendita = "F", "-1", "0")) & "|" & _
+                          ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+
+                If ConvStr(dtrT!ar_unmis2) <> "" Then
+                    If (NTSCDec(dtrT!ar_conver) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+
+                        If ConvStr(dtrT!ar_conver) = "0" Then
+                            my_ar_conver = "1"
+                        Else
+                            my_ar_conver = (1 / NTSCDec(dtrT!ar_conver)).ToString("0.00000000")
+                        End If
+
+                        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§2" & "|" &
+                                  strDittaCorrente & "|" & _
+                                  ConvStr(dtrT!ar_codart) & "|" & _
+                                  ConvStr(dtrT!ar_unmis2) & "|" & _
+                                  ConvStr(dtrT!tb_desunmis2) & " (" & ConvStr(dtrT!ar_conver) & ")" & "|" & _
+                                  my_ar_conver & "|" & _
+                                  "2" & "|" & _
+                                  CStr(IIf(UMVendita = "S", "-1", "0")) & "|" & _
+                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+                    End If
+                End If
+
+                If ConvStr(dtrT!ar_confez2) <> "" Then
+                    If (NTSCDec(dtrT!ar_qtacon2) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+
+                        If ConvStr(dtrT!ar_qtacon2) = "0" Then
+                            my_ar_qtaconf2 = "1"
+                        Else
+                            my_ar_qtaconf2 = NTSCDec(dtrT!ar_qtacon2).ToString("0.0000")
+                        End If
+
+
+                        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§3" & "|" &
+                                  strDittaCorrente & "|" & _
+                                  ConvStr(dtrT!ar_codart) & "|" & _
+                                  ConvStr(dtrT!ar_confez2) & "|" & _
+                                  ConvStr(dtrT!tb_desconfez2) & " (" & ConvStr(dtrT!ar_qtacon2) & ")" & "|" & _
+                                  my_ar_qtaconf2 & "|" & _
+                                  "3" & "|" & _
+                                  CStr(IIf(UMVendita = "C", "-1", "0")) & "|" & _
+                                  ConvData(dtrT!ar_ultagg, True) & vbCrLf)
+                    End If
+                End If
+            Next
+
+            Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+            w1.Write(sbFile.ToString)
+            w1.Flush()
+            w1.Close()
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        Finally
+            dttTmp.Clear()
+        End Try
+    End Function
+
 
     Public Overridable Function Elabora_ExportArtLingua(ByVal strFileOut As String) As Boolean
         Dim dttTmp As New DataTable
@@ -4650,15 +4692,15 @@ Public Class CLEIEIBUS
             oCleGsof.bModuloCRM = False
             oCleGsof.bIsCRMUser = False
 
-      
+
 
             If Not oCleGsof.ApriOfferta(strDittaCorrente, False, "!", 1900, " ", -1, 1, ds) Then Return False
             'oCleGsof.bInApriDocSilent = True COMMMENTATO
             oCleGsof.ResetVar()
 
 
-   
-            
+
+
             ' Inizio la creazione dell'ordine. La numerazione e' attiva ?
             lNumord = oCldIbus.LegNuma(strDittaCorrente, strTipoOrdine, strSerie, NTSCDate(Ordine.data_ordine).Year, False)
             If lNumord = 0 Then
@@ -5741,7 +5783,7 @@ NEXT_FILE:
                         oCleGsor.bInDuplicadoc = False
                         oCleGsor.bSaltaAfterInsert = False
                     End If
-  
+
 
                     '
                     ' ---------------------------------------

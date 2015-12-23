@@ -1654,6 +1654,9 @@ Public Class CLDIEIBUS
 
             dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
 
+            'Dim uc As New UniqueConstraint(dttOut.Columns("xx_numreg"))
+            'dttOut.Constraints.Add(uc)
+
             Return True
 
         Catch ex As Exception
@@ -1732,6 +1735,29 @@ Public Class CLDIEIBUS
         Try
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArt.sql")
+            If strQuery <> "" Then strSQL = strQuery
+            strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+
+            If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+
+    End Function
+
+    Public Overridable Function GetArtUM(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strQuery As String, ByVal strWhere As String) As Boolean
+
+        Dim strSQL As String = ""
+        Try
+
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtUM.sql")
             If strQuery <> "" Then strSQL = strQuery
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
