@@ -187,3 +187,7 @@ CreaBuild/*.dll
 packages/*.*
 
 TEST/*.*
+CreaBuild/AMHelper.dll.config
+CreaBuild/iBUpdater.exe
+CreaBuild/iBUpdater.xml
+CreaBuild/Ionic.Zip.xml
