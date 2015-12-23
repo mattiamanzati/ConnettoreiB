@@ -21,15 +21,24 @@ SELECT
         mo_colli,
         -- Campo Valore Euro/Valuta	- in caso di valuta calcola valore con formula
 		-- Formula fatta da Marco M. per mancanza campi valuta congruenti. 
-        CASE	WHEN	td_valuta=0	THEN	mo_valore 
-				ELSE	--	td_valuta <>0
-						(	-- qta 
-							CASE WHEN mo_umprz<>'S' THEN mo_quant ELSE mo_colli END 
-							-- prezzo valuta
-							* mo_prezvalc 
-							* (100-mo_scont1)/100*(100-mo_scont2)/100*(100-mo_scont3)/100*(100-mo_scont4)/100*(100-mo_scont5)/100*(100-mo_scont6)/100 
-						) / mo_perqta
-        END AS mo_valore,                                                      
+		cast (
+			(
+                --Qta
+                CASE WHEN mo_umprz <> 'S' Then mo_quant Else mo_colli END
+                --Prezzo
+                *
+                CASE WHEN td_valuta <> 0  THEN mo_prezvalc  ELSE 
+                    CASE WHEN td_scorpo = 'S' THEN mo_preziva    ELSE       mo_prezzo 
+                    END
+                END
+                --     Sconti
+                *
+                (100-mo_scont1)/100*(100-mo_scont2)/100*(100-mo_scont3)/100*(100-mo_scont4)/100*(100-mo_scont5)/100*(100-mo_scont6)/100
+                --*(100-mo_scontp)/100-mo_scontv  sconti ulteriori presenti su MovMag / MovOrd (nella 2015 saranno presenti)
+                -- Molt_Qta
+                / mo_perqta
+        ) 
+		as decimal(16,6))as mo_valore,                                                    
 		td_datconf,
 		mo_scont1, 
 		mo_scont2, 
