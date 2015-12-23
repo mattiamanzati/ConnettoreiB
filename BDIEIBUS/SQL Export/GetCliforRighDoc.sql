@@ -51,10 +51,6 @@ SELECT
 							ELSE						Round( (mm_valorev / mm_quant) * mm_perqta , 4)       
 					END
 		END	AS xx_prezzo,
-		--CASE	WHEN mm_quant=0 THEN 0
-		--		ELSE
-		--			Round( (mm_valore / mm_quant) * mm_perqta , 2) 				
-		--END	AS xx_prezzo, 
 		tm_valuta,
 		mm_stasino,
 		tm_ultagg as xx_ultagg                                                  
@@ -81,7 +77,7 @@ UNION ALL
 		b.mm_codart,
         an_tipo,                                                          
         an_conto,     
-		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar) as xx_numreg,
+		testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar)  as xx_numreg,
 --   	testmag.codditt + '§' + CAST(tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar) + '§' + CAST(testmag.tm_numpar as varchar) as xx_numreg,
         testmag.tm_tipork,                                                
         testmag.tm_anno,                                                  
@@ -209,7 +205,7 @@ UNION ALL
 		movmag.mm_codart,                                                         
 		an_tipo,                                                          
 		an_conto,    
-		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_anno as varchar) + '§' + testmag.tm_serie + '§' + CAST(testmag.tm_numdoc as varchar)  as xx_numreg, 
+		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_anno as varchar) + '§' + testmag.tm_serie + '§' + CAST(testmag.tm_numdoc as varchar) as xx_numreg, 
 --		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_anno as varchar) + '§' + testmag.tm_serie + '§' + CAST(testmag.tm_numdoc as varchar) + '§' + CAST(testmag.tm_numpar as varchar)  as xx_numreg, 
 		testmag.tm_tipork,                                                
 		testmag.tm_anno,                                                  
@@ -277,7 +273,7 @@ UNION ALL
         an_tipo,                                                          
         an_conto,    
 		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar) as xx_numreg,
---		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar)+ '§' + CAST(testmag.tm_numpar as varchar)  +  '§' + testmag.tm_tipork as xx_numreg,
+--		testmag.codditt + '§' + CAST(testmag.tm_conto AS VARCHAR)+ '§' + CAST(testmag.tm_annpar as varchar) + '§' + testmag.tm_alfpar + '§' + CAST(testmag.tm_numdoc as varchar) + '§' + CAST(testmag.tm_numpar as varchar)  +  '§' + testmag.tm_tipork as xx_numreg,
         testmag.tm_tipork,                                                
         testmag.tm_anno,                                                  
         testmag.tm_serie,                                                 
@@ -345,7 +341,7 @@ UNION ALL
 		    movord.mo_codart,                                                                    
             an_tipo,                                                         
             an_conto,  
-			testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar) as xx_numreg,
+			testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar)  as xx_numreg,
 --  		testord.codditt + '§' + CAST(td_conto AS VARCHAR)+ '§' + CAST(td_anno as varchar) + '§' + td_serie + '§' + CAST(td_numord as varchar) + '§' + td_tipork as xx_numreg,
             testord.td_tipork,                                               
             testord.td_anno,                                                 
