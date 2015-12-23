@@ -1,0 +1,45 @@
+SELECT ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + Cast(af_fase AS VARCHAR
+       (5))
+       ELSE '' END AS ar_codart,
+       ar_descr,
+       ar_desint,
+       ar_famprod,
+       ar_gruppo,
+       ar_sotgru,
+       ar_unmis,
+       ar_confez2,
+       ar_qtacon2,
+       ar_unmis2,
+       ar_conver,
+       CASE
+         WHEN ar_prevar = '1' THEN ar_codroot + ar_codvar1
+         ELSE ar_codart
+       END         AS ar_codartsconti,
+       af_descr,
+       tb_descfam,
+       tabcfam.tb_descfam AS tb_desgmer,
+       tabmarc.tb_desmarc AS tb_dessgme,
+       ar_ultagg,
+       ar_clascon,
+       ar_tipo
+FROM   artico
+       LEFT JOIN artfasi
+              ON artico.codditt = artfasi.codditt
+                 AND artico.ar_codart = artfasi.af_codart
+       LEFT JOIN tabcfam
+              ON artico.codditt = tabcfam.codditt
+                 AND artico.ar_famprod = tabcfam.tb_codcfam
+       LEFT JOIN tabgmer
+              ON artico.codditt = tabgmer.codditt
+                 AND artico.ar_gruppo = tabgmer.tb_codgmer
+       LEFT JOIN tabsgme
+              ON artico.codditt = tabsgme.codditt
+                 AND artico.ar_sotgru = tabsgme.tb_codsgme
+       LEFT JOIN tabmarc
+              ON artico.codditt = tabmarc.codditt
+                 AND artico.ar_codmarc = tabmarc.tb_codmarc
+WHERE  1 = 1
+       AND ( ar_stainv = 'S' OR ar_codart = 'D' )
+       AND ar_codtagl = 0
+       AND ( ar_gesvar = 'N' OR ( ar_gesvar = 'S'    AND ar_codroot <> '' ) )
+       AND tabcfam.tb_codcfam not in ('90', '99')

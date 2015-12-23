@@ -1,0 +1,3 @@
+Aggiunto in GetArt e GetArtCatalogo il seguente filtro
+
+AND artico.ar_famprod  = '1' AND (tabsgme.tb_dessgme not like '%#' AND  tabsgme.tb_dessgme not like '%#' )

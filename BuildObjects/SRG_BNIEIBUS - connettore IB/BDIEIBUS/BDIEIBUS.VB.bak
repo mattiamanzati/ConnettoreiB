@@ -1,0 +1,731 @@
+Imports NTSInformatica.CLN__STD
+Imports System.Data.Common
+Imports NTSInformatica
+Imports System.IO
+
+Public Class CLDIEIBUS
+  Inherits CLD__BASE
+
+
+  Public Overridable Function GetCodpaga(ByRef dttOut As DataTable) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT tb_codpaga, tb_despaga FROM tabpaga ORDER BY tb_codpaga"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+
+  Public Overridable Function GetComuni(ByRef dttOut As DataTable) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT co_codcomu, co_denom, co_prov, co_cap FROM comuni ORDER BY co_codcomu"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+
+  Public Overridable Function GetClifor(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT an_tipo, an_conto, an_descr1, an_descr2, an_indir, an_citta, an_cap, an_prov, an_note2, " & _
+               " an_pariva, an_codfis, an_telef, an_faxtlx, an_cell, an_email, an_website, an_ultagg, an_blocco, an_fido, " & _
+               " an_banc1, an_banc2, an_listino, an_codpag, an_dtaper, tb_deslist, tb_despaga, tb_scopaga, tb_desvalu, " & _
+               " an_clascon, tb_descate, tb_deszone, tb_descana, " & _
+               " (SELECT TOP 1 km_aammgg FROM keymag " & _
+               "                WHERE codditt = anagra.codditt " & _
+               "                AND km_tipork NOT IN ('B', 'M', 'W', 'Z', 'U')" & _
+               "                AND km_conto = anagra.an_conto" & _
+               "                ORDER BY km_aammgg DESC) as xx_ultfatt, " & _
+               " (SELECT TOP 1 td_datord FROM testord " & _
+               "                WHERE codditt = anagra.codditt " & _
+               "                AND td_tipork IN ('R', 'O', 'H', 'Q')" & _
+               "                AND td_conto = anagra.an_conto" & _
+               "                ORDER BY td_datord DESC) as xx_ultord " & _
+               " FROM anagra LEFT JOIN tabpaga ON anagra.an_codpag = tabpaga.tb_codpaga " & _
+               " LEFT JOIN tabvalu ON anagra.an_valuta = tabvalu.tb_codvalu " & _
+               " LEFT JOIN tablist ON anagra.codditt = tablist.codditt AND anagra.an_listino = tablist.tb_codlist " & _
+               " LEFT JOIN tabcana ON anagra.codditt = tabcana.codditt AND anagra.an_codcana = tabcana.tb_codcana " & _
+               " LEFT JOIN tabzone ON anagra.codditt = tabzone.codditt AND anagra.an_zona = tabzone.tb_codzone " & _
+               " LEFT JOIN tabcate ON anagra.codditt = tabcate.codditt AND anagra.an_categ = tabcate.tb_codcate " & _
+               " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+               " AND an_tipo <> 'S'" & _
+               " AND an_status <> 'I'" & _
+               " AND an_conto NOT IN (" & strContiEsclusi & ")" & _
+               " ORDER BY an_tipo, an_conto"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetCliforDestdiv(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT an_tipo, dd_conto, dd_coddest, dd_nomdest, dd_inddest, dd_capdest, dd_locdest, " & _
+               " dd_prodest, dd_telef, dd_faxtlx, dd_email, dd_note" & _
+               " FROM destdiv INNER JOIN anagra ON destdiv.codditt = anagra.codditt " & _
+               " AND destdiv.dd_conto = anagra.an_conto " & _
+               " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+               " AND an_tipo <> 'S'" & _
+               " AND an_status <> 'I'" & _
+               " AND an_conto NOT IN (" & strContiEsclusi & ")" & _
+               " ORDER BY an_tipo, dd_conto"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetCliforAge(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT an_tipo, an_conto, an_agente as xx_agente, tb_descage, 1 as xx_prefer" & _
+               " FROM tabcage INNER JOIN anagra ON tabcage.codditt = anagra.codditt " & _
+               " AND tabcage.tb_codcage = anagra.an_agente " & _
+               " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+               " AND an_tipo <> 'S'" & _
+               " AND an_status <> 'I'" & _
+               " AND an_conto NOT IN (" & strContiEsclusi & ")" & _
+               " UNION SELECT an_tipo, an_conto, an_agente2 as xx_agente, tb_descage, 0 as xx_prefer" & _
+               " FROM tabcage INNER JOIN anagra ON tabcage.codditt = anagra.codditt " & _
+               " AND tabcage.tb_codcage = anagra.an_agente2 " & _
+               " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+               " AND an_tipo <> 'S'" & _
+               " AND an_status <> 'I'" & _
+               " AND an_conto NOT IN (" & strContiEsclusi & ")"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetCliforOrganig(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT an_tipo, an_conto, og_progr, og_descont, og_descont2, og_indir, og_cap, og_citta, og_prov, " & _
+               " og_telef, og_cell, og_fax, og_email, og_rep " & _
+               " FROM organig INNER JOIN anagra ON organig.codditt = anagra.codditt " & _
+               " AND organig.og_conto = anagra.an_conto " & _
+               " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+               " AND an_tipo <> 'S'" & _
+               " AND an_status <> 'I'" & _
+               " AND og_tipork <> 'L'" & _
+               " AND an_conto NOT IN (" & strContiEsclusi & ")" & _
+               " ORDER BY an_tipo, an_conto, og_progr"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetCliforFatt(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT an_tipo, an_conto, Sum(moviva.mi_imponib) * -1 AS xx_fatturato, month(mi_datreg) as xx_mese, Year(mi_datreg) as xx_anno " & _
+               " FROM moviva INNER JOIN anagra ON moviva.codditt = anagra.codditt AND moviva.mi_contocf = anagra.an_conto " & _
+               " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+               " AND (mi_tregiva=(CASE WHEN an_tipo='F' then 'A' else 'V' END) OR mi_tregiva=(CASE WHEN an_tipo='F' then 'A' else 'C' END)) " & _
+               " AND Year(mi_datreg) >= " & (Now.Year - 2).ToString & _
+               " AND Year(mi_datreg) <= " & Now.Year & _
+               " AND mi_tipoivaed <> 'P'" & _
+               " AND an_tipo <> 'S'" & _
+               " AND an_status <> 'I'" & _
+               " AND an_conto NOT IN (" & strContiEsclusi & ")" & _
+               " GROUP BY an_tipo, an_conto, Year(mi_datreg), month(mi_datreg)" & _
+               " ORDER BY an_tipo, an_conto, Year(mi_datreg), month(mi_datreg)"
+
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetCliforTestDoc(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Try
+		strSQL = "SELECT 'M' as xx_tipo, an_tipo, an_conto, tm_tipork, tm_anno, tm_serie, tm_numdoc, tm_datdoc, tm_totdoc, tm_ultagg, " & _
+		       " tb_desvalu, tm_magaz, tm_numfat, tm_alffat, tm_datfat, tm_annpar, tm_alfpar, tm_numpar, '0' as xx_flevas, " & _
+		       " tm_tipobf as xx_tipobf, tb_destpbf " & _
+		       " FROM testmag INNER JOIN anagra ON testmag.codditt = anagra.codditt AND testmag.tm_conto = anagra.an_conto " & _
+		       " INNER JOIN tabtpbf ON testmag.codditt = tabtpbf.codditt AND testmag.tm_tipobf = tabtpbf.tb_codtpbf " & _
+		       " LEFT JOIN tabvalu ON testmag.tm_valuta = tabvalu.tb_codvalu" & _
+		       " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+		       " AND tm_anno >= " & (DateTime.Now.Year - 2).ToString & _
+		       " AND an_tipo <> 'S'" & _
+		       " AND an_status <> 'I'" & _
+		       " AND tm_tipork NOT IN ('Z', 'T', 'U')" & _
+		       " AND an_conto NOT IN (" & strContiEsclusi & ")" & _
+		       " UNION SELECT 'O' as xx_tipo, an_tipo, an_conto, td_tipork, td_anno, td_serie, td_numord, td_datord, td_totlordo, td_ultagg, " & _
+		       " tb_desvalu, td_magaz, 0, ' ', null, 0, ' ', 0, CASE WHEN td_flevas = 'C' THEN '1' ELSE '0' END, td_tipobf, tb_destpbf " & _
+		       " FROM testord INNER JOIN anagra ON testord.codditt = anagra.codditt AND testord.td_conto = anagra.an_conto " & _
+		       " INNER JOIN tabtpbf ON testord.codditt = tabtpbf.codditt AND testord.td_tipobf = tabtpbf.tb_codtpbf " & _
+		       " LEFT JOIN tabvalu ON testord.td_valuta = tabvalu.tb_codvalu" & _
+		       " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+		       " AND td_anno >= " & (DateTime.Now.Year - 2).ToString & _
+		       " AND an_tipo <> 'S'" & _
+		       " AND an_status <> 'I'" & _
+		       " AND td_tipork NOT IN ('X', 'H', 'Y')" & _
+		       " AND an_conto NOT IN (" & strContiEsclusi & ")"
+
+
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetCliforRighDoc(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Dim strSQL1 As String = ""
+    Dim strSQL2 As String = ""
+    Dim strSQL3 As String = ""
+    Try
+
+      ' strSQL = "select * from ib_clifor_righdoc"
+
+      strSQL1 = _
+            " SELECT                                                                 " & _
+            "       an_tipo,                                                         " & _
+            "       an_conto,                                                        " & _
+            "       testmag.tm_tipork,                                               " & _
+            "       testmag.tm_anno,                                                 " & _
+            "       testmag.tm_serie,                                                " & _
+            "       testmag.tm_numdoc,                                               " & _
+            " 		  0 as tm_numdoc1,                                                 " & _
+            "       mm_riga,                                                         " & _
+            "       mm_codart,                                                       " & _
+            "       mm_fase,                                                         " & _
+            "       mm_descr,                                                        " & _
+            "       mm_desint,                                                       " & _
+            "       mm_unmis,                                                        " & _
+            "       mm_ump,                                                          " & _
+            "       mm_quant,                                                        " & _
+            "       mm_colli,                                                        " & _
+            "       mm_valore,                                                       " & _
+            "       CASE                                                             " & _
+            "         WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)         " & _
+            "         ELSE 0                                                         " & _
+            "       END AS xx_prezzo                                                 " & _
+            " FROM   testmag WITH (NOLOCK)                                           " & _
+            "       INNER JOIN movmag b WITH (NOLOCK)                                " & _
+            "               ON b.codditt = testmag.codditt                           " & _
+            "               AND b.mm_tipork = testmag.tm_tipork                      " & _
+            "               AND b.mm_anno = testmag.tm_anno                          " & _
+            "               AND b.mm_serie = testmag.tm_serie                        " & _
+            "               AND b.mm_numdoc = testmag.tm_numdoc                      " & _
+            "       INNER JOIN anagra WITH (NOLOCK)                                  " & _
+            "               ON testmag.codditt = anagra.codditt                      " & _
+            "               AND testmag.tm_conto = anagra.an_conto                   " & _
+            " WHERE  anagra.codditt = " & CStrSQL(strDitta) & _
+            "       AND testmag.tm_anno >=" & (DateTime.Now.Year - 1).ToString & _
+            "       AND an_tipo <> 'S'                                               " & _
+            "       AND an_status <> 'I'                                             " & _
+            "       AND testmag.tm_tipork NOT IN ( 'Z', 'T', 'U', 'D')               " & _
+            "       AND an_conto NOT IN ( " & strContiEsclusi & ")"
+
+      strSQL2 = _
+            " SELECT                                                               " & _
+            "     an_tipo,                                                         " & _
+            " 		an_conto,                                                        " & _
+            " 		testmag.tm_tipork,                                               " & _
+            " 		testmag.tm_anno,                                                 " & _
+            " 		testmag.tm_serie,                                                " & _
+            " 		testmag.tm_numdoc,                                               " & _
+            " 		testmag_1.tm_numdoc as tm_numdoc1,                               " & _
+            " 		mm_riga,                                                         " & _
+            " 		mm_codart,                                                       " & _
+            " 		mm_fase,                                                         " & _
+            " 		mm_descr,                                                        " & _
+            " 		mm_desint,                                                       " & _
+            " 		mm_unmis,                                                        " & _
+            " 		mm_ump,                                                          " & _
+            " 		mm_quant,                                                        " & _
+            " 		mm_colli,                                                        " & _
+            " 		mm_valore,                                                       " & _
+            " 		CASE                                                             " & _
+            " 			WHEN mm_quant <> 0 THEN Round(mm_valore / mm_quant, 4)         " & _
+            " 			ELSE 0                                                         " & _
+            " 		END AS xx_prezzo                                                 " & _
+            " FROM testmag WITH (NOLOCK)                                           " & _
+            " 	INNER JOIN testmag AS testmag_1 WITH (NOLOCK)                      " & _
+            " 	            ON (testmag.tm_tipork = testmag_1.tm_tiporkfat)        " & _
+            " 					AND (testmag.tm_anno = testmag_1.tm_annfat)                " & _
+            " 					AND (testmag.tm_serie = testmag_1.tm_alffat)               " & _
+            " 					AND (testmag.tm_numdoc = testmag_1.tm_numfat)              " & _
+            " 					AND (testmag.codditt = testmag_1.codditt)                  " & _
+            "     INNER JOIN movmag WITH (NOLOCK)                                  " & _
+            " 	            ON (testmag_1.tm_numdoc = movmag.mm_numdoc)            " & _
+            " 					AND (testmag_1.tm_serie = movmag.mm_serie)                 " & _
+            " 					AND (testmag_1.tm_anno = movmag.mm_anno)                   " & _
+            " 					AND (testmag_1.tm_tipork = movmag.mm_tipork)               " & _
+            " 					AND (testmag_1.codditt = movmag.codditt)                   " & _
+            "        INNER JOIN anagra WITH (NOLOCK)                               " & _
+            " 				ON testmag.codditt = anagra.codditt                          " & _
+            " 					AND testmag.tm_conto = anagra.an_conto                     " & _
+            " WHERE  anagra.codditt = " & CStrSQL(strDitta) & _
+            "        AND testmag.tm_anno >=" & (DateTime.Now.Year - 1).ToString & _
+            "        AND an_tipo <> 'S'                                            " & _
+            "        AND an_status <> 'I'                                          " & _
+            "        AND an_conto NOT IN ( " & strContiEsclusi & ")" & _
+            " 	   AND testmag.tm_tipork = 'D'                                     "
+
+      strSQL3 = _
+          " SELECT                                                                 " & _
+          "        an_tipo,                                                        " & _
+          "        an_conto,                                                       " & _
+          "        testord.td_tipork,                                              " & _
+          "        testord.td_anno,                                                " & _
+          "        testord.td_serie,                                               " & _
+          "        testord.td_numord,                                              " & _
+          " 		  0 as tm_numdoc1,                                                 " & _
+          "        mo_riga,                                                        " & _
+          "        mo_codart,                                                      " & _
+          "        mo_fase,                                                        " & _
+          "        mo_descr,                                                       " & _
+          "        mo_desint,                                                      " & _
+          "        mo_unmis,                                                       " & _
+          "        mo_ump,                                                         " & _
+          "        mo_quant,                                                       " & _
+          "        mo_colli,                                                       " & _
+          "        mo_valore,                                                      " & _
+          "        CASE                                                            " & _
+          "          WHEN mo_quant <> 0 THEN Round(mo_valore / mo_quant, 4)        " & _
+          "          ELSE 0                                                        " & _
+          "        END AS xx_prezzo                                                " & _
+          " FROM   testord WITH (NOLOCK)                                           " & _
+          "        INNER JOIN movord WITH (NOLOCK)                                 " & _
+          "                ON movord.codditt = testord.codditt                     " & _
+          "                AND movord.mo_tipork = testord.td_tipork                " & _
+          "                AND movord.mo_anno = testord.td_anno                    " & _
+          "                AND movord.mo_serie = testord.td_serie                  " & _
+          "                AND movord.mo_numord = testord.td_numord                " & _
+          "        INNER JOIN anagra WITH (NOLOCK)                                 " & _
+          "                ON testord.codditt = anagra.codditt                     " & _
+          "                AND testord.td_conto = anagra.an_conto                  " & _
+          " WHERE  anagra.codditt = " & CStrSQL(strDitta) & _
+          "        AND testord.td_anno >=" & (DateTime.Now.Year - 1).ToString & _
+          "        AND an_tipo <> 'S'                                              " & _
+          "        AND an_status <> 'I'                                            " & _
+          "        AND testord.td_tipork NOT IN ('X', 'H', 'Y')                    " & _
+          "        AND an_conto NOT IN (" & strContiEsclusi & ")"
+
+
+      strSQL = strSQL1 & _
+               " union all " & _
+               strSQL2 & _
+               " union all " & _
+               strSQL3
+
+
+
+
+
+      'strSQL = "SELECT an_tipo, an_conto, a.tm_tipork, a.tm_anno, a.tm_serie, a.tm_numdoc, mm_riga, mm_codart, mm_fase, " & _
+      '         " mm_descr, mm_desint, mm_unmis, mm_ump, mm_quant, mm_colli, mm_valore, " & _
+      '         " CASE WHEN mm_quant <> 0 THEN round(mm_valore / mm_quant, 4) ELSE 0 END as xx_prezzo" & _
+      '         " FROM " & _
+      '         " testmag a " & _
+      '         " left join testmag a1 on a1.codditt = a.codditt" & _
+      '              " and a1.tm_tipork = a.tm_tiporkfat" & _
+      '              " and a1.tm_anno = a.tm_annfat" & _
+      '              " and a1.tm_serie = a.tm_alffat" & _
+      '              " and a1.tm_numdoc = a.tm_numfat" & _
+      '         " inner join movmag b on a.codditt = b.codditt" & _
+      '             " and (mm_tipork = case when a.tm_tipork = 'D' then 'B' else a.tm_tipork end " & _
+      '              "  or mm_tipork = case when a1.tm_tipork = 'D' then 'B' else a1.tm_tipork end)" & _
+      '              "  and (mm_anno = a.tm_anno or mm_anno = a1.tm_anno)" & _
+      '             " and (mm_serie = a.tm_serie or mm_serie = a1.tm_serie)" & _
+      '              "  and (mm_numdoc = a.tm_numdoc or mm_numdoc = a1.tm_numdoc) " & _
+      '         " INNER JOIN anagra ON a.codditt = anagra.codditt AND a.tm_conto = anagra.an_conto " & _
+      '         " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+      '         " AND a.tm_anno >= " & (DateTime.Now.Year - 1).ToString & _
+      '         " AND an_tipo <> 'S'" & _
+      '         " AND an_status <> 'I'" & _
+      '         " AND a.tm_tipork NOT IN ('Z', 'T', 'U')" & _
+      '         " AND an_conto NOT IN (" & strContiEsclusi & ")" & _
+      '         " UNION SELECT an_tipo, an_conto, td_tipork, td_anno, td_serie, td_numord, mo_riga, mo_codart, mo_fase, " & _
+      '         " mo_descr, mo_desint, mo_unmis, mo_ump, mo_quant, mo_colli, mo_valoremm, " & _
+      '         " CASE WHEN mo_quant <> 0 THEN round(mo_valoremm / mo_quant, 4) ELSE 0 END as xx_prezzo " & _
+      '         " FROM " & strJoinTestordMovord & _
+      '         " INNER JOIN anagra ON testord.codditt = anagra.codditt AND testord.td_conto = anagra.an_conto " & _
+      '         " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+      '         " AND td_anno >= " & (DateTime.Now.Year - 1).ToString & _
+      '         " AND an_tipo <> 'S'" & _
+      '         " AND an_status <> 'I'" & _
+      '         " AND td_tipork NOT IN ('X', 'H', 'Y')" & _
+      '         " AND an_conto NOT IN (" & strContiEsclusi & ")"
+
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetCliforScaDoc(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strContiEsclusi As String) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT an_tipo, an_conto, sc_annpar, sc_alfpar, sc_numpar, sc_numrata, sc_datsca, sc_importo, " & _
+               " sc_flsaldato, sc_tippaga, sc_banc1, sc_banc2, sc_insolu, sc_datdoc, sc_numdoc, " & _
+               " tm_tipork, tm_anno, tm_serie, tm_numdoc" & _
+               " FROM scaden, anagra, testmag " & _
+               " WHERE anagra.codditt = " & CStrSQL(strDitta) & _
+               " AND scaden.codditt = anagra.codditt AND scaden.sc_conto = anagra.an_conto " & _
+               " AND scaden.codditt = testmag.codditt AND scaden.sc_conto = testmag.tm_conto " & _
+               " AND ((tm_annpar = sc_annpar AND tm_alfpar = sc_alfpar AND tm_numpar = sc_numpar) " & _
+               "      OR " & _
+               "      (tm_anno = sc_annpar AND tm_serie = sc_alfpar AND tm_numdoc = sc_numpar))" & _
+               " AND tm_tipork NOT IN ('B', 'M', 'W', 'Z', 'U') " & _
+               " AND an_tipo <> 'S'" & _
+               " AND an_status <> 'I'" & _
+               " AND an_conto NOT IN (" & strContiEsclusi & ")"
+
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+
+  Public Overridable Function GetArt(ByVal strDitta As String, ByRef dttOut As DataTable) As Boolean
+    'nb: escludo gli articoli descrittivi (eccetto 'd'), gli articoli TCO e gli articoli a varianti non movimentabili (la radice della variante)
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " ar_descr, ar_desint, ar_famprod, ar_gruppo, ar_sotgru, ar_unmis, ar_confez2, ar_qtacon2, " & _
+               " CASE WHEN ar_prevar = '1' THEN ar_codroot + ar_codvar1 ELSE ar_codart END as ar_codartsconti, " & _
+               " af_descr, tb_descfam, tb_desgmer, tb_dessgme, ar_ultagg, ar_clascon " & _
+               " FROM artico LEFT JOIN artfasi ON artico.codditt = artfasi.codditt AND artico.ar_codart = artfasi.af_codart " & _
+               " LEFT JOIN tabcfam ON artico.codditt = tabcfam.codditt AND artico.ar_famprod = tabcfam.tb_codcfam " & _
+               " LEFT JOIN tabgmer ON artico.codditt = tabgmer.codditt AND artico.ar_gruppo = tabgmer.tb_codgmer " & _
+               " LEFT JOIN tabsgme ON artico.codditt = tabsgme.codditt AND artico.ar_sotgru = tabsgme.tb_codsgme " & _
+               " WHERE artico.codditt = " & CStrSQL(strDitta) & _
+               " AND (ar_stainv = 'S' or ar_codart = 'D')" & _
+               " AND ar_codtagl = 0" & _
+               " AND (ar_gesvar = 'N' OR (ar_gesvar = 'S' AND ar_codroot <> ''))"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetArtGiacenze(ByVal strDitta As String, ByRef dttOut As DataTable) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " ar_unmis, ap_magaz, ap_esist, ap_ordin, ap_impeg, ap_prenot, tb_desmaga " & _
+               " FROM artico LEFT JOIN artfasi ON artico.codditt = artfasi.codditt AND artico.ar_codart = artfasi.af_codart " & _
+               " INNER JOIN artpro ON artico.codditt = artpro.codditt AND  " & _
+               " artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(artfasi.af_fase as varchar(5)) ELSE '' END = " & _
+               " artpro.ap_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(artpro.ap_fase as varchar(5)) ELSE '' END" & _
+               " INNER JOIN tabmaga ON artpro.codditt = tabmaga.codditt AND artpro.ap_magaz = tabmaga.tb_codmaga" & _
+               " WHERE artico.codditt = " & CStrSQL(strDitta) & _
+               " AND (ar_stainv = 'S' or ar_codart = 'D')" & _
+               " AND ar_codtagl = 0" & _
+               " AND (ar_gesvar = 'N' OR (ar_gesvar = 'S' AND ar_codroot <> ''))"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetArtUltven(ByVal strDitta As String, ByRef dttOut As DataTable) As Boolean
+    'per ogni articolo prendo il documento con data + alta e numero + alto per avere l'ultimo prezzo
+    'la prima query prende solo vendite, la seconda solo acquisti
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT 0 as xx_tipo, ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " MAX(convert(varchar(20), km_aammgg, 111) + cast((1000000000 + km_numdoc) as varchar(10)) + km_tipork + '§' + " & _
+               "     cast(CASE WHEN mm_quant <> 0 THEN round(mm_valore / mm_quant, 4) ELSE 0 END as varchar(20)) + '§' + " & _
+               "     cast(km_conto as varchar(9)) " & _
+               "    ) as xx_code" & _
+               " FROM artico LEFT JOIN artfasi ON artico.codditt = artfasi.codditt AND artico.ar_codart = artfasi.af_codart " & _
+               " INNER JOIN keymag ON artico.codditt = keymag.codditt AND  " & _
+               " artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(artfasi.af_fase as varchar(5)) ELSE '' END = " & _
+               " keymag.km_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(keymag.km_fase as varchar(5)) ELSE '' END" & _
+               " INNER JOIN movmag ON keymag.codditt = movmag.codditt AND keymag.km_tipork = movmag.mm_tipork " & _
+               " AND keymag.km_anno = movmag.mm_anno AND keymag.km_serie = movmag.mm_serie " & _
+               " AND keymag.km_numdoc = movmag.mm_numdoc AND keymag.km_riga = movmag.mm_riga " & _
+               " INNER JOIN tabcaum ON keymag.km_causale = tabcaum.tb_codcaum" & _
+               " WHERE artico.codditt = " & CStrSQL(strDitta) & _
+               " AND (ar_stainv = 'S' or ar_codart = 'D')" & _
+               " AND ar_codtagl = 0" & _
+               " AND km_carscar = -1" & _
+               " AND (tb_carfor = 1 OR tb_carpro = 1 OR tb_scacli = 1)" & _
+               " AND (ar_gesvar = 'N' OR (ar_gesvar = 'S' AND ar_codroot <> ''))" & _
+               " AND mm_valore <> 0" & _
+               " GROUP BY ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END "
+
+      strSQL = strSQL & vbCrLf & " UNION " & vbCrLf & _
+               strSQL.Replace("SELECT 0 as xx_tipo", "SELECT 1 as xx_tipo").Replace("AND km_carscar = -1", "AND km_carscar = 1")
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetArtStoart(ByVal strDitta As String, ByVal strFiltroGGStoArt As String, ByRef dttOut As DataTable) As Boolean
+    'per ogni articolo/cliente prendo l'ultimo ordine
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " td_conto, " & _
+               " MAX(convert(varchar(20), td_datord, 111) + '§' + cast((td_numord) as varchar(10)) + '§' + " & _
+               "     cast(CASE WHEN mo_quant <> 0 THEN round(mo_valoremm / mo_quant, 4) ELSE 0 END as varchar(20)) + '§' + " & _
+               "     isnull(mo_descr, '') + ' ' + isnull(mo_desint, '') + '§' + cast(mo_quant as varchar(20))) as xx_code" & _
+               " FROM artico LEFT JOIN artfasi ON artico.codditt = artfasi.codditt AND artico.ar_codart = artfasi.af_codart " & _
+               " INNER JOIN movord ON artico.codditt = movord.codditt AND  " & _
+               " artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(artfasi.af_fase as varchar(5)) ELSE '' END = " & _
+               " movord.mo_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(movord.mo_fase as varchar(5)) ELSE '' END" & _
+               " INNER JOIN testord ON testord.codditt = movord.codditt AND testord.td_tipork = movord.mo_tipork " & _
+               " AND testord.td_anno = movord.mo_anno AND testord.td_serie = movord.mo_serie " & _
+               " AND (GETDATE()-td_datord) < cast(' " & strFiltroGGStoArt & "' as integer)" & _
+               " AND testord.td_numord = movord.mo_numord " & _
+               " WHERE artico.codditt = " & CStrSQL(strDitta) & _
+               " AND (ar_stainv = 'S' or ar_codart = 'D')" & _
+               " AND ar_codtagl = 0" & _
+               " AND td_tipork IN ('Q', 'R', 'O')" & _
+               " AND (ar_gesvar = 'N' OR (ar_gesvar = 'S' AND ar_codroot <> ''))" & _
+               " AND mo_valoremm <> 0" & _
+               " GROUP BY ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END, td_conto " & _
+               " ORDER BY td_conto"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+
+  Public Overridable Function GetArtListini(ByVal strDitta As String, ByRef dttOut As DataTable) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " artico.ar_unmis, lc_listino, lc_prezzo, " & _
+               " lc_datagg, lc_datscad, lc_progr " & _
+               " FROM artico LEFT JOIN artfasi ON artico.codditt = artfasi.codditt AND artico.ar_codart = artfasi.af_codart " & _
+               " INNER JOIN busvw_listini ON artico.codditt = busvw_listini.codditt AND  " & _
+               " artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(artfasi.af_fase as varchar(5)) ELSE '' END = " & _
+               " busvw_listini.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(busvw_listini.lc_fase as varchar(5)) ELSE '' END" & _
+               " WHERE artico.codditt = " & CStrSQL(strDitta) & _
+               " AND (ar_stainv = 'S' or artico.ar_codart = 'D')" & _
+               " AND ar_perqta = 1" & _
+               " AND ar_codtagl = 0" & _
+               " AND lc_listino <> 0" & _
+               " AND lc_conto = 0" & _
+               " AND lc_codvalu = 0" & _
+               " AND lc_codtpro = 0" & _
+               " AND lc_daquant = 0 AND lc_aquant = 9999999999" & _
+               " AND lc_datagg <= getdate() AND lc_datscad >= getdate() " & _
+               " AND (lc_unmis = artico.ar_unmis OR lc_unmis = ' ')" & _
+               " AND (artico.ar_gesvar = 'N' OR (artico.ar_gesvar = 'S' AND artico.ar_codroot <> ''))"
+
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetArtListini18(ByVal strDitta As String, ByRef dttOut As DataTable) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " artico.ar_unmis, lc_listino, lc_prezzo, lc_daquant, lc_aquant, lc_conto, lc_netto, " & _
+               " lc_datagg, lc_datscad, lc_progr, lc_perqta, lc_codtpro, " & _
+               " CASE WHEN lc_codtpro > 0 AND lc_conto > 0 THEN 1" & _
+               "  ELSE CASE WHEN lc_codtpro = 0 AND lc_conto > 0 THEN 2 " & _
+               "    ELSE CASE WHEN lc_codtpro > 0 AND lc_conto = 0 THEN 3 " & _
+               "    ELSE 4 END END END as xx_prior " & _
+               " FROM artico LEFT JOIN artfasi ON artico.codditt = artfasi.codditt AND artico.ar_codart = artfasi.af_codart " & _
+               " INNER JOIN busvw_listini ON artico.codditt = busvw_listini.codditt AND  " & _
+               " artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(artfasi.af_fase as varchar(5)) ELSE '' END = " & _
+               " busvw_listini.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + cast(busvw_listini.lc_fase as varchar(5)) ELSE '' END" & _
+               " WHERE artico.codditt = " & CStrSQL(strDitta) & _
+               " AND (ar_stainv = 'S' or artico.ar_codart = 'D')" & _
+               " AND ar_codtagl = 0" & _
+               " AND lc_listino >= 0" & _
+               " AND lc_codvalu = 0" & _
+               " AND lc_datagg <= getdate() AND lc_datscad >= getdate() " & _
+               " AND (lc_unmis = artico.ar_unmis OR lc_unmis = ' ')" & _
+               " AND (artico.ar_gesvar = 'N' OR (artico.ar_gesvar = 'S' AND artico.ar_codroot <> ''))"
+
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+  Public Overridable Function GetArtSconti(ByVal strDitta As String, ByRef dttOut As DataTable) As Boolean
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT so_codart + CASE WHEN so_fase <> 0 THEN '.' + cast(so_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " so_daquant, so_aquant, so_conto, so_clscan, so_clscar, so_codtpro, " & _
+               " so_datagg, so_datscad, so_scont1, so_scont2, so_scont3, so_scont4, so_scont5, so_scont6, "
+      If oApp.oGvar.strPriorSconti <> "ACBDFE" Then
+        strSQL += "CASE WHEN so_codtpro > 0 THEN " & _
+                "       CASE WHEN so_conto <> 0 THEN " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 1" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar <> 0 THEN 3" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar = 0 THEN 9" & _
+                "               END END END " & _
+                "            ELSE " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan <> 0 AND so_clscar = 0 THEN 5" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan <> 0 AND so_clscar <> 0 THEN 7" & _
+                "               ELSE CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 11" & _
+                "               END END END " & _
+                "            END " & _
+                "     ELSE " & _
+                "       CASE WHEN so_conto <> 0 THEN " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 2" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar <> 0 THEN 4" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar = 0 THEN 10" & _
+                "               END END END " & _
+                "            ELSE " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan <> 0 AND so_clscar = 0 THEN 6" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan <> 0 AND so_clscar <> 0 THEN 8" & _
+                "               ELSE CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 12" & _
+                "               END END END " & _
+                "            END " & _
+                "     END as xx_prior "
+      Else
+        strSQL += "CASE WHEN so_codtpro > 0 THEN " & _
+                "       CASE WHEN so_conto <> 0 THEN " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 1" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar <> 0 THEN 12" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar = 0 THEN 11" & _
+                "               END END END " & _
+                "            ELSE " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan <> 0 AND so_clscar = 0 THEN 3" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan <> 0 AND so_clscar <> 0 THEN 7" & _
+                "               ELSE CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 9" & _
+                "               END END END " & _
+                "            END " & _
+                "     ELSE " & _
+                "       CASE WHEN so_conto <> 0 THEN " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 2" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar <> 0 THEN 6" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan = 0 AND so_clscar = 0 THEN 5" & _
+                "               END END END " & _
+                "            ELSE " & _
+                "               CASE WHEN so_codart <> '' AND so_clscan <> 0 AND so_clscar = 0 THEN 4" & _
+                "               ELSE CASE WHEN so_codart = '' AND so_clscan <> 0 AND so_clscar <> 0 THEN 8" & _
+                "               ELSE CASE WHEN so_codart <> '' AND so_clscan = 0 AND so_clscar = 0 THEN 10" & _
+                "               END END END " & _
+                "            END " & _
+                "     END as xx_prior "
+      End If
+      strSQL += " FROM sconti LEFT JOIN artico ON sconti.codditt = artico.codditt " & _
+               " AND sconti.so_codart = CASE WHEN artico.ar_prevar = '1' THEN " & _
+               "                                artico.ar_codroot + artico.ar_codvar1  " & _
+               "                             ELSE " & _
+               "                                artico.ar_codart " & _
+               "                             END " & _
+               " WHERE sconti.codditt = " & CStrSQL(strDitta) & _
+               " AND so_datagg <= getdate() AND so_datscad >= getdate() "
+
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+
+  Public Overridable Function GetArtCatalogo(ByVal strDitta As String, ByRef dttOut As DataTable) As Boolean
+    'nb: escludo gli articoli descrittivi (eccetto 'd'), gli articoli TCO e gli articoli a varianti non movimentabili (la radice della variante)
+    Dim strSQL As String = ""
+    Try
+      strSQL = "SELECT ar_codart + CASE WHEN ar_gesfasi = 'S' THEN '.' + cast(af_fase as varchar(5)) ELSE '' END as ar_codart, " & _
+               " ar_descr, ar_desint, ar_gif1, " & _
+               " af_descr, tb_desgmer, tb_dessgme " & _
+               " FROM artico LEFT JOIN artfasi ON artico.codditt = artfasi.codditt AND artico.ar_codart = artfasi.af_codart " & _
+               " LEFT JOIN tabgmer ON artico.codditt = tabgmer.codditt AND artico.ar_gruppo = tabgmer.tb_codgmer " & _
+               " LEFT JOIN tabsgme ON artico.codditt = tabsgme.codditt AND artico.ar_sotgru = tabsgme.tb_codsgme " & _
+               " WHERE artico.codditt = " & CStrSQL(strDitta) & _
+               " AND (ar_stainv = 'S' or ar_codart = 'D')" & _
+               " AND ar_codtagl = 0" & _
+               " AND ar_gif1 <> ''" & _
+               " AND (ar_gesvar = 'N' OR (ar_gesvar = 'S' AND ar_codroot <> ''))"
+      dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
+
+      Return True
+
+    Catch ex As Exception
+      '--------------------------------------------------------------
+      Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+      '--------------------------------------------------------------
+    End Try
+  End Function
+
+
+End Class
