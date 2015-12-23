@@ -156,7 +156,6 @@ Public Class FRMIEIBUS
         '
         Me.tlbElabora.Caption = "Elabora"
         Me.tlbElabora.Glyph = CType(resources.GetObject("tlbElabora.Glyph"), System.Drawing.Image)
-        Me.tlbElabora.GlyphPath = ""
         Me.tlbElabora.Id = 19
         Me.tlbElabora.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
         Me.tlbElabora.Name = "tlbElabora"
@@ -166,7 +165,6 @@ Public Class FRMIEIBUS
         '
         Me.tlbLog.Caption = "Log"
         Me.tlbLog.Glyph = CType(resources.GetObject("tlbLog.Glyph"), System.Drawing.Image)
-        Me.tlbLog.GlyphPath = ""
         Me.tlbLog.Id = 99
         Me.tlbLog.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F7)
         Me.tlbLog.Name = "tlbLog"
@@ -176,7 +174,6 @@ Public Class FRMIEIBUS
         '
         Me.tlbStrumenti.Caption = "Strumenti"
         Me.tlbStrumenti.Glyph = CType(resources.GetObject("tlbStrumenti.Glyph"), System.Drawing.Image)
-        Me.tlbStrumenti.GlyphPath = ""
         Me.tlbStrumenti.Id = 15
         Me.tlbStrumenti.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.tlbCambioDitta)})
         Me.tlbStrumenti.Name = "tlbStrumenti"
@@ -186,7 +183,6 @@ Public Class FRMIEIBUS
         'tlbCambioDitta
         '
         Me.tlbCambioDitta.Caption = "Cambio ditta"
-        Me.tlbCambioDitta.GlyphPath = ""
         Me.tlbCambioDitta.Id = 17
         Me.tlbCambioDitta.ItemShortcut = New DevExpress.XtraBars.BarShortcut((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.D))
         Me.tlbCambioDitta.Name = "tlbCambioDitta"
@@ -197,7 +193,6 @@ Public Class FRMIEIBUS
         '
         Me.tlbEsci.Caption = "Esci"
         Me.tlbEsci.Glyph = CType(resources.GetObject("tlbEsci.Glyph"), System.Drawing.Image)
-        Me.tlbEsci.GlyphPath = ""
         Me.tlbEsci.Id = 12
         Me.tlbEsci.Name = "tlbEsci"
         Me.tlbEsci.Visible = True
@@ -206,7 +201,6 @@ Public Class FRMIEIBUS
         '
         Me.tlbStampa.Caption = "Stampa"
         Me.tlbStampa.Glyph = CType(resources.GetObject("tlbStampa.Glyph"), System.Drawing.Image)
-        Me.tlbStampa.GlyphPath = ""
         Me.tlbStampa.Id = 4
         Me.tlbStampa.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F6)
         Me.tlbStampa.Name = "tlbStampa"
@@ -216,7 +210,6 @@ Public Class FRMIEIBUS
         '
         Me.tlbStampaVideo.Caption = "Stampa video"
         Me.tlbStampaVideo.Glyph = CType(resources.GetObject("tlbStampaVideo.Glyph"), System.Drawing.Image)
-        Me.tlbStampaVideo.GlyphPath = ""
         Me.tlbStampaVideo.Id = 5
         Me.tlbStampaVideo.ItemShortcut = New DevExpress.XtraBars.BarShortcut(System.Windows.Forms.Keys.F12)
         Me.tlbStampaVideo.Name = "tlbStampaVideo"
@@ -226,7 +219,6 @@ Public Class FRMIEIBUS
         '
         Me.tlbGuida.Caption = "Guida"
         Me.tlbGuida.Glyph = CType(resources.GetObject("tlbGuida.Glyph"), System.Drawing.Image)
-        Me.tlbGuida.GlyphPath = ""
         Me.tlbGuida.Id = 11
         Me.tlbGuida.Name = "tlbGuida"
         Me.tlbGuida.Visible = True
@@ -234,7 +226,6 @@ Public Class FRMIEIBUS
         'tlbImpostaStampante
         '
         Me.tlbImpostaStampante.Caption = "Imposta Stampante"
-        Me.tlbImpostaStampante.GlyphPath = ""
         Me.tlbImpostaStampante.Id = 16
         Me.tlbImpostaStampante.Name = "tlbImpostaStampante"
         Me.tlbImpostaStampante.Visible = True
@@ -242,7 +233,6 @@ Public Class FRMIEIBUS
         'tlbCancella
         '
         Me.tlbCancella.Caption = "Cancella"
-        Me.tlbCancella.GlyphPath = ""
         Me.tlbCancella.Id = 18
         Me.tlbCancella.Name = "tlbCancella"
         Me.tlbCancella.NTSIsCheckBox = False
