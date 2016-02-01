@@ -1757,7 +1757,8 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtUM.sql")
+            ' Inutile prevedere una query GetArtUM che sarebbe identica alla GetArt.
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArt.sql")
             If strQuery <> "" Then strSQL = strQuery
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 

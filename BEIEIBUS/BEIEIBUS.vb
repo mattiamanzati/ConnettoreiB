@@ -512,11 +512,11 @@ Public Class CLEIEIBUS
             ' --------
             ' Aggiorno la versione sul license
             Dim CodProgetto As String = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(strDropBoxDir + "\"))
-            Dim Versione As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
+            Dim VersioneDLL_BN As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
             If CodProgetto.Contains(".") Then
                 LogWrite("Invio versione...", False)
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Invio versione..."))
-                ApexNetLIB.UpdateRelease.SendVersion(CodProgetto, Versione)
+                ApexNetLIB.UpdateRelease.SendVersion(CodProgetto, VersioneDLL_BN, oApp.BUSNET_VERSIONDB.ToString())
             End If
 
 
@@ -525,7 +525,7 @@ Public Class CLEIEIBUS
                 '--------------------
                 'Export info
                 ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export info..."))
-                If Not Elabora_ExportInfo(oApp.AscDir & "\" + cIMP_INFO, Versione) Then Return False
+                If Not Elabora_ExportInfo(oApp.AscDir & "\" + cIMP_INFO, VersioneDLL_BN) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_INFO)
             End If
 
@@ -3025,14 +3025,32 @@ Public Class CLEIEIBUS
         Dim TrovatoPrezzo As Boolean
         Dim scontoMax As String = ""
 
+        Dim L1 As String = ""
+        Dim L2 As String = ""
+        Dim L3 As String = ""
+
+
         Try
             If Not oCldIbus.GetArt(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArt) Then Return False
+
+
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_ART|DES_ART|COD_FAM|DES_FAM|COD_SFAM|DES_SFAM|COD_GRUPPO1|DES_GRUPPO1|" & _
                           "COD_GRUPPO2|DES_GRUPPO2|UM1|UM2|FATTORE_CONVERSIONE|DES_GR_STAT1|DES_GR_STAT2|QTA_MIN_VEND|" & _
                           "COD_CLASSE_SCONTO|COD_DEPERIBILITA|PREZZO_MIN_VEN|SCONTO_MAX_VEN|MAX_EXTRA_SCONTO|DES_FILTRO1|DES_FILTRO2|DES_FILTRO3|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
+
+                ' Modifica temporanea per gestire il passaggio fino alla 18.2.6.2
+                If dtrT.Table.Columns("des_livello1") IsNot Nothing Then
+                    L1 = ConvStr(dtrT!des_livello1)
+                    L2 = ConvStr(dtrT!des_livello2)
+                    L3 = ConvStr(dtrT!des_livello3)
+                Else
+                    L1 = ConvStr(dtrT!tb_desmarc)
+                    L2 = ConvStr(dtrT!tb_desgmer)
+                    L3 = ConvStr(dtrT!tb_dessgme)
+                End If
 
                 ' PrezzoMinimoDiVendita
                 ' ----------------------
@@ -3088,9 +3106,9 @@ Public Class CLEIEIBUS
                               NTSCDec(PrezzoMinimoDiVendita).ToString("0.0000") & "|" & _
                               scontoMax & "|" & _
                               "0,000000" & "|" & _
-                              ConvStr(dtrT!tb_desmarc) & "|" & _
-                              ConvStr(dtrT!tb_desgmer) & "|" & _
-                              ConvStr(dtrT!tb_dessgme) & "|" & _
+                              L1 & "|" & _
+                              L2 & "|" & _
+                              L3 & "|" & _
                               ConvData(dtrT!ar_ultagg, True) & vbCrLf)
             Next
 

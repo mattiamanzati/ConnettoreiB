@@ -38,6 +38,5 @@ if not exists (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='td_hh
 if not exists (select * from INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME='sc_hhdatapush_ib' AND TABLE_NAME='scaden')
  begin
    alter table scaden add sc_hhdatapush_ib datetime;
-   DECLARE @sql NVARCHAR(2048) = 'update scaden set sc_hhdatapush_ib = CONVERT(datetime, ''2000/01/01 08:00:00'', 120);';
-   EXEC sys.sp_executesql @query = @sql;
+   update scaden set sc_hhdatapush_ib = CONVERT(datetime, '2000/01/01 08:00:00', 120);
  end

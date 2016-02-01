@@ -35,15 +35,18 @@ SELECT
     tb_dessgme as tb_dessgme,     -- Valori master del filtro. livello 2   
     tb_descfam as tb_descfam,     -- Valore non usato nell'entity. Da usare per le personalizzazioni
 	tb_desmarc as tb_desmarc,     -- Valore non usato nell'entity. Da usare per le personalizzazioni
-    isnull(ump.tb_desumis, ar_unmis)   tb_desunmis,
-    isnull(um2.tb_desumis, ar_unmis2)  tb_desunmis2,
-    isnull(conf.tb_desumis,ar_confez2) tb_desconfez2,
+    isnull(ump.tb_desumis, ar_unmis)   as tb_desunmis,
+    isnull(um2.tb_desumis, ar_unmis2)  as tb_desunmis2,
+    isnull(conf.tb_desumis,ar_confez2) as tb_desconfez2,
     ar_clascon,
-    ar_tipo,
-	ar_codalt,
+    ar_tipo, -- Usato per determitare l'eventuale slip degli ordini (es: cod deperibilita)
+	ar_codalt, 
 	0 as xx_prz_min_ven,
 	0 as xx_sconto_max_ven,
-    ar_umdapr as ar_umdapr,
+	isnull(ump.tb_desumis, ar_unmis)   as des_livello1, -- questo campo des_livello 1 sostituiscono quello sopra as tb_desunmis
+    isnull(um2.tb_desumis, ar_unmis2)  as des_livello2, -- questo campo des_livello 2 sostituiscono quello sopra as tb_desunmis2
+    isnull(conf.tb_desumis,ar_confez2) as des_livello3, -- questo campo des_livello 3 sostituiscono quello sopra as tb_desconfez2
+    ar_umdapr as ar_umdapr, -- Usato per impostare l'unità di misura preferenziale
 	ar_ultagg
 FROM   artico WITH (NOLOCK)                                                                                               
     LEFT JOIN artfasi WITH (NOLOCK)                                                                                    

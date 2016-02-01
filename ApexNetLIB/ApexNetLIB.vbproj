@@ -30,7 +30,7 @@
     <DefineDebug>false</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
-    <OutputPath>..\Deploy\iBUpdate\</OutputPath>
+    <OutputPath>..\OuputBuilds\</OutputPath>
     <DocumentationFile>ApexNetLIB.xml</DocumentationFile>
     <NoWarn>
     </NoWarn>

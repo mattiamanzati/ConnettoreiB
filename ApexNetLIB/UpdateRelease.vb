@@ -7,27 +7,29 @@ Imports NewtonsoftApex
 
 Public Class UpdateRelease
 
-  Public Shared Sub SendVersion(ByVal CodProgetto As String, ByVal Versione As String)
+    Public Shared Sub SendVersion(ByVal CodProgetto As String, ByVal VersioneConnettore As String, ByVal VersioneGestionale As String)
 
 
-    ' test
-    'Dim wsUrl As String = "http://test.apexnet.it/licenseManagerAPI/v1/update_versione_connettore"
-    ' prod
-    Dim wsUrl As String = "http://lm.apexnet.it/lmAPI/v1/update_versione_connettore"
+        ' test
+        'Dim wsUrl As String = "http://test.apexnet.it/licenseManagerAPI/v1/update_versione_connettore"
+        ' prod
+        Dim wsUrl As String = "http://lm.apexnet.it/lmAPI/v1/update_versione_connettore"
 
-    Dim client As RestClient = New RestClient(wsUrl)
+        Dim client As RestClient = New RestClient(wsUrl)
 
-    Dim request1 As RestRequest = New RestRequest(Method.POST)
+        Dim request1 As RestRequest = New RestRequest(Method.POST)
 
-    request1.RequestFormat = DataFormat.Json
+        request1.RequestFormat = DataFormat.Json
 
-    request1.AddBody(New With { _
-      Key .CodiceProgetto = CodProgetto, _
-      Key .Versione = Versione})
+        request1.AddBody(New With { _
+          Key .CodiceProgetto = CodProgetto, _
+          Key .VersioneConnettore = VersioneConnettore, _
+          Key .VersioneGestionale = VersioneGestionale _
+              })
 
-    Dim response1 As IRestResponse = client.Execute(request1)
+        Dim response1 As IRestResponse = client.Execute(request1)
 
-  End Sub
+    End Sub
 
 
 End Class

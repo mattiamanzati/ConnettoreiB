@@ -23,7 +23,7 @@ copy ..\TEST\iBUpdater.* .\iBUpdate
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "iBUpdate.zip" .\iBUpdate
  
 
-rmdir /S /Q iBUpdate
+rem rmdir /S /Q iBUpdate
 
 del ConnettoreBusiness.zip
 rmdir /S /Q ConnettoreBusiness
@@ -54,4 +54,4 @@ cd .\ConnettoreBusiness
 move .\ConnettoreBusiness.zip ..
 cd ..
 
-rmdir /S /Q ConnettoreBusiness
+rem rmdir /S /Q ConnettoreBusiness
