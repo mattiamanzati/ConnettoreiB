@@ -1,3 +1,5 @@
+echo "Preparazione zip incrementale"
+echo "============================="
 del iBUpdate.zip
 rmdir /S /Q iBUpdate
 mkdir iBUpdate
@@ -18,13 +20,15 @@ copy ..\TEST\Ionic*.* .\iBUpdate
 copy ..\TEST\AMHelper*.* .\iBUpdate
 copy ..\TEST\NewtonsoftApex* .\iBUpdate
 
-copy ..\TEST\iBUpdater.* .\iBUpdate
+rem solo per la versione iniziale. poi lo tolgo
+copy ..\TEST\IBAutoUpdate.* .\iBUpdate
 
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "iBUpdate.zip" .\iBUpdate
  
-
 rem rmdir /S /Q iBUpdate
 
+echo "Preparazione zip completo"
+echo "========================="
 del ConnettoreBusiness.zip
 rmdir /S /Q ConnettoreBusiness
 mkdir ConnettoreBusiness
@@ -47,7 +51,7 @@ copy ..\TEST\AMHelper*.* .\ConnettoreBusiness
 copy ..\TEST\NewtonsoftApex* .\ConnettoreBusiness
 
 rem ci sono differenze solo a partire da qui
-copy ..\TEST\iBUpdater.* .\ConnettoreBusiness
+copy ..\TEST\IBAutoUpdate.* .\ConnettoreBusiness
 
 cd .\ConnettoreBusiness
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "ConnettoreBusiness.zip" *.*

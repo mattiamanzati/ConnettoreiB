@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("iBUpdate")> 
+<Assembly: AssemblyTitle("IBAutoUpdate")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("iBUpdate")> 
-<Assembly: AssemblyCopyright("Copyright ©  2012")> 
+<Assembly: AssemblyProduct("IBAutoUpdate")> 
+<Assembly: AssemblyCopyright("Copyright ©  2016")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("8f07145e-e382-4f0d-a5ee-e0948ba9296c")> 
+<Assembly: Guid("1338b668-d651-4a56-80cd-794beb3ea3f3")> 
 
 ' Version information for an assembly consists of the following four values:
 '

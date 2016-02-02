@@ -1269,65 +1269,72 @@ Riprova:
 
     Public Function CheckUpdates(ByVal LocalVersion As String, ByVal UrlVersionUpdate As String, ByVal UrlFileZipUpdate As String, Optional ByVal UnzipLocalDir As String = "", Optional ByVal DisplayWindow As Boolean = True, Optional ByVal MsgBoxText As String = "", Optional ByVal MsgBoxTitle As String = "") As Boolean
 
-        On Error GoTo errorhandle 'If there is an error, return false
 
-        Dim downl As New ApexNetLIB.Download 'Create the download dialog (but don't show it directly)
+        Try
 
-        If MsgBoxText <> "" Then 'If the MsgBoxText isn't set, use the default text
-            downl.vars_msgText = MsgBoxText
-        End If
+            Dim downl As New ApexNetLIB.Download 'Create the download dialog (but don't show it directly)
 
-        If MsgBoxTitle <> "" Then  'If the MsgBoxTitle isn't set, use the default title
-            downl.vars_msgTitle = MsgBoxTitle
-        End If
-
-        Dim dirAgg As String = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
-
-        downl.vars_unzipdir = dirAgg 'UnzipLocalDir
-        downl.vars_batch = oApp.Batch 'sono eseguito in modaità batch? 
-
-        If downl.CheckNewVersion(UrlVersionUpdate, LocalVersion) Then 'Check if there is a newer version available
-            Dim download As Boolean = downl.CheckForUpdates(UrlFileZipUpdate) 'Download the file, if wanted
-            If download = True Then
-                'non aggiorno più il file AggNumber tanto non serve ma chiamo un eseguibile che copia le dll
-                'Dim aggNumber As Boolean = IncrementaAggNumber(dirAgg + "\" + "AggNumber.txt")
-
-                'se sono in modalità batch
-                If oApp.Batch Then
-                Else
-                    oApp.MsgBoxInfo("Attenzione. E' disponibile un aggiornamento del connettore iB." & _
-                                     vbCrLf & " Chiudere Business per installare gli aggiornamenti.")
-                End If
-
-                Dim _batch As String = CStr(oApp.Batch)
-                Dim percorsoiBUpdateFileLog As String = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                Dim strParametri As String = """" & _batch & """" & " " & """" & oApp.NetDir & "\BusNet.exe" & """" & " " & """" & dirAgg & "\iBUpdate" & """" & " " & """" & oApp.NetDir & """" & " " & """" & oApp.StartUpParams & """" & " " & """" & percorsoiBUpdateFileLog & """"
-
-                'If Process.GetProcessesByName("iBUpdate").Length = 0 Then
-
-                If Not ApexNetLIB.CheckProcessRunning.IsProcessRunning(oApp.NetDir & "\iBUpdater.exe") Then
-                    Process.Start(oApp.NetDir & "\iBUpdater.exe", strParametri)
-                    'End If
-                End If
-
-
-                ' Me.Close()
-            Else
-                'NON SI VUOLE FARE VEDERE NESSUN MESSAGGIO DI ERRORE ALL'UTENTE
-                'oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Attenzione. Errore durante lo scaricamento dell'aggiornamento connettore iB."))
+            If MsgBoxText <> "" Then 'If the MsgBoxText isn't set, use the default text
+                downl.vars_msgText = MsgBoxText
             End If
-        End If
 
-        Return True 'Return true if all's gone well
+            If MsgBoxTitle <> "" Then  'If the MsgBoxTitle isn't set, use the default title
+                downl.vars_msgTitle = MsgBoxTitle
+            End If
 
-        Exit Function
+            Dim dirAgg As String = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
 
-errorhandle:
-        If Not oApp.Batch Then
-            'NON SI VUOLE FARE VEDERE NESSUN MESSAGGIO DI ERRORE ALL'UTENTE
-            'oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Attenzione. Errore nell'aggiornamento del connettore iB."))
-        End If
-        Return False
+            downl.vars_unzipdir = dirAgg 'UnzipLocalDir
+            downl.vars_batch = oApp.Batch 'sono eseguito in modaità batch? 
+
+            If downl.CheckNewVersion(UrlVersionUpdate, LocalVersion) Then 'Check if there is a newer version available
+                Dim download As Boolean = downl.CheckForUpdates(UrlFileZipUpdate) 'Download the file, if wanted
+                If download = True Then
+                    'non aggiorno più il file AggNumber tanto non serve ma chiamo un eseguibile che copia le dll
+                    'Dim aggNumber As Boolean = IncrementaAggNumber(dirAgg + "\" + "AggNumber.txt")
+
+                    'se sono in modalità batch
+                    If oApp.Batch Then
+                    Else
+                        oApp.MsgBoxInfo("Attenzione. E' disponibile un aggiornamento del connettore iB." & _
+                                         vbCrLf & " Chiudere Business per installare gli aggiornamenti.")
+                    End If
+
+                    Dim _batch As String = CStr(oApp.Batch)
+                    Dim percorsoiBUpdateFileLog As String = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                    Dim strParametri As String = String.Format("""{0}"" ""{1}""", dirAgg, oApp.NetDir)
+
+                    If Not ApexNetLIB.CheckProcessRunning.IsProcessRunning(oApp.NetDir & "\IBAutoUpdate.exe") Then
+
+                        Dim startInfo As New ProcessStartInfo(oApp.NetDir & "\IBAutoUpdate.exe", strParametri)
+                        startInfo.WindowStyle = ProcessWindowStyle.Hidden
+                        startInfo.CreateNoWindow = True
+                        Process.Start(startInfo)
+
+
+                        ' Process.Start(oApp.NetDir & "\IBAutoUpdate.exe", strParametri)
+                    End If
+
+
+                    ' Me.Close()
+                Else
+                    'NON SI VUOLE FARE VEDERE NESSUN MESSAGGIO DI ERRORE ALL'UTENTE
+                    'oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Attenzione. Errore durante lo scaricamento dell'aggiornamento connettore iB."))
+                End If
+            End If
+
+            Return True 'Return true if all's gone well
+
+            Exit Function
+
+        Catch ex As Exception
+
+            If Not oApp.Batch Then
+                'NON SI VUOLE FARE VEDERE NESSUN MESSAGGIO DI ERRORE ALL'UTENTE
+                'oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Attenzione. Errore nell'aggiornamento del connettore iB."))
+            End If
+            Return False
+        End Try
 
     End Function
 
