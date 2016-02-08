@@ -43,9 +43,9 @@ SELECT
 	ar_codalt, 
 	0 as xx_prz_min_ven,
 	0 as xx_sconto_max_ven,
-	isnull(ump.tb_desumis, ar_unmis)   as des_livello1, -- questo campo des_livello 1 sostituiscono quello sopra as tb_desunmis
-    isnull(um2.tb_desumis, ar_unmis2)  as des_livello2, -- questo campo des_livello 2 sostituiscono quello sopra as tb_desunmis2
-    isnull(conf.tb_desumis,ar_confez2) as des_livello3, -- questo campo des_livello 3 sostituiscono quello sopra as tb_desconfez2
+	tb_desgmer   as des_livello1, -- questo campo des_livello 1 sostituiscono quello sopra as tb_desunmis
+    tb_dessgme   as des_livello2, -- questo campo des_livello 2 sostituiscono quello sopra as tb_desunmis2
+    tb_descfam   as des_livello3, -- questo campo des_livello 3 sostituiscono quello sopra as tb_desconfez2
     ar_umdapr as ar_umdapr, -- Usato per impostare l'unità di misura preferenziale
 	ar_ultagg
 FROM   artico WITH (NOLOCK)                                                                                               
