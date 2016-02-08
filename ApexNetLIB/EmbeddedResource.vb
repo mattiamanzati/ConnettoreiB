@@ -13,14 +13,25 @@ Public Class EmbeddedResource
         Return Nothing
     End Function
 
-    Public Shared Function GetString(assembly As System.Reflection.Assembly, name As String) As String
+    Public Shared Function GetString(assembly As System.Reflection.Assembly, name As String, CustomSQLPath As String) As String
 
         Dim data As String = ""
+        Dim SQLFile As String = ""
 
-        If name <> "" Then
-            If File.Exists(name) Then
-                data = File.ReadAllText(name, System.Text.Encoding.UTF8)
-                data = "-- Query custom " + name + vbCrLf + data
+        ' Se non ho specificato il percorso in cui cercare la query
+        If CustomSQLPath = "" Then
+            ' Il percorso e' quello di esecuzione 
+            SQLFile = name
+        Else
+            ' se no e' quello passato come argomento
+            SQLFile = CustomSQLPath & "\" & name
+        End If
+
+        '
+        If SQLFile <> "" Then
+            If File.Exists(SQLFile) Then
+                data = File.ReadAllText(SQLFile, System.Text.Encoding.UTF8)
+                data = "-- Query custom " + SQLFile + vbCrLf + data
             Else
                 Dim sr As System.IO.StreamReader
                 sr = EmbeddedResource.GetStream(assembly, name)
@@ -33,7 +44,16 @@ Public Class EmbeddedResource
         Return data
     End Function
 
-    Public Shared Function GetString(name As String) As String
-        Return EmbeddedResource.GetString(GetType(EmbeddedResource).Assembly, name)
+    Public Shared Function GetString(assembly As System.Reflection.Assembly, name As String) As String
+
+        'EmbeddedResource.GetString(assembly As System.Reflection.Assembly, name As String, CustomSQLPath As String) As String
+
+        Return EmbeddedResource.GetString(assembly, name, "")
+
     End Function
+
+
+    'Public Shared Function GetString(name As String) As String
+    '   Return EmbeddedResource.GetString(GetType(EmbeddedResource).Assembly, name)
+    'End Function
 End Class

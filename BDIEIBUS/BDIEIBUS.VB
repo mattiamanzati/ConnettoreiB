@@ -239,7 +239,7 @@ Public Class CLDIEIBUS
 
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "CustomSchema.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "CustomSchema.sql", oApp.NetDir)
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
@@ -277,7 +277,7 @@ Public Class CLDIEIBUS
         Dim dttOut As New DataTable
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetAgentiCliente.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetAgentiCliente.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@conto", CStrSQL(strConto))
 
@@ -303,7 +303,7 @@ Public Class CLDIEIBUS
         Dim dttOut As New DataTable
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetDatiAzienda.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetDatiAzienda.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
@@ -328,7 +328,7 @@ Public Class CLDIEIBUS
         Dim dttOut As New DataTable
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "FindArtUltCost.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "FindArtUltCost.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@codart", CStrSQL(codArticolo))
 
@@ -378,9 +378,9 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
             If oApp.BUSNET_VERSIONDB < 19 Then
-                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinate.sql")
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinate.sql", oApp.NetDir)
             Else
-                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinateStandard.sql")
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforSenzaCoordinateStandard.sql", oApp.NetDir)
             End If
 
 
@@ -780,7 +780,7 @@ Public Class CLDIEIBUS
             'Dest.telefono_consegna
 
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliDest.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliDest.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
             strSQL = strSQL.Replace("@dd_conto@", ToSql(CodClienteCompleto.ToString()))
             strSQL = strSQL.Replace("@dd_coddest@", ToSql("1"))
@@ -845,7 +845,7 @@ Public Class CLDIEIBUS
             Dim strErr As String = ""
             nNumero = AggNumg("AG", "", 0, nNumero, True, True, strErr)
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertAnagenFromCliente.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertAnagenFromCliente.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta@", ToSql(strDitta))
             strSQL = strSQL.Replace("@conto@", ToSql(CodCLiente))
             strSQL = strSQL.Replace("@codanagen@", CStrSQL(nNumero))
@@ -879,7 +879,7 @@ Public Class CLDIEIBUS
             nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
 
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertLeadFromCliente.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertLeadFromCliente.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta@", ToSql(strDitta))
             strSQL = strSQL.Replace("@conto@", ToSql(CodCLiente))
             strSQL = strSQL.Replace("@codlead@", CStrSQL(nNumero))
@@ -932,7 +932,7 @@ Public Class CLDIEIBUS
                 Return False
             End If
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliente.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliente.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
             strSQL = strSQL.Replace("@an_codcomu@", ToSql(ClienteData.cod_citta))
             strSQL = strSQL.Replace("@an_partite@", ToSql("S"))
@@ -1330,7 +1330,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetAgenti(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetAgenti.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetAgenti.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1349,7 +1349,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCodpaga(ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCodpaga.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCodpaga.sql", oApp.NetDir)
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 
@@ -1368,7 +1368,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetComuni.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetComuni.sql", oApp.NetDir)
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 
@@ -1387,7 +1387,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetNazioni.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetNazioni.sql", oApp.NetDir)
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 
@@ -1405,7 +1405,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetInfo(ByRef dttOut As DataTable, ByVal strRelease As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetInfo.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetInfo.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@release", CStrSQL(strRelease))
 
             dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
@@ -1422,7 +1422,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetClassiSconto(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetClassiSconto.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetClassiSconto.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1441,7 +1441,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetPorto(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetPorto.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetPorto.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1460,7 +1460,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCliforCate(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforCate.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforCate.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1479,7 +1479,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCanaliVendita(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCanaliVendita.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCanaliVendita.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1500,9 +1500,9 @@ Public Class CLDIEIBUS
         Try
 
             If oApp.BUSNET_VERSIONDB < 19 Then
-                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforOLD.sql")
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforOLD.sql", oApp.NetDir)
             Else
-                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetClifor.sql")
+                strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetClifor.sql", oApp.NetDir)
             End If
 
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
@@ -1525,7 +1525,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCliforBlo(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforBlo.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforBlo.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
 
@@ -1545,7 +1545,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCliforNote(ByVal strTipoCF As String, ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforNote.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforNote.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
 
@@ -1565,7 +1565,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforDestdiv.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforDestdiv.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1584,7 +1584,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCliforAge(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforAge.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforAge.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1604,7 +1604,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforDettCon.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforDettCon.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
 
@@ -1624,7 +1624,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetCliforFatt(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforFatt.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforFatt.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1645,7 +1645,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforTestDoc.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforTestDoc.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
             strSQL = strSQL.Replace("@gg_documenti", CStrSQL(strGiorniStoricoDocumenti))
@@ -1670,7 +1670,7 @@ Public Class CLDIEIBUS
                                                      Optional ByVal strGiorniStoricoDocumenti As String = "365") As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforRighDoc.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforRighDoc.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
             strSQL = strSQL.Replace("@gg_documenti", CStrSQL(strGiorniStoricoDocumenti))
@@ -1691,7 +1691,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforScaDoc.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCliforScaDoc.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@tipocf", CStrSQL(strTipoCF))
             strSQL = strSQL.Replace("@anni", CStrSQL(2))
@@ -1713,7 +1713,8 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetScadocPush.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetScadocPush.sql", oApp.NetDir)
+
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1734,7 +1735,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArt.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArt.sql", oApp.NetDir)
             If strQuery <> "" Then strSQL = strQuery
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
@@ -1758,7 +1759,7 @@ Public Class CLDIEIBUS
         Try
 
             ' Inutile prevedere una query GetArtUM che sarebbe identica alla GetArt.
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArt.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArt.sql", oApp.NetDir)
             If strQuery <> "" Then strSQL = strQuery
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
@@ -1779,7 +1780,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetArtLingua(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtLingua.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtLingua.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1799,7 +1800,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtGiacenze.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtGiacenze.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1820,7 +1821,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtUltVen.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtUltVen.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@gg_ultacqven", CStrSQL(strGiorniUltVen))
 
@@ -1843,7 +1844,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtUltAcq.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtUltAcq.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@gg_ultacqven", CStrSQL(strGiorniUltAcq))
 
@@ -1866,7 +1867,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtStoart.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtStoart.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@giornistorico", CStrSQL(strFiltroGiorniStoArt))
             strSQL = strSQL.Replace("@flg_includi_non_evasi", CStrSQL(strIncludiNonEvasi))
@@ -1890,7 +1891,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtListini.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtListini.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1912,7 +1913,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeads.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeads.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@includi_lead_clienti", strIncludiLeadConClienti)
 
@@ -1933,7 +1934,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCampagne.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCampagne.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1953,7 +1954,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadAccessi.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadAccessi.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1973,7 +1974,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadAccessiCrm.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadAccessiCrm.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -1992,7 +1993,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetLeadCate(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadCate.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadCate.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -2011,7 +2012,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetLeadConcorrenti(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadConcorrenti.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadConcorrenti.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -2032,7 +2033,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadDetCon.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadDetCon.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@includi_lead_clienti", strIncludiLeadConClienti)
 
@@ -2053,7 +2054,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetLeadMansioni(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadMansioni.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadMansioni.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -2072,7 +2073,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetLeadModAcquisizione(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadModAcquisizione.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadModAcquisizione.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -2091,7 +2092,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetLeadNote(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadNote.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadNote.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -2112,7 +2113,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadTestOff.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadTestOff.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@includi_lead_clienti", strIncludiLeadClienti)
             strSQL = strSQL.Replace("@gg_offerte", CStrSQL(strFiltroGiorniOfferte))
@@ -2135,7 +2136,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadRighOff.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetLeadRighOff.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
             strSQL = strSQL.Replace("@includi_lead_clienti", strIncludiLeadClienti)
             strSQL = strSQL.Replace("@gg_offerte", CStrSQL(strFiltroGiorniOfferte))
@@ -2156,7 +2157,7 @@ Public Class CLDIEIBUS
     Public Overridable Function GetArtSconti(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Try
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtSconti.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtSconti.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
@@ -2177,7 +2178,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtCatalogo.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtCatalogo.sql", oApp.NetDir)
             ' Se esiste una query personalizzata sovrascrivo quella standard
             If strQuery <> "" Then strSQL = strQuery
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
@@ -2200,7 +2201,7 @@ Public Class CLDIEIBUS
         Dim strSQL As String = ""
         Try
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetOleObjects.sql")
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetOleObjects.sql", oApp.NetDir)
             ' Se esiste una query personalizzata sovrascrivo quella standard
             If strQuery <> "" Then strSQL = strQuery
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
