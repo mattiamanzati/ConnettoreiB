@@ -93,7 +93,7 @@ Public Class FRMIEIBUS
         Me.NtsLabel1 = New NTSInformatica.NTSLabel()
         Me.lblCustomRelease = New NTSInformatica.NTSLabel()
         Me.ckTabBase = New NTSInformatica.NTSCheckBox()
-        CType(Me.dttSmartArt, System.ComponentModel.ISupportInitialize).BeginInit()
+
         CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -588,7 +588,7 @@ Public Class FRMIEIBUS
         Me.MaximizeBox = False
         Me.Name = "FRMIEIBUS"
         Me.Text = "IMPORT / EXPORT VS IBUS"
-        CType(Me.dttSmartArt, System.ComponentModel.ISupportInitialize).EndInit()
+
         CType(Me.NtsBarManager1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ckCli.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ckOrdini.Properties, System.ComponentModel.ISupportInitialize).EndInit()
