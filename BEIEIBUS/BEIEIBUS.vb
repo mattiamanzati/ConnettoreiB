@@ -383,7 +383,7 @@ Public Class CLEIEIBUS
             strPercentualeSuPrezzoMinimoVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "PercentualeSuPrezzoMinimoVendita", "0", " ", "0").Trim
             strEsplodiKit = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "EsplodiKit", "0", " ", "0").Trim
             strAccodaLog = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AccodaLog", "0", " ", "0").Trim
-            strUsaUMVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UsaUMVendita", "0", " ", "0").Trim
+            strUsaUMVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UsaUMVendita", "1", " ", "1").Trim
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
             strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
