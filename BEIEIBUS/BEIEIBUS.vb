@@ -56,6 +56,7 @@ Public Class CLEIEIBUS
 
     ' Chiavi di registro varie
     Public strDropBoxDir As String = ""
+    Public strDropBoxBin As String = ""
     Public strFiltroGGStoArt As String = ""
     Public strFiltroGGDocumenti As String = ""
     Public strFiltroGGOfferte As String = ""
@@ -367,6 +368,8 @@ Public Class CLEIEIBUS
 
             ' Ricordati di aggiornare http://doc.apexnet.it/iB.connettore_IB.ashx
             strDropBoxDir = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DropBoxDir", "", " ", "")
+            strDropBoxBin = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DropBoxBin", "", " ", "")
+
             strContiEsclusi = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "ContiEsclusi", "0", " ", "0").Trim
             strFiltroCliConAgenti = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "FiltroCliConAgenti", "0", " ", "0").Trim
             strDisattivaModificaDatiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DisattivaModificaDatiCliente", "0", " ", "0").Trim
@@ -1003,6 +1006,23 @@ Public Class CLEIEIBUS
             'If Not Elabora_ImportOrdiniNew() Then Return False
 
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
+
+
+            If strDropBoxBin <> "" Then
+                '' Controllo Dropbox
+                Dim pname As Process() = Process.GetProcessesByName("Dropbox")
+
+                If pname.Length = 0 Then
+                    System.Diagnostics.Process.Start(strDropBoxBin)
+                ElseIf pname.Length = 1 Then
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Processo dropbox trovato..."))
+                ElseIf pname.Length > 1 Then
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Trovati più processi dropbox..."))
+                    System.Diagnostics.Process.Start("net stop DropboxService")
+                End If
+            End If
+
+
             Return True
 
         Catch ex As Exception
@@ -1019,6 +1039,8 @@ Public Class CLEIEIBUS
             LogStop()
         End Try
     End Function
+
+
 
     Public Overridable Function Elabora_NotifichePushInsoluti() As Boolean
         'restituisco le scadenze di cliente/fornitore ATTIVO o POTENZIALE
