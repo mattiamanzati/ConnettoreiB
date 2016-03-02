@@ -67,6 +67,7 @@ Public Class CLEIEIBUS
     Public strIncludileadClienti As String = ""
     Public strDeterminazioneDescrizioneRigaOrdine As String = ""
     Public strEstraiSoloListiniUMV As String = "0"
+    Public strBloccaSceltaUM As String = "0"
 
     Public eProxyUrl As String = ""
     Public eProxyUsername As String = ""
@@ -389,6 +390,8 @@ Public Class CLEIEIBUS
             strAccodaLog = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AccodaLog", "0", " ", "0").Trim
             strUsaUMVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UsaUMVendita", "1", " ", "1").Trim
             strEstraiSoloListiniUMV = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "EstraiSoloListiniUMV", "0", " ", "0").Trim
+            strBloccaSceltaUM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "BloccaSceltaUM", "0", " ", "0").Trim
+
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
             strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
@@ -3057,11 +3060,13 @@ Public Class CLEIEIBUS
         Try
             If Not oCldIbus.GetArt(strDittaCorrente, dttTmp, strCustomQuery, strCustomWhereGetArt) Then Return False
 
-
+            If strBloccaSceltaUM <> "0" Then
+                strBloccaSceltaUM = "-1"
+            End If
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_ART|DES_ART|COD_FAM|DES_FAM|COD_SFAM|DES_SFAM|COD_GRUPPO1|DES_GRUPPO1|" & _
                           "COD_GRUPPO2|DES_GRUPPO2|UM1|UM2|FATTORE_CONVERSIONE|DES_GR_STAT1|DES_GR_STAT2|QTA_MIN_VEND|" & _
-                          "COD_CLASSE_SCONTO|COD_DEPERIBILITA|PREZZO_MIN_VEN|SCONTO_MAX_VEN|MAX_EXTRA_SCONTO|DES_FILTRO1|DES_FILTRO2|DES_FILTRO3|DAT_ULT_MOD" & vbCrLf)
+                          "COD_CLASSE_SCONTO|COD_DEPERIBILITA|PREZZO_MIN_VEN|SCONTO_MAX_VEN|MAX_EXTRA_SCONTO|DES_FILTRO1|DES_FILTRO2|DES_FILTRO3|FLG_LOCK_UM_DEFAULT|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
 
@@ -3133,6 +3138,7 @@ Public Class CLEIEIBUS
                               L1 & "|" & _
                               L2 & "|" & _
                               L3 & "|" & _
+                              strBloccaSceltaUM & "|" & _
                               ConvData(dtrT!ar_ultagg, True) & vbCrLf)
             Next
 
