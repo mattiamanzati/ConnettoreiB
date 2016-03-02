@@ -388,6 +388,7 @@ Public Class CLEIEIBUS
             strEsplodiKit = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "EsplodiKit", "0", " ", "0").Trim
             strAccodaLog = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AccodaLog", "0", " ", "0").Trim
             strUsaUMVendita = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UsaUMVendita", "1", " ", "1").Trim
+            strEstraiSoloListiniUMV = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "EstraiSoloListiniUMV", "0", " ", "0").Trim
 
             strUseAPI = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "UseAPI", "0", " ", "0").Trim
             strAuthKeyLM = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "AuthKeyLM", "", " ", "").Trim
@@ -3706,7 +3707,7 @@ Public Class CLEIEIBUS
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
         Try
-            If Not oCldIbus.GetArtListini(strDittaCorrente, dttTmp, strCustomWhereGetArtListini) Then Return False
+            If Not oCldIbus.GetArtListini(strDittaCorrente, dttTmp, strCustomWhereGetArtListini, strEstraiSoloListiniUMV) Then Return False
             '53
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_LISTINO|COD_ART|TIPO_CLIFOR|COD_CLIFOR|" & _
                         "COD_LISTINO|QUANTITA_INIZIO|QUANTITA_FINE|DATA_INIZIO|DATA_FINE|" & _
