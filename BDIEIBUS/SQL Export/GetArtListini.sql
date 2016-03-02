@@ -1,11 +1,12 @@
-﻿/* Da usare per il debug in management studio
-DECLARE @ditta varchar(200)
-SELECT @ditta = 'SONN'
-rel 2
+﻿ 
+/*
+DECLARE @ditta varchar(200), @estrai_solo_listini_umv integer
+SELECT @ditta = 'DITTA', @estrai_solo_listini_umv=0
 */
 
 SELECT artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + Cast(af_fase AS VARCHAR(5)) ELSE '' END AS ar_codart, 
        artico.ar_unmis, 
+	   artico.ar_umdapr,busvw_listini.lc_unmis ,
        CASE 
          WHEN lc_listino = 0 THEN NULL 
          ELSE lc_listino 
@@ -50,6 +51,13 @@ FROM   artico WITH (NOLOCK)
 		INNER JOIN busvw_listini WITH (NOLOCK) 
 				ON artico.codditt = busvw_listini.codditt 
 					AND artico.ar_codart = busvw_listini.ar_codart 
+					AND (busvw_listini.lc_unmis = 
+							CASE ar_umdapr
+								WHEN  'P' THEN ar_unmis
+								WHEN  'S' THEN ar_unmis2
+								WHEN  'C' THEN ar_confez2
+							    WHEN  'Q' THEN ar_unmis
+							END OR @estrai_solo_listini_umv=0)
 					AND Isnull(artfasi.af_fase, 0) = busvw_listini.lc_fase 
 		LEFT JOIN tabcfam WITH (NOLOCK)
 				ON artico.codditt = tabcfam.codditt
@@ -74,5 +82,4 @@ WHERE  1=1
        AND ( lc_unmis = artico.ar_unmis OR lc_unmis = ' ' ) 
 	   AND ( artico.ar_gesvar <> 'S' OR ( artico.ar_gesvar = 'S' AND artico.ar_codroot <> '' ) ) 
 	   AND busvw_listini.lc_tipo <> 'F'
-
 

@@ -1887,12 +1887,14 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    Public Overridable Function GetArtListini(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String) As Boolean
+    Public Overridable Function GetArtListini(ByVal strDitta As String, ByRef dttOut As DataTable, ByVal strWhere As String, ByVal EstraiSoloListiniUMV As String) As Boolean
         Dim strSQL As String = ""
         Try
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetArtListini.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@ditta", CStrSQL(strDitta))
+            strSQL = strSQL.Replace("@estrai_solo_listini_umv", CStrSQL(EstraiSoloListiniUMV))
+
 
             If strWhere <> "" Then AddWhereCondition(strSQL, strWhere)
 
