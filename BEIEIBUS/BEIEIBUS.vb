@@ -66,6 +66,7 @@ Public Class CLEIEIBUS
     Public strDisattivaModificaDatiCliente As String = ""
     Public strIncludileadClienti As String = ""
     Public strDeterminazioneDescrizioneRigaOrdine As String = ""
+    Public strEstraiSoloListiniUMV As String = "0"
 
     Public eProxyUrl As String = ""
     Public eProxyUsername As String = ""
