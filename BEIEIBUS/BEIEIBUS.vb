@@ -4361,6 +4361,7 @@ Public Class CLEIEIBUS
             ' -----------------------------
 
 
+
             'inizializzo BEORGSOR
             '----------------------------------------------------------------
             strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
@@ -4409,7 +4410,8 @@ Public Class CLEIEIBUS
                 End If
             Next
 
-            ' Compilo i campi di testata con quello che viene passato da IBUS
+
+            ' Compilo i campi di testata
             oCleGsor.dttET.Rows(0)!et_datdoc = NTSCDate(Ordine.data_ordine)
             oCleGsor.dttET.Rows(0)!et_conto = NTSCInt(Ordine.cod_clifor)
             oCleGsor.dttET.Rows(0)!et_coddest = NTSCInt(Ordine.cod_destinazione)
@@ -4418,6 +4420,12 @@ Public Class CLEIEIBUS
             If nMagaz > 0 Then oCleGsor.dttET.Rows(0)!et_magaz = nMagaz
             oCleGsor.dttET.Rows(0)!et_codagen = NTSCInt(CodAgente1)
             oCleGsor.dttET.Rows(0)!et_codagen2 = NTSCInt(CodAgente2)
+
+
+            ' Aggiungo le note di testata
+            If Not String.IsNullOrEmpty(Ordine.note) Then
+                oCleGsor.dttET.Rows(0)!et_note = NTSCStr(Ordine.note)
+            End If
 
 
             ' Disabilitazione blocchi di interfaccia
