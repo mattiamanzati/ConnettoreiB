@@ -152,6 +152,15 @@ Public Class CLEIEIBUS
     Public arFileGen As New ArrayList       'elenco di file generatici che andranno copiati dalla dir TMP alla dir di dropbox
     Public strTipork As String = ""         'elenco operazioni da compiere in import/export
 
+
+
+    'inizializzo BEORGSOR
+    '----------------------------------------------------------------
+    Public strSerie As String = " "
+    Public nTipoBF As Integer = 0
+    Public nMagaz As Integer = 0
+
+
     Public Const FilePrefix As String = "io_"
     'Public Const cIMP_ART As String = Tracciati.NomeFile(GetType(rec_art))
     Public Const cIMP_ART As String = "io_art.dat"
@@ -467,6 +476,14 @@ Public Class CLEIEIBUS
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
             strCustomWhereGetPorto = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetPorto", "", " ", "").Trim
             strCustomWhereGetScaDocPush = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetScaDocPush", "", " ", "").Trim
+
+            ' Parametri di Business
+
+            'inizializzo BEORGSOR
+            '----------------------------------------------------------------
+            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
+            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
+            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
 
             arFileGen.Clear()
@@ -4291,9 +4308,6 @@ Public Class CLEIEIBUS
 
     Public Overridable Function GeneraOrdineAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
 
-        Dim strSerie As String = " "
-        Dim nTipoBF As Integer = 0
-        Dim nMagaz As Integer = 0
         Dim oCleGsor As CLEORGSOR
         Dim lNumord As Integer = 0
         Dim ds As New DataSet
@@ -4361,12 +4375,6 @@ Public Class CLEIEIBUS
             ' -----------------------------
 
 
-
-            'inizializzo BEORGSOR
-            '----------------------------------------------------------------
-            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
-            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
-            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
             Dim strErr As String = ""
             Dim oTmp As Object = Nothing
@@ -4676,9 +4684,6 @@ Public Class CLEIEIBUS
 
     Public Overridable Function GeneraOffertaAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
 
-        Dim strSerie As String = " "
-        Dim nTipoBF As Integer = 0
-        Dim nMagaz As Integer = 0
         Dim oCleGsof As CLECRGSOF
         Dim lNumord As Integer = 0
         Dim ds As New DataSet
@@ -4746,12 +4751,6 @@ Public Class CLEIEIBUS
             End If
             ' -----------------------------
 
-
-            'inizializzo BEORGSOR
-            '----------------------------------------------------------------
-            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
-            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
-            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
             Dim strErr As String = ""
             Dim oTmp As Object = Nothing
@@ -5750,19 +5749,12 @@ NEXT_FILE:
         Dim ds As New DataSet
         Dim oCleGsor As CLEORGSOR
         Dim bTestaCreata As Boolean = False   'se true la testata dell'ordine è già stata creata
-        Dim strSerie As String = " "
-        Dim nTipoBF As Integer = 0
-        Dim nMagaz As Integer = 0
         Dim lNumord As Integer = 0
         'Dim nRiga As Integer = 0
         Dim strCodart As String = ""
         Dim lFaseArt As Integer = 0
         Try
             '----------------------------
-            'inizializzo BEORGSOR
-            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
-            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
-            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
             Dim strErr As String = ""
             Dim oTmp As Object = Nothing
