@@ -502,7 +502,7 @@ Public Class CLEIEIBUS
 
             If oApp.Batch Then
                 If Not LogStart("BNIEIBUS_BATCH", "Import/export Vs IBUS da batch" & vbCrLf, True) Then Return False
-                LogWrite("Per dettagli sull'avvio in modalità BATCH consultare il file '|BusNetBatch_" & System.Diagnostics.Process.GetCurrentProcess.Id.ToString & ".log|'", False)
+                LogWrite("Per dettagli sull'avvio in modalitÃ  BATCH consultare il file '|BusNetBatch_" & System.Diagnostics.Process.GetCurrentProcess.Id.ToString & ".log|'", False)
             Else
 
                 If Not LogStart("BNIEIBUS", "Import/export Vs IBUS da interfaccia" & vbCrLf, bLogAppendFromInterface, False) Then Return False
@@ -706,7 +706,7 @@ Public Class CLEIEIBUS
                 If Not Elabora_ExportCampagne(oApp.AscDir & "\" + cIMP_CAMPAGNE) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_CAMPAGNE)
 
-                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead modalità acquisizione..."))
+                ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Export Lead modalitÃ  acquisizione..."))
                 If Not Elabora_ExportLeadModAcquisizione(oApp.AscDir & "\" + cIMP_LEAD_MOD_ACQUISIZIONE) Then Return False
                 arFileGen.Add(oApp.AscDir & "\" + cIMP_LEAD_MOD_ACQUISIZIONE)
 
@@ -1039,7 +1039,7 @@ Public Class CLEIEIBUS
                 ElseIf pname.Length = 1 Then
                     ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Processo dropbox trovato..."))
                 ElseIf pname.Length > 1 Then
-                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Trovati più processi dropbox..."))
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Trovati piÃ¹ processi dropbox..."))
                     System.Diagnostics.Process.Start("net stop DropboxService")
                 End If
             End If
@@ -1206,7 +1206,7 @@ Public Class CLEIEIBUS
                 InviaAlert(99, strMsg)
             End If
 
-            'magari poi inserire anche l'istruzione sotto, così un volta loggati li giriamo comunque alla UI
+            'magari poi inserire anche l'istruzione sotto, cosÃ¬ un volta loggati li giriamo comunque alla UI
             'GestisciEventiEntity(sender, e)
 
             'oppure creiamo un alert
@@ -1244,7 +1244,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codpaga) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codpaga) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codpaga) & "|" & _
                                 ConvStr(dtrT!tb_despaga) & "|" & _
@@ -1284,7 +1284,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE|CAP|PROVINCIA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!co_codcomu) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!co_codcomu) & "|" & _
                                 ConvStr(dtrT!co_denom) & "|" & _
@@ -1326,7 +1326,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codstat) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codstat) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codstat) & "|" & _
                                 ConvStr(dtrT!tb_desstat) & vbCrLf)
@@ -1370,7 +1370,7 @@ Public Class CLEIEIBUS
 
     '        For Each dtrT As DataRow In dttTmp.Rows
     '            lista.Add(New AMHelper.CSV.rec_nazioni() With {
-    '                 .CHIAVE = strDittaCorrente & "§" & ConvStr(dtrT!tb_codstat),
+    '                 .CHIAVE = strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codstat),
     '                 .COD_DITTA = strDittaCorrente, _
     '                 .CODICE = ConvStr(dtrT!tb_codstat),
     '                 .DESCRIZIONE = ConvStr(dtrT!tb_desstat)
@@ -1424,7 +1424,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codcscl) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codcscl) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codcscl) & "|" & _
                                 ConvStr(dtrT!tb_descscl) & vbCrLf)
@@ -1463,7 +1463,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codcana) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codcana) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codcana) & "|" & _
                                 ConvStr(dtrT!tb_descana) & vbCrLf)
@@ -1502,7 +1502,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codcate) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codcate) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codcate) & "|" & _
                                 ConvStr(dtrT!tb_descate) & vbCrLf)
@@ -1541,7 +1541,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|CODICE|DESCRIZIONE" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codport) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codport) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codport) & "|" & _
                                 ConvStr(dtrT!tb_desport) & vbCrLf)
@@ -1593,7 +1593,7 @@ Public Class CLEIEIBUS
 
                 XMLobj.WriteStartElement("comune")
 
-                'XMLobj.WriteAttributeString("chiave", strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu))
+                'XMLobj.WriteAttributeString("chiave", strDittaCorrente & "Â§" & ConvStr(dtrT!co_codcomu))
                 'XMLobj.WriteAttributeString("cod_ditta", strDittaCorrente)
                 'XMLobj.WriteAttributeString("codice", ConvStr(dtrT!co_codcomu))
                 'XMLobj.WriteAttributeString("descrizione", ConvStr(dtrT!co_denom))
@@ -1602,7 +1602,7 @@ Public Class CLEIEIBUS
                 'XMLobj.WriteAttributeString("dat_last_change", "")
 
                 XMLobj.WriteStartElement("k")
-                XMLobj.WriteString(strDittaCorrente & "§" & ConvStr(dtrT!co_codcomu))
+                XMLobj.WriteString(strDittaCorrente & "Â§" & ConvStr(dtrT!co_codcomu))
                 XMLobj.WriteEndElement()
 
                 XMLobj.WriteStartElement("ditta")
@@ -2194,7 +2194,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_MANSIONE|DES_MANSIONE" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tb_codruaz) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tb_codruaz) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!tb_codruaz) & "|" & _
                                 ConvStr(dtrT!tb_desruaz) & vbCrLf)
@@ -2411,7 +2411,7 @@ Public Class CLEIEIBUS
 
             For Each dtrT As DataRow In dttTmp.Rows
                 sbFile.Append(
-                            strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
+                            strDittaCorrente & "Â§" & ConvStr(dtrT!an_conto) & "|" & _
                             strDittaCorrente & "|" & _
                             IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                             ConvStr(dtrT!an_conto) & "|" & _
@@ -2499,7 +2499,7 @@ Public Class CLEIEIBUS
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|COD_BLOCCO|TIPO_BLOCCO|NOTA_BLOCCO|DATA_BLOCCO|DAT_ULT_MOD" & vbCrLf)
 
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!an_conto) & "|" & _
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!an_conto) & "|" & _
@@ -2546,7 +2546,7 @@ Public Class CLEIEIBUS
                         "INDIRIZZO|CAP|CITTA|PROVINCIA|STAMPA_PREF_DOC|TELEFONO|CELLULARE|" & _
                         "MAIL|FAX|NOTE_DEST|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!dd_conto) & "§" & ConvStr(dtrT!dd_coddest) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!dd_conto) & "Â§" & ConvStr(dtrT!dd_coddest) & "|" & _
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!dd_conto) & "|" & _
@@ -2642,7 +2642,7 @@ Public Class CLEIEIBUS
                         "CELLULARE1|CELLULARE2|TELEF_CASA|FAX|EMAIL1|EMAIL2|ALTRO_INDIRIZZO1|" & _
                         "ALTRO_INDIRIZZO2|NOTE|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!og_progr) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!an_conto) & "Â§" & ConvStr(dtrT!og_progr) & "|" & _
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!an_conto) & "|" & _
@@ -2700,7 +2700,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|TIPO_CLIFOR|COD_CLIFOR|ANNO|MESE|COD_VALUTA|FATTURATO|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!xx_codvalu) & "§" & ConvStr(dtrT!an_tipo) & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!xx_anno) & "§" & ConvStr(dtrT!xx_mese) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!xx_codvalu) & "Â§" & ConvStr(dtrT!an_tipo) & "Â§" & ConvStr(dtrT!an_conto) & "Â§" & ConvStr(dtrT!xx_anno) & "Â§" & ConvStr(dtrT!xx_mese) & "|" & _
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!an_conto) & "|" & _
@@ -2777,7 +2777,7 @@ Public Class CLEIEIBUS
                     Case "L" : strTipoDoc = "Fatt. Imm. ric."
                     Case "M" : strTipoDoc = "DDT ricevuto"
                     Case "N" : strTipoDoc = "Note Accr. em."
-                    Case "£" : strTipoDoc = "Nota accr. diff. em."
+                    Case "Â£" : strTipoDoc = "Nota accr. diff. em."
                     Case "P" : strTipoDoc = "Fatt.Ric.Fisc.Diff."
                     Case "S" : strTipoDoc = "Fatt.Ric.Fisc. em."
                     Case "T" : strTipoDoc = "Carico da prod."
@@ -2795,8 +2795,8 @@ Public Class CLEIEIBUS
                     Case "Y" : strTipoDoc = "Imp. di prod."
                 End Select
 
-                ' ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
+                ' ConvStr(dtrT!tm_tipork) & "Â§" & ConvStr(dtrT!tm_anno) & "Â§" & ConvStr(dtrT!tm_serie) & "Â§" & ConvStr(dtrT!tm_numdoc) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tm_tipork) & "Â§" & ConvStr(dtrT!tm_anno) & "Â§" & ConvStr(dtrT!tm_serie) & "Â§" & ConvStr(dtrT!tm_numdoc) & "|" & _
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!an_tipo) = "C", 0, 1).ToString & "|" & _
                                 ConvStr(dtrT!an_conto) & "|" & _
@@ -2902,7 +2902,7 @@ Public Class CLEIEIBUS
             If Not oCldIbus.GetCliforRighDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforRighDoc,
                                             strGiorniStoricoDocumenti:=strFiltroGGDocumenti) Then Return False
 
-            'ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
+            'ConvStr(dtrT!tm_tipork) & "Â§" & ConvStr(dtrT!tm_anno) & "Â§" & ConvStr(dtrT!tm_serie) & "Â§" & ConvStr(dtrT!tm_numdoc) & "|" & _
             sbFile.Append("CHIAVE|COD_DITTA|NUM_REG|COD_ART|PRG_RIGA|COD_RIGA|DES_RIGA|COD_UM|QTA|PRZ_LORDO|PRZ_NETTO|IMPORTO|" & _
                         "SC_1|SC_2|TIPO_CLIFOR|COD_CLIFOR|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
@@ -2910,7 +2910,7 @@ Public Class CLEIEIBUS
                 RetValOmaggio = oCldIbus.DecodeDBValue("stasino", ConvStr(dtrT!mm_stasino), descOmaggio)
                 If descOmaggio <> "" Then descOmaggio = " - (" & descOmaggio & ")"
 
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!tm_tipork) & "Â§" & ConvStr(dtrT!tm_anno) & "Â§" & ConvStr(dtrT!tm_serie) & "Â§" & ConvStr(dtrT!tm_numdoc) & "Â§" & ConvStr(dtrT!tm_numdoc1) & "Â§" & ConvStr(dtrT!mm_riga) & "Â§" & ConvStr(dtrT!mm_codart) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!xx_numreg) & "|" & _
                                 ConvStr(dtrT!xx_codart) & "|" & _
@@ -2968,7 +2968,7 @@ Public Class CLEIEIBUS
 
             For Each dtrT As DataRow In dttTmp.Rows
 
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!an_conto) & "§" & ConvStr(dtrT!sc_annpar) & "§" & ConvStr(dtrT!sc_alfpar) & "§" & ConvStr(dtrT!sc_numdoc) & "§" & ConvStr(dtrT!sc_numpar) & "§" & ConvStr(dtrT!sc_integr) & "§" & ConvStr(dtrT!sc_numrata) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!an_conto) & "Â§" & ConvStr(dtrT!sc_annpar) & "Â§" & ConvStr(dtrT!sc_alfpar) & "Â§" & ConvStr(dtrT!sc_numdoc) & "Â§" & ConvStr(dtrT!sc_numpar) & "Â§" & ConvStr(dtrT!sc_integr) & "Â§" & ConvStr(dtrT!sc_numrata) & "|" & _
                                     strDittaCorrente & "|" & _
                                     ConvStr(dtrT!xx_numreg) & "|" & _
                                     ConvStr(dtrT!sc_numrata) & "|" & _
@@ -3023,7 +3023,7 @@ Public Class CLEIEIBUS
         Try
             If Not oCldIbus.GetAgenti(strDittaCorrente, dttTmp, strCustomWhereGetAgenti) Then Return False
 
-            ' La chiave del datatable deve essere univoca. Meglio verificare l'integrità all'origine
+            ' La chiave del datatable deve essere univoca. Meglio verificare l'integritÃ  all'origine
             Dim uc As New UniqueConstraint(dttTmp.Columns("xx_chiave"))
             dttTmp.Constraints.Add(uc)
 
@@ -3115,9 +3115,9 @@ Public Class CLEIEIBUS
                 ' ------------------------------
                 scontoMax = ""
 
-                ' Se lo sconto max non è stato impostato (da chiave registro)
+                ' Se lo sconto max non Ã¨ stato impostato (da chiave registro)
                 If strScontoMaxPercentuale = "" Or strScontoMaxPercentuale = "0" Then
-                    ' ... valuto lo sconto max ritornato dalla query. Se anch'esso non è impostato (0 o empty string)
+                    ' ... valuto lo sconto max ritornato dalla query. Se anch'esso non Ã¨ impostato (0 o empty string)
                     If ConvStr(dtrT!xx_sconto_max_ven) = "" Or ConvStr(dtrT!xx_sconto_max_ven) = "0" Then
                         ' per me vale null
                         scontoMax = ""
@@ -3129,7 +3129,7 @@ Public Class CLEIEIBUS
                     scontoMax = strScontoMaxPercentuale
                 End If
 
-                sbFile.Append(strDittaCorrente & "§" & NTSCStr(dtrT!ar_codart) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & NTSCStr(dtrT!ar_codart) & "|" & _
                               strDittaCorrente & "|" & _
                               ConvStr(dtrT!ar_codart) & "|" & _
                               (ConvStr(dtrT!ar_descr) & " " & ConvStr(dtrT!ar_desint) & " " & ConvStr(dtrT!af_descr)).Trim & "|" & _
@@ -3203,7 +3203,7 @@ Public Class CLEIEIBUS
                     UMVendita = "P"
                 End If
 
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§1" & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§1" & "|" & _
                           strDittaCorrente & "|" & _
                           ConvStr(dtrT!ar_codart) & "|" & _
                           ConvStr(dtrT!ar_unmis) & "|" & _
@@ -3222,7 +3222,7 @@ Public Class CLEIEIBUS
                             my_ar_conver = (1 / NTSCDec(dtrT!ar_conver)).ToString("0.00000000")
                         End If
 
-                        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§2" & "|" &
+                        sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§2" & "|" &
                                   strDittaCorrente & "|" & _
                                   ConvStr(dtrT!ar_codart) & "|" & _
                                   ConvStr(dtrT!ar_unmis2) & "|" & _
@@ -3244,7 +3244,7 @@ Public Class CLEIEIBUS
                         End If
 
 
-                        sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§3" & "|" &
+                        sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§3" & "|" &
                                   strDittaCorrente & "|" & _
                                   ConvStr(dtrT!ar_codart) & "|" & _
                                   ConvStr(dtrT!ar_confez2) & "|" & _
@@ -3324,7 +3324,7 @@ Public Class CLEIEIBUS
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_ARTICOLO|COD_DEPOSITO|DES_DEPOSITO|GIACENZA|DISPONIBILITA|UM1|DAT_ULT_MOD" & vbCrLf)
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!ap_magaz) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§" & ConvStr(dtrT!ap_magaz) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!ar_codart) & "|" & _
                                 ConvStr(dtrT!ap_magaz) & "|" & _
@@ -3405,7 +3405,7 @@ Public Class CLEIEIBUS
                 'strDtdoc = strT(0).Substring(0, 10)                km_aammgg
                 'lNumdoc = NTSCInt(strT(0).Substring(11, 9))        km_numdoc
                 i += 1
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!km_numdoc) & "§" & ConvStr(i) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§" & ConvStr(dtrT!km_numdoc) & "Â§" & ConvStr(i) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!ar_codart) & "|" & _
                                 ConvStr(i) & "|" & _
@@ -3469,7 +3469,7 @@ Public Class CLEIEIBUS
                 'strDtdoc = strT(0).Substring(0, 10)                km_aammgg
                 'lNumdoc = NTSCInt(strT(0).Substring(11, 9))        km_numdoc
 
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!km_numdoc) & "§" & ConvStr(i) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§" & ConvStr(dtrT!km_numdoc) & "Â§" & ConvStr(i) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!ar_codart) & "|" & _
                                 ConvStr(i) & "|" & _
@@ -3540,7 +3540,7 @@ Public Class CLEIEIBUS
                 End If
 
                 If bRottura Then
-                    sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!xx_code) & "|" & _
+                    sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!xx_code) & "|" & _
                                 strDittaCorrente & "|" & _
                                 ConvStr(dtrT!td_conto) & "|" & _
                                 ConvStr(dtrT!ar_codart) & "|" & _
@@ -3725,7 +3725,7 @@ Public Class CLEIEIBUS
         'esporta i listini in vigore alla data odierna
         'no listini in valuta
         'no listini per lavorazioni
-        'no listini per unità di misura diversa dalla ump
+        'no listini per unitÃ  di misura diversa dalla ump
 
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
@@ -3742,7 +3742,7 @@ Public Class CLEIEIBUS
 
             'COD_COMBINAZIONE|
             For Each dtrT As DataRow In dttTmp.Rows
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!lc_listino) & "§" & ConvStr(dtrT!lc_progr) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§" & ConvStr(dtrT!lc_listino) & "Â§" & ConvStr(dtrT!lc_progr) & "|" & _
                     strDittaCorrente & "|" & _
                     "0" & "|" & _
                     ConvStr(dtrT!ar_codart) & "|" & _
@@ -3834,7 +3834,7 @@ Public Class CLEIEIBUS
                     strPrior = dtrT!xx_prior2.ToString
                 End If
 
-                sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!ar_codart) & "§" & ConvStr(dtrT!so_conto) & "§" & ConvStr(dtrT!so_clscan) & "§" & ConvStr(dtrT!so_clscar) & "§" & ConvStr(dtrT!so_codtpro) & "§" & ConvStr(dtrT!so_daquant) & "§" & ConvData(dtrT!so_datagg, False) & "|" & _
+                sbFile.Append(strDittaCorrente & "Â§" & ConvStr(dtrT!ar_codart) & "Â§" & ConvStr(dtrT!so_conto) & "Â§" & ConvStr(dtrT!so_clscan) & "Â§" & ConvStr(dtrT!so_clscar) & "Â§" & ConvStr(dtrT!so_codtpro) & "Â§" & ConvStr(dtrT!so_daquant) & "Â§" & ConvData(dtrT!so_datagg, False) & "|" & _
                                 strDittaCorrente & "|" & _
                                 IIf(ConvStr(dtrT!ar_codart) = "0", "", ConvStr(dtrT!ar_codart)).ToString & "|" & _
                                 "0" & "|" & _
@@ -3950,6 +3950,7 @@ Public Class CLEIEIBUS
                             t.cod_clifor = NewCodCli.ToString()
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}, Unique ID: {4}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente, t.unique_id))
                             LogWrite(msg, True)
+                            InviaAlert(2, msg)
                         End If
 
                         'GeneraOffertaAPI(t, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
@@ -3964,7 +3965,7 @@ Public Class CLEIEIBUS
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}, Unique ID: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
-                            InviaPushByUsername(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
+                            InviaPushByUsername(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", Ã¨ stato acquisito dal gestionale")
                         Else
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}, Unique ID: {2}", t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
@@ -4314,7 +4315,7 @@ Public Class CLEIEIBUS
         Dim strTipoOrdine As String = ""
         Dim strStasino As String = ""
 
-        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unità di misura
+        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unitÃ  di misura
         Dim strUnitaMisuraP As String = ""
         Dim strUnitaMisura As String = ""
         Dim dQuantita As Decimal
@@ -4333,7 +4334,7 @@ Public Class CLEIEIBUS
         Try
             ' Controlli preelaborazione sui dati
             If Ordine.cod_clifor Is Nothing Then
-                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non può essere null")))
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non puÃ² essere null")))
                 Return False
             End If
 
@@ -4399,7 +4400,7 @@ Public Class CLEIEIBUS
             ' Inizio la creazione dell'ordine. La numerazione e' attiva ?
             lNumord = oCldIbus.LegNuma(strDittaCorrente, strTipoOrdine, strSerie, NTSCDate(Ordine.data_ordine).Year, False)
             If lNumord = 0 Then
-                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente è necessario attivare la numerazione")))
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente Ã¨ necessario attivare la numerazione")))
                 Return False
             End If
 
@@ -4544,8 +4545,8 @@ Public Class CLEIEIBUS
                 ' Gestisco il tipo unita di misura
                 dTipoUM = 1
                 Select Case r.tipo_um
-                    Case "1" : dTipoUM = 1 ' Unità di misura principale
-                    Case "2" : dTipoUM = 2 ' Unità di misura secondaria
+                    Case "1" : dTipoUM = 1 ' UnitÃ  di misura principale
+                    Case "2" : dTipoUM = 2 ' UnitÃ  di misura secondaria
                     Case "3" : dTipoUM = 3 ' Codice confezione
                 End Select
                 Select Case dTipoUM
@@ -4583,8 +4584,8 @@ Public Class CLEIEIBUS
 
                     ' default
                     Select Case strDeterminazioneDescrizioneRigaOrdine
-                        Case "0", "1" ' Modalità con decodifica per Determinazione descrizione ordine
-                            ' L'articolo è descrittivo ?
+                        Case "0", "1" ' ModalitÃ  con decodifica per Determinazione descrizione ordine
+                            ' L'articolo Ã¨ descrittivo ?
                             If strCodArt = "D" Then
                                 '!ec_ump = ""
 
@@ -4594,31 +4595,31 @@ Public Class CLEIEIBUS
                                     ' ...metti i primi 40 caratteri nella descrizione... 
                                     !ec_descr = r.descrizione_riga.PadRight(300).Substring(0, 40)
                                 End If
-                                ' ... se la descrizione è superiore a 40 caratteri
+                                ' ... se la descrizione Ã¨ superiore a 40 caratteri
                                 If r.descrizione_riga.Length > 40 Then
                                     ' ... i caratteri eccedenti li metto nelle note
                                     !ec_desint = r.descrizione_riga.PadRight(300).Substring(40, 40)
                                 End If
 
-                                ' ... se la descrizione è superiore a 80 caratteri
+                                ' ... se la descrizione Ã¨ superiore a 80 caratteri
                                 If r.descrizione_riga.Length > 80 Then
                                     ' i caratteri eccedenti li metto nelle note per non perderli
                                     !ec_note = r.descrizione_riga.PadRight(300).Substring(80, 40)
                                 End If
 
                             Else
-                                ' In questo caso, se la riga non è descrittiva non valorizzo le descrizioni.
+                                ' In questo caso, se la riga non Ã¨ descrittiva non valorizzo le descrizioni.
                                 ' Business dovrebbe prenderle dall'anagrafica articolo
 
                             End If
-                        Case "2" ' Modalità standard per Determinazione descrizione ordine
-                            ' Se la descrizione non è empty string
+                        Case "2" ' ModalitÃ  standard per Determinazione descrizione ordine
+                            ' Se la descrizione non Ã¨ empty string
                             If r.descrizione_riga.Trim <> "" Then
                                 ' Prendo i primi 40 caratteri
                                 !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
                             End If
 
-                            ' Se la descrizione è superiore a 40 caratteri
+                            ' Se la descrizione Ã¨ superiore a 40 caratteri
                             If r.descrizione_riga.Length > 40 Then
                                 ' I caratteri eccedenti li metto nelle note
                                 !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
@@ -4690,7 +4691,7 @@ Public Class CLEIEIBUS
         Dim strTipoOrdine As String = ""
         Dim strStasino As String = ""
 
-        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unità di misura
+        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unitÃ  di misura
         Dim strUnitaMisuraP As String = ""
         Dim strUnitaMisura As String = ""
         Dim dQuantita As Decimal
@@ -4709,7 +4710,7 @@ Public Class CLEIEIBUS
         Try
             ' Controlli preelaborazione sui dati
             If Ordine.cod_clifor Is Nothing Then
-                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non può essere null")))
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non puÃ² essere null")))
                 Return False
             End If
 
@@ -4780,7 +4781,7 @@ Public Class CLEIEIBUS
             ' Inizio la creazione dell'ordine. La numerazione e' attiva ?
             lNumord = oCldIbus.LegNuma(strDittaCorrente, strTipoOrdine, strSerie, NTSCDate(Ordine.data_ordine).Year, False)
             If lNumord = 0 Then
-                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare una nuova offerta è necessario attivare la numerazione")))
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare una nuova offerta Ã¨ necessario attivare la numerazione")))
                 Return False
             End If
 
@@ -4914,8 +4915,8 @@ Public Class CLEIEIBUS
                 ' Gestisco il tipo unita di misura
                 dTipoUM = 1
                 Select Case r.tipo_um
-                    Case "1" : dTipoUM = 1 ' Unità di misura principale
-                    Case "2" : dTipoUM = 2 ' Unità di misura secondaria
+                    Case "1" : dTipoUM = 1 ' UnitÃ  di misura principale
+                    Case "2" : dTipoUM = 2 ' UnitÃ  di misura secondaria
                     Case "3" : dTipoUM = 3 ' Codice confezione
                 End Select
                 Select Case dTipoUM
@@ -4955,39 +4956,39 @@ Public Class CLEIEIBUS
 
 
                     Select Case strDeterminazioneDescrizioneRigaOrdine
-                        Case "0", "1" ' Modalità con decodifica per Determinazione descrizione ordine
-                            ' L'articolo è descrittivo ?
+                        Case "0", "1" ' ModalitÃ  con decodifica per Determinazione descrizione ordine
+                            ' L'articolo Ã¨ descrittivo ?
                             If strCodArt = "D" Then
                                 ' Se esiste una descrizione
                                 If r.descrizione_riga.Trim <> "" Then
                                     ' ...metti i primi 40 caratteri nella descrizione... 
                                     !ec_descr = r.descrizione_riga.PadRight(300).Substring(0, 40)
                                 End If
-                                ' ... se la descrizione è superiore a 40 caratteri
+                                ' ... se la descrizione Ã¨ superiore a 40 caratteri
                                 If r.descrizione_riga.Length > 40 Then
                                     ' ... i caratteri eccedenti li metto nelle note
                                     !ec_desint = r.descrizione_riga.PadRight(300).Substring(40, 40)
                                 End If
 
-                                ' ... se la descrizione è superiore a 80 caratteri
+                                ' ... se la descrizione Ã¨ superiore a 80 caratteri
                                 If r.descrizione_riga.Length > 80 Then
                                     ' i caratteri eccedenti li metto nelle note per non perderli
                                     !ec_note = r.descrizione_riga.PadRight(300).Substring(80, 40)
                                 End If
 
                             Else
-                                ' In questo caso, se la riga non è descrittiva non valorizzo le descrizioni.
+                                ' In questo caso, se la riga non Ã¨ descrittiva non valorizzo le descrizioni.
                                 ' Business dovrebbe prenderle dall'anagrafica articolo
 
                             End If
-                        Case "2" ' Modalità standard per Determinazione descrizione ordine
-                            ' Se la descrizione non è empty string
+                        Case "2" ' ModalitÃ  standard per Determinazione descrizione ordine
+                            ' Se la descrizione non Ã¨ empty string
                             If r.descrizione_riga.Trim <> "" Then
                                 ' Prendo i primi 40 caratteri
                                 !ec_descr = r.descrizione_riga.PadRight(40).Substring(0, 40)
                             End If
 
-                            ' Se la descrizione è superiore a 40 caratteri
+                            ' Se la descrizione Ã¨ superiore a 40 caratteri
                             If r.descrizione_riga.Length > 40 Then
                                 ' I caratteri eccedenti li metto nelle note
                                 !ec_note = r.descrizione_riga.PadRight(200).Substring(40, 40)
@@ -5065,7 +5066,7 @@ Public Class CLEIEIBUS
                     oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
                 End If
 
-                ' Se c'è il modulo CRM, Devo inserire un Lead collegato
+                ' Se c'Ã¨ il modulo CRM, Devo inserire un Lead collegato
                 If CBool(ModuliExtDittaDitt(strDittaCorrente) And bsModExtCRM) Then
 
                     Dim CodOperatore As String = ""
@@ -5079,7 +5080,7 @@ Public Class CLEIEIBUS
                     oCldIbus.InsertLeadFromCliData(strDittaCorrente, CodClienteCompleto.ToString(), CodOperatore, CodLead)
                 End If
 
-                ' C'è il modulo Anagrafiche generali ?
+                ' C'Ã¨ il modulo Anagrafiche generali ?
                 If CBool(ModuliExtDittaDitt(strDittaCorrente) And bsModExtANG) Then
                     Dim CodAnagen As Integer
                     oCldIbus.InsertAnagenFromCliData(strDittaCorrente, CodClienteCompleto.ToString(), CodAnagen)
@@ -5124,7 +5125,7 @@ Public Class CLEIEIBUS
 
         'ApexNetLIB.PushNotification.Send("307", "ib.appstore", "Buona giornata dal team iB" + " - " + strDittaCorrente)
 
-        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unità di misura
+        ' Valorizzo queste variabili a seconda dell'utilizzo della prima o seconda unitÃ  di misura
         Dim strUnitaMisuraP As String = ""
         Dim strUnitaMisura As String = ""
         Dim dQuantita As Decimal
@@ -5180,7 +5181,7 @@ Public Class CLEIEIBUS
 
         Try
             'verifico se ci sono preventivi/ordini da importare
-            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'anche se nel file c'Ã¨ la ditta su tutti i record, in realtÃ  un file contiene sempre e solo una ditta
             'una volta letto il file, lo cancello
             strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_ORD*.DAT")
 
@@ -5232,7 +5233,7 @@ Public Class CLEIEIBUS
                 While Not r1.EndOfStream
                     strRow = r1.ReadLine.Split("|"c)
 
-                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    ' Se il file non Ã¨ della mia ditta lo scarto e passo a quello successivo
                     If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
                         r1.Close()
                         GoTo NEXT_FILE
@@ -5286,16 +5287,16 @@ Public Class CLEIEIBUS
 
 
                     Select Case strRow(posTipoUM)
-                        Case "1" : dTipoUM = 1 ' Unità di misura principale
-                        Case "2" : dTipoUM = 2 ' Unità di misura secondaria
+                        Case "1" : dTipoUM = 1 ' UnitÃ  di misura principale
+                        Case "2" : dTipoUM = 2 ' UnitÃ  di misura secondaria
                         Case "3" : dTipoUM = 3 ' Codice confezione
                     End Select
 
-                    ' Se la UM2 è valorizzata significa che ho inserito l'ordine con la seconda unità di misura
+                    ' Se la UM2 Ã¨ valorizzata significa che ho inserito l'ordine con la seconda unitÃ  di misura
                     ' Esempio di tracciato: 
                     ' UM1 | UM2 | QTA1 | QTA2 | PRZ1  | PRZ2     Intestazione tracciato
-                    ' PZ  |     | 3,0  |      | 11,29 |          Caso 1 (utilizzo prima unità di misura. Pezzi) 3 pezzi a 11,29 € cad.
-                    '     | SC  |      | 16   |       | 11,29    Caso 2 (utilizzo seconda unità di misura. Scatole) 2 scatole per 16 pezzi totali a € 11,28 cad. (2 da dove lo prendo?)
+                    ' PZ  |     | 3,0  |      | 11,29 |          Caso 1 (utilizzo prima unitÃ  di misura. Pezzi) 3 pezzi a 11,29 Â€ cad.
+                    '     | SC  |      | 16   |       | 11,29    Caso 2 (utilizzo seconda unitÃ  di misura. Scatole) 2 scatole per 16 pezzi totali a Â€ 11,28 cad. (2 da dove lo prendo?)
                     'If strRow(posUM2) <> "" Then
                     ' strUnitaMisuraP = strRow(posUM2) ' UM che deve essere presa da articoli CALCOLARE - per ora non usata
                     ' strUnitaMisura = strRow(posUM2) ' UM che arriva dall'ipad
@@ -5303,8 +5304,8 @@ Public Class CLEIEIBUS
                     ' dPrezzo = NTSCDec(strRow(posPrezzo2))
                     ' dColli = NTSCDec(strRow(posQta2)) ' da calcolare sul db CALCOLARE - per ora metto uguale a quantita'
                     ' Else
-                    ' ' Se sto usando la prima unità di misura, tutto quello che mi arriva dall'iPad è giusto
-                    ' ' perchè la prima UM è sempre quella del valore minimo (pz., kg, lt, mt., ecc)
+                    ' ' Se sto usando la prima unitÃ  di misura, tutto quello che mi arriva dall'iPad Ã¨ giusto
+                    ' ' perchÃ¨ la prima UM Ã¨ sempre quella del valore minimo (pz., kg, lt, mt., ecc)
                     ' strUnitaMisuraP = strRow(posUM1)
                     ' strUnitaMisura = strRow(posUM1)
                     ' dQuantita = NTSCDec(strRow(posQta1))
@@ -5315,8 +5316,8 @@ Public Class CLEIEIBUS
                     ' Nuova gestione unita' di misura. Ora arrivano le info nel seguente modo
                     ' Esempio di tracciato: 
                     ' UM1 | UM2 | QTA1 | QTA2 | PRZ1  | PRZ2     Intestazione tracciato
-                    ' PZ  |     | 3,0  |      | 11,29 |          Tipo UM 1 UMP  (utilizzo prima unità di misura. Pezzi) 3 pezzi a 11,29 € cad.
-                    ' PZ  | NR  | 3,0  | 16   | 11,29 | 11,29    Tipo UM 2 UM2  (utilizzo seconda unità di misura. NR)
+                    ' PZ  |     | 3,0  |      | 11,29 |          Tipo UM 1 UMP  (utilizzo prima unitÃ  di misura. Pezzi) 3 pezzi a 11,29 Â€ cad.
+                    ' PZ  | NR  | 3,0  | 16   | 11,29 | 11,29    Tipo UM 2 UM2  (utilizzo seconda unitÃ  di misura. NR)
                     ' PZ  | SC  | 3,0  |  5   | 11,29 |   30     Tipo UM 3 CONF (utilizzo confezioni)
 
 
@@ -5399,7 +5400,7 @@ Public Class CLEIEIBUS
                 'ho letto l'intero file: ora genero il documento e cancello il file
                 'In un file ci deve essere solo un ordine.
                 'Diversamente se nel file possono esserci 3 ordini e la routine GeneraOrdini ne crea correttamente solo 2
-                'se cancello il file 1 ordine viene perso, se tengo il file alla prossima rielaborazione  importo nuovamente anche i 2 ordini già importati
+                'se cancello il file 1 ordine viene perso, se tengo il file alla prossima rielaborazione  importo nuovamente anche i 2 ordini giÃ  importati
                 If GeneraOrdini(dttFile, NumOrd) Then
                     msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}", NumOrd.ToString, strRow(posCodClifor), strRow(posCodAgente)))
                     LogWrite(msg, True)
@@ -5455,7 +5456,7 @@ NEXT_FILE:
 
         Try
             'verifico se ci sono preventivi/ordini da importare
-            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'anche se nel file c'Ã¨ la ditta su tutti i record, in realtÃ  un file contiene sempre e solo una ditta
             'una volta letto il file, lo cancello
             strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_ANA*.DAT")
 
@@ -5469,7 +5470,7 @@ NEXT_FILE:
                 While Not r1.EndOfStream
                     strRow = r1.ReadLine.Split("|"c)
 
-                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    ' Se il file non Ã¨ della mia ditta lo scarto e passo a quello successivo
                     If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
                         r1.Close()
                         GoTo NEXT_FILE
@@ -5528,7 +5529,7 @@ NEXT_FILE:
 
         Try
             'verifico se ci sono preventivi/ordini da importare
-            'anche se nel file c'è la ditta su tutti i record, in realtà un file contiene sempre e solo una ditta
+            'anche se nel file c'Ã¨ la ditta su tutti i record, in realtÃ  un file contiene sempre e solo una ditta
             'una volta letto il file, lo cancello
             strF = System.IO.Directory.GetFiles(strDropBoxDir & "\appmanager", "IB_AM_CF_NOTE*.DAT")
 
@@ -5540,7 +5541,7 @@ NEXT_FILE:
                 While Not r1.EndOfStream
                     strRow = r1.ReadLine.Split("|"c)
 
-                    ' Se il file non è della mia ditta lo scarto e passo a quello successivo
+                    ' Se il file non Ã¨ della mia ditta lo scarto e passo a quello successivo
                     If strRow(posDitta).ToLower.Trim <> strDittaCorrente.ToLower Then
                         r1.Close()
                         GoTo NEXT_FILE
@@ -5743,12 +5744,12 @@ NEXT_FILE:
 
     Public Overridable Function GeneraOrdini(ByRef dttIn As DataTable, ByRef NumOrd As Integer) As Boolean
         'nel datatabase vengono passati gli ordini della ditta corrente
-        'devo generare più ordini, raggruppando per cliente/data ordine
+        'devo generare piÃ¹ ordini, raggruppando per cliente/data ordine
         Dim strKey As String = ""
         Dim strLastKey As String = ""
         Dim ds As New DataSet
         Dim oCleGsor As CLEORGSOR
-        Dim bTestaCreata As Boolean = False   'se true la testata dell'ordine è già stata creata
+        Dim bTestaCreata As Boolean = False   'se true la testata dell'ordine Ã¨ giÃ  stata creata
         Dim lNumord As Integer = 0
         'Dim nRiga As Integer = 0
         Dim strCodart As String = ""
@@ -5798,7 +5799,7 @@ NEXT_FILE:
                 If Not bTestaCreata Then
                     lNumord = oCldIbus.LegNuma(strDittaCorrente, NTSCStr(dtrT!tipork), strSerie, NTSCDate(dtrT!datord).Year, False)
                     If lNumord = 0 Then
-                        ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente è necessario attivare la numerazione")))
+                        ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente Ã¨ necessario attivare la numerazione")))
                         Return False
                     End If
 
@@ -5895,35 +5896,35 @@ NEXT_FILE:
                 With oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1)
 
                     Select Case strDeterminazioneDescrizioneRigaOrdine
-                        Case "0" ' Modalità standard per Determinazione descrizione ordine
+                        Case "0" ' ModalitÃ  standard per Determinazione descrizione ordine
 
                             If NTSCStr(dtrT!desart).Trim <> "" Then !ec_descr = NTSCStr(dtrT!desart).PadRight(40).Substring(0, 40)
                             If NTSCStr(dtrT!desart).Length > 40 Then
                                 !ec_note = NTSCStr(dtrT!desart).PadRight(200).Substring(40, 40)
                             End If
 
-                        Case "1" ' Modalità con decodifica per Determinazione descrizione ordine
-                            ' L'articolo è descrittivo ?
+                        Case "1" ' ModalitÃ  con decodifica per Determinazione descrizione ordine
+                            ' L'articolo Ã¨ descrittivo ?
                             If strCodart = "D" Then
                                 ' Se esiste una descrizione
                                 If NTSCStr(dtrT!desart).Trim <> "" Then
                                     ' ...metti i primi 40 caratteri nella descrizione... 
                                     !ec_descr = NTSCStr(dtrT!desart).PadRight(300).Substring(0, 40)
                                 End If
-                                ' ... se la descrizione è superiore a 40 caratteri
+                                ' ... se la descrizione Ã¨ superiore a 40 caratteri
                                 If NTSCStr(dtrT!desart).Length > 40 Then
                                     ' ... i caratteri eccedenti li metto nelle note
                                     !ec_desint = NTSCStr(dtrT!desart).PadRight(300).Substring(40, 40)
                                 End If
 
-                                ' ... se la descrizione è superiore a 80 caratteri
+                                ' ... se la descrizione Ã¨ superiore a 80 caratteri
                                 If NTSCStr(dtrT!desart).Length > 80 Then
                                     ' i caratteri eccedenti li metto nelle note per non perderli
                                     !ec_note = NTSCStr(dtrT!desart).PadRight(300).Substring(80, 40)
                                 End If
 
                             Else
-                                ' In questo caso, se la riga non è descrittiva non valorizzo le descrizioni.
+                                ' In questo caso, se la riga non Ã¨ descrittiva non valorizzo le descrizioni.
                                 ' Business dovrebbe prenderle dall'anagrafica articolo
 
                             End If
