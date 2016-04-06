@@ -20,9 +20,6 @@ copy ..\TEST\Ionic*.* .\iBUpdate
 copy ..\TEST\AMHelper*.* .\iBUpdate
 copy ..\TEST\NewtonsoftApex* .\iBUpdate
 
-rem solo per la versione iniziale. poi lo tolgo
-copy ..\TEST\IBAutoUpdate.* .\iBUpdate
-
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "iBUpdate.zip" .\iBUpdate
  
 rem rmdir /S /Q iBUpdate
@@ -49,9 +46,6 @@ copy ..\TEST\RestSharpApex*.* .\ConnettoreBusiness
 copy ..\TEST\Ionic*.* .\ConnettoreBusiness
 copy ..\TEST\AMHelper*.* .\ConnettoreBusiness
 copy ..\TEST\NewtonsoftApex* .\ConnettoreBusiness
-
-rem ci sono differenze solo a partire da qui
-copy ..\TEST\IBAutoUpdate.* .\ConnettoreBusiness
 
 cd .\ConnettoreBusiness
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "ConnettoreBusiness.zip" *.*

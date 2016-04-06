@@ -6,6 +6,7 @@ Imports AMHelper.WS
 Imports AMHelper.CSV
 Imports RestSharpApex
 Imports ApexNetLIB
+Imports System.Management
 
 
 Public Class CLEIEIBUS
@@ -1029,19 +1030,32 @@ Public Class CLEIEIBUS
 
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
 
+            Dim UtenteWindows As String = GetWinUserName()
+            Dim UtenteProcesso As String = ""
 
             If strDropBoxBin <> "" Then
-                '' Controllo Dropbox
-                Dim pname As Process() = Process.GetProcessesByName("Dropbox")
+                For Each p As Process In Process.GetProcesses
+                    ' Ciclo per tutti i processi che si chiamano "Dropbox"
+                    If String.Compare(p.ProcessName, "Dropbox", True) = 0 Then
+                        ' Se il processo esiste e l'utente ed è stato lanciato dal mio stesso utente
+                        ' la situazione e' OK
+                        UtenteProcesso = GetProcUserName("Dropbox")
+                        If UtenteProcesso = UtenteWindows Then
 
-                If pname.Length = 0 Then
-                    System.Diagnostics.Process.Start(strDropBoxBin)
-                ElseIf pname.Length = 1 Then
-                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Processo dropbox trovato..."))
-                ElseIf pname.Length > 1 Then
-                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Trovati più processi dropbox..."))
-                    System.Diagnostics.Process.Start("net stop DropboxService")
-                End If
+                        Else
+                            ' Se non e' stato lanciato da me lo killo
+                            Try
+                                p.Kill()
+                            Catch
+                            End Try
+
+
+
+                        End If
+
+                    End If
+                Next
+
             End If
 
 
@@ -1063,6 +1077,39 @@ Public Class CLEIEIBUS
     End Function
 
 
+    Public Function GetProcUserName(ByVal ProcessName As String) As String
+        Dim RetValue As String = ""
+
+
+        Dim selectQuery As SelectQuery = New SelectQuery("Win32_Process")
+        Dim searcher As ManagementObjectSearcher = New ManagementObjectSearcher(selectQuery)
+        Dim y As System.Management.ManagementObjectCollection
+        y = searcher.Get
+        For Each proc As ManagementObject In y
+            Dim s(1) As String
+            proc.InvokeMethod("GetOwner", CType(s, Object()))
+            Dim n As String = proc("Name").ToString()
+            If n = ProcessName & ".exe" Then
+                ' Return ("User: " & s(1) & "\\" & s(0))
+                RetValue = s(0)
+            End If
+        Next
+        Return RetValue
+    End Function
+
+    Public Function GetWinUserName() As String
+        If TypeOf My.User.CurrentPrincipal Is 
+          Security.Principal.WindowsPrincipal Then
+            ' The application is using Windows authentication.
+            ' The name format is DOMAIN\USERNAME.
+            Dim parts() As String = Split(My.User.Name, "\")
+            Dim username As String = parts(1)
+            Return username
+        Else
+            ' The application is using custom authentication.
+            Return My.User.Name
+        End If
+    End Function
 
     Public Overridable Function Elabora_NotifichePushInsoluti() As Boolean
         'restituisco le scadenze di cliente/fornitore ATTIVO o POTENZIALE
@@ -3657,10 +3704,12 @@ Public Class CLEIEIBUS
             Next
             dttCat.AcceptChanges()
 
-            Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-            w1.Write(sbFile.ToString)
-            w1.Flush()
-            w1.Close()
+            If dttCat.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
             Return True
 
@@ -3815,6 +3864,9 @@ Public Class CLEIEIBUS
         Dim strTrattaSc4 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc4", "S", " ", "S")
         Dim strTrattaSc5 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc5", "S", " ", "S")
         Dim strTrattaSc6 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc6", "S", " ", "S")
+
+
+
 
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
