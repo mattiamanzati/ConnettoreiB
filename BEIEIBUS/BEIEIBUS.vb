@@ -1026,40 +1026,55 @@ Public Class CLEIEIBUS
 
             End If
 
-            'If Not Elabora_ImportOrdiniNew() Then Return False
 
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
+
 
             Dim UtenteWindows As String = GetWinUserName()
             Dim UtenteProcesso As String = ""
 
+
             If strDropBoxBin <> "" Then
-                For Each p As Process In Process.GetProcesses
-                    ' Ciclo per tutti i processi che si chiamano "Dropbox"
-                    If String.Compare(p.ProcessName, "Dropbox", True) = 0 Then
-                        ' Se il processo esiste e l'utente ed è stato lanciato dal mio stesso utente
-                        ' la situazione e' OK
-                        UtenteProcesso = GetProcUserName("Dropbox")
-                        If UtenteProcesso = UtenteWindows Then
 
-                        Else
-                            ' Se non e' stato lanciato da me lo killo
-                            Try
-                                p.Kill()
-                            Catch
-                            End Try
+                Dim user As String = GetWinUserName()
 
+                Try
+                    Dim query As String = "SELECT * FROM Win32_Process WHERE Name = '" + "Dropbox.exe" + "'"
 
+                    Dim searcher As New ManagementObjectSearcher(query)
+                    Dim observer As New ManagementOperationObserver()
 
-                        End If
+                    'loop through each item in the collection
+                    For Each process As ManagementObject In searcher.Get()
+                        Try
+                            'this string will hold the information returned
+                            'from InvokeMethod("GetOwner")
+                            Dim info(1) As String
+                            'get the information on the current process
+                            process.InvokeMethod("GetOwner", CType(info, Object()))
 
-                    End If
-                Next
+                            'now make sure the owner is correct
+                            If info(0).ToString().ToUpper() <> user.ToUpper() Then
+                                'kill the process
+                                process.InvokeMethod(observer, "Terminate", Nothing)
+                            Else
+                                ' se sono qui e' perche' sono sul mio processo
+                            End If
+                        Catch ex As Exception
+
+                            Return False
+                        End Try
+                    Next
+                Catch ex As Exception
+
+                    Return False
+                End Try
+
 
             End If
 
 
-            Return True
+                    Return True
 
         Catch ex As Exception
             '--------------------------------------------------------------
@@ -1075,26 +1090,40 @@ Public Class CLEIEIBUS
             LogStop()
         End Try
     End Function
+    Public Function KillProcessByUser(ByRef user As String) As Object
+        Try
+            'System.Management instances needed
+            ' Dim query As New SelectQuery("Win32_Process")
+            Dim query As String = "SELECT * FROM Win32_Process WHERE Name = '" + "Dropbox.exe" + "'"
 
+            Dim searcher As New ManagementObjectSearcher(query)
+            Dim observer As New ManagementOperationObserver()
 
-    Public Function GetProcUserName(ByVal ProcessName As String) As String
-        Dim RetValue As String = ""
+            'loop through each item in the collection
+            For Each process As ManagementObject In searcher.Get()
+                Try
+                    'this string will hold the information returned
+                    'from InvokeMethod("GetOwner")
+                    Dim info(1) As String
+                    'get the information on the current process
+                    process.InvokeMethod("GetOwner", CType(info, Object()))
 
+                    'now make sure the owner is correct
+                    If info(0).ToString().ToUpper() = user.ToUpper() Then
+                        'kill the process
+                        process.InvokeMethod(observer, "Terminate", Nothing)
+                    End If
+                Catch ex As Exception
 
-        Dim selectQuery As SelectQuery = New SelectQuery("Win32_Process")
-        Dim searcher As ManagementObjectSearcher = New ManagementObjectSearcher(selectQuery)
-        Dim y As System.Management.ManagementObjectCollection
-        y = searcher.Get
-        For Each proc As ManagementObject In y
-            Dim s(1) As String
-            proc.InvokeMethod("GetOwner", CType(s, Object()))
-            Dim n As String = proc("Name").ToString()
-            If n = ProcessName & ".exe" Then
-                ' Return ("User: " & s(1) & "\\" & s(0))
-                RetValue = s(0)
-            End If
-        Next
-        Return RetValue
+                    Return False
+                End Try
+            Next
+        Catch ex As Exception
+
+            Return False
+        End Try
+
+        Return True
     End Function
 
     Public Function GetWinUserName() As String
