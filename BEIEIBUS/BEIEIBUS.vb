@@ -1037,6 +1037,7 @@ Public Class CLEIEIBUS
             If strDropBoxBin <> "" Then
 
                 Dim user As String = GetWinUserName()
+                Dim trovatoMioProcesso As Boolean = False
 
                 Try
                     Dim query As String = "SELECT * FROM Win32_Process WHERE Name = '" + "Dropbox.exe" + "'"
@@ -1059,6 +1060,7 @@ Public Class CLEIEIBUS
                                 process.InvokeMethod(observer, "Terminate", Nothing)
                             Else
                                 ' se sono qui e' perche' sono sul mio processo
+                                trovatoMioProcesso = True
                             End If
                         Catch ex As Exception
 
@@ -1070,6 +1072,9 @@ Public Class CLEIEIBUS
                     Return False
                 End Try
 
+                If Not trovatoMioProcesso Then
+                    System.Diagnostics.Process.Start(strDropBoxBin)
+                End If
 
             End If
 
@@ -1090,41 +1095,7 @@ Public Class CLEIEIBUS
             LogStop()
         End Try
     End Function
-    Public Function KillProcessByUser(ByRef user As String) As Object
-        Try
-            'System.Management instances needed
-            ' Dim query As New SelectQuery("Win32_Process")
-            Dim query As String = "SELECT * FROM Win32_Process WHERE Name = '" + "Dropbox.exe" + "'"
-
-            Dim searcher As New ManagementObjectSearcher(query)
-            Dim observer As New ManagementOperationObserver()
-
-            'loop through each item in the collection
-            For Each process As ManagementObject In searcher.Get()
-                Try
-                    'this string will hold the information returned
-                    'from InvokeMethod("GetOwner")
-                    Dim info(1) As String
-                    'get the information on the current process
-                    process.InvokeMethod("GetOwner", CType(info, Object()))
-
-                    'now make sure the owner is correct
-                    If info(0).ToString().ToUpper() = user.ToUpper() Then
-                        'kill the process
-                        process.InvokeMethod(observer, "Terminate", Nothing)
-                    End If
-                Catch ex As Exception
-
-                    Return False
-                End Try
-            Next
-        Catch ex As Exception
-
-            Return False
-        End Try
-
-        Return True
-    End Function
+   
 
     Public Function GetWinUserName() As String
         If TypeOf My.User.CurrentPrincipal Is 
