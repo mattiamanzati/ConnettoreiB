@@ -1073,7 +1073,20 @@ Public Class CLEIEIBUS
                 End Try
 
                 If Not trovatoMioProcesso Then
-                    System.Diagnostics.Process.Start(strDropBoxBin)
+
+
+                    Dim startInfo As New ProcessStartInfo(strDropBoxBin)
+                    startInfo.Arguments = "/home"
+
+                    startInfo.WorkingDirectory = Path.GetDirectoryName(strDropBoxBin)
+                    startInfo.WindowStyle = ProcessWindowStyle.Hidden
+
+                    startInfo.CreateNoWindow = False
+
+
+                    Process.Start(startInfo)
+
+                    ' System.Diagnostics.Process.Start(strDropBoxBin)
                 End If
 
             End If
@@ -4395,14 +4408,14 @@ Public Class CLEIEIBUS
             ' ==============================================
 
             ' Gestisco il tipo ordine: R = Ordine, Q = Preventivo
-            strTipoOrdine = "R"
+
             Select Case Ordine.ext_cod_tipo_ord
                 Case "CLI-MOBORD", "CLI-IGAMMAORD", "R"
                     strTipoOrdine = "R"
                 Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P"
                     strTipoOrdine = "Q"
                 Case Else
-                    strTipoOrdine = Ordine.ext_cod_tipo_ord
+                    strTipoOrdine = "R"
             End Select
 
 
@@ -4499,6 +4512,7 @@ Public Class CLEIEIBUS
             oCleGsor.strContrFidoInsolinInsDoc = "N"
             oCleGsor.bConsentiCreazDocumCliFornBloccoFisso = True
             oCleGsor.bSegnalaCreazDocumCliFornBloccati = False  ' false x non segnalare 
+
 
             ' Disabilitazione blocchi di interfaccia
             oCleGsor.bDisabilitaCheckDateAnteriori = True
@@ -4607,7 +4621,7 @@ Public Class CLEIEIBUS
                         strUnitaMisura = r.cod_um_1
                         dQuantita = NTSCDec(r.qta)
                         dPrezzo = NTSCDec(r.prezzo)
-                    Case 2 Or 3
+                    Case 2, 3
                         'strUnitaMisuraP = r.cod_um_1
                         dColli = NTSCDec(r.qta_2)
                         strUnitaMisura = r.cod_um_2
