@@ -1,5 +1,8 @@
 Imports System.Data
 Imports System.IO
+Imports ApexNetLIB
+
+
 Imports NTSInformatica.CLN__STD
 
 Public Class FRMIEIBUS
@@ -754,12 +757,24 @@ Riprova:
 
 #Region "Eventi di Form"
 
-    Private Sub FRMIEIBUS_Disposed(sender As Object, e As EventArgs) Handles Me.Disposed
+    Private Sub FRMIEIBUS_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+
+        WEDOLogger.WriteToRegistry("L'evento Disposed del form è scattato. Il connettore è stato chiuso")
+
         If IBUpgradeAvailable And IBNewVersionDownloaded Then
+            WEDOLogger.WriteToRegistry("Creo ibupdate.bat e lo eseguo")
             Dim funge As Boolean = IBRunUpdate()
+
+            If Not funge Then
+                WEDOLogger.WriteToRegistry("IBRunUpdate() ha fallito la copia degli aggiornamenti da " & IBUpdate.vars_unzipdir, EventLogEntryType.Error)
+            End If
         End If
 
+
     End Sub
+
+
+
     Public Overridable Sub FRMIEIBUS_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
         Try
@@ -808,20 +823,28 @@ Riprova:
             ' Esiste una nuova veriosne del connettore da scaricare ?
             If AutoUpdate = "1" Then
                 IBUpgradeAvailable = IBCheckForNewVersion(URLiBUpdate)
+                If IBUpgradeAvailable Then
+                    WEDOLogger.WriteToRegistry(String.Format("E' stato rilevato un nuovo aggiornamento. Esistente:{0}, Disponibile: {1}", IBUpdate.vars_local_version, IBUpdate.vars_newVersion))
+                End If
+            Else
+                WEDOLogger.WriteToRegistry(String.Format("L' aggiornamento automatico è stato disattivato. AutoUpdate: {0}", AutoUpdate.ToString()))
             End If
+
+
 
             ' Se esiste per prima cosa la scarico
             If IBUpgradeAvailable Then
                 IBNewVersionDownloaded = IBUpdate.DownloadAndUnzip()
+                WEDOLogger.WriteToRegistry(String.Format("Scarico e decomprimo la nuova versione in {0}.", IBUpdate.vars_unzipdir))
                 ' ...inoltre se non sono in modalità batch avverto l'utente
                 If Not oApp.Batch And IBNewVersionDownloaded Then
                     oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129090, "E' disponibile una nuova versione del connettore di IB" & vbCrLf & "Esci da Business per effettuare l'aggiornamento"))
                 End If
             End If
 
-  
+
             lblRelease.Text = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
-  
+
 
             'CLI;FOR;ART;LIS;SCO;DOC;MAG;CIT;PAG;COO;
             If CheckboxAttivi.Contains("CLI;") Then
@@ -1201,12 +1224,15 @@ Riprova:
     ''' <remarks></remarks>
     Public Function IBCheckForNewVersion(ByVal URLiBUpdate As String) As Boolean
         Try
+            'Dim UpdFIle As String = "iBUpdateDEBUG.txt"
+            Dim UpdFile As String = "iBUpdate.txt"
+
             ' Leggo la versione del file BNIEIBUS
             Dim strLocalVersion As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
 
             ' Imposto le variabili di istanza del downloader
             IBUpdate.vars_url_update = URLiBUpdate & "/iBUpdate.zip"
-            IBUpdate.vars_url_version = URLiBUpdate & "/iBUpdate.txt"
+            IBUpdate.vars_url_version = URLiBUpdate & "/" & UpdFile
             IBUpdate.vars_local_version = strLocalVersion
             IBUpdate.vars_unzipdir = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
 
@@ -1224,28 +1250,30 @@ Riprova:
 
         Try
 
-            If File.Exists(oApp.NetDir & "\ibupdate.bat") Then
-                File.Delete(oApp.NetDir & "\ibupdate.bat")
+            Dim IBUpdateFile As String = IBUpdate.vars_unzipdir & "\ibupdate.bat"
+
+            ' Se esiste cancello il file .bat precedente (Situato as esmepio sotto c:\bus\agg)
+            If File.Exists(IBUpdateFile) Then
+                File.Delete(IBUpdateFile)
             End If
 
+            ' Leggo il batch da eseguire dalla risorsa embedded dentro l'assembly 
             Dim ib_update_batch As String = ApexNetLIB.EmbeddedResource.GetString(GetType(FRMIEIBUS).Assembly, "ibupdate.bat", oApp.NetDir)
 
+            ' Nel batch imposto la cartella sorgente e quella destinazione
             ib_update_batch = String.Format(ib_update_batch, IBUpdate.vars_unzipdir & "\iBUpdate", oApp.NetDir)
 
-
-
-            Dim objWriter As New System.IO.StreamWriter(IBUpdate.vars_unzipdir & "\ibupdate.bat", False)
+            ' Scrivo il file batch nella cartella Agg 
+            Dim objWriter As New System.IO.StreamWriter(IBUpdateFile, False)
             objWriter.WriteLine(ib_update_batch)
             objWriter.Close()
             objWriter.Dispose()
 
-            Dim startInfo As New ProcessStartInfo(String.Format("{0}\ibupdate.bat", IBUpdate.vars_unzipdir))
+            ' Esegui il batch
+            Dim startInfo As New ProcessStartInfo(IBUpdateFile)
             startInfo.WindowStyle = ProcessWindowStyle.Hidden
-
             startInfo.CreateNoWindow = True
-
             Process.Start(startInfo)
-
 
             Return True
 
@@ -1341,4 +1369,9 @@ Riprova:
     Protected Overrides Sub Finalize()
         MyBase.Finalize()
     End Sub
+
+    Private Sub LogWrite(p1 As String, p2 As Boolean)
+        Throw New NotImplementedException
+    End Sub
+
 End Class

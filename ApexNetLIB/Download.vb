@@ -18,7 +18,7 @@ Public Class Download
     Public vars_url_update As String = ""
     Public vars_url_version As String = ""
     Public vars_local_version As String = ""
-    Public vars_newVersion As String
+    Public vars_newVersion As String = ""
 
     Private mCurrentFile As String = String.Empty
 
@@ -65,9 +65,13 @@ Public Class Download
             Dim tokenMyVersion() As String = Nothing
             Dim myVersionString As String = ""
 
+            Dim newver_with_dot As String = ""
+
             Dim client As WebClient = New System.Net.WebClient() 'Create new var to get newest version available
 
-            tokenNewVersion = client.DownloadString(UrlVersionUpdate).Split("."c)
+            newver_with_dot = client.DownloadString(UrlVersionUpdate)
+            tokenNewVersion = newver_with_dot.Split("."c)
+
             newVersionString = tokenNewVersion(0).PadLeft(1, "0"c) + tokenNewVersion(1).PadLeft(2, "0"c) + tokenNewVersion(2).PadLeft(2, "0"c) + tokenNewVersion(3).PadLeft(3, "0"c)
 
             tokenMyVersion = CurrentVersion.Split("."c)
@@ -78,7 +82,7 @@ Public Class Download
             Dim myVersion As Integer = CInt(myVersionString)
 
             If CLng(newVersion) > CLng(myVersion) Then 'Check if newest version is > than installed version
-                vars_newVersion = newVersionString
+                vars_newVersion = newver_with_dot
                 Return True 'If so, return true
             Else
                 Return False 'Otherwise, return false

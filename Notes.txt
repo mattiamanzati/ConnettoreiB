@@ -1,7 +1,7 @@
-Parametri di lancio
+Parametri di lancio  
 ===================
-Interfaccia: . . . Business2015
-Servizio: admin . IBVARESEDIS business2015 BNIEIBUS /B C:\Bus.Business2015\Asc\BNIEIBUS.BUB
+Con Interfaccia: . . . Business2015
+Da batch: admin . IBVARESEDIS business2015 BNIEIBUS /B C:\Bus.Business2015\Asc\BNIEIBUS.BUB
 
 Tipi documento di Business
 ============================
