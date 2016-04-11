@@ -24,9 +24,11 @@ Public Class Download
 
     Public Function DownloadAndUnzip() As Boolean
         Try
-            If Directory.Exists(vars_unzipdir) Then
-                Directory.Delete(vars_unzipdir, True)
-            End If
+
+
+            ' If Directory.Exists(vars_unzipdir) Then
+            '   Directory.Delete(vars_unzipdir, True)
+            ' End If
 
             Dim UrlFileUpdate As String = vars_url_update
 
