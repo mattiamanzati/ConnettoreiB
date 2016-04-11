@@ -759,8 +759,6 @@ Riprova:
 
     Private Sub FRMIEIBUS_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
 
-        WEDOLogger.WriteToRegistry("L'evento Disposed del form è scattato. Il connettore è stato chiuso")
-
         If IBUpgradeAvailable And IBNewVersionDownloaded Then
             WEDOLogger.WriteToRegistry("Creo ibupdate.bat e lo eseguo")
             Dim funge As Boolean = IBRunUpdate()
