@@ -4614,19 +4614,22 @@ Public Class CLEIEIBUS
                     Case "2" : dTipoUM = 2 ' Unità di misura secondaria
                     Case "3" : dTipoUM = 3 ' Codice confezione
                 End Select
+
                 Select Case dTipoUM
                     Case 1
                         'strUnitaMisuraP = r.cod_um_1
-                        dColli = NTSCDec(r.qta)
-                        strUnitaMisura = r.cod_um_1
-                        dQuantita = NTSCDec(r.qta)
-                        dPrezzo = NTSCDec(r.prezzo)
+                        dColli = NTSCDec(r.qta) ' Quantità inserita dall'agente per la presa dell'ordine
+                        strUnitaMisura = r.cod_um_1 ' Unità di misura scelta dall'agente per la presa dell'ordine
+                        dPrezzo = NTSCDec(r.prezzo) ' Prezzoscelto dall'agente durante la presa dell'ordine
+
+                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale (Piu' avanti è stata commentata. Lascio che sia Business a evincerla)
                     Case 2, 3
                         'strUnitaMisuraP = r.cod_um_1
-                        dColli = NTSCDec(r.qta_2)
-                        strUnitaMisura = r.cod_um_2
-                        dQuantita = NTSCDec(r.qta)
-                        dPrezzo = NTSCDec(r.prezzo)
+                        dColli = NTSCDec(r.qta_2) ' Quantità inserita dall'agente per la presa dell'ordine
+                        strUnitaMisura = r.cod_um_2 ' Unità di misura scelta dall'agente per la presa dell'ordine
+                        dPrezzo = NTSCDec(r.prezzo) ' Prezzoscelto dall'agente durante la presa dell'ordine
+
+                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale (Piu' avanti è stata commentata. Lascio che sia Business a evincerla)
                 End Select
 
 
@@ -4699,7 +4702,7 @@ Public Class CLEIEIBUS
                     !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
                     !ec_unmis = NTSCStr(strUnitaMisura)
                     !ec_colli = NTSCDec(dColli)
-                    !ec_quant = NTSCDec(dQuantita)
+                    ' !ec_quant = NTSCDec(dQuantita) ' Lascio che sia Business a calcola la quantità sulla base dei colli specificati dall'agente
                     !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                     !ec_scont1 = NTSCDec(r.sconto_1)
                     !ec_scont2 = NTSCDec(r.sconto_2)
