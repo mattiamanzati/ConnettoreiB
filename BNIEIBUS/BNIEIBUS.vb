@@ -833,7 +833,7 @@ Riprova:
             ' Se esiste per prima cosa la scarico
             If IBUpgradeAvailable Then
                 IBNewVersionDownloaded = IBUpdate.DownloadAndUnzip()
-                WEDOLogger.WriteToRegistry(String.Format("Scarico e decomprimo la nuova versione in {0}.", IBUpdate.vars_unzipdir))
+                WEDOLogger.WriteToRegistry(String.Format("Scarico e decomprimo la nuova versione in {0}.", IBUpdate.vars_unzipped_folder))
                 ' ...inoltre se non sono in modalità batch avverto l'utente
                 If Not oApp.Batch And IBNewVersionDownloaded Then
                     oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129090, "E' disponibile una nuova versione del connettore di IB" & vbCrLf & "Esci da Business per effettuare l'aggiornamento"))
@@ -1222,17 +1222,17 @@ Riprova:
     ''' <remarks></remarks>
     Public Function IBCheckForNewVersion(ByVal URLiBUpdate As String) As Boolean
         Try
-            'Dim UpdFIle As String = "iBUpdateDEBUG.txt"
-            Dim UpdFile As String = "iBUpdate.txt"
-
+     
             ' Leggo la versione del file BNIEIBUS
             Dim strLocalVersion As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
 
             ' Imposto le variabili di istanza del downloader
             IBUpdate.vars_url_update = URLiBUpdate & "/iBUpdate.zip"
-            IBUpdate.vars_url_version = URLiBUpdate & "/" & UpdFile
+            IBUpdate.vars_url_version = URLiBUpdate & "/iBUpdate.txt"
             IBUpdate.vars_local_version = strLocalVersion
-            IBUpdate.vars_unzipdir = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
+            IBUpdate.vars_unzipdir = Path.GetTempPath()
+
+            ' IBUpdate.vars_unzipdir = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
 
             Return IBUpdate.NewVersionAvailable()
         Catch ex As Exception
@@ -1259,7 +1259,7 @@ Riprova:
             Dim ib_update_batch As String = ApexNetLIB.EmbeddedResource.GetString(GetType(FRMIEIBUS).Assembly, "ibupdate.bat", oApp.NetDir)
 
             ' Nel batch imposto la cartella sorgente e quella destinazione
-            ib_update_batch = String.Format(ib_update_batch, IBUpdate.vars_unzipdir & "\iBUpdate", oApp.NetDir)
+            ib_update_batch = String.Format(ib_update_batch, IBUpdate.vars_unzipped_folder + "\iBUpdate", oApp.NetDir)
 
             ' Scrivo il file batch nella cartella Agg 
             Dim objWriter As New System.IO.StreamWriter(IBUpdateFile, False)

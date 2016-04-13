@@ -19,36 +19,43 @@ Public Class Download
     Public vars_url_version As String = ""
     Public vars_local_version As String = ""
     Public vars_newVersion As String = ""
+    Public vars_unzipped_folder As String = ""
 
     Private mCurrentFile As String = String.Empty
 
     Public Function DownloadAndUnzip() As Boolean
+        ' Se hiamo il download senza parametri, assume che:
+        ' 1. La cartella in cui estrarre i files e' quella temporanea di Windows
+        ' 2. L'url da cui prelevare i files e' quelle di ib (caso non gestito)
+
+        vars_url_update = "http://lm.apexnet.it/iBUpdate/iBUpdate.zip"
+        ' vars_url_version = "http://lm.apexnet.it/iBUpdate/iBUpdate.txt"
+
+        vars_unzipdir = Path.GetTempPath
+
+        Return DownloadAndUnzip(vars_url_update, vars_unzipdir)
+
+    End Function
+
+    Public Function DownloadAndUnzip(ByVal urlToDownload As String, ByVal unzipdir As String) As Boolean
         Try
 
+            Dim tempName As String = Path.GetTempPath + "ib-" + vars_newVersion + "-" + Path.GetRandomFileName()
+            Dim localZipFile As String = tempName + ".zip"
+            Dim localZipFolder As String = tempName
 
-            ' If Directory.Exists(vars_unzipdir) Then
-            '   Directory.Delete(vars_unzipdir, True)
-            ' End If
+            DownloadFileWithProgress(urlToDownload, localZipFile)
 
-            Dim UrlFileUpdate As String = vars_url_update
-
-            Dim temppath As String = CStr(IIf(Environ$("tmp") <> "", Environ$("tmp"), Environ$("temp")))
-            'Generate random number to have an unique filename
-            Dim rand As Integer = CInt(Int((10000 - 1 + 1) * Rnd()) + 1)
-            'Get filename of file to be downloaded
-            Dim dldname As String = Path.GetFileName(UrlFileUpdate)
-            'Download the file
-            DownloadFileWithProgress(UrlFileUpdate, temppath.ToString + "\" + rand.ToString + dldname)
-            'Create new var with zip file
-            Dim a As New Zip.ZipFile(temppath.ToString + "\" + rand.ToString + dldname)
+            Dim a As New Zip.ZipFile(localZipFile)
             'for each loop for every file in zip
             For Each zipfile As Zip.ZipEntry In a
                 'If this file already exist, delete it
-                If My.Computer.FileSystem.FileExists(vars_unzipdir + "\" + zipfile.FileName) Then
-                    My.Computer.FileSystem.DeleteFile(vars_unzipdir + "\" + zipfile.FileName)
+                If My.Computer.FileSystem.FileExists(localZipFolder) Then
+                    My.Computer.FileSystem.DeleteFile(localZipFolder)
                 End If
-                zipfile.Extract(vars_unzipdir) 'Extract this file
+                zipfile.Extract(localZipFolder) 'Extract this file
             Next
+            vars_unzipped_folder = localZipFolder
             Return True
         Catch ex As Exception
             Return False
