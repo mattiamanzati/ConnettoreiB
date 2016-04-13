@@ -4622,14 +4622,14 @@ Public Class CLEIEIBUS
                         strUnitaMisura = r.cod_um_1 ' Unità di misura scelta dall'agente per la presa dell'ordine
                         dPrezzo = NTSCDec(r.prezzo) ' Prezzoscelto dall'agente durante la presa dell'ordine
 
-                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale (Piu' avanti è stata commentata. Lascio che sia Business a evincerla)
+                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale
                     Case 2, 3
                         'strUnitaMisuraP = r.cod_um_1
                         dColli = NTSCDec(r.qta_2) ' Quantità inserita dall'agente per la presa dell'ordine
                         strUnitaMisura = r.cod_um_2 ' Unità di misura scelta dall'agente per la presa dell'ordine
                         dPrezzo = NTSCDec(r.prezzo) ' Prezzoscelto dall'agente durante la presa dell'ordine
 
-                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale (Piu' avanti è stata commentata. Lascio che sia Business a evincerla)
+                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale
                 End Select
 
 
@@ -4702,7 +4702,7 @@ Public Class CLEIEIBUS
                     !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
                     !ec_unmis = NTSCStr(strUnitaMisura)
                     !ec_colli = NTSCDec(dColli)
-                    ' !ec_quant = NTSCDec(dQuantita) ' Lascio che sia Business a calcola la quantità sulla base dei colli specificati dall'agente
+                    !ec_quant = NTSCDec(dQuantita) ' Lascio che sia Business a calcola la quantità sulla base dei colli specificati dall'agente
                     !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                     !ec_scont1 = NTSCDec(r.sconto_1)
                     !ec_scont2 = NTSCDec(r.sconto_2)
