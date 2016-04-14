@@ -1223,13 +1223,12 @@ Riprova:
     Public Function IBCheckForNewVersion(ByVal URLiBUpdate As String) As Boolean
         Try
      
-            ' Leggo la versione del file BNIEIBUS
-            Dim strLocalVersion As String = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
+            ' Leggo la versione del file BNIEIBUS 
+            IBUpdate.vars_local_version = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
 
             ' Imposto le variabili di istanza del downloader
             IBUpdate.vars_url_update = URLiBUpdate & "/iBUpdate.zip"
             IBUpdate.vars_url_version = URLiBUpdate & "/iBUpdate.txt"
-            IBUpdate.vars_local_version = strLocalVersion
             IBUpdate.vars_unzipdir = Path.GetTempPath()
 
             ' IBUpdate.vars_unzipdir = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
