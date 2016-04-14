@@ -765,7 +765,15 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    ' Solo per API
+    ''' <summary>
+    ''' Crea una destinazione per un cliente
+    ''' </summary>
+    ''' <param name="strDitta">Codice della ditta</param>
+    ''' <param name="Dest">Struttura dati con i valori della destinazione da creare</param>
+    ''' <param name="Mastro">Codice Mastro (NON USATO)</param>
+    ''' <param name="CodClienteCompleto">Codice cliente da associare alla destinazione.</param>
+    ''' <returns>Ritorna true se la creazione è andata a buon fine</returns>
+    ''' <remarks></remarks>
     Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodClienteCompleto As Integer) As Boolean
         Dim strSQL As String = ""
 
@@ -779,11 +787,10 @@ Public Class CLDIEIBUS
             'Dest.provincia_consegna
             'Dest.telefono_consegna
 
-
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliDest.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
             strSQL = strSQL.Replace("@dd_conto@", ToSql(CodClienteCompleto.ToString()))
-            strSQL = strSQL.Replace("@dd_coddest@", ToSql("1"))
+            ' strSQL = strSQL.Replace("@dd_coddest@", ToSql("1"))
             strSQL = strSQL.Replace("@dd_nomdest@", ToSql(Dest.des_citta_consegna, 50))
 
             strSQL = strSQL.Replace("@dd_inddest@", ToSql(Dest.indirizzo_consegna, 70))
@@ -823,6 +830,14 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    ''' <summary>
+    ''' Genera una entry in anagrafica generale. Da chiamare solo se il cliente ha le anagrafiche generali attivate
+    ''' </summary>
+    ''' <param name="strDitta">Codice della Ditta</param>
+    ''' <param name="CodCLiente">Codice del cliente per il quala creare l'anagrafica generale</param>
+    ''' <param name="CodAnagen">Ritorna il codice dell'anagrafica generale creata</param>
+    ''' <returns>Ritorna true se la creazione è andata a buon fine</returns>
+    ''' <remarks></remarks>
     Public Overridable Function InsertAnagenFromCliData(ByVal strDitta As String, ByVal CodCLiente As String, ByRef CodAnagen As Integer) As Boolean
 
         Dim nNumero As Integer = 0
@@ -865,7 +880,15 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
-    ' Solo per API
+    ''' <summary>
+    ''' Crea un lead partendo da un cliente esistente
+    ''' </summary>
+    ''' <param name="strDitta">Codice della ditta</param>
+    ''' <param name="CodCLiente">Codice del cliente per il quale creare il lead</param>
+    ''' <param name="CodOperatore">Codice dell'operatore da associare</param>
+    ''' <param name="CodLead">Ritorna il codice del lead generato</param>
+    ''' <returns>Ritorna true se la creazione è andata a buon fine</returns>
+    ''' <remarks></remarks>
     Public Overridable Function InsertLeadFromCliData(ByVal strDitta As String, ByVal CodCLiente As String, ByVal CodOperatore As String, ByRef CodLead As Integer) As Boolean
 
         Dim nNumero As Integer = 0
@@ -902,6 +925,16 @@ Public Class CLDIEIBUS
     End Function
 
     ' Solo per API
+    ''' <summary>
+    ''' Inserisce un cliente nella relativa tabella anagra
+    ''' </summary>
+    ''' <param name="strDitta">Codice della Ditta</param>
+    ''' <param name="ClienteData">Struttura dati che contiene i dati del cliente (da WS)</param>
+    ''' <param name="CodAgente">Codice dell'agente da associare al cliente</param>
+    ''' <param name="Mastro">Codice Mastro (per il calcolo del codice cliente)</param>
+    ''' <param name="CodClienteCompleto">Ritorna il Codice del cliente inserito</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
     Public Overridable Function InsertCliData(ByVal strDitta As String, ByVal ClienteData As Clienti, ByVal CodAgente As String, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
 
         Dim nNumero As Integer = 0
@@ -962,13 +995,9 @@ Public Class CLDIEIBUS
             strSQL = strSQL.Replace("@an_codpcon@", ToSql(CodPianoConti))
             strSQL = strSQL.Replace("@an_agente@", ToSql(CodAgente))
 
-
-
-
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
             CodClienteCompleto = CInt(CodiceClienteCompleto)
-
 
             If nNumero = 0 Then
                 Return False

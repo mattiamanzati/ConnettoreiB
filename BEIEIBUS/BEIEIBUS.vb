@@ -837,20 +837,29 @@ Public Class CLEIEIBUS
 
             'Copio i files dei tracciati nella dir di dropbox
             '----------------------------------------------------
+            ' NOTA: Se si crea una immagine con nome empty-image.jpg nella cartella immagini di Business,
+            ' Questa viene mostrata nel catalogo di iB per tutte gli articoli che non hanno una foto
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia tracciati in " & strDropBoxDir))
             For i = 0 To arFileGen.Count - 1
+
                 ' Mi occupo dei dati del catalogo
                 If arFileGen(i).ToString.ToLower.EndsWith(cIMP_CATALOGO) Then
+                    ' Cancello il file nella cartella dropbox
                     File.Delete(strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
+                    ' Se esiste un file immagine nella cartella di Business...
                     If File.Exists(arFileGen(i).ToString) Then
+                        '... lo copio nella cartella dropbox
                         System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
                     End If
+
+                    ' Mi occupo dei dati dei reports
                 ElseIf arFileGen(i).ToString.ToLower.EndsWith(cIMP_REPORT) Then
                     File.Delete(strDropBoxDir & "\reports\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
                     If File.Exists(arFileGen(i).ToString) Then
                         System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\reports\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
                     End If
                 Else
+
                     ' Mi occupo dei dati gestionale
                     File.Delete(strDropBoxDir & "\gestionale\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
                     If File.Exists(arFileGen(i).ToString) Then
@@ -4273,6 +4282,7 @@ Public Class CLEIEIBUS
 
                     If t.cod_lead = "" Then
                         CodLead = 0
+
                         oCldIbus.InsertLeadData(strDittaCorrente, t, CodLead)
                         LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
 
@@ -5719,6 +5729,7 @@ NEXT_FILE:
                         ' Il cod ditta che e' corretto ?
                         If dR("COD_DITTA").ToString = strDittaCorrente Then
                             If dR("COD_LEAD").ToString = "" Then
+
                                 oCldIbus.InsertLead(strDittaCorrente, dR, CodLead)
                                 LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
 
