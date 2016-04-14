@@ -4038,6 +4038,7 @@ Public Class CLEIEIBUS
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}, Unique ID: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
+
                             InviaPushByUsername(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
                         Else
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}, Unique ID: {2}", t.cod_clifor, t.cod_agente, t.unique_id))

@@ -419,7 +419,7 @@ Public Class CLDIEIBUS
                 nNumero = 0
                 nNumero = LegNuma(strDitta, "C8", " ", 0, True)
                 nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
- 
+
                 ' Dati di default
                 If String.IsNullOrEmpty(Lead.cod_agente_lead) Then
                     Lead.cod_agente_lead = "0"
@@ -775,7 +775,13 @@ Public Class CLDIEIBUS
     ''' <returns>Ritorna true se la creazione è andata a buon fine</returns>
     ''' <remarks></remarks>
     Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodClienteCompleto As Integer) As Boolean
+        Dim strSQLDest As String = ""
         Dim strSQL As String = ""
+        'Dim dttDestinazioniRiservate As New DataTable
+        'Dim cod_dest_free As Integer
+        'Dim results() As DataRow
+
+        Dim CodDestinazione As Integer
 
         Try
             'Dest.cap_consegna
@@ -787,10 +793,26 @@ Public Class CLDIEIBUS
             'Dest.provincia_consegna
             'Dest.telefono_consegna
 
+            ' Cerco un cod_destinazione valido
+            ' ---------------------------------
+
+            'strSQLDest = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCodDestRiservate.sql", oApp.NetDir)
+            'dttDestinazioniRiservate = OpenRecordset(strSQLDest, CLE__APP.DBTIPO.DBAZI)
+
+            'For cod_dest_free = 1 To 1000
+            'results = dttDestinazioniRiservate.Select("xx_cod_dest_ris = " + cod_dest_free.ToString)
+
+            ' If Len(results) = 0 Then
+            'Exit For
+            'End If
+            ' Next
+
+
+
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliDest.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
             strSQL = strSQL.Replace("@dd_conto@", ToSql(CodClienteCompleto.ToString()))
-            ' strSQL = strSQL.Replace("@dd_coddest@", ToSql("1"))
+            'strSQL = strSQL.Replace("@dd_coddest@", ToSql(cod_dest_free.ToString()))
             strSQL = strSQL.Replace("@dd_nomdest@", ToSql(Dest.des_citta_consegna, 50))
 
             strSQL = strSQL.Replace("@dd_inddest@", ToSql(Dest.indirizzo_consegna, 70))
@@ -820,9 +842,12 @@ Public Class CLDIEIBUS
             'strSQL = strSQL.Replace("@dd_latitud@", ToSql(Ordine))
             'strSQL = strSQL.Replace("@dd_longitud@", ToSql(Ordine))
 
+            ' Dati di ritorno
+            'CodDestinazione = cod_dest_free
+
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
-            '    Execute(String.Format("update anagra set an_destin=1 where codditt={0} and an_conto={1} and an_tipo = 'C'", ToSql(strDitta), ToSql(Mastro.ToString() + CodCliente.ToString())), CLE__APP.DBTIPO.DBAZI)
+            ' Execute(String.Format("update anagra set an_destin=1 where codditt={0} and an_conto={1} and an_tipo = 'C'", ToSql(strDitta), ToSql(Mastro.ToString() + CodCliente.ToString())), CLE__APP.DBTIPO.DBAZI)
 
             Return True
         Catch ex As Exception

@@ -1,4 +1,28 @@
-﻿insert into leads (
+﻿declare 
+   @dd_current int
+
+/* Ciclo per ogni destinazione diversa */
+declare C2 cursor local fast_forward read_only FOR
+  select 
+     0 AS xx_an_dest
+  union all
+  select
+     A.dd_coddest
+  from
+     destdiv A
+  where 1=1
+  and (A.an_conto = @conto@)
+
+  open C2
+
+  fetch next from C2 into @dd_current
+
+  while @@fetch_status=0 
+  begin
+  fetch next from C2 into @dd_current
+
+  /* Per ogni destinazione diversa creo un lead con */ 
+  insert into leads (
 		le_codlead,
 		codditt,
 		le_descr1,
@@ -52,8 +76,8 @@
 		le_privacy,
 		le_contattato,
 		le_nonint
-)
-select 
+  )
+  select 
 		@codlead@,
 		codditt,
 		an_descr1,
@@ -94,7 +118,7 @@ select
 		an_titolo,
 		an_libstr1,
 		an_libint1,
-		'0',
+	    @dd_current, 
 		an_clascon,
 		an_listino,
 		getdate(),
@@ -107,9 +131,15 @@ select
 		' ',
 		'S',
 		'N'
-from 
-	anagra a
-where 1=1 
+  from 
+	  anagra a
+  where 1=1 
 	and codditt = @ditta@
 	and an_tipo = 'C' 
     and an_conto = @conto@
+
+
+/* Fine ciclo */
+end
+close C2
+deallocate C2
