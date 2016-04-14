@@ -4066,6 +4066,7 @@ Public Class CLEIEIBUS
 
     End Function
 
+
     Public Overridable Function Elabora_ImportAnagraAPI() As Boolean
 
         ' Variabili di uso locale
@@ -5181,8 +5182,9 @@ Public Class CLEIEIBUS
 
 #End Region
 
-#Region "Import da Tracciati"
+#Region "Import da Tracciati (metodi obsoleti non più manutenuti)"
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportOrdiniAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportOrdini() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5506,6 +5508,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportAnagraAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportAnagra() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5589,6 +5592,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportCliforNoteAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportCliforNote() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5702,6 +5706,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportLeadAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportLead() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5764,6 +5769,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportAnagraAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportLeadNote() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5821,6 +5827,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare GeneraOrdiniAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function GeneraOrdini(ByRef dttIn As DataTable, ByRef NumOrd As Integer) As Boolean
         'nel datatabase vengono passati gli ordini della ditta corrente
         'devo generare più ordini, raggruppando per cliente/data ordine
