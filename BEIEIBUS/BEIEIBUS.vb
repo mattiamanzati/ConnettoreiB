@@ -1252,6 +1252,7 @@ Public Class CLEIEIBUS
 
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare GestisciEventiEntityGsorg")> _
     Public Overridable Sub GestisciEventiEntityPERS(ByVal sender As Object, ByRef e As NTSEventArgs)
         'Dim fErr As StreamWriter = Nothing
         'Dim fiErr As FileInfo = Nothing
@@ -1285,6 +1286,7 @@ Public Class CLEIEIBUS
             Dim strErr As String = GestError(ex, Me, "", oApp.InfoError, oApp.ErrorLogFile, True)
         End Try
     End Sub
+
 
     Public Overridable Sub GestisciEventiEntityGsor(ByVal sender As Object, ByRef e As NTSEventArgs)
         Try
@@ -3978,6 +3980,7 @@ Public Class CLEIEIBUS
 
         Dim msg As String = ""
         Dim NewCodCli As Integer
+        Dim NewCodDest As Integer
 
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
 
@@ -3993,16 +3996,16 @@ Public Class CLEIEIBUS
 
         Dim OrdersData As ws_rec_orders = Nothing
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
-
-
-
+    
         Try
             If RetVal AndAlso OrdersData IsNot Nothing Then
 
                 For Each t As TestataOrdineExport In OrdersData.testate
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Ordini.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Ordini.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     'ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import ordine cliente {0} - [{1}]", t.cod_clifor, t.guid_test_ord)))
@@ -4019,10 +4022,12 @@ Public Class CLEIEIBUS
                         ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
                         If t.cod_clifor Is Nothing Then
                             ' Esempio : GeneraClienteAPI con Mastro 126 ritorna 
-                            GeneraClienteAPI(t, CInt(strMastro), NewCodCli)
 
+                            GeneraClienteAPI(t, CInt(strMastro), NewCodCli, NewCodDest)
                             t.cod_clifor = NewCodCli.ToString()
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}, Unique ID: {4}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente, t.unique_id))
+                            t.cod_destinazione = NewCodDest.ToString()
+
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente [{0} - {1}], Inserito da agente: [{2}], Utente: [{3}], Unique ID: [{4}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente, t.unique_id))
                             LogWrite(msg, True)
                         End If
 
@@ -4035,13 +4040,13 @@ Public Class CLEIEIBUS
                             ' Procedura per modificare l'ordine appena inserito
                             PostInsert_Ordine(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
 
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}, Unique ID: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente, t.unique_id))
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero: [{0}], Cliente: [{1}], Agente: [{2}], Unique ID: [{3}]", tNumOrd.ToString, t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
 
                             InviaPushByUsername(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
                         Else
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}, Unique ID: {2}", t.cod_clifor, t.cod_agente, t.unique_id))
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: [{0}], Agente: [{1}], Unique ID: [{2}]", t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(99, msg, t.cod_clifor)
                         End If
@@ -4094,7 +4099,9 @@ Public Class CLEIEIBUS
                 For Each t As TestataCf In CliforData.clienti
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Anagra.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Anagra.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' --------------
@@ -4165,7 +4172,9 @@ Public Class CLEIEIBUS
                 For Each t As TestataCfNote In CliforNoteData.note
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Note Clienti.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Note Clienti.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' ------------------------------
@@ -4277,7 +4286,9 @@ Public Class CLEIEIBUS
                 For Each t As TestataLeadsExport In LeadsData.leads
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Lead.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Lead.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' --------------
@@ -4351,7 +4362,9 @@ Public Class CLEIEIBUS
                 For Each t As TestataLeadsNoteExport In LeadNoteData.note
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Note API", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Note API", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' --------------
@@ -4404,13 +4417,16 @@ Public Class CLEIEIBUS
         Dim DBCodAgente2 As Integer = 0
         Dim CodAgente1 As Integer = 0
         Dim CodAgente2 As Integer = 0
+        Dim msg As String = ""
 
 
 
         Try
             ' Controlli preelaborazione sui dati
             If Ordine.cod_clifor Is Nothing Then
-                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non può essere null")))
+                msg = String.Format("Il codice cliente nel WS non può essere null. Unique ID: {0}", Ordine.unique_id)
+                WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, msg)))
                 Return False
             End If
 
@@ -4456,7 +4472,9 @@ Public Class CLEIEIBUS
             Dim strErr As String = ""
             Dim oTmp As Object = Nothing
             If CLN__STD.NTSIstanziaDll(oApp.ServerDir, oApp.NetDir, "BETVTRAS", "BEORGSOR", oTmp, strErr, False, "", "") = False Then
-                Throw New NTSException(oApp.Tr(Me, 128895477321672967, "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"))
+                msg = "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"
+                WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                Throw New NTSException(oApp.Tr(Me, 128895477321672967, msg))
                 Return False
             End If
             oCleGsor = CType(oTmp, CLEORGSOR)
@@ -4524,7 +4542,7 @@ Public Class CLEIEIBUS
             oCleGsor.strContrFidoInsolinInsDoc = "N"
             oCleGsor.bConsentiCreazDocumCliFornBloccoFisso = True
             oCleGsor.bSegnalaCreazDocumCliFornBloccati = False  ' false x non segnalare 
-
+            oCleGsor.bInNuovoDocSilent = True
 
             ' Disabilitazione blocchi di interfaccia
             oCleGsor.bDisabilitaCheckDateAnteriori = True
@@ -4714,7 +4732,7 @@ Public Class CLEIEIBUS
                     !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
                     !ec_unmis = NTSCStr(strUnitaMisura)
                     !ec_colli = NTSCDec(dColli)
-                    !ec_quant = NTSCDec(dQuantita) ' Lascio che sia Business a calcola la quantità sulla base dei colli specificati dall'agente
+                    !ec_quant = NTSCDec(dQuantita)
                     !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                     !ec_scont1 = NTSCDec(r.sconto_1)
                     !ec_scont2 = NTSCDec(r.sconto_2)
@@ -4763,6 +4781,7 @@ Public Class CLEIEIBUS
 
     End Function
 
+    ' NON USATA
     Public Overridable Function GeneraOffertaAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
 
         Dim oCleGsof As CLECRGSOF
@@ -5127,7 +5146,7 @@ Public Class CLEIEIBUS
     End Function
 
     ' Solo con WS
-    Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
+    Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer, ByRef CodDest As Integer) As Boolean
         Try
 
             ' Esempio: Chiamo la insert cliente e passo il mastro 126. Ritorna CodCliente = , CodCliente completo= 
@@ -5143,7 +5162,7 @@ Public Class CLEIEIBUS
                    Not Ordine.clienti(0).provincia_consegna Is Nothing Or _
                    Not Ordine.clienti(0).telefono_consegna Is Nothing _
                 Then
-                    oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
+                    oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto, CodDest)
                 End If
 
                 ' Se c'è il modulo CRM, Devo inserire un Lead collegato
@@ -5156,7 +5175,7 @@ Public Class CLEIEIBUS
                         CodOperatore = "Admin"
                     End If
 
-                    Dim CodLead As Integer
+                    Dim CodLead() As Integer = {}
                     oCldIbus.InsertLeadFromCliData(strDittaCorrente, CodClienteCompleto.ToString(), CodOperatore, CodLead)
                 End If
 

@@ -774,14 +774,14 @@ Public Class CLDIEIBUS
     ''' <param name="CodClienteCompleto">Codice cliente da associare alla destinazione.</param>
     ''' <returns>Ritorna true se la creazione è andata a buon fine</returns>
     ''' <remarks></remarks>
-    Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodClienteCompleto As Integer) As Boolean
+    Public Overridable Function InsertCliDest(ByVal strDitta As String, ByVal Dest As Clienti, ByVal Mastro As Integer, ByVal CodClienteCompleto As Integer, ByRef CliDest As Integer) As Boolean
         Dim strSQLDest As String = ""
         Dim strSQL As String = ""
-        'Dim dttDestinazioniRiservate As New DataTable
-        'Dim cod_dest_free As Integer
-        'Dim results() As DataRow
+        Dim dttDestinazioniRiservate As New DataTable
+        Dim cod_dest_free As Integer
+        Dim results() As DataRow
 
-        Dim CodDestinazione As Integer
+
 
         Try
             'Dest.cap_consegna
@@ -796,23 +796,21 @@ Public Class CLDIEIBUS
             ' Cerco un cod_destinazione valido
             ' ---------------------------------
 
-            'strSQLDest = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCodDestRiservate.sql", oApp.NetDir)
-            'dttDestinazioniRiservate = OpenRecordset(strSQLDest, CLE__APP.DBTIPO.DBAZI)
+            strSQLDest = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetCodDestRiservate.sql", oApp.NetDir)
+            dttDestinazioniRiservate = OpenRecordset(strSQLDest, CLE__APP.DBTIPO.DBAZI)
 
-            'For cod_dest_free = 1 To 1000
-            'results = dttDestinazioniRiservate.Select("xx_cod_dest_ris = " + cod_dest_free.ToString)
+            For cod_dest_free = 1 To 1000
+                results = dttDestinazioniRiservate.Select("xx_cod_dest_ris = " + cod_dest_free.ToString)
 
-            ' If Len(results) = 0 Then
-            'Exit For
-            'End If
-            ' Next
-
-
+                If results.Length = 0 Then
+                    Exit For
+                End If
+            Next
 
             strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertCliDest.sql", oApp.NetDir)
             strSQL = strSQL.Replace("@codditt@", ToSql(strDitta))
             strSQL = strSQL.Replace("@dd_conto@", ToSql(CodClienteCompleto.ToString()))
-            'strSQL = strSQL.Replace("@dd_coddest@", ToSql(cod_dest_free.ToString()))
+            strSQL = strSQL.Replace("@dd_coddest@", ToSql(cod_dest_free.ToString()))
             strSQL = strSQL.Replace("@dd_nomdest@", ToSql(Dest.des_citta_consegna, 50))
 
             strSQL = strSQL.Replace("@dd_inddest@", ToSql(Dest.indirizzo_consegna, 70))
@@ -844,6 +842,8 @@ Public Class CLDIEIBUS
 
             ' Dati di ritorno
             'CodDestinazione = cod_dest_free
+
+            CliDest = cod_dest_free
 
             Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
 
@@ -914,29 +914,52 @@ Public Class CLDIEIBUS
     ''' <param name="CodLead">Ritorna il codice del lead generato</param>
     ''' <returns>Ritorna true se la creazione è andata a buon fine</returns>
     ''' <remarks></remarks>
-    Public Overridable Function InsertLeadFromCliData(ByVal strDitta As String, ByVal CodCLiente As String, ByVal CodOperatore As String, ByRef CodLead As Integer) As Boolean
+    Public Overridable Function InsertLeadFromCliData(ByVal strDitta As String, ByVal CodCLiente As String, ByVal CodOperatore As String, ByRef CodLead() As Integer) As Boolean
 
         Dim nNumero As Integer = 0
-        Dim strSQL As String = ""
-
+        Dim strSQLDest As String = ""
+        Dim strSQLCli As String = ""
+        Dim strSQLTemp As String = ""
+        Dim dttOut As New DataTable
+        Dim actualDest As Integer
+        Dim RetValAssociazione As Boolean = False
+        Dim inc As Integer = 0
+        ' Dim row As DataRow
         Try
 
-            ' Prenoto il progressivo codLead 
-            nNumero = 0
-            nNumero = LegNuma(strDitta, "C8", " ", 0, True)
-            nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
+            ' Leggo la lista delle destinazioni per le quali devo creare un lead
+            strSQLDest = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetDestDiv.sql", oApp.NetDir)
+            strSQLDest = strSQLDest.Replace("@conto@", ToSql(CodCLiente))
+            dttOut = OpenRecordset(strSQLDest, CLE__APP.DBTIPO.DBAZI)
+
+            strSQLCli = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertLeadFromCliente.sql", oApp.NetDir)
+            strSQLCli = strSQLCli.Replace("@ditta@", ToSql(strDitta))
+            strSQLCli = strSQLCli.Replace("@conto@", ToSql(CodCLiente))
 
 
-            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "InsertLeadFromCliente.sql", oApp.NetDir)
-            strSQL = strSQL.Replace("@ditta@", ToSql(strDitta))
-            strSQL = strSQL.Replace("@conto@", ToSql(CodCLiente))
-            strSQL = strSQL.Replace("@codlead@", CStrSQL(nNumero))
 
-            Execute(strSQL, CLE__APP.DBTIPO.DBAZI)
+            For Each row As DataRow In dttOut.Rows
+                actualDest = CInt(row("xx_an_dest"))
 
-            Dim RetValAssociazione As Boolean = AssociaOperatoreLead(strDitta, nNumero, CodOperatore)
+                ' Prenoto il progressivo codLead 
+                nNumero = 0
+                nNumero = LegNuma(strDitta, "C8", " ", 0, True)
+                nNumero = AggNuma(strDitta, "C8", " ", 0, nNumero, False, False, "")
 
-            CodLead = nNumero
+                ' Importo il codice lead nella insert
+                strSQLTemp = strSQLCli.Replace("@codlead@", CStrSQL(nNumero))
+                strSQLTemp = strSQLTemp.Replace("@coddest@", CStrSQL(actualDest))
+
+                ' Inserisco il Lead
+                Execute(strSQLTemp, CLE__APP.DBTIPO.DBAZI)
+
+                RetValAssociazione = AssociaOperatoreLead(strDitta, nNumero, CodOperatore)
+
+                ReDim Preserve CodLead(inc)
+                CodLead(inc) = nNumero
+                inc = inc + 1
+            Next
+
 
             If nNumero = 0 Then
                 Return False
@@ -945,7 +968,7 @@ Public Class CLDIEIBUS
             End If
 
         Catch ex As Exception
-            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            Throw (New NTSException(GestError(ex, Me, strSQLCli, oApp.InfoError, "", False)))
         End Try
     End Function
 
