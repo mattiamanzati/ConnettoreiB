@@ -115,3 +115,11 @@ and codditt = @ditta@
 and an_tipo = 'C' 
 and an_conto = @conto@
 
+
+/* Se ci sono destinazioni associate all cliente da cui parto, imposto anche il cod lead*/
+update destdiv
+set dd_codlead = @codlead@
+where 1=1 
+and codditt = @ditta@
+and dd_conto = @conto@
+AND dd_coddest = @coddest@
