@@ -14,13 +14,15 @@ Public Class WEDOLogger
 
         Dim sSource As String = "BNIEIBUS"
  
+        Try
+            If Not EventLog.SourceExists(sSource) Then
+                EventLog.CreateEventSource(sSource, "Application")
+            End If
+            EventLog.WriteEntry(sSource, strMsg, LogType, 234)
+        Catch ex As Exception
 
-        If Not EventLog.SourceExists(sSource) Then
-            EventLog.CreateEventSource(sSource, "Application")
-        End If
-
-        EventLog.WriteEntry(sSource, strMsg, LogType, 234)
-
+        End Try
+      
     End Sub
 
 End Class
