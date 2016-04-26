@@ -35,6 +35,22 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function CheckIfOperatExists(ByRef strNomeOperatore As String, ByRef bResult As Boolean) As Boolean
+        Dim strSQL As String = ""
+        Try
+            strSQL = "SELECT 1 FROM operat WHERE OpNome = " & CStrSQL(strNomeOperatore)
+
+            bResult = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBPRC).Rows.Count > 0
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+            '--------------------------------------------------------------
+        End Try
+    End Function
+
     Public Overridable Function DecodeDBValue(ByVal Contesto As String, ByVal Campo As String, ByRef Valore As String) As Boolean
         Dim RetValue As String = ""
         Try

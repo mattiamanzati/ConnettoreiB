@@ -149,6 +149,7 @@ Public Class CLEIEIBUS
     Public strCustomWhereGetLeadRighOff As String = ""
     Public strCustomWhereGetLeads As String = ""
     Public strCustomWhereGetLeadTestOff As String = ""
+    Public strDefaultOpNome As String = "Admin"
 
     Public arFileGen As New ArrayList       'elenco di file generatici che andranno copiati dalla dir TMP alla dir di dropbox
     Public strTipork As String = ""         'elenco operazioni da compiere in import/export
@@ -477,6 +478,9 @@ Public Class CLEIEIBUS
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
             strCustomWhereGetPorto = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetPorto", "", " ", "").Trim
             strCustomWhereGetScaDocPush = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetScaDocPush", "", " ", "").Trim
+
+            ' Operatore di default da usare
+            strDefaultOpNome = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DefaultOpNome", "", " ", "Admin").Trim
 
             ' Parametri di Business
 
@@ -5170,9 +5174,12 @@ Public Class CLEIEIBUS
 
                     Dim CodOperatore As String = ""
                     If Not String.IsNullOrEmpty(Ordine.cod_operatore) Then
-                        CodOperatore = Ordine.cod_operatore
+                        Dim bCheckOperatore As Boolean = False
+
+                        oCldIbus.CheckIfOperatExists(Ordine.cod_operatore, bCheckOperatore)
+                        CodOperatore = IIf(bCheckOperatore, Ordine.cod_operatore, strDefaultOpNome).ToString()
                     Else
-                        CodOperatore = "Admin"
+                        CodOperatore = strDefaultOpNome
                     End If
 
                     Dim CodLead() As Integer = {}
