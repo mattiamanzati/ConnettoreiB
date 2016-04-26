@@ -4289,27 +4289,8 @@ Public Class CLEIEIBUS
 
     End Function
 
-    ' Punto di appoggio per modificare dinamicamente gli estremi dell'ordine che si va importando
-    Public Overridable Function GeneraOrdine_AssegnaEstremiDinamicamente(ByVal Ordine As TestataOrdineExport, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
-
-        Try
-
-            Return True
-
-        Catch ex As Exception
-            '--------------------------------------------------------------
-            If GestErrorCallThrow() Then
-                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
-            Else
-                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
-            End If
-            '--------------------------------------------------------------	
-        End Try
-
-    End Function
-
     Public Overridable Function GeneraOrdineAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
-        Dim lAnno As Integer = NTSCDate(Ordine.data_ordine).Year
+
         Dim strSerie As String = " "
         Dim nTipoBF As Integer = 0
         Dim nMagaz As Integer = 0
@@ -4332,6 +4313,7 @@ Public Class CLEIEIBUS
         Dim DBCodAgente2 As Integer = 0
         Dim CodAgente1 As Integer = 0
         Dim CodAgente2 As Integer = 0
+
 
 
         Try
@@ -4406,23 +4388,16 @@ Public Class CLEIEIBUS
             oCleGsor.bInApriDocSilent = True
             oCleGsor.ResetVar()
 
-            ' Ci sono personalizzazioni in merito a variazioni dinamiche di serie, anno o tipo ordine? 
-            '       (e.g. gli ordini di determinati agenti avranno serie diverse in funzione del tipo di agente)
-            ' TODO: Forse avrebbe più senso muovere la preinsert qui, dove si conoscono già gli estremi di dove si va a generare l'ordine
-            GeneraOrdine_AssegnaEstremiDinamicamente(Ordine, lAnno, strSerie, strTipoOrdine, strDittaCorrente)
-
             ' Inizio la creazione dell'ordine. La numerazione e' attiva ?
-            lNumord = oCldIbus.LegNuma(strDittaCorrente, strTipoOrdine, strSerie, lAnno, False)
+            lNumord = oCldIbus.LegNuma(strDittaCorrente, strTipoOrdine, strSerie, NTSCDate(Ordine.data_ordine).Year, False)
             If lNumord = 0 Then
                 ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Prima di creare un nuovo Preventivo/Impegno cliente è necessario attivare la numerazione")))
-                ' siccome gli estremi potrebbero essere variabili, scrivo nel log casi di errore
-                LogWrite(String.Format("Non è attiva la numerazione per la serie {0} nell'anno {1} con tipo ordine {2} sulla ditta {3}", strSerie, lAnno, strTipoOrdine, strDittaCorrente), False)
                 Return False
             End If
 
             ' Creo un nuovo ordine
             LogWrite(String.Format("Elaboro dati cliente {0}", Ordine.cod_clifor), False)
-            If Not oCleGsor.NuovoOrdine(strDittaCorrente, strTipoOrdine, lAnno, strSerie, lNumord) Then
+            If Not oCleGsor.NuovoOrdine(strDittaCorrente, strTipoOrdine, NTSCDate(Ordine.data_ordine).Year, strSerie, lNumord) Then
                 Return False
             End If
 
@@ -4677,10 +4652,12 @@ Public Class CLEIEIBUS
             End If
 
             pNumOrd = lNumord
-            pAnno = lAnno
+            pAnno = NTSCDate(Ordine.data_ordine).Year
             pTipork = strTipoOrdine
             pSerie = strSerie
             pCodDitta = strDittaCorrente
+
+
 
             Return True
 
