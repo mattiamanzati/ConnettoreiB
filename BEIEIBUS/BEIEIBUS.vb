@@ -161,9 +161,8 @@ Public Class CLEIEIBUS
     Public nTipoBF As Integer = 0
     Public nMagaz As Integer = 0
 
-
-    Public Const FilePrefix As String = "io_"
-    'Public Const cIMP_ART As String = Tracciati.NomeFile(GetType(rec_art))
+    ' Recupero il nome dei tracciati
+    ' -------------------------------
     Public Const cIMP_ART As String = "io_art.dat"
     Public Const cIMP_AGENTI As String = "io_agenti.dat"
     Public Const cIMP_ART_LANG As String = "io_art_lang.dat"
@@ -179,7 +178,6 @@ Public Class CLEIEIBUS
     Public Const cIMP_CANALI_VENDITA As String = "io_canali_vendita.dat"
     Public Const cIMP_CLIENTI_ASSORTIMENTI As String = "io_clienti_assortimenti.dat"
     Public Const cIMP_CLIFOR_GEN As String = "io_clifor_gen.dat"
-    Public Const cIMP_CLIFOR As String = "io_clifor.dat"
     Public Const cIMP_CLIFOR_AGE As String = "io_clifor_age.dat"
     Public Const cIMP_CLIFOR_BLO As String = "io_clifor_blo.dat"
     Public Const cIMP_CLIFOR_CATE As String = "io_clifor_cate.dat"
@@ -187,12 +185,10 @@ Public Class CLEIEIBUS
     Public Const cIMP_CLIFOR_DETCON As String = "io_clifor_detcon.dat"
     Public Const cIMP_CLIFOR_FATT As String = "io_clifor_fatt.dat"
     Public Const cIMP_CLIFOR_GIROVISITA As String = "io_clifor_girovisita.dat"
-    Public Const cIMP_CLIFOR_INFO As String = "io_clifor_info.dat"
     Public Const cIMP_CLIFOR_NOTE As String = "io_clifor_note.dat"
     Public Const cIMP_CLIFOR_RIGHDOC As String = "io_clifor_righdoc.dat"
     Public Const cIMP_CLIFOR_SCADOC As String = "io_clifor_scadoc.dat"
     Public Const cIMP_CLIFOR_TESTDOC As String = "io_clifor_testdoc.dat"
-    Public Const cIMP_CLIFOR_VEN As String = "io_clifor_ven.dat"
     Public Const cIMP_CONDPAG As String = "io_condpag.dat"
     Public Const cIMP_PORTO As String = "io_porto.dat"
     Public Const cIMP_CONDPAG_LANG As String = "io_condpag_lang.dat"
@@ -224,9 +220,6 @@ Public Class CLEIEIBUS
     Public Const cIMP_VAR_COMBINAZIONI As String = "io_var_combinazioni.dat"
     Public Const cIMP_CATALOGO As String = "io_catalogo.dat"
     Public Const cIMP_REPORT As String = "io_reports.dat"
-
-
-
 
 
     Public Overrides Function Init(ByRef App As CLE__APP, _
@@ -4002,6 +3995,9 @@ Public Class CLEIEIBUS
 
                 For Each t As TestataOrdineExport In OrdersData.testate
 
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import ordine di {0}, ID Coda: [{1}]", t.utente, t.id.ToString)))
+
+
                     If t.id < LastStoredID Then
                         msg = String.Format("Le API hanno risposto con un id={0} su Import Ordini.", t.id)
                         WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
@@ -4098,6 +4094,8 @@ Public Class CLEIEIBUS
 
                 For Each t As TestataCf In CliforData.clienti
 
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import anagra di {0}, ID Coda: [{1}]", t.utente, t.id.ToString)))
+
                     If t.id < LastStoredID Then
                         msg = String.Format("Le API hanno risposto con un id={0} su Import Anagra.", t.id)
                         WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
@@ -4170,6 +4168,8 @@ Public Class CLEIEIBUS
             If RetVal AndAlso CliforNoteData IsNot Nothing Then
 
                 For Each t As TestataCfNote In CliforNoteData.note
+
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import note cliente di {0}, ID Coda: [{1}]", t.utente, t.id.ToString)))
 
                     If t.id < LastStoredID Then
                         msg = String.Format("Le API hanno risposto con un id={0} su Import Note Clienti.", t.id)
@@ -4285,6 +4285,8 @@ Public Class CLEIEIBUS
 
                 For Each t As TestataLeadsExport In LeadsData.leads
 
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import lead di {0}, ID Coda: [{1}]", t.utente, t.id.ToString)))
+
                     If t.id < LastStoredID Then
                         msg = String.Format("Le API hanno risposto con un id={0} su Import Lead.", t.id)
                         WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
@@ -4360,6 +4362,8 @@ Public Class CLEIEIBUS
             If RetVal AndAlso LeadNoteData IsNot Nothing Then
 
                 For Each t As TestataLeadsNoteExport In LeadNoteData.note
+
+                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import note lead di {0}, ID Coda: [{1}]", t.utente, t.id.ToString)))
 
                     If t.id < LastStoredID Then
                         msg = String.Format("Le API hanno risposto con un id={0} su Import Note API", t.id)
@@ -4671,8 +4675,8 @@ Public Class CLEIEIBUS
                 End If
 
                 ' Fine tracodifiche di riga  ======================
-
                 ' Se nel terzo parametro metto 0 (nRiga = 9) il framework incrementa automaticamente il numero riga
+                ' BusNet2015Sr2_SorgentiNET_mgve_003/BEMGDOCU/BEMGDOCU.VB
                 If Not oCleGsor.AggiungiRigaCorpo(False, strCodArt, nFase, 0) Then
                     Return False
                 End If
@@ -4729,11 +4733,22 @@ Public Class CLEIEIBUS
                         strUnitaMisura = "."
                     End If
 
+
                     !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
                     !ec_unmis = NTSCStr(strUnitaMisura)
                     !ec_colli = NTSCDec(dColli)
                     !ec_quant = NTSCDec(dQuantita)
-                    !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
+
+                    ' Se ho attivato l'esplosione dei kit non devo impostare il prezzo dell'articolo
+                    If strEsplodiKit <> "0" Then
+                        ' Sulle righe con articoli di tipo 'Kit analitico' o 'Componente sintetico', il Prezzo deve essere a zero.
+                        If NTSCStr(!ec_flkit) = "A" Or NTSCStr(!ec_flkit) = "T" Then
+                            !ec_prezzo = 0
+                        Else
+                            !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
+                        End If
+                    End If
+
                     !ec_scont1 = NTSCDec(r.sconto_1)
                     !ec_scont2 = NTSCDec(r.sconto_2)
                     !ec_scont3 = NTSCDec(r.sconto_3)
