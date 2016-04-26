@@ -4029,6 +4029,7 @@ Public Class CLEIEIBUS
 
                             msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente [{0} - {1}], Inserito da agente: [{2}], Utente: [{3}], Unique ID: [{4}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente, t.unique_id))
                             LogWrite(msg, True)
+                            InviaAlert(2, msg)
                         End If
 
                         'GeneraOffertaAPI(t, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
@@ -4643,6 +4644,7 @@ Public Class CLEIEIBUS
                     Case "1" : strStasino = "O"   'omaggio con rivalsa
                     Case "2" : strStasino = "P"   'omaggio senza rivalsa
                     Case "3" : strStasino = "M"   'sconto merce
+                    Case "4" : strStasino = "X"   'sconto merce NC
                 End Select
 
                 ' Gestisco il tipo unita di misura
