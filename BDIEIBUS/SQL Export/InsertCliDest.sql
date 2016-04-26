@@ -1,9 +1,4 @@
-﻿/* Da usare per il debug in management studio
-DECLARE @ditta varchar(200)
-SELECT @ditta = 'SONN'
-*/
-
-insert into destdiv
+﻿insert into destdiv
 (
        codditt
       ,dd_conto
@@ -21,7 +16,7 @@ values
 (
        @codditt@   
       ,@dd_conto@   
-      ,@dd_coddest@ 
+      ,@dd_coddest@
       ,@dd_nomdest@ 
       ,@dd_inddest@ 
       ,@dd_capdest@ 
@@ -33,7 +28,7 @@ values
 )
 
 update anagra 
-set an_destin=1 
+set an_destin=@dd_coddest@
 where 
      codditt=@codditt@
 and  an_conto=@dd_conto@ 

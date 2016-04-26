@@ -6,6 +6,7 @@ Imports AMHelper.WS
 Imports AMHelper.CSV
 Imports RestSharpApex
 Imports ApexNetLIB
+Imports System.Management
 
 
 Public Class CLEIEIBUS
@@ -151,6 +152,15 @@ Public Class CLEIEIBUS
 
     Public arFileGen As New ArrayList       'elenco di file generatici che andranno copiati dalla dir TMP alla dir di dropbox
     Public strTipork As String = ""         'elenco operazioni da compiere in import/export
+
+
+
+    'inizializzo BEORGSOR
+    '----------------------------------------------------------------
+    Public strSerie As String = " "
+    Public nTipoBF As Integer = 0
+    Public nMagaz As Integer = 0
+
 
     Public Const FilePrefix As String = "io_"
     'Public Const cIMP_ART As String = Tracciati.NomeFile(GetType(rec_art))
@@ -467,6 +477,14 @@ Public Class CLEIEIBUS
             strCustomWhereGetAgentiCliente = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetAgentiCliente", "", " ", "").Trim
             strCustomWhereGetPorto = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetPorto", "", " ", "").Trim
             strCustomWhereGetScaDocPush = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetScaDocPush", "", " ", "").Trim
+
+            ' Parametri di Business
+
+            'inizializzo BEORGSOR
+            '----------------------------------------------------------------
+            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
+            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
+            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
 
             arFileGen.Clear()
@@ -819,20 +837,29 @@ Public Class CLEIEIBUS
 
             'Copio i files dei tracciati nella dir di dropbox
             '----------------------------------------------------
+            ' NOTA: Se si crea una immagine con nome empty-image.jpg nella cartella immagini di Business,
+            ' Questa viene mostrata nel catalogo di iB per tutte gli articoli che non hanno una foto
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Copia tracciati in " & strDropBoxDir))
             For i = 0 To arFileGen.Count - 1
+
                 ' Mi occupo dei dati del catalogo
                 If arFileGen(i).ToString.ToLower.EndsWith(cIMP_CATALOGO) Then
+                    ' Cancello il file nella cartella dropbox
                     File.Delete(strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
+                    ' Se esiste un file immagine nella cartella di Business...
                     If File.Exists(arFileGen(i).ToString) Then
+                        '... lo copio nella cartella dropbox
                         System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\multimedia\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
                     End If
+
+                    ' Mi occupo dei dati dei reports
                 ElseIf arFileGen(i).ToString.ToLower.EndsWith(cIMP_REPORT) Then
                     File.Delete(strDropBoxDir & "\reports\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
                     If File.Exists(arFileGen(i).ToString) Then
                         System.IO.File.Copy(arFileGen(i).ToString, strDropBoxDir & "\reports\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length), True)
                     End If
                 Else
+
                     ' Mi occupo dei dati gestionale
                     File.Delete(strDropBoxDir & "\gestionale\" & arFileGen(i).ToString.Substring(oApp.AscDir.Length))
                     If File.Exists(arFileGen(i).ToString) Then
@@ -1008,27 +1035,73 @@ Public Class CLEIEIBUS
 
             End If
 
-            'If Not Elabora_ImportOrdiniNew() Then Return False
 
             ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Finito"))
 
 
-            If strDropBoxBin <> "" Then
-                '' Controllo Dropbox
-                Dim pname As Process() = Process.GetProcessesByName("Dropbox")
+            Dim UtenteWindows As String = GetWinUserName()
+            Dim UtenteProcesso As String = ""
 
-                If pname.Length = 0 Then
-                    System.Diagnostics.Process.Start(strDropBoxBin)
-                ElseIf pname.Length = 1 Then
-                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Processo dropbox trovato..."))
-                ElseIf pname.Length > 1 Then
-                    ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", "Trovati più processi dropbox..."))
-                    System.Diagnostics.Process.Start("net stop DropboxService")
+
+            If strDropBoxBin <> "" Then
+
+                Dim user As String = GetWinUserName()
+                Dim trovatoMioProcesso As Boolean = False
+
+                Try
+                    Dim query As String = "SELECT * FROM Win32_Process WHERE Name = '" + "Dropbox.exe" + "'"
+
+                    Dim searcher As New ManagementObjectSearcher(query)
+                    Dim observer As New ManagementOperationObserver()
+
+                    'loop through each item in the collection
+                    For Each process As ManagementObject In searcher.Get()
+                        Try
+                            'this string will hold the information returned
+                            'from InvokeMethod("GetOwner")
+                            Dim info(1) As String
+                            'get the information on the current process
+                            process.InvokeMethod("GetOwner", CType(info, Object()))
+
+                            'now make sure the owner is correct
+                            If info(0).ToString().ToUpper() <> user.ToUpper() Then
+                                'kill the process
+                                process.InvokeMethod(observer, "Terminate", Nothing)
+                            Else
+                                ' se sono qui e' perche' sono sul mio processo
+                                trovatoMioProcesso = True
+                            End If
+                        Catch ex As Exception
+
+                            Return False
+                        End Try
+                    Next
+                Catch ex As Exception
+
+                    Return False
+                End Try
+
+                If Not trovatoMioProcesso Then
+
+
+                    Dim startInfo As New ProcessStartInfo(strDropBoxBin)
+                    startInfo.Arguments = "/home"
+
+                    startInfo.WorkingDirectory = Path.GetDirectoryName(strDropBoxBin)
+                    startInfo.WindowStyle = ProcessWindowStyle.Hidden
+
+                    startInfo.CreateNoWindow = False
+
+
+                    Process.Start(startInfo)
+
+                    ' System.Diagnostics.Process.Start(strDropBoxBin)
                 End If
+
             End If
 
 
-            Return True
+                    Return True
 
         Catch ex As Exception
             '--------------------------------------------------------------
@@ -1044,8 +1117,21 @@ Public Class CLEIEIBUS
             LogStop()
         End Try
     End Function
+   
 
-
+    Public Function GetWinUserName() As String
+        If TypeOf My.User.CurrentPrincipal Is 
+          Security.Principal.WindowsPrincipal Then
+            ' The application is using Windows authentication.
+            ' The name format is DOMAIN\USERNAME.
+            Dim parts() As String = Split(My.User.Name, "\")
+            Dim username As String = parts(1)
+            Return username
+        Else
+            ' The application is using custom authentication.
+            Return My.User.Name
+        End If
+    End Function
 
     Public Overridable Function Elabora_NotifichePushInsoluti() As Boolean
         'restituisco le scadenze di cliente/fornitore ATTIVO o POTENZIALE
@@ -1166,6 +1252,7 @@ Public Class CLEIEIBUS
 
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare GestisciEventiEntityGsorg")> _
     Public Overridable Sub GestisciEventiEntityPERS(ByVal sender As Object, ByRef e As NTSEventArgs)
         'Dim fErr As StreamWriter = Nothing
         'Dim fiErr As FileInfo = Nothing
@@ -1199,6 +1286,7 @@ Public Class CLEIEIBUS
             Dim strErr As String = GestError(ex, Me, "", oApp.InfoError, oApp.ErrorLogFile, True)
         End Try
     End Sub
+
 
     Public Overridable Sub GestisciEventiEntityGsor(ByVal sender As Object, ByRef e As NTSEventArgs)
         Try
@@ -3640,10 +3728,12 @@ Public Class CLEIEIBUS
             Next
             dttCat.AcceptChanges()
 
-            Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
-            w1.Write(sbFile.ToString)
-            w1.Flush()
-            w1.Close()
+            If dttCat.Rows.Count > 0 Then
+                Dim w1 As New StreamWriter(strFileOut, False, System.Text.Encoding.UTF8)
+                w1.Write(sbFile.ToString)
+                w1.Flush()
+                w1.Close()
+            End If
 
             Return True
 
@@ -3799,6 +3889,9 @@ Public Class CLEIEIBUS
         Dim strTrattaSc5 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc5", "S", " ", "S")
         Dim strTrattaSc6 As String = oCldIbus.GetSettingBus("OPZIONI", ".", ".", "TrattaSc6", "S", " ", "S")
 
+
+
+
         Dim dttTmp As New DataTable
         Dim sbFile As New StringBuilder
         Dim strPrior As String = ""
@@ -3887,6 +3980,7 @@ Public Class CLEIEIBUS
 
         Dim msg As String = ""
         Dim NewCodCli As Integer
+        Dim NewCodDest As Integer
 
         Dim LastStoredID As Integer = CInt(oCldIbus.GetCustomData(strDittaCorrente, "order_id", "0"))
 
@@ -3902,16 +3996,16 @@ Public Class CLEIEIBUS
 
         Dim OrdersData As ws_rec_orders = Nothing
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
-
-
-
+    
         Try
             If RetVal AndAlso OrdersData IsNot Nothing Then
 
                 For Each t As TestataOrdineExport In OrdersData.testate
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Ordini.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Ordini.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     'ThrowRemoteEvent(New NTSEventArgs("AGGIOLABEL", String.Format("Import ordine cliente {0} - [{1}]", t.cod_clifor, t.guid_test_ord)))
@@ -3928,10 +4022,12 @@ Public Class CLEIEIBUS
                         ' Sto trattando un cliente nuovo. Prima di continuare lo devo inserire
                         If t.cod_clifor Is Nothing Then
                             ' Esempio : GeneraClienteAPI con Mastro 126 ritorna 
-                            GeneraClienteAPI(t, CInt(strMastro), NewCodCli)
 
+                            GeneraClienteAPI(t, CInt(strMastro), NewCodCli, NewCodDest)
                             t.cod_clifor = NewCodCli.ToString()
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente {0} - {1} inserito da agente: {2} [{3}, Unique ID: {4}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente, t.unique_id))
+                            t.cod_destinazione = NewCodDest.ToString()
+
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Nuovo cliente [{0} - {1}], Inserito da agente: [{2}], Utente: [{3}], Unique ID: [{4}]", t.cod_clifor, t.clienti(0).ragione_sociale, t.cod_agente, t.utente, t.unique_id))
                             LogWrite(msg, True)
                         End If
 
@@ -3944,12 +4040,13 @@ Public Class CLEIEIBUS
                             ' Procedura per modificare l'ordine appena inserito
                             PostInsert_Ordine(t.guid_test_ord, tNumOrd, tAnno, tSerie, tTipork, tCodDitta)
 
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero:{0}, Cliente: {1}, Agente: {2}, Unique ID: {2}", tNumOrd.ToString, t.cod_clifor, t.cod_agente, t.unique_id))
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini effettuato. Numero: [{0}], Cliente: [{1}], Agente: [{2}], Unique ID: [{3}]", tNumOrd.ToString, t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(1, msg, t.cod_clifor)
+
                             InviaPushByUsername(t.utente, "Il tuo ordine del cliente " + t.cod_clifor + ", è stato acquisito dal gestionale")
                         Else
-                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: {0}, Agente: {1}, Unique ID: {2}", t.cod_clifor, t.cod_agente, t.unique_id))
+                            msg = oApp.Tr(Me, 129919999269031600, String.Format("Import ordini avvenuto con ERRORE. Cliente: [{0}], Agente: [{1}], Unique ID: [{2}]", t.cod_clifor, t.cod_agente, t.unique_id))
                             LogWrite(msg, True)
                             InviaAlert(99, msg, t.cod_clifor)
                         End If
@@ -3974,6 +4071,7 @@ Public Class CLEIEIBUS
         End Try
 
     End Function
+
 
     Public Overridable Function Elabora_ImportAnagraAPI() As Boolean
 
@@ -4001,7 +4099,9 @@ Public Class CLEIEIBUS
                 For Each t As TestataCf In CliforData.clienti
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Anagra.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Anagra.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' --------------
@@ -4072,7 +4172,9 @@ Public Class CLEIEIBUS
                 For Each t As TestataCfNote In CliforNoteData.note
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Note Clienti.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Note Clienti.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' ------------------------------
@@ -4184,13 +4286,16 @@ Public Class CLEIEIBUS
                 For Each t As TestataLeadsExport In LeadsData.leads
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Lead.", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Lead.", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' --------------
 
                     If t.cod_lead = "" Then
                         CodLead = 0
+
                         oCldIbus.InsertLeadData(strDittaCorrente, t, CodLead)
                         LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
 
@@ -4257,7 +4362,9 @@ Public Class CLEIEIBUS
                 For Each t As TestataLeadsNoteExport In LeadNoteData.note
 
                     If t.id < LastStoredID Then
-                        Throw New NTSException(String.Format("Le API hanno risposto con un id={0} su Import Note API", t.id))
+                        msg = String.Format("Le API hanno risposto con un id={0} su Import Note API", t.id)
+                        WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                        Throw New NTSException(msg)
                     End If
 
                     ' --------------
@@ -4291,9 +4398,6 @@ Public Class CLEIEIBUS
 
     Public Overridable Function GeneraOrdineAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
 
-        Dim strSerie As String = " "
-        Dim nTipoBF As Integer = 0
-        Dim nMagaz As Integer = 0
         Dim oCleGsor As CLEORGSOR
         Dim lNumord As Integer = 0
         Dim ds As New DataSet
@@ -4313,13 +4417,16 @@ Public Class CLEIEIBUS
         Dim DBCodAgente2 As Integer = 0
         Dim CodAgente1 As Integer = 0
         Dim CodAgente2 As Integer = 0
+        Dim msg As String = ""
 
 
 
         Try
             ' Controlli preelaborazione sui dati
             If Ordine.cod_clifor Is Nothing Then
-                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, "Il codice cliente nel WS non può essere null")))
+                msg = String.Format("Il codice cliente nel WS non può essere null. Unique ID: {0}", Ordine.unique_id)
+                WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                ThrowRemoteEvent(New NTSEventArgs("", oApp.Tr(Me, 129887230283255079, msg)))
                 Return False
             End If
 
@@ -4329,14 +4436,14 @@ Public Class CLEIEIBUS
             ' ==============================================
 
             ' Gestisco il tipo ordine: R = Ordine, Q = Preventivo
-            strTipoOrdine = "R"
+
             Select Case Ordine.ext_cod_tipo_ord
                 Case "CLI-MOBORD", "CLI-IGAMMAORD", "R"
                     strTipoOrdine = "R"
                 Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P"
                     strTipoOrdine = "Q"
                 Case Else
-                    strTipoOrdine = Ordine.ext_cod_tipo_ord
+                    strTipoOrdine = "R"
             End Select
 
 
@@ -4362,16 +4469,12 @@ Public Class CLEIEIBUS
 
 
 
-            'inizializzo BEORGSOR
-            '----------------------------------------------------------------
-            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
-            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
-            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
-
             Dim strErr As String = ""
             Dim oTmp As Object = Nothing
             If CLN__STD.NTSIstanziaDll(oApp.ServerDir, oApp.NetDir, "BETVTRAS", "BEORGSOR", oTmp, strErr, False, "", "") = False Then
-                Throw New NTSException(oApp.Tr(Me, 128895477321672967, "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"))
+                msg = "ERRORE in fase di creazione Entity:" & vbCrLf & "|" & strErr & "|"
+                WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+                Throw New NTSException(oApp.Tr(Me, 128895477321672967, msg))
                 Return False
             End If
             oCleGsor = CType(oTmp, CLEORGSOR)
@@ -4439,6 +4542,7 @@ Public Class CLEIEIBUS
             oCleGsor.strContrFidoInsolinInsDoc = "N"
             oCleGsor.bConsentiCreazDocumCliFornBloccoFisso = True
             oCleGsor.bSegnalaCreazDocumCliFornBloccati = False  ' false x non segnalare 
+            oCleGsor.bInNuovoDocSilent = True
 
             ' Disabilitazione blocchi di interfaccia
             oCleGsor.bDisabilitaCheckDateAnteriori = True
@@ -4540,19 +4644,22 @@ Public Class CLEIEIBUS
                     Case "2" : dTipoUM = 2 ' Unità di misura secondaria
                     Case "3" : dTipoUM = 3 ' Codice confezione
                 End Select
+
                 Select Case dTipoUM
                     Case 1
                         'strUnitaMisuraP = r.cod_um_1
-                        dColli = NTSCDec(r.qta)
-                        strUnitaMisura = r.cod_um_1
-                        dQuantita = NTSCDec(r.qta)
-                        dPrezzo = NTSCDec(r.prezzo)
-                    Case 2 Or 3
+                        dColli = NTSCDec(r.qta) ' Quantità inserita dall'agente per la presa dell'ordine
+                        strUnitaMisura = r.cod_um_1 ' Unità di misura scelta dall'agente per la presa dell'ordine
+                        dPrezzo = NTSCDec(r.prezzo) ' Prezzoscelto dall'agente durante la presa dell'ordine
+
+                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale
+                    Case 2, 3
                         'strUnitaMisuraP = r.cod_um_1
-                        dColli = NTSCDec(r.qta_2)
-                        strUnitaMisura = r.cod_um_2
-                        dQuantita = NTSCDec(r.qta)
-                        dPrezzo = NTSCDec(r.prezzo)
+                        dColli = NTSCDec(r.qta_2) ' Quantità inserita dall'agente per la presa dell'ordine
+                        strUnitaMisura = r.cod_um_2 ' Unità di misura scelta dall'agente per la presa dell'ordine
+                        dPrezzo = NTSCDec(r.prezzo) ' Prezzoscelto dall'agente durante la presa dell'ordine
+
+                        dQuantita = NTSCDec(r.qta) ' Quantità dell'UM Prncipale
                 End Select
 
 
@@ -4674,11 +4781,9 @@ Public Class CLEIEIBUS
 
     End Function
 
+    ' NON USATA
     Public Overridable Function GeneraOffertaAPI(ByVal Ordine As TestataOrdineExport, ByRef pNumOrd As Integer, ByRef pAnno As Integer, ByRef pSerie As String, ByRef pTipork As String, ByRef pCodDitta As String) As Boolean
 
-        Dim strSerie As String = " "
-        Dim nTipoBF As Integer = 0
-        Dim nMagaz As Integer = 0
         Dim oCleGsof As CLECRGSOF
         Dim lNumord As Integer = 0
         Dim ds As New DataSet
@@ -4746,12 +4851,6 @@ Public Class CLEIEIBUS
             End If
             ' -----------------------------
 
-
-            'inizializzo BEORGSOR
-            '----------------------------------------------------------------
-            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
-            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
-            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
             Dim strErr As String = ""
             Dim oTmp As Object = Nothing
@@ -5047,7 +5146,7 @@ Public Class CLEIEIBUS
     End Function
 
     ' Solo con WS
-    Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer) As Boolean
+    Public Overridable Function GeneraClienteAPI(ByRef Ordine As TestataOrdineExport, ByVal Mastro As Integer, ByRef CodClienteCompleto As Integer, ByRef CodDest As Integer) As Boolean
         Try
 
             ' Esempio: Chiamo la insert cliente e passo il mastro 126. Ritorna CodCliente = , CodCliente completo= 
@@ -5063,7 +5162,7 @@ Public Class CLEIEIBUS
                    Not Ordine.clienti(0).provincia_consegna Is Nothing Or _
                    Not Ordine.clienti(0).telefono_consegna Is Nothing _
                 Then
-                    oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto)
+                    oCldIbus.InsertCliDest(strDittaCorrente, Ordine.clienti(0), Mastro, CodClienteCompleto, CodDest)
                 End If
 
                 ' Se c'è il modulo CRM, Devo inserire un Lead collegato
@@ -5076,7 +5175,7 @@ Public Class CLEIEIBUS
                         CodOperatore = "Admin"
                     End If
 
-                    Dim CodLead As Integer
+                    Dim CodLead() As Integer = {}
                     oCldIbus.InsertLeadFromCliData(strDittaCorrente, CodClienteCompleto.ToString(), CodOperatore, CodLead)
                 End If
 
@@ -5103,8 +5202,9 @@ Public Class CLEIEIBUS
 
 #End Region
 
-#Region "Import da Tracciati"
+#Region "Import da Tracciati (metodi obsoleti non più manutenuti)"
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportOrdiniAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportOrdini() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5428,6 +5528,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportAnagraAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportAnagra() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5511,6 +5612,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportCliforNoteAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportCliforNote() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5624,6 +5726,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportLeadAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportLead() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5651,6 +5754,7 @@ NEXT_FILE:
                         ' Il cod ditta che e' corretto ?
                         If dR("COD_DITTA").ToString = strDittaCorrente Then
                             If dR("COD_LEAD").ToString = "" Then
+
                                 oCldIbus.InsertLead(strDittaCorrente, dR, CodLead)
                                 LogWrite(oApp.Tr(Me, 129919999269031600, "Import nuovo lead codice " & CodLead), True)
 
@@ -5685,6 +5789,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare Elabora_ImportAnagraAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function Elabora_ImportLeadNote() As Boolean
         Dim strF() As String = Nothing  'elenco di ordini da importare
         Dim nF As Integer = 0
@@ -5742,6 +5847,7 @@ NEXT_FILE:
         End Try
     End Function
 
+    <Obsolete("Questo metodo è deprecato, usare GeneraOrdiniAPI per leggere i dati direttamente da Web Services.")> _
     Public Overridable Function GeneraOrdini(ByRef dttIn As DataTable, ByRef NumOrd As Integer) As Boolean
         'nel datatabase vengono passati gli ordini della ditta corrente
         'devo generare più ordini, raggruppando per cliente/data ordine
@@ -5750,19 +5856,12 @@ NEXT_FILE:
         Dim ds As New DataSet
         Dim oCleGsor As CLEORGSOR
         Dim bTestaCreata As Boolean = False   'se true la testata dell'ordine è già stata creata
-        Dim strSerie As String = " "
-        Dim nTipoBF As Integer = 0
-        Dim nMagaz As Integer = 0
         Dim lNumord As Integer = 0
         'Dim nRiga As Integer = 0
         Dim strCodart As String = ""
         Dim lFaseArt As Integer = 0
         Try
             '----------------------------
-            'inizializzo BEORGSOR
-            strSerie = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "SERIE_ORDINI", " ", " ", " ")
-            nTipoBF = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "TIPOBF_ORDINI", " ", " ", " "))
-            nMagaz = NTSCInt(oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "MAGAZ_ORDINI", " ", " ", " "))
 
             Dim strErr As String = ""
             Dim oTmp As Object = Nothing

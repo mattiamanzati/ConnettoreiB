@@ -1,7 +1,6 @@
-﻿ 
-/*
+﻿/*
 DECLARE @ditta varchar(200), @estrai_solo_listini_umv integer
-SELECT @ditta = 'DITTA', @estrai_solo_listini_umv=0
+SELECT @ditta = 'SEPA', @estrai_solo_listini_umv=0
 */
 
 SELECT artico.ar_codart + CASE WHEN artico.ar_gesfasi = 'S' THEN '.' + Cast(af_fase AS VARCHAR(5)) ELSE '' END AS ar_codart, 
@@ -48,16 +47,9 @@ FROM   artico WITH (NOLOCK)
 		LEFT JOIN artfasi WITH (NOLOCK)
 				ON artico.codditt = artfasi.codditt 
 					AND artico.ar_codart = artfasi.af_codart 
-		INNER JOIN busvw_listini WITH (NOLOCK) 
+	    INNER JOIN busvw_listini WITH (NOLOCK) 
 				ON artico.codditt = busvw_listini.codditt 
 					AND artico.ar_codart = busvw_listini.ar_codart 
-					AND (busvw_listini.lc_unmis = 
-							CASE ar_umdapr
-								WHEN  'P' THEN ar_unmis
-								WHEN  'S' THEN ar_unmis2
-								WHEN  'C' THEN ar_confez2
-							    WHEN  'Q' THEN ar_unmis
-							END OR @estrai_solo_listini_umv=0)
 					AND Isnull(artfasi.af_fase, 0) = busvw_listini.lc_fase 
 		LEFT JOIN tabcfam WITH (NOLOCK)
 				ON artico.codditt = tabcfam.codditt
@@ -77,9 +69,14 @@ WHERE  1=1
        AND ( ar_stainv = 'S' OR artico.ar_codart = 'D' ) 
        AND ar_codtagl = 0 
        AND lc_listino >= 0 
-	   AND convert(datetime,round(convert(float,  lc_datagg ),0,1)) -1  <= convert(datetime,round(convert(float,getdate()),0,1))
+       AND convert(datetime,round(convert(float,  lc_datagg ),0,1)) -1  <= convert(datetime,round(convert(float,getdate()),0,1))
        AND lc_datscad >= convert(datetime,round(convert(float,getdate()),0,1))
-       AND ( lc_unmis = artico.ar_unmis OR lc_unmis = ' ' ) 
 	   AND ( artico.ar_gesvar <> 'S' OR ( artico.ar_gesvar = 'S' AND artico.ar_codroot <> '' ) ) 
 	   AND busvw_listini.lc_tipo <> 'F'
-
+	   AND (busvw_listini.lc_unmis = 
+							CASE ar_umdapr
+								WHEN  'P' THEN ar_unmis
+								WHEN  'S' THEN ar_unmis2
+								WHEN  'C' THEN ar_confez2
+							    WHEN  'Q' THEN ar_unmis
+							END OR lc_unmis = ' ' OR @estrai_solo_listini_umv=0)

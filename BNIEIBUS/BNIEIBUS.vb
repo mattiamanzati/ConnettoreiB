@@ -1,5 +1,8 @@
 Imports System.Data
 Imports System.IO
+Imports ApexNetLIB
+
+
 Imports NTSInformatica.CLN__STD
 
 Public Class FRMIEIBUS
@@ -10,6 +13,9 @@ Public Class FRMIEIBUS
     Private ModuliPtn_P As Integer = 0
     Private ModuliPtnExt_P As Integer = 0
 
+    Private IBUpdate As New ApexNetLIB.Download
+    Private IBUpgradeAvailable As Boolean = False
+    Private IBNewVersionDownloaded As Boolean = False
 
 
     Public ReadOnly Property Moduli() As Integer
@@ -750,6 +756,23 @@ Riprova:
     End Function
 
 #Region "Eventi di Form"
+
+    Private Sub FRMIEIBUS_FormClosed(sender As Object, e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
+
+        If IBUpgradeAvailable And IBNewVersionDownloaded Then
+            WEDOLogger.WriteToRegistry("Creo ibupdate.bat e lo eseguo")
+            Dim funge As Boolean = IBRunUpdate()
+
+            If Not funge Then
+                WEDOLogger.WriteToRegistry("IBRunUpdate() ha fallito la copia degli aggiornamenti da " & IBUpdate.vars_unzipdir, EventLogEntryType.Error)
+            End If
+        End If
+
+
+    End Sub
+
+
+
     Public Overridable Sub FRMIEIBUS_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
         Try
@@ -774,6 +797,8 @@ Riprova:
             Dim CheckboxAttivi As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "CheckboxAttivi", "", " ", "")
             Dim CheckboxDisabilitati As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "CheckboxDisabilitati", "", " ", "")
 
+            Dim AutoUpdate As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "AutoUpdate", "1", " ", "1")
+            Dim URLiBUpdate As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "URLiBUpdate", "http://lm.apexnet.it/iBUpdate", " ", "http://lm.apexnet.it/iBUpdate")
 
             ' Dati per il test. Chiedere a Matteo di attivare il proxy
             'ProxyUrl = "192.168.10.134"
@@ -792,13 +817,31 @@ Riprova:
                 ApexNetLIB.SetProxy.SettingProxy(ProxyUrl, CInt(ProxyPort), ProxyUsername, ProxyPassword)
             End If
 
-            ' Eseguo il controllo per l'aggiornamento automatico delle DLL
-            Dim update As Boolean = CallCheckUpdates()
 
-            ' Se non è stato avviato l'aggiornamento che chiude la form
-            If Not update Then
-                lblRelease.Text = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
+            ' Esiste una nuova veriosne del connettore da scaricare ?
+            If AutoUpdate = "1" Then
+                IBUpgradeAvailable = IBCheckForNewVersion(URLiBUpdate)
+                If IBUpgradeAvailable Then
+                    WEDOLogger.WriteToRegistry(String.Format("E' stato rilevato un nuovo aggiornamento. Esistente:{0}, Disponibile: {1}", IBUpdate.vars_local_version, IBUpdate.vars_newVersion))
+                End If
+            Else
+                WEDOLogger.WriteToRegistry(String.Format("L' aggiornamento automatico è stato disattivato. AutoUpdate: {0}", AutoUpdate.ToString()))
             End If
+
+
+
+            ' Se esiste per prima cosa la scarico
+            If IBUpgradeAvailable Then
+                IBNewVersionDownloaded = IBUpdate.DownloadAndUnzip()
+                WEDOLogger.WriteToRegistry(String.Format("Scarico e decomprimo la nuova versione in {0}.", IBUpdate.vars_unzipped_folder))
+                ' ...inoltre se non sono in modalità batch avverto l'utente
+                If Not oApp.Batch And IBNewVersionDownloaded Then
+                    oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129090, "E' disponibile una nuova versione del connettore di IB" & vbCrLf & "Esci da Business per effettuare l'aggiornamento"))
+                End If
+            End If
+
+
+            lblRelease.Text = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
 
 
             'CLI;FOR;ART;LIS;SCO;DOC;MAG;CIT;PAG;COO;
@@ -1171,94 +1214,26 @@ Riprova:
 
 #Region "AutoUpdate"
 
-    Public Function CallCheckUpdates() As Boolean
+
+    ''' <summary>
+    ''' Verifica l'esistenza di una versione più aggiornata sul server.
+    ''' </summary>
+    ''' <returns>Ritorna true se esiste una nuova versione</returns>
+    ''' <remarks></remarks>
+    Public Function IBCheckForNewVersion(ByVal URLiBUpdate As String) As Boolean
         Try
+     
+            ' Leggo la versione del file BNIEIBUS 
+            IBUpdate.vars_local_version = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
 
-            'ocldibus.strdropboxdir = oCallBase.getsettingbusditt(DittaCorrente, "bsieibus", "opzioni", ".", "dropboxdir", "", " ", "")
+            ' Imposto le variabili di istanza del downloader
+            IBUpdate.vars_url_update = URLiBUpdate & "/iBUpdate.zip"
+            IBUpdate.vars_url_version = URLiBUpdate & "/iBUpdate.txt"
+            IBUpdate.vars_unzipdir = Path.GetTempPath()
 
-            'leggo dal registro della macchina il percorso dove scaricare gli aggiornamenti (SE NON TROVO NULLA IMPOSTO IL NOSTRO DEFAULT)
+            ' IBUpdate.vars_unzipdir = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
 
-            Dim URLiBUpdate As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "URLiBUpdate", "http://lm.apexnet.it/iBUpdate", " ", "http://lm.apexnet.it/iBUpdate")
-
-            'leggo dal registro della macchina il livello di aggiornamento (Release, Beta, Alfa) (SE NON TROVO NULLA IMPOSTO IL DEFAULT COME RELEASE)
-            Dim levelUpdate As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "LevelUpdate", "Release", " ", "Release")
-            Dim AutoUpdate As String = oMenu.GetSettingBusDitt(DittaCorrente, "Bsieibus", "Opzioni", ".", "AutoUpdate", "1", " ", "1")
-
-            Dim unzipLocalDir As String = System.Windows.Forms.Application.StartupPath
-            Dim displayWindow As Boolean = True
-            Dim msg As String = "E' presente un aggiornamento del programma. Si desidera effettuare l'aggiornamento? (scelta consigliata!)"
-            Dim msgTitle As String = ""
-
-            '*** leggo la versione dell'assembly ***
-            'Dim localVersion As System.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
-            'Dim majorVersion As String = CStr(localVersion.Major)
-            'Dim minorVersion As String = CStr(localVersion.Minor)
-            'Dim buildVersion As String = CStr(localVersion.Build)
-            'Dim revisionVersion As String = CStr(localVersion.Revision)
-
-            'Dim intLocalVersion As Integer = CInt(majorVersion & minorVersion & buildVersion & revisionVersion)
-
-            '*** leggo la versione del file BNIEIBUS ***
-            Dim myFileVersionInfo As FileVersionInfo = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll")
-            'Dim majorVersion As String = CStr(myFileVersionInfo.FileMajorPart)
-            'Dim minorVersion As String = CStr(myFileVersionInfo.FileMinorPart)
-            'Dim buildVersion As String = CStr(myFileVersionInfo.FileBuildPart)
-            'Dim revisionVersion As String = CStr(myFileVersionInfo.FileVersion)
-
-            Dim strLocalVersion As String = myFileVersionInfo.FileVersion
-
-
-            '*** CERCO L'AGGIORNAMENTO GIUSTO IN BASE AL LIVELLO IMPOSTATO NEL REGISTRO DELLA MACCHINA ***
-            Dim urlVersionUpdate As String = URLiBUpdate & "/" & levelUpdate & "/iBUpdate.txt"
-            'Dim urlVersionUpdate As String = URLiBUpdate & "/" & levelUpdate & "/iBUpdateTest.txt"
-            Dim urlFileZipUpdate As String = URLiBUpdate & "/" & levelUpdate & "/iBUpdate.zip"
-
-            Dim findUpdate As Boolean = False
-            Dim downl As New ApexNetLIB.Download
-
-            ' Se ho disattivato l'autoupdate esco
-            If AutoUpdate <> "1" Then Return False
-
-            'in base al livello, vado a leggere la relativa versione presente sul server
-            Select Case levelUpdate
-                Case "Alfa" 'se Alfa allora prendo la versione più grande sul server su tutti e tre i livelli
-                    If Not downl.CheckNewVersion(urlVersionUpdate, strLocalVersion) Then
-                        urlVersionUpdate = URLiBUpdate & "/" & "Beta" & "/iBUpdate.txt"
-                        urlFileZipUpdate = URLiBUpdate & "/" & "Beta" & "/iBUpdate.zip"
-                        If Not downl.CheckNewVersion(urlVersionUpdate, strLocalVersion) Then
-                            urlVersionUpdate = URLiBUpdate & "/" & "Release" & "/iBUpdate.txt"
-                            urlFileZipUpdate = URLiBUpdate & "/" & "Release" & "/iBUpdate.zip"
-                            If downl.CheckNewVersion(urlVersionUpdate, strLocalVersion) Then
-                                findUpdate = True
-                            End If
-                        Else
-                            findUpdate = True
-                        End If
-                    Else
-                        findUpdate = True
-                    End If
-                Case "Beta" 'se Beta allora prendo la versione più grande sul server tra Beta e Release
-                    If Not downl.CheckNewVersion(urlVersionUpdate, strLocalVersion) Then
-                        urlVersionUpdate = URLiBUpdate & "/" & "Release" & "/iBUpdate.txt"
-                        urlFileZipUpdate = URLiBUpdate & "/" & "Release" & "/iBUpdate.zip"
-                        If downl.CheckNewVersion(urlVersionUpdate, strLocalVersion) Then
-                            findUpdate = True
-                        End If
-                    Else
-                        findUpdate = True
-                    End If
-                Case "Release" 'se release considero solo la versione Release sul server 
-                    If downl.CheckNewVersion(urlVersionUpdate, strLocalVersion) Then
-                        findUpdate = True
-                    End If
-            End Select
-
-            Dim check As Boolean = False
-            If findUpdate Then
-                check = CheckUpdates(strLocalVersion, urlVersionUpdate, urlFileZipUpdate, unzipLocalDir, displayWindow, msg, msgTitle)
-            End If
-
-            Return check
+            Return IBUpdate.NewVersionAvailable()
         Catch ex As Exception
             '-------------------------------------------------
             Dim strErr As String = CLN__STD.GestError(ex, Me, "", oApp.InfoError, oApp.ErrorLogFile, True)
@@ -1267,72 +1242,42 @@ Riprova:
 
     End Function
 
-    Public Function CheckUpdates(ByVal LocalVersion As String, ByVal UrlVersionUpdate As String, ByVal UrlFileZipUpdate As String, Optional ByVal UnzipLocalDir As String = "", Optional ByVal DisplayWindow As Boolean = True, Optional ByVal MsgBoxText As String = "", Optional ByVal MsgBoxTitle As String = "") As Boolean
 
+    Public Function IBRunUpdate() As Boolean
 
         Try
 
-            Dim downl As New ApexNetLIB.Download 'Create the download dialog (but don't show it directly)
+            Dim IBUpdateFile As String = IBUpdate.vars_unzipdir & "\ibupdate.bat"
 
-            If MsgBoxText <> "" Then 'If the MsgBoxText isn't set, use the default text
-                downl.vars_msgText = MsgBoxText
+            ' Se esiste cancello il file .bat precedente (Situato as esmepio sotto c:\bus\agg)
+            If File.Exists(IBUpdateFile) Then
+                File.Delete(IBUpdateFile)
             End If
 
-            If MsgBoxTitle <> "" Then  'If the MsgBoxTitle isn't set, use the default title
-                downl.vars_msgTitle = MsgBoxTitle
-            End If
+            ' Leggo il batch da eseguire dalla risorsa embedded dentro l'assembly 
+            Dim ib_update_batch As String = ApexNetLIB.EmbeddedResource.GetString(GetType(FRMIEIBUS).Assembly, "ibupdate.bat", oApp.NetDir)
 
-            Dim dirAgg As String = GetSettingReg("BUSINESS", UCase(oApp.Profilo) & "\BUSAGG", "BusAggDir", "")
+            ' Nel batch imposto la cartella sorgente e quella destinazione
+            ib_update_batch = String.Format(ib_update_batch, IBUpdate.vars_unzipped_folder + "\iBUpdate", oApp.NetDir)
 
-            downl.vars_unzipdir = dirAgg 'UnzipLocalDir
-            downl.vars_batch = oApp.Batch 'sono eseguito in modaità batch? 
+            ' Scrivo il file batch nella cartella Agg 
+            Dim objWriter As New System.IO.StreamWriter(IBUpdateFile, False)
+            objWriter.WriteLine(ib_update_batch)
+            objWriter.Close()
+            objWriter.Dispose()
 
-            If downl.CheckNewVersion(UrlVersionUpdate, LocalVersion) Then 'Check if there is a newer version available
-                Dim download As Boolean = downl.CheckForUpdates(UrlFileZipUpdate) 'Download the file, if wanted
-                If download = True Then
-                    'non aggiorno più il file AggNumber tanto non serve ma chiamo un eseguibile che copia le dll
-                    'Dim aggNumber As Boolean = IncrementaAggNumber(dirAgg + "\" + "AggNumber.txt")
+            ' Esegui il batch
+            Dim startInfo As New ProcessStartInfo(IBUpdateFile)
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden
+            startInfo.CreateNoWindow = True
+            Process.Start(startInfo)
 
-                    'se sono in modalità batch
-                    If oApp.Batch Then
-                    Else
-                        oApp.MsgBoxInfo("Attenzione. E' disponibile un aggiornamento del connettore iB." & _
-                                         vbCrLf & " Chiudere Business per installare gli aggiornamenti.")
-                    End If
-
-                    Dim _batch As String = CStr(oApp.Batch)
-                    Dim percorsoiBUpdateFileLog As String = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                    Dim strParametri As String = String.Format("""{0}"" ""{1}""", dirAgg, oApp.NetDir)
-
-                    If Not ApexNetLIB.CheckProcessRunning.IsProcessRunning(oApp.NetDir & "\IBAutoUpdate.exe") Then
-
-                        Dim startInfo As New ProcessStartInfo(oApp.NetDir & "\IBAutoUpdate.exe", strParametri)
-                        startInfo.WindowStyle = ProcessWindowStyle.Hidden
-                        startInfo.CreateNoWindow = True
-                        Process.Start(startInfo)
-
-
-                        ' Process.Start(oApp.NetDir & "\IBAutoUpdate.exe", strParametri)
-                    End If
-
-
-                    ' Me.Close()
-                Else
-                    'NON SI VUOLE FARE VEDERE NESSUN MESSAGGIO DI ERRORE ALL'UTENTE
-                    'oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Attenzione. Errore durante lo scaricamento dell'aggiornamento connettore iB."))
-                End If
-            End If
-
-            Return True 'Return true if all's gone well
+            Return True
 
             Exit Function
 
         Catch ex As Exception
 
-            If Not oApp.Batch Then
-                'NON SI VUOLE FARE VEDERE NESSUN MESSAGGIO DI ERRORE ALL'UTENTE
-                'oApp.MsgBoxErr(oApp.Tr(Me, 129877045983932301, "Attenzione. Errore nell'aggiornamento del connettore iB."))
-            End If
             Return False
         End Try
 
@@ -1417,4 +1362,13 @@ Riprova:
     Private Sub NtsCheckBox1_CheckedChanged_1(sender As Object, e As EventArgs) Handles ckTabBase.CheckedChanged
 
     End Sub
+
+    Protected Overrides Sub Finalize()
+        MyBase.Finalize()
+    End Sub
+
+    Private Sub LogWrite(p1 As String, p2 As Boolean)
+        Throw New NotImplementedException
+    End Sub
+
 End Class

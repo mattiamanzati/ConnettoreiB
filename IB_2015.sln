@@ -31,8 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "BUSNET64", "BusNet2015\BUSNET64.vbproj", "{7FB27715-BDC5-4749-AF24-A4D7867DB716}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "IBAutoUpdate", "IBAutoUpdate\IBAutoUpdate.vbproj", "{C9FA4472-83E2-430E-B911-C4152A7C2CC6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,22 +101,11 @@ Global
 		{7FB27715-BDC5-4749-AF24-A4D7867DB716}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7FB27715-BDC5-4749-AF24-A4D7867DB716}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7FB27715-BDC5-4749-AF24-A4D7867DB716}.Release|x86.ActiveCfg = Release|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{36DA5126-02C6-4AE9-BE49-BD487B6CF28C} = {7490174D-51D0-418A-8907-FB59B65AC1E2}
-		{C9FA4472-83E2-430E-B911-C4152A7C2CC6} = {7490174D-51D0-418A-8907-FB59B65AC1E2}
 	EndGlobalSection
 EndGlobal
