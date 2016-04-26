@@ -1098,7 +1098,7 @@ Public Class CLEIEIBUS
             End If
 
 
-                    Return True
+            Return True
 
         Catch ex As Exception
             '--------------------------------------------------------------
@@ -1114,7 +1114,7 @@ Public Class CLEIEIBUS
             LogStop()
         End Try
     End Function
-   
+
 
     Public Function GetWinUserName() As String
         If TypeOf My.User.CurrentPrincipal Is 
@@ -3993,7 +3993,7 @@ Public Class CLEIEIBUS
 
         Dim OrdersData As ws_rec_orders = Nothing
         Dim RetVal As Boolean = ed.exp_orders(LastStoredID, OrdersData)
-    
+
         Try
             If RetVal AndAlso OrdersData IsNot Nothing Then
 
