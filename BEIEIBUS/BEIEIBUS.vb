@@ -2808,6 +2808,7 @@ Public Class CLEIEIBUS
         Dim sbFile As New StringBuilder
         Dim strTipoDoc As String = ""
         Dim strDescEvas As String = ""
+        Dim strKeyNumReg As String = ""
         Try
             ' I filtri sui documenti che vengono fatti nell'iPad sono basati sulle distinct dei seguenti campi:
             '
@@ -2831,37 +2832,16 @@ Public Class CLEIEIBUS
                     Case "1" : strDescEvas = "Evaso"
                 End Select
 
-                Select Case NTSCStr(dtrT!tm_tipork)
-                    Case "A" : strTipoDoc = "Fatt. Imm. em." '
-                    Case "B" : strTipoDoc = "DDT emesso" ' 
-                    Case "C" : strTipoDoc = "Corr. emesso"
-                    Case "D" : strTipoDoc = "Fatt. Diff. em." '
-                    Case "E" : strTipoDoc = "Note di Add. em."
-                    Case "F" : strTipoDoc = "Ric.Fisc. em."
-                    Case "I" : strTipoDoc = "Riem. Ric.Fisc."
-                    Case "J" : strTipoDoc = "Note Accr. ric."
-                    Case "(" : strTipoDoc = "Nota accr. diff. ric."
-                    Case "K" : strTipoDoc = "Fatt. Diff. ric."
-                    Case "L" : strTipoDoc = "Fatt. Imm. ric."
-                    Case "M" : strTipoDoc = "DDT ricevuto"
-                    Case "N" : strTipoDoc = "Note Accr. em."
-                    Case "£" : strTipoDoc = "Nota accr. diff. em."
-                    Case "P" : strTipoDoc = "Fatt.Ric.Fisc.Diff."
-                    Case "S" : strTipoDoc = "Fatt.Ric.Fisc. em."
-                    Case "T" : strTipoDoc = "Carico da prod."
-                    Case "U" : strTipoDoc = "Scarico a prod."
-                    Case "Z" : strTipoDoc = "Bolle di mov.int."
-                    Case "W" : strTipoDoc = "Note di prel."
-                    Case "R" : strTipoDoc = "Imp. cliente"
-                    Case "O" : strTipoDoc = "Ord. forn."
-                    Case "H" : strTipoDoc = "Ord. di prod."
-                    Case "X" : strTipoDoc = "Imp. Trasfer."
-                    Case "Q" : strTipoDoc = "Prev."
-                    Case "#" : strTipoDoc = "Imp. di comm."
-                    Case "V" : strTipoDoc = "Imp. cli aperto"
-                    Case "$" : strTipoDoc = "Ord. forn aperto"
-                    Case "Y" : strTipoDoc = "Imp. di prod."
-                End Select
+                oCldIbus.DecodeDBValue("tipork", NTSCStr(dtrT!tm_tipork), strTipoDoc)
+
+                ' strKeyNumReg contiene la chiave numreg con cui collegare righe e scadenze
+                strKeyNumReg = ConvStr(dtrT!xx_numreg)
+
+                ' se il tipodoc NON puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
+                If Not oCldIbus.TipiDocConScadenze(ConvStr(dtrT!tm_tipork)) Then
+                    strKeyNumReg = strKeyNumReg & "§" & ConvStr(dtrT!tm_tipork)
+                End If
+
 
                 ' ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
@@ -2872,7 +2852,7 @@ Public Class CLEIEIBUS
                                 ConvStr(dtrT!xx_tipobf) & "|" & _
                                 ConvData(dtrT!tm_datdoc, False) & "|" & _
                                 ConvStr(dtrT!xx_numreg) & "|" & _
-                                ConvStr(dtrT!tm_tipork) & "|" & _
+                                strKeyNumReg & "|" & _
                                 strTipoDoc.PadRight(20).Substring(0, 20).Trim & "|" & _
                                 ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
                                 ConvStr(dtrT!tm_serie) & "|" & _
@@ -2965,6 +2945,7 @@ Public Class CLEIEIBUS
         Dim sbFile As New StringBuilder
         Dim descOmaggio As String = ""
         Dim RetValOmaggio As Boolean
+        Dim strKeyNumReg As String
 
         Try
             If Not oCldIbus.GetCliforRighDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforRighDoc,
@@ -2978,9 +2959,21 @@ Public Class CLEIEIBUS
                 RetValOmaggio = oCldIbus.DecodeDBValue("stasino", ConvStr(dtrT!mm_stasino), descOmaggio)
                 If descOmaggio <> "" Then descOmaggio = " - (" & descOmaggio & ")"
 
+
+
+                ' strKeyNumReg contiene la chiave numreg con cui collegare righe e scadenze
+                strKeyNumReg = ConvStr(dtrT!xx_numreg)
+
+                ' se il tipodoc NON puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
+                If Not oCldIbus.TipiDocConScadenze(ConvStr(dtrT!tm_tipork)) Then
+                    strKeyNumReg = strKeyNumReg & "§" & ConvStr(dtrT!tm_tipork)
+                End If
+
+
+
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
                                 strDittaCorrente & "|" & _
-                                ConvStr(dtrT!xx_numreg) & "|" & _
+                                strKeyNumReg & "|" & _
                                 ConvStr(dtrT!xx_codart) & "|" & _
                                 ConvStr(dtrT!mm_riga) & "|" & _
                                 (ConvStr(dtrT!mm_codart) & IIf(NTSCStr(dtrT!mm_fase) <> "0", "." & ConvStr(dtrT!mm_fase), "").ToString).Trim & "|" & _
@@ -4655,6 +4648,8 @@ Public Class CLEIEIBUS
                     Case "3" : dTipoUM = 3 ' Codice confezione
                 End Select
 
+                '  dTipoUM = 1   SEPA
+
                 Select Case dTipoUM
                     Case 1
                         'strUnitaMisuraP = r.cod_um_1
@@ -4741,9 +4736,15 @@ Public Class CLEIEIBUS
 
 
                     !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
+
                     !ec_unmis = NTSCStr(strUnitaMisura)
+
                     !ec_colli = NTSCDec(dColli)
                     !ec_quant = NTSCDec(dQuantita)
+
+                    ' !ec_quant = NTSCDec(dColli) ' SEPA
+                    ' !ec_colli = NTSCDec(dQuantita) ' SEPA
+
 
                     ' Se ho attivato l'esplosione dei kit non devo impostare il prezzo dell'articolo
                     If strEsplodiKit <> "0" Then
@@ -4764,6 +4765,8 @@ Public Class CLEIEIBUS
                     !ec_datcons = NTSCDate(r.data_consegna_riga)
                     !ec_datconsor = NTSCDate(r.data_consegna_riga)
                     !ec_stasino = NTSCStr(strStasino)
+
+
 
 
                 End With
@@ -6115,6 +6118,7 @@ NEXT_FILE:
         Dim dttAlert As DataTable = Nothing
         Dim strTipork As String = ""
         Dim strCliente As String = ""
+        Dim msg As String = ""
         ' msgTipo puo' valere :
 
         If strAttivaAlert = "0" Then Return True
@@ -6160,6 +6164,10 @@ NEXT_FILE:
             Return True
 
         Catch ex As Exception
+
+            msg = String.Format("La creazione dell'alert ha dato errore inviando il messaggio={0}.", Messaggio)
+            WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+
             '--------------------------------------------------------------
             If GestErrorCallThrow() Then
                 Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
@@ -6167,9 +6175,9 @@ NEXT_FILE:
                 ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
             End If
             '--------------------------------------------------------------
+        Finally
+            If Not dttAlert Is Nothing Then dttAlert.Clear()
         End Try
-
-
 
     End Function
 

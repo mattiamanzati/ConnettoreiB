@@ -51,6 +51,51 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    ''' <summary>
+    ''' Identifica i tipi documento che possono avere scadenze
+    ''' </summary>
+    ''' <param name="Tipork">Tipo di documento da valutare</param>
+    ''' <param name="Valore">Torna true se può avere scadenze</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Overridable Function TipiDocConScadenze(ByVal Tipork As String) As Boolean
+        Dim RetValue As Boolean = False
+
+        ' Lista dei tipo documenti che possono avere scadenze
+        Select Case Tipork
+
+            Case "E", "F", "I", "N", "£", "P", "S", "B"  ' Clienti
+
+                ' - E  Note di Add. em. 
+                ' - F  Ric.Fisc. em. 
+                ' - I  Riem. Ric.Fisc. 
+                ' - N  Note Accr. em. 
+                ' - £  Nota accr. diff. em. 
+                ' - P  Fatt.Ric.Fisc.Diff. 
+                ' - S  Fatt.Ric.Fisc. em. 
+                ' - B  DDT EMesso
+
+                RetValue = True
+
+            Case "J", "(", "K", "L" ' Fornitori
+
+                ' - J  Note Accr. ric. 
+                ' - (  Nota accr. diff. ric. 
+                ' - K  Fatt. Diff. ric. 
+                '- L  Fatt. Imm. ric. 
+
+                RetValue = True
+
+            Case Else ' Tutti gli altri tipi
+
+                RetValue = False
+
+        End Select
+
+        Return RetValue
+ 
+    End Function
+
     Public Overridable Function DecodeDBValue(ByVal Contesto As String, ByVal Campo As String, ByRef Valore As String) As Boolean
         Dim RetValue As String = ""
         Try
