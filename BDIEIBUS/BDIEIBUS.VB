@@ -64,7 +64,7 @@ Public Class CLDIEIBUS
         ' Lista dei tipo documenti che possono avere scadenze
         Select Case Tipork
 
-            Case "E", "F", "I", "N", "£", "P", "S", "B"  ' Clienti
+            Case "E", "F", "I", "N", "£", "P", "S", "A", "C", "D"   ' Possono esserci scadenze (clienti)
 
                 ' - E  Note di Add. em. 
                 ' - F  Ric.Fisc. em. 
@@ -73,20 +73,23 @@ Public Class CLDIEIBUS
                 ' - £  Nota accr. diff. em. 
                 ' - P  Fatt.Ric.Fisc.Diff. 
                 ' - S  Fatt.Ric.Fisc. em. 
-                ' - B  DDT EMesso
+                ' - A  Fatt. Imm. em
+                ' - C  Corr. emesso
+                ' - D  Fatt. Diff. em.
 
                 RetValue = True
 
-            Case "J", "(", "K", "L" ' Fornitori
+
+            Case "J", "(", "K", "L" ' Possono esserci scadenze (fornitori)
 
                 ' - J  Note Accr. ric. 
                 ' - (  Nota accr. diff. ric. 
                 ' - K  Fatt. Diff. ric. 
-                '- L  Fatt. Imm. ric. 
+                ' - L  Fatt. Imm. ric. 
 
                 RetValue = True
 
-            Case Else ' Tutti gli altri tipi
+            Case Else ' Tutti gli altri tipi (Non possono esserci scadenze)
 
                 RetValue = False
 

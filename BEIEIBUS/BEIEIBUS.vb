@@ -2825,6 +2825,7 @@ Public Class CLEIEIBUS
                         "DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|SEZIONALE|NUM_DOC|" & _
                         "DEPOSITO|TOTALEDOC|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
                         "DES_DOC|DES_NOTE|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
+
             For Each dtrT As DataRow In dttTmp.Rows
 
                 Select Case ConvStr(dtrT!xx_flevas)
@@ -2832,16 +2833,15 @@ Public Class CLEIEIBUS
                     Case "1" : strDescEvas = "Evaso"
                 End Select
 
-                oCldIbus.DecodeDBValue("tipork", NTSCStr(dtrT!tm_tipork), strTipoDoc)
-
-                ' strKeyNumReg contiene la chiave numreg con cui collegare righe e scadenze
-                strKeyNumReg = ConvStr(dtrT!xx_numreg)
-
-                ' se il tipodoc NON puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
-                If Not oCldIbus.TipiDocConScadenze(ConvStr(dtrT!tm_tipork)) Then
-                    strKeyNumReg = strKeyNumReg & "§" & ConvStr(dtrT!tm_tipork)
+                ' Se il tipodoc  puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
+                If oCldIbus.TipiDocConScadenze(NTSCStr(dtrT!tm_tipork)) Then
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg)
+                Else
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg) & "§" & ConvStr(dtrT!tm_tipork)
                 End If
 
+                ' Decodifico il tipo doc
+                oCldIbus.DecodeDBValue("tipork", NTSCStr(dtrT!tm_tipork), strTipoDoc)
 
                 ' ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
@@ -2851,7 +2851,7 @@ Public Class CLEIEIBUS
                                 Asc(ConvStr(dtrT!tm_tipork)) & "|" & _
                                 ConvStr(dtrT!xx_tipobf) & "|" & _
                                 ConvData(dtrT!tm_datdoc, False) & "|" & _
-                                ConvStr(dtrT!xx_numreg) & "|" & _
+                                strKeyNumReg & "|" & _
                                 strKeyNumReg & "|" & _
                                 strTipoDoc.PadRight(20).Substring(0, 20).Trim & "|" & _
                                 ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
@@ -2960,15 +2960,12 @@ Public Class CLEIEIBUS
                 If descOmaggio <> "" Then descOmaggio = " - (" & descOmaggio & ")"
 
 
-
-                ' strKeyNumReg contiene la chiave numreg con cui collegare righe e scadenze
-                strKeyNumReg = ConvStr(dtrT!xx_numreg)
-
-                ' se il tipodoc NON puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
-                If Not oCldIbus.TipiDocConScadenze(ConvStr(dtrT!tm_tipork)) Then
-                    strKeyNumReg = strKeyNumReg & "§" & ConvStr(dtrT!tm_tipork)
+                ' Se il tipodoc  puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
+                If oCldIbus.TipiDocConScadenze(NTSCStr(dtrT!tm_tipork)) Then
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg)
+                Else
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg) & "§" & ConvStr(dtrT!tm_tipork)
                 End If
-
 
 
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
