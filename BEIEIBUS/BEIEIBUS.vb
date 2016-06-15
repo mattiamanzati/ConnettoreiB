@@ -4439,7 +4439,7 @@ Public Class CLEIEIBUS
             Select Case Ordine.ext_cod_tipo_ord
                 Case "CLI-MOBORD", "CLI-IGAMMAORD", "R"
                     strTipoOrdine = "R"
-                Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P"
+                Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P", "Q"
                     strTipoOrdine = "Q"
                 Case Else
                     strTipoOrdine = "R"
