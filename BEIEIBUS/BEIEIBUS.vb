@@ -4739,18 +4739,22 @@ Public Class CLEIEIBUS
                     !ec_colli = NTSCDec(dColli)
                     !ec_quant = NTSCDec(dQuantita)
 
+
                     ' !ec_quant = NTSCDec(dColli) ' SEPA
                     ' !ec_colli = NTSCDec(dQuantita) ' SEPA
 
-
                     ' Se ho attivato l'esplosione dei kit non devo impostare il prezzo dell'articolo
                     If strEsplodiKit <> "0" Then
+                        ' Esplosione KIT attiva...
                         ' Sulle righe con articoli di tipo 'Kit analitico' o 'Componente sintetico', il Prezzo deve essere a zero.
                         If NTSCStr(!ec_flkit) = "A" Or NTSCStr(!ec_flkit) = "T" Then
                             !ec_prezzo = 0
                         Else
                             !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                         End If
+                    Else
+                        ' Esplosione KIT Spenta
+                        !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                     End If
 
                     !ec_scont1 = NTSCDec(r.sconto_1)
