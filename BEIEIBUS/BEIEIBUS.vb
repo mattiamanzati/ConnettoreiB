@@ -3272,7 +3272,9 @@ Public Class CLEIEIBUS
                           ConvData(dtrT!ar_ultagg, True) & vbCrLf)
 
                 If ConvStr(dtrT!ar_unmis2) <> "" Then
-                    If (NTSCDec(dtrT!ar_conver) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+                    ' Estrae la seconda unità di misura solo se ne è stato impostato il fattore di conversione
+                    ' oppure solo se ne forzo l'estrazione con l'opportuno parametro QueryGetArtUM_EstraiTutte = 1
+                    If (NTSCDec(dtrT!ar_conver) <> NTSCDec(0)) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
 
                         If ConvStr(dtrT!ar_conver) = "0" Then
                             my_ar_conver = "1"
@@ -3293,7 +3295,9 @@ Public Class CLEIEIBUS
                 End If
 
                 If ConvStr(dtrT!ar_confez2) <> "" Then
-                    If (NTSCDec(dtrT!ar_qtacon2) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+                    ' Estrae la terza unità di misura (confezioni) solo se ne è stato impostato il fattore di conversione
+                    ' oppure solo se ne forzo l'estrazione con l'opportuno parametro QueryGetArtUM_EstraiTutte = 1
+                    If (NTSCDec(dtrT!ar_qtacon2) <> NTSCDec(0)) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
 
                         If ConvStr(dtrT!ar_qtacon2) = "0" Then
                             my_ar_qtaconf2 = "1"
