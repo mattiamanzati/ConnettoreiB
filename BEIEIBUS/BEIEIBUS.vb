@@ -3582,7 +3582,9 @@ Public Class CLEIEIBUS
                                         strFiltroGiorniStoArt:=strFiltroGGStoArt, strIncludiNonEvasi:=strFiltroIncludiNonEvasi) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_CLIFOR|COD_ART|DESC_ARTICOLO|NUM_RIGHE|ULT_NUM_REG|ULT_PROG_RIGA|" & _
-                            "ULT_QTA|ULT_PRZ|ULT_UM|ULT_QTA2|ULT_PRZ2|ULT_UM2|COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
+                            "ULT_QTA|ULT_PRZ|ULT_UM|" & _
+                            "ULT_QTA2|ULT_PRZ2|ULT_UM2|" & _
+                            "COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
                             "ULT_SC_PER5|ULT_SC_PER6|ULT_SC_IMPORTO|ULT_MAG_PER1|ULT_MAG_PER2|" & _
                             "ULT_MAG_IMPORTO|ULT_DATA|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
 
@@ -3609,9 +3611,9 @@ Public Class CLEIEIBUS
                                 NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
                                 NTSCDec(dtrT!mo_prezzo).ToString("0.00000") & "|" & _
                                 ConvStr(dtrT!mo_ump) & "|" & _
+                                NTSCDec(dtrT!xx_quantv).ToString("0.00000") & "|" & _
                                 "" & "|" & _
-                                "" & "|" & _
-                                "" & "|" & _
+                                ConvStr(dtrT!xx_umv) & "|" & _
                                 IIf(ConvStr(dtrT!td_coddest) = "0", "", ConvStr(dtrT!td_coddest)).ToString & "|" & _
                                 NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
                                 NTSCDec(dtrT!mo_scont2).ToString("0.00") & "|" & _
