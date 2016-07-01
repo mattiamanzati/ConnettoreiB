@@ -1232,6 +1232,29 @@ Public Class CLEIEIBUS
 
     End Function
 
+    Public Overridable Function GetPasswordOperatore(ByVal OpNome As String, ByRef OpPasswd As String) As Boolean
+        Dim localPasswd As String = ""
+        Try
+
+            If Not oCldIbus.GetPasswdOperatore(OpNome, localPasswd) Then Return False
+
+            OpPasswd = localPasswd
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+  
+        End Try
+
+    End Function
+
     Public Overridable Function Elabora_Child() As Boolean
         Try
 

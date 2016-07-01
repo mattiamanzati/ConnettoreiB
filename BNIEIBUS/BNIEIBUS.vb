@@ -1044,7 +1044,8 @@ Riprova:
     End Sub
     Public Overridable Sub FRMIEIBUS_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
         Dim ctrlTmp As Control = Nothing
-        Dim strTipork1 As String = ""
+        Dim strTipoImport As String = ""
+        Dim strTipoExport As String = ""
         Try
             'creazione del file .BUB per la schedulazione
             If e.KeyCode = Keys.F5 And e.Control = True And e.Alt = True And e.Shift = False Then
@@ -1073,33 +1074,86 @@ Riprova:
                     Return
                 End If
 
-                If System.IO.File.Exists(oApp.AscDir & "\BNIEIBUS.BUB") Then
-                    If oApp.MsgBoxInfoYesNo_DefNo(oApp.Tr(Me, 129877046001844341, "Esiste già un file con nome |" & oApp.AscDir & "\BNIEIBUS.BUB" & "|: sovrascriverlo?")) = Windows.Forms.DialogResult.No Then Return
-                End If
-                Dim w1 As New System.IO.StreamWriter(oApp.AscDir & "\BNIEIBUS.BUB", False)
+                Dim pathSchedulazioneiB As String = "C:\SchedulazioneiB"
 
-                ' ADD CK
-                If ckCli.Checked Then strTipork1 += "CLI;"
-                If ckFor.Checked Then strTipork1 += "FOR;"
-                If ckArti.Checked Then strTipork1 += "ART;"
-                If ckListini.Checked Then strTipork1 += "LIS;"
-                If ckSconti.Checked Then strTipork1 += "SCO;"
-                If ckDoc.Checked Then strTipork1 += "DOC;"
-                If ckCatalogo.Checked Then strTipork1 += "CAT;"
-                If ckMagaz.Checked Then strTipork1 += "MAG;"
-                If ckTabBase.Checked Then strTipork1 += "TBS;"
-                If ckCodpaga.Checked Then strTipork1 += "PAG;"
-                If ckOrdini.Checked Then strTipork1 += "ORD;"
-                If ckLeads.Checked Then strTipork1 += "LEA;"
-                If ckOff.Checked Then strTipork1 += "OFF;"
-                If ckCoordinate.Checked Then strTipork1 += "COO;"
-                If ckNotifichePush.Checked Then strTipork1 += "COO;"
-                If strTipork1.Length > 0 Then strTipork1 = strTipork1.Substring(0, strTipork1.Length - 1)
-                w1.WriteLine("tipork=" & strTipork1)
-                w1.WriteLine("ditta=" & DittaCorrente)
-                w1.Flush()
-                w1.Close()
-                oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129000, "Creato file |" & oApp.AscDir & "\BNIEIBUS.BUB" & "| correttamente"))
+                If Directory.Exists(pathSchedulazioneiB) Then
+                    If oApp.MsgBoxInfoYesNo_DefNo(oApp.Tr(Me, 129877046001844341, "La cartella " & pathSchedulazioneiB & " esistà già. Vuoi ricreare le schedulazioni ? (Se rispondi SI le schedulazioni esistenti verrano eliminate")) = Windows.Forms.DialogResult.No Then Return
+
+                    Try
+                        Directory.Delete(pathSchedulazioneiB, True)
+                        Directory.CreateDirectory("C:\SchedulazioneiB")
+                    Catch ex As Exception
+                        oApp.MsgBoxInfo(oApp.Tr(Me, 129877046001844341, "ERRORE: Non sono riuscito a cancellare la cartella " & pathSchedulazioneiB))
+
+                    End Try
+
+
+                End If
+
+                ' Recupero la Password di Admin
+                Dim AdminPassword As String = ""
+                oCleIbus.GetPasswordOperatore("Admin", AdminPassword)
+
+                If String.IsNullOrEmpty(AdminPassword) Then
+                    AdminPassword = "."
+                End If
+
+                ' Se ho selezionato gli ordini probabimente sto creando il file di import
+                If ckOrdini.Checked = True Then
+                    If ckOrdini.Checked Then strTipoImport += "ORD;"
+
+                    If strTipoImport.Length > 0 Then strTipoImport = strTipoImport.Substring(0, strTipoImport.Length - 1)
+
+                    ' Creo il file .bub
+                    Dim fileImport As New System.IO.StreamWriter(pathSchedulazioneiB & "\" & "Import.bub", False)
+                    fileImport.WriteLine("tipork=" & strTipoImport)
+                    fileImport.WriteLine("ditta=" & DittaCorrente)
+                    fileImport.Flush()
+                    fileImport.Close()
+
+                    ' Creo il bat di lancio del bub
+                    Dim BatfileImport As New System.IO.StreamWriter(pathSchedulazioneiB & "\" & "Import.bat", False)
+                    BatfileImport.WriteLine(String.Format("""{0}\busnet.exe"" {1} {2} {3} {4} BNIEIBUS /B {5}\Import.bub", oApp.NetDir, "Admin", AdminPassword, DittaCorrente, oApp.Profilo, pathSchedulazioneiB))
+                    BatfileImport.Flush()
+                    BatfileImport.Close()
+                End If
+
+
+                If ckCli.Checked Then strTipoExport += "CLI;"
+                If ckFor.Checked Then strTipoExport += "FOR;"
+                If ckArti.Checked Then strTipoExport += "ART;"
+                If ckListini.Checked Then strTipoExport += "LIS;"
+                If ckSconti.Checked Then strTipoExport += "SCO;"
+                If ckDoc.Checked Then strTipoExport += "DOC;"
+                If ckCatalogo.Checked Then strTipoExport += "CAT;"
+                If ckMagaz.Checked Then strTipoExport += "MAG;"
+                If ckTabBase.Checked Then strTipoExport += "TBS;"
+                If ckCodpaga.Checked Then strTipoExport += "PAG;"
+                If ckLeads.Checked Then strTipoExport += "LEA;"
+                If ckOff.Checked Then strTipoExport += "OFF;"
+                If ckCoordinate.Checked Then strTipoExport += "COO;"
+                If ckNotifichePush.Checked Then strTipoExport += "COO;"
+
+                If strTipoExport.Length > 0 Then strTipoExport = strTipoExport.Substring(0, strTipoExport.Length - 1)
+
+                Dim fileExport As New System.IO.StreamWriter(pathSchedulazioneiB & "\" & "Export.bub", False)
+
+                fileExport.WriteLine("tipork=" & strTipoExport)
+                fileExport.WriteLine("ditta=" & DittaCorrente)
+                fileExport.Flush()
+                fileExport.Close()
+
+                ' Creo il bat di lancio del bub
+                Dim BatfileExport As New System.IO.StreamWriter(pathSchedulazioneiB & "\" & "Export.bat", False)
+                BatfileExport.WriteLine("taskkill -F -IM ""Dropbox.exe""")
+                BatfileExport.WriteLine(String.Format("""{0}\busnet.exe"" {1} {2} {3} Business {4} /B {5}\Export.bub", oApp.NetDir, "Admin", AdminPassword, DittaCorrente, oApp.Profilo, pathSchedulazioneiB))
+                BatfileExport.WriteLine("set app=""%programfiles(x86)%\Dropbox\Client\Dropbox.exe""")
+                BatfileExport.WriteLine("start ""Restart Dropbox"" %app% -B""")
+                BatfileExport.Flush()
+                BatfileExport.Close()
+
+
+                oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129000, "Files creati correttamente"))
                 e.Handled = True    'altrimenti anche il controllo riceve l'F5 e la routine ZOOM viene eseguita 2 volte!!!
             End If
 
@@ -1222,7 +1276,7 @@ Riprova:
     ''' <remarks></remarks>
     Public Function IBCheckForNewVersion(ByVal URLiBUpdate As String) As Boolean
         Try
-     
+
             ' Leggo la versione del file BNIEIBUS 
             IBUpdate.vars_local_version = FileVersionInfo.GetVersionInfo(oApp.NetDir & "\BNIEIBUS.dll").FileVersion
 

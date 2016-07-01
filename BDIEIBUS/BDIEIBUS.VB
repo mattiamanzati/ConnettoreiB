@@ -336,6 +336,28 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    Public Overridable Function GetPasswdOperatore(ByVal strOpNome As String, ByRef strPasswrd As String) As Boolean
+        Dim strSQL As String = ""
+        Dim dttOut As New DataTable
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetPasswdOperatore.sql", oApp.NetDir)
+            strSQL = strSQL.Replace("@opnome", CStrSQL(strOpNome))
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBPRC)
+
+            If dttOut.Rows.Count = 0 Then
+                Return False
+            Else
+                strPasswrd = NTSCStr(dttOut.Rows(0)!xx_passwd)
+
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
     Public Overridable Function GetAgentiCliente(ByVal strDitta As String, ByVal strConto As String, ByRef codAgente1 As Integer, ByRef codAgente2 As Integer, ByVal strWhere As String) As Boolean
         Dim strSQL As String = ""
         Dim dttOut As New DataTable
