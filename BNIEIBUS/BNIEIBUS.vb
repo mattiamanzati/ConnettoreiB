@@ -1,7 +1,7 @@
 Imports System.Data
 Imports System.IO
 Imports ApexNetLIB
-
+Imports Microsoft.Win32.TaskScheduler
 
 Imports NTSInformatica.CLN__STD
 
@@ -1077,18 +1077,17 @@ Riprova:
                 Dim pathSchedulazioneiB As String = "C:\SchedulazioneiB"
 
                 If Directory.Exists(pathSchedulazioneiB) Then
-                    If oApp.MsgBoxInfoYesNo_DefNo(oApp.Tr(Me, 129877046001844341, "La cartella " & pathSchedulazioneiB & " esistà già. Vuoi ricreare le schedulazioni ? (Se rispondi SI le schedulazioni esistenti verrano eliminate")) = Windows.Forms.DialogResult.No Then Return
+                    If oApp.MsgBoxInfoYesNo_DefNo(oApp.Tr(Me, 129877046001844341, "La cartella " & pathSchedulazioneiB & " esistà già. Vuoi ricreare le schedulazioni ? (Se rispondi SI le schedulazioni esistenti verrano eliminate)")) = Windows.Forms.DialogResult.No Then Return
 
                     Try
                         Directory.Delete(pathSchedulazioneiB, True)
-                        Directory.CreateDirectory("C:\SchedulazioneiB")
                     Catch ex As Exception
-                        oApp.MsgBoxInfo(oApp.Tr(Me, 129877046001844341, "ERRORE: Non sono riuscito a cancellare la cartella " & pathSchedulazioneiB))
-
+                        oApp.MsgBoxInfo(oApp.Tr(Me, 129877046001844341, "ERRORE: Non sono riuscito a cancellare la cartella. Forse ci sei dentro! " & pathSchedulazioneiB))
+                        Return
                     End Try
-
-
                 End If
+
+                Directory.CreateDirectory("C:\SchedulazioneiB")
 
                 ' Recupero la Password di Admin
                 Dim AdminPassword As String = ""
@@ -1098,6 +1097,7 @@ Riprova:
                     AdminPassword = "."
                 End If
 
+          
                 ' Se ho selezionato gli ordini probabimente sto creando il file di import
                 If ckOrdini.Checked = True Then
                     If ckOrdini.Checked Then strTipoImport += "ORD;"
@@ -1113,9 +1113,66 @@ Riprova:
 
                     ' Creo il bat di lancio del bub
                     Dim BatfileImport As New System.IO.StreamWriter(pathSchedulazioneiB & "\" & "Import.bat", False)
-                    BatfileImport.WriteLine(String.Format("""{0}\busnet.exe"" {1} {2} {3} {4} BNIEIBUS /B {5}\Import.bub", oApp.NetDir, "Admin", AdminPassword, DittaCorrente, oApp.Profilo, pathSchedulazioneiB))
+                    Dim BusCommandLineImport As String = String.Format("""{0}\busnet.exe"" {1} {2} {3} {4} BNIEIBUS /B {5}\Import.bub", oApp.NetDir, "Admin", AdminPassword, oApp.Db.Nome, oApp.Profilo, pathSchedulazioneiB)
+                    BatfileImport.WriteLine(BusCommandLineImport)
                     BatfileImport.Flush()
                     BatfileImport.Close()
+
+
+
+                    ' Creo la schedulazione
+                    Using ts As New TaskService()
+                        Dim tt As New TimeTrigger()
+                        ' **** V1 and V2 properties ******************************************
+                        ' Disable the trigger from firing the task
+                        tt.Enabled = True
+                        ' Default is true
+                        ' Set the start time for today at 11:00 p.m.
+                        tt.StartBoundary = DateTime.Now
+                        ' Default is the time the trigger is instantiated
+                        ' Set the last time the trigger will run to a year from now.
+                        ' tt.EndBoundary = DateTime.Today + TimeSpan.FromDays(365)
+                        ' Default is DateTime.MaxValue (or forever)
+                        ' Set the time in between each repetition of the task after it starts to 30 minutes.
+                        tt.Repetition.Interval = TimeSpan.FromMinutes(15)
+                        ' Default is TimeSpan.Zero (or never)
+                        ' Set the time the task will repeat to 1 day.
+                        ' tt.Repetition.Duration = TimeSpan.FromDays(1)
+                        ' Default is TimeSpan.Zero (or never)
+                        ' Set the task to end even if running when the duration is over
+                        tt.Repetition.StopAtDurationEnd = True
+                        ' Default is false;
+                        ' **** V2 only properties ********************************************
+                        ' Set an identifier to be used when logging
+                        tt.Id = "ImportIB"
+                        ' Set the maximum time this task can run once triggered to one hour.
+                        tt.ExecutionTimeLimit = TimeSpan.FromHours(1)
+                        ' Default is TimeSpan.Zero (or never)
+                        ' Trigger must then be added to the task'     
+
+                        ' Create a new task definition and assign properties
+                        Dim td As TaskDefinition = ts.NewTask()
+
+                        td.RegistrationInfo.Description = "IB Import dati"
+
+                        td.Triggers.Add(tt)
+                        ' Create a trigger that will fire the task at this time every other da
+                        'td.Triggers.Add(New DailyTrigger() With { _
+                        '       .DaysInterval = 2 _
+                        '})
+
+                        ' Create an action that will launch Notepad whenever the trigger fires
+                        td.Actions.Add(New ExecAction(pathSchedulazioneiB & "\Import.bat"))
+                        td.Principal.RunLevel = TaskRunLevel.Highest
+                        'td.Principal.LogonType = TaskLogonType.InteractiveToken
+
+
+                        ' Register the task in the root folder
+                        ts.RootFolder.RegisterTaskDefinition("IB Import dati", td)
+
+                    End Using
+
+
                 End If
 
 
@@ -1146,14 +1203,39 @@ Riprova:
                 ' Creo il bat di lancio del bub
                 Dim BatfileExport As New System.IO.StreamWriter(pathSchedulazioneiB & "\" & "Export.bat", False)
                 BatfileExport.WriteLine("taskkill -F -IM ""Dropbox.exe""")
-                BatfileExport.WriteLine(String.Format("""{0}\busnet.exe"" {1} {2} {3} Business {4} /B {5}\Export.bub", oApp.NetDir, "Admin", AdminPassword, DittaCorrente, oApp.Profilo, pathSchedulazioneiB))
+                Dim BusCommandLineExport As String = String.Format("""{0}\busnet.exe"" {1} {2} {3} {4} BNIEIBUS /B {5}\Export.bub", oApp.NetDir, "Admin", AdminPassword, oApp.Db.Nome, oApp.Profilo, pathSchedulazioneiB)
+                BatfileExport.WriteLine(BusCommandLineExport)
                 BatfileExport.WriteLine("set app=""%programfiles(x86)%\Dropbox\Client\Dropbox.exe""")
                 BatfileExport.WriteLine("start ""Restart Dropbox"" %app% -B""")
                 BatfileExport.Flush()
                 BatfileExport.Close()
 
+                ' Schedulazione export
+                ' Creo la schedulazione
+                Using ts As New TaskService()
 
-                oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129000, "Files creati correttamente"))
+                    Dim tt As New DailyTrigger()
+                    tt.Enabled = True
+                    tt.StartBoundary = DateTime.Today() + TimeSpan.FromHours(23)
+
+                    tt.DaysInterval = 1
+                    tt.Repetition.Interval = TimeSpan.FromDays(1)
+                    tt.Repetition.StopAtDurationEnd = True
+                    tt.Id = "ExportIB"
+                    tt.ExecutionTimeLimit = TimeSpan.FromHours(1)
+
+                    Dim td As TaskDefinition = ts.NewTask()
+                    td.RegistrationInfo.Description = "IB Export dati"
+                    td.Triggers.Add(tt)
+                    td.Actions.Add(New ExecAction(pathSchedulazioneiB & "\Export.bat"))
+
+                    td.Principal.RunLevel = TaskRunLevel.Highest
+
+                    ' Register the task in the root folder
+                    ts.RootFolder.RegisterTaskDefinition("IB Export dati", td)
+                End Using
+
+                oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129000, "Files creati correttamente in " & pathSchedulazioneiB & ". Ho creato anche le schedulazioni"))
                 e.Handled = True    'altrimenti anche il controllo riceve l'F5 e la routine ZOOM viene eseguita 2 volte!!!
             End If
 
