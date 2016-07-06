@@ -1125,7 +1125,8 @@ Riprova:
                         Dim tt As New TimeTrigger()
                         ' **** V1 and V2 properties ******************************************
                         ' Disable the trigger from firing the task
-                        tt.Enabled = True
+                        tt.Enabled = False
+
                         ' Default is true
                         ' Set the start time for today at 11:00 p.m.
                         tt.StartBoundary = DateTime.Now
@@ -1215,11 +1216,12 @@ Riprova:
                 Using ts As New TaskService()
 
                     Dim tt As New DailyTrigger()
-                    tt.Enabled = True
+                    tt.Enabled = False
                     tt.StartBoundary = DateTime.Today() + TimeSpan.FromHours(23)
 
                     tt.DaysInterval = 1
-                    tt.Repetition.Interval = TimeSpan.FromDays(1)
+
+                    ' tt.Repetition.Interval = TimeSpan.FromDays(1)
                     tt.Repetition.StopAtDurationEnd = True
                     tt.Id = "ExportIB"
                     tt.ExecutionTimeLimit = TimeSpan.FromHours(1)
@@ -1235,7 +1237,7 @@ Riprova:
                     ts.RootFolder.RegisterTaskDefinition("IB Export dati", td)
                 End Using
 
-                oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129000, "Files creati correttamente in " & pathSchedulazioneiB & ". Ho creato anche le schedulazioni"))
+                oApp.MsgBoxInfo(oApp.Tr(Me, 128744371685129000, "Files creati in " & pathSchedulazioneiB & vbCrLf & "Ho creato anche una bozza di schedulazione (ma le ho disabilitate)" & vbCrLf & "Dagli una occhiata!"))
                 e.Handled = True    'altrimenti anche il controllo riceve l'F5 e la routine ZOOM viene eseguita 2 volte!!!
             End If
 
