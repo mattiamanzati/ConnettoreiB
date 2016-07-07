@@ -292,6 +292,7 @@ Public Class CLEIEIBUS
             End If
             '--------------------------------------------------------------	
         End Try
+        Return ""
     End Function
 
     Public Overridable Function ConvStr(ByVal oIn As Object, Optional ConvNewLine As Boolean = False) As String
@@ -473,7 +474,7 @@ Public Class CLEIEIBUS
             strCustomWhereGetScaDocPush = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "WhereGetScaDocPush", "", " ", "").Trim
 
             ' Operatore di default da usare
-            strDefaultOpNome = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DefaultOpNome", "", " ", "Admin").Trim
+            strDefaultOpNome = oCldIbus.GetSettingBusDitt(strDittaCorrente, "Bsieibus", "Opzioni", ".", "DefaultOpNome", "Admin", " ", "Admin").Trim
 
             ' Parametri di Business
 
@@ -4797,7 +4798,7 @@ Public Class CLEIEIBUS
                     !ec_stasino = NTSCStr(strStasino)
 
 
-
+                    PostInsert_RigaOrdine(oCleGsor, oCleGsor.dttEC.Rows(oCleGsor.dttEC.Rows.Count - 1), r)
 
                 End With
 
@@ -6370,6 +6371,25 @@ NEXT_FILE:
     End Function
 
     Public Overridable Function PostInsert_Ordine(ByVal pIBNumOrd As String, ByVal pNumOrd As Integer, ByVal pAnno As Integer, ByVal pSerie As String, ByVal pTipork As String, ByVal pCodDitta As String) As Boolean
+        Try
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+        End Try
+
+
+    End Function
+
+
+    Public Overridable Function PostInsert_RigaOrdine(ByRef oCleGsor As CLEORGSOR, ByRef dr As DataRow, ByRef r As RigaOrdineExport) As Boolean
         Try
 
             Return True
