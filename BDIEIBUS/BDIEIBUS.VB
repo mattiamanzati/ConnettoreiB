@@ -51,6 +51,54 @@ Public Class CLDIEIBUS
         End Try
     End Function
 
+    ''' <summary>
+    ''' Identifica i tipi documento che possono avere scadenze
+    ''' </summary>
+    ''' <param name="Tipork">Tipo di documento da valutare</param>
+    ''' <param name="Valore">Torna true se può avere scadenze</param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Public Overridable Function TipiDocConScadenze(ByVal Tipork As String) As Boolean
+        Dim RetValue As Boolean = False
+
+        ' Lista dei tipo documenti che possono avere scadenze
+        Select Case Tipork
+
+            Case "E", "F", "I", "N", "£", "P", "S", "A", "C", "D"   ' Possono esserci scadenze (clienti)
+
+                ' - E  Note di Add. em. 
+                ' - F  Ric.Fisc. em. 
+                ' - I  Riem. Ric.Fisc. 
+                ' - N  Note Accr. em. 
+                ' - £  Nota accr. diff. em. 
+                ' - P  Fatt.Ric.Fisc.Diff. 
+                ' - S  Fatt.Ric.Fisc. em. 
+                ' - A  Fatt. Imm. em
+                ' - C  Corr. emesso
+                ' - D  Fatt. Diff. em.
+
+                RetValue = True
+
+
+            Case "J", "(", "K", "L" ' Possono esserci scadenze (fornitori)
+
+                ' - J  Note Accr. ric. 
+                ' - (  Nota accr. diff. ric. 
+                ' - K  Fatt. Diff. ric. 
+                ' - L  Fatt. Imm. ric. 
+
+                RetValue = True
+
+            Case Else ' Tutti gli altri tipi (Non possono esserci scadenze)
+
+                RetValue = False
+
+        End Select
+
+        Return RetValue
+ 
+    End Function
+
     Public Overridable Function DecodeDBValue(ByVal Contesto As String, ByVal Campo As String, ByRef Valore As String) As Boolean
         Dim RetValue As String = ""
         Try
@@ -280,6 +328,28 @@ Public Class CLDIEIBUS
             dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBAZI)
 
             If dttOut.Rows.Count > 0 Then
+                Return True
+            End If
+
+        Catch ex As Exception
+            Throw (New NTSException(GestError(ex, Me, strSQL, oApp.InfoError, "", False)))
+        End Try
+    End Function
+
+    Public Overridable Function GetPasswdOperatore(ByVal strOpNome As String, ByRef strPasswrd As String) As Boolean
+        Dim strSQL As String = ""
+        Dim dttOut As New DataTable
+        Try
+            strSQL = ApexNetLIB.EmbeddedResource.GetString(GetType(CLDIEIBUS).Assembly, "GetPasswdOperatore.sql", oApp.NetDir)
+            strSQL = strSQL.Replace("@opnome", CStrSQL(strOpNome))
+
+            dttOut = OpenRecordset(strSQL, CLE__APP.DBTIPO.DBPRC)
+
+            If dttOut.Rows.Count = 0 Then
+                Return False
+            Else
+                strPasswrd = NTSCStr(dttOut.Rows(0)!xx_passwd)
+
                 Return True
             End If
 

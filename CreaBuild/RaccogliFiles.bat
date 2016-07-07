@@ -20,6 +20,8 @@ copy ..\TEST\Ionic*.* .\iBUpdate
 copy ..\TEST\AMHelper*.* .\iBUpdate
 copy ..\TEST\NewtonsoftApex* .\iBUpdate
 
+copy ..\TEST\Microsoft.Win32.TaskScheduler* .\iBUpdate
+
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "iBUpdate.zip" .\iBUpdate
  
 rem rmdir /S /Q iBUpdate
@@ -46,6 +48,8 @@ copy ..\TEST\RestSharpApex*.* .\ConnettoreBusiness
 copy ..\TEST\Ionic*.* .\ConnettoreBusiness
 copy ..\TEST\AMHelper*.* .\ConnettoreBusiness
 copy ..\TEST\NewtonsoftApex* .\ConnettoreBusiness
+
+copy ..\TEST\Microsoft.Win32.TaskScheduler* .\ConnettoreBusiness
 
 cd .\ConnettoreBusiness
 "%ProgramFiles%\7-zip\7z.exe" a -tzip -r "ConnettoreBusiness.zip" *.*

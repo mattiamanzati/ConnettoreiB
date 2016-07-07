@@ -1232,6 +1232,29 @@ Public Class CLEIEIBUS
 
     End Function
 
+    Public Overridable Function GetPasswordOperatore(ByVal OpNome As String, ByRef OpPasswd As String) As Boolean
+        Dim localPasswd As String = ""
+        Try
+
+            If Not oCldIbus.GetPasswdOperatore(OpNome, localPasswd) Then Return False
+
+            OpPasswd = localPasswd
+
+            Return True
+
+        Catch ex As Exception
+            '--------------------------------------------------------------
+            If GestErrorCallThrow() Then
+                Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
+            Else
+                ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
+            End If
+            '--------------------------------------------------------------	
+  
+        End Try
+
+    End Function
+
     Public Overridable Function Elabora_Child() As Boolean
         Try
 
@@ -2808,6 +2831,7 @@ Public Class CLEIEIBUS
         Dim sbFile As New StringBuilder
         Dim strTipoDoc As String = ""
         Dim strDescEvas As String = ""
+        Dim strKeyNumReg As String = ""
         Try
             ' I filtri sui documenti che vengono fatti nell'iPad sono basati sulle distinct dei seguenti campi:
             '
@@ -2824,6 +2848,7 @@ Public Class CLEIEIBUS
                         "DATA_DOC|NUMREG|TIPODOC|TIPO|SOTTOTIPO|SEZIONALE|NUM_DOC|" & _
                         "DEPOSITO|TOTALEDOC|TIPOSTATO_DOC|DESSTATO_DOC|DATA_FATT|NUM_FATT|" & _
                         "DES_DOC|DES_NOTE|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
+
             For Each dtrT As DataRow In dttTmp.Rows
 
                 Select Case ConvStr(dtrT!xx_flevas)
@@ -2831,37 +2856,15 @@ Public Class CLEIEIBUS
                     Case "1" : strDescEvas = "Evaso"
                 End Select
 
-                Select Case NTSCStr(dtrT!tm_tipork)
-                    Case "A" : strTipoDoc = "Fatt. Imm. em." '
-                    Case "B" : strTipoDoc = "DDT emesso" ' 
-                    Case "C" : strTipoDoc = "Corr. emesso"
-                    Case "D" : strTipoDoc = "Fatt. Diff. em." '
-                    Case "E" : strTipoDoc = "Note di Add. em."
-                    Case "F" : strTipoDoc = "Ric.Fisc. em."
-                    Case "I" : strTipoDoc = "Riem. Ric.Fisc."
-                    Case "J" : strTipoDoc = "Note Accr. ric."
-                    Case "(" : strTipoDoc = "Nota accr. diff. ric."
-                    Case "K" : strTipoDoc = "Fatt. Diff. ric."
-                    Case "L" : strTipoDoc = "Fatt. Imm. ric."
-                    Case "M" : strTipoDoc = "DDT ricevuto"
-                    Case "N" : strTipoDoc = "Note Accr. em."
-                    Case "£" : strTipoDoc = "Nota accr. diff. em."
-                    Case "P" : strTipoDoc = "Fatt.Ric.Fisc.Diff."
-                    Case "S" : strTipoDoc = "Fatt.Ric.Fisc. em."
-                    Case "T" : strTipoDoc = "Carico da prod."
-                    Case "U" : strTipoDoc = "Scarico a prod."
-                    Case "Z" : strTipoDoc = "Bolle di mov.int."
-                    Case "W" : strTipoDoc = "Note di prel."
-                    Case "R" : strTipoDoc = "Imp. cliente"
-                    Case "O" : strTipoDoc = "Ord. forn."
-                    Case "H" : strTipoDoc = "Ord. di prod."
-                    Case "X" : strTipoDoc = "Imp. Trasfer."
-                    Case "Q" : strTipoDoc = "Prev."
-                    Case "#" : strTipoDoc = "Imp. di comm."
-                    Case "V" : strTipoDoc = "Imp. cli aperto"
-                    Case "$" : strTipoDoc = "Ord. forn aperto"
-                    Case "Y" : strTipoDoc = "Imp. di prod."
-                End Select
+                ' Se il tipodoc  puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
+                If oCldIbus.TipiDocConScadenze(NTSCStr(dtrT!tm_tipork)) Then
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg)
+                Else
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg) & "§" & ConvStr(dtrT!tm_tipork)
+                End If
+
+                ' Decodifico il tipo doc
+                oCldIbus.DecodeDBValue("tipork", NTSCStr(dtrT!tm_tipork), strTipoDoc)
 
                 ' ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "|" & _
@@ -2871,8 +2874,8 @@ Public Class CLEIEIBUS
                                 Asc(ConvStr(dtrT!tm_tipork)) & "|" & _
                                 ConvStr(dtrT!xx_tipobf) & "|" & _
                                 ConvData(dtrT!tm_datdoc, False) & "|" & _
-                                ConvStr(dtrT!xx_numreg) & "|" & _
-                                ConvStr(dtrT!tm_tipork) & "|" & _
+                                strKeyNumReg & "|" & _
+                                strKeyNumReg & "|" & _
                                 strTipoDoc.PadRight(20).Substring(0, 20).Trim & "|" & _
                                 ConvStr(dtrT!tb_destpbf).PadRight(20).Substring(0, 20).Trim & "|" & _
                                 ConvStr(dtrT!tm_serie) & "|" & _
@@ -2965,6 +2968,7 @@ Public Class CLEIEIBUS
         Dim sbFile As New StringBuilder
         Dim descOmaggio As String = ""
         Dim RetValOmaggio As Boolean
+        Dim strKeyNumReg As String
 
         Try
             If Not oCldIbus.GetCliforRighDoc(TipoCliFor, strDittaCorrente, dttTmp, strCustomWhereGetCliforRighDoc,
@@ -2978,9 +2982,18 @@ Public Class CLEIEIBUS
                 RetValOmaggio = oCldIbus.DecodeDBValue("stasino", ConvStr(dtrT!mm_stasino), descOmaggio)
                 If descOmaggio <> "" Then descOmaggio = " - (" & descOmaggio & ")"
 
+
+                ' Se il tipodoc  puo' contenere scadenze aggiungo il tipo doc per rendere univoca la chiave
+                If oCldIbus.TipiDocConScadenze(NTSCStr(dtrT!tm_tipork)) Then
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg)
+                Else
+                    strKeyNumReg = ConvStr(dtrT!xx_numreg) & "§" & ConvStr(dtrT!tm_tipork)
+                End If
+
+
                 sbFile.Append(strDittaCorrente & "§" & ConvStr(dtrT!tm_tipork) & "§" & ConvStr(dtrT!tm_anno) & "§" & ConvStr(dtrT!tm_serie) & "§" & ConvStr(dtrT!tm_numdoc) & "§" & ConvStr(dtrT!tm_numdoc1) & "§" & ConvStr(dtrT!mm_riga) & "§" & ConvStr(dtrT!mm_codart) & "|" & _
                                 strDittaCorrente & "|" & _
-                                ConvStr(dtrT!xx_numreg) & "|" & _
+                                strKeyNumReg & "|" & _
                                 ConvStr(dtrT!xx_codart) & "|" & _
                                 ConvStr(dtrT!mm_riga) & "|" & _
                                 (ConvStr(dtrT!mm_codart) & IIf(NTSCStr(dtrT!mm_fase) <> "0", "." & ConvStr(dtrT!mm_fase), "").ToString).Trim & "|" & _
@@ -3282,7 +3295,9 @@ Public Class CLEIEIBUS
                           ConvData(dtrT!ar_ultagg, True) & vbCrLf)
 
                 If ConvStr(dtrT!ar_unmis2) <> "" Then
-                    If (NTSCDec(dtrT!ar_conver) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+                    ' Estrae la seconda unità di misura solo se ne è stato impostato il fattore di conversione
+                    ' oppure solo se ne forzo l'estrazione con l'opportuno parametro QueryGetArtUM_EstraiTutte = 1
+                    If (NTSCDec(dtrT!ar_conver) <> NTSCDec(0)) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
 
                         If ConvStr(dtrT!ar_conver) = "0" Then
                             my_ar_conver = "1"
@@ -3303,7 +3318,9 @@ Public Class CLEIEIBUS
                 End If
 
                 If ConvStr(dtrT!ar_confez2) <> "" Then
-                    If (NTSCDec(dtrT!ar_qtacon2) <> 0) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
+                    ' Estrae la terza unità di misura (confezioni) solo se ne è stato impostato il fattore di conversione
+                    ' oppure solo se ne forzo l'estrazione con l'opportuno parametro QueryGetArtUM_EstraiTutte = 1
+                    If (NTSCDec(dtrT!ar_qtacon2) <> NTSCDec(0)) Or (strCustomQueryGetArtUM_EstraiTutte <> "0") Then
 
                         If ConvStr(dtrT!ar_qtacon2) = "0" Then
                             my_ar_qtaconf2 = "1"
@@ -3592,7 +3609,9 @@ Public Class CLEIEIBUS
                                         strFiltroGiorniStoArt:=strFiltroGGStoArt, strIncludiNonEvasi:=strFiltroIncludiNonEvasi) Then Return False
 
             sbFile.Append("CHIAVE|COD_DITTA|COD_CLIFOR|COD_ART|DESC_ARTICOLO|NUM_RIGHE|ULT_NUM_REG|ULT_PROG_RIGA|" & _
-                            "ULT_QTA|ULT_PRZ|ULT_UM|ULT_QTA2|ULT_PRZ2|ULT_UM2|COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
+                            "ULT_QTA|ULT_PRZ|ULT_UM|" & _
+                            "ULT_QTA2|ULT_PRZ2|ULT_UM2|" & _
+                            "COD_DEST|ULT_SC_PER1|ULT_SC_PER2|ULT_SC_PER3|ULT_SC_PER4|" & _
                             "ULT_SC_PER5|ULT_SC_PER6|ULT_SC_IMPORTO|ULT_MAG_PER1|ULT_MAG_PER2|" & _
                             "ULT_MAG_IMPORTO|ULT_DATA|COD_VALUTA|DAT_ULT_MOD" & vbCrLf)
 
@@ -3619,9 +3638,9 @@ Public Class CLEIEIBUS
                                 NTSCDec(dtrT!mo_quant).ToString("0.00000") & "|" & _
                                 NTSCDec(dtrT!mo_prezzo).ToString("0.00000") & "|" & _
                                 ConvStr(dtrT!mo_ump) & "|" & _
+                                NTSCDec(dtrT!xx_quantv).ToString("0.00000") & "|" & _
                                 "" & "|" & _
-                                "" & "|" & _
-                                "" & "|" & _
+                                ConvStr(dtrT!xx_umv) & "|" & _
                                 IIf(ConvStr(dtrT!td_coddest) = "0", "", ConvStr(dtrT!td_coddest)).ToString & "|" & _
                                 NTSCDec(dtrT!mo_scont1).ToString("0.00") & "|" & _
                                 NTSCDec(dtrT!mo_scont2).ToString("0.00") & "|" & _
@@ -4449,7 +4468,7 @@ Public Class CLEIEIBUS
             Select Case Ordine.ext_cod_tipo_ord
                 Case "CLI-MOBORD", "CLI-IGAMMAORD", "R"
                     strTipoOrdine = "R"
-                Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P"
+                Case "CLI-MOBPRE", "CLI-IGAMMAPRE", "P", "Q"
                     strTipoOrdine = "Q"
                 Case Else
                     strTipoOrdine = "R"
@@ -4655,6 +4674,8 @@ Public Class CLEIEIBUS
                     Case "3" : dTipoUM = 3 ' Codice confezione
                 End Select
 
+                '  dTipoUM = 1   SEPA
+
                 Select Case dTipoUM
                     Case 1
                         'strUnitaMisuraP = r.cod_um_1
@@ -4741,18 +4762,28 @@ Public Class CLEIEIBUS
 
 
                     !ec_note = Trim(NTSCStr(!ec_note) & " " & NTSCStr(r.note))
+
                     !ec_unmis = NTSCStr(strUnitaMisura)
+
                     !ec_colli = NTSCDec(dColli)
                     !ec_quant = NTSCDec(dQuantita)
 
+
+                    ' !ec_quant = NTSCDec(dColli) ' SEPA
+                    ' !ec_colli = NTSCDec(dQuantita) ' SEPA
+
                     ' Se ho attivato l'esplosione dei kit non devo impostare il prezzo dell'articolo
                     If strEsplodiKit <> "0" Then
+                        ' Esplosione KIT attiva...
                         ' Sulle righe con articoli di tipo 'Kit analitico' o 'Componente sintetico', il Prezzo deve essere a zero.
                         If NTSCStr(!ec_flkit) = "A" Or NTSCStr(!ec_flkit) = "T" Then
                             !ec_prezzo = 0
                         Else
                             !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                         End If
+                    Else
+                        ' Esplosione KIT Spenta
+                        !ec_prezzo = NTSCDec(dPrezzo) * NTSCDec(!ec_perqta)
                     End If
 
                     !ec_scont1 = NTSCDec(r.sconto_1)
@@ -4764,6 +4795,8 @@ Public Class CLEIEIBUS
                     !ec_datcons = NTSCDate(r.data_consegna_riga)
                     !ec_datconsor = NTSCDate(r.data_consegna_riga)
                     !ec_stasino = NTSCStr(strStasino)
+
+
 
 
                 End With
@@ -6115,6 +6148,7 @@ NEXT_FILE:
         Dim dttAlert As DataTable = Nothing
         Dim strTipork As String = ""
         Dim strCliente As String = ""
+        Dim msg As String = ""
         ' msgTipo puo' valere :
 
         If strAttivaAlert = "0" Then Return True
@@ -6160,6 +6194,10 @@ NEXT_FILE:
             Return True
 
         Catch ex As Exception
+
+            msg = String.Format("La creazione dell'alert ha dato errore inviando il messaggio={0}.", Messaggio)
+            WEDOLogger.WriteToRegistry(msg, EventLogEntryType.Error)
+
             '--------------------------------------------------------------
             If GestErrorCallThrow() Then
                 Throw New NTSException(GestError(ex, Me, "", oApp.InfoError, "", False))
@@ -6167,9 +6205,9 @@ NEXT_FILE:
                 ThrowRemoteEvent(New NTSEventArgs("", GestError(ex, Me, "", oApp.InfoError, "", False)))
             End If
             '--------------------------------------------------------------
+        Finally
+            If Not dttAlert Is Nothing Then dttAlert.Clear()
         End Try
-
-
 
     End Function
 
